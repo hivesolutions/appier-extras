@@ -68,6 +68,7 @@ class AdminPart(appier.Part):
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
             (("GET",), "/admin/accounts/new", self.new_account),
+            (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>", self.show_model)
         ]
@@ -136,7 +137,10 @@ class AdminPart(appier.Part):
         )
 
     def new_account(self):
-        return self.template("signin.html.tpl")
+        raise appier.NotImplemented()
+
+    def show_account(self, username):
+        raise appier.NotImplemented()
 
     @appier.ensure(token = "admin")
     def list_models(self):

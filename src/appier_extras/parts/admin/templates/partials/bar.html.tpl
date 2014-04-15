@@ -1,7 +1,7 @@
 <div class="top-bar">
     <div class="container">
         <div class="logo">
-            <a>layout.css</a>
+            <a>{{ owner.name }}</a>
         </div>
         <div class="drop-field entities" placeholder="Search over some of the items"
              data-number_options="4">
