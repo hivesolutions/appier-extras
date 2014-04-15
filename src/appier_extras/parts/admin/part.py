@@ -118,14 +118,21 @@ class AdminPart(appier.Part):
         )
 
     def logout(self):
+        # tries to retrieve the next field as it's going to be used for
+        # the redirection operation at the end of the logout operation
         next = self.field("next")
 
+        # verifies the existence of the various account related session
+        # attributes and in case they exist removes them from session as
+        # the user is currently logging out from session
         if "username" in self.session: del self.session["username"]
         if "type" in self.session: del self.session["type"]
         if "tokens" in self.session: del self.session["tokens"]
 
+        # runs the proper redirect operation, taking into account if the
+        # next value has been provided or not
         return self.redirect(
-            next or self.url_for("base.index")
+            next or self.url_for("admin.index")
         )
 
     def new_account(self):
