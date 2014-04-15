@@ -37,6 +37,9 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import time
+import appier
+
 import base
 
 class Account(base.Base):
@@ -46,12 +49,57 @@ class Account(base.Base):
     )
 
     password = dict(
-        index = True
-
+        private = True
     )
 
+    last_login = dict(
+        type = int,
+        safe = True
+    )
 
+    @classmethod
+    def login(cls, username, password):
+        # verifies that both the provided username and password are valid
+        # and that are correctly and properly defined (required for validation)
+        if not username or not password:
+            raise appier.OperationalError(
+                message = "Both username and password must be provided",
+                code = 400
+            )
 
+        # tries to retrieve the account with the provided username, so that
+        # the other validation steps may be done as required by login operation
+        account = cls.get(
+            username = username,
+            build = False,
+            raise_e = False
+        )
+        if not account:
+            raise appier.OperationalError(
+                message = "No valid account found",
+                code = 403
+            )
 
-    def login(self):
-        pass
+        # verifies that the retrieved account is currently enabled, because
+        # disabled accounts are not considered to be valid ones
+        if not account.enabled:
+            raise appier.OperationalError(
+                message = "Account is not enabled",
+                code = 403
+            )
+
+        # retrieves the value of the password for the stored account and then
+        # verifies that the value matched the one that has been provided
+        _password = account.password
+        if not password == _password:
+            raise appier.OperationalError(
+                message = "Invalid or mismatch password",
+                code = 403
+            )
+
+        # updates the last login of the account with the current timestamp
+        # and saves the account so that this value is persisted, then returns
+        # the account to the caller method so that it may be used
+        account.last_login = time.time()
+        account.save()
+        return account
