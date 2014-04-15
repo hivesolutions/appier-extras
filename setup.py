@@ -59,7 +59,7 @@ setuptools.setup(
     ],
     test_suite = "appier.test",
     package_dir = {
-        "" : os.path.normpath("parts")
+        "" : os.path.normpath("src")
     },
     package_data = {
         "appier_extras.parts.admin" : [
