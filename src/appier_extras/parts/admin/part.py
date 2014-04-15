@@ -65,7 +65,7 @@ class AdminPart(appier.Part):
         return [
             (("GET",), "/admin", self.index),
             (("GET",), "/admin/signin", self.signin),
-            (("POST",), "/admin/login", self.login),
+            (("POST",), "/admin/signin", self.login),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>", self.show_model)
