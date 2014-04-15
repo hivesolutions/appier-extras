@@ -66,6 +66,7 @@ class AdminPart(appier.Part):
             (("GET",), "/admin", self.index),
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
+            (("GET", "POST"), "/admin/signout", self.logout),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>", self.show_model)
@@ -114,6 +115,17 @@ class AdminPart(appier.Part):
 
         return self.redirect(
             next or self.url_for("admin.index")
+        )
+
+    def logout(self):
+        next = self.field("next")
+
+        if "username" in self.session: del self.session["username"]
+        if "type" in self.session: del self.session["type"]
+        if "tokens" in self.session: del self.session["tokens"]
+
+        return self.redirect(
+            next or self.url_for("base.index")
         )
 
     def new_account(self):

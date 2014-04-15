@@ -42,20 +42,60 @@ import appier
 
 import base
 
+ADMIN_TYPE = 1
+
+USER_TYPE = 2
+
+ACCOUNT_S = {
+    ADMIN_TYPE : "admin",
+    USER_TYPE : "user"
+}
+
 class Account(base.Base):
 
     username = dict(
         index = True
     )
 
+    email = dict(
+        index = True,
+        immutable = True
+    )
+
     password = dict(
         private = True
+    )
+
+    type = dict(
+        type = int,
+        safe = True
     )
 
     last_login = dict(
         type = int,
         safe = True
     )
+
+    @classmethod
+    def setup(cls):
+        super(Account, cls).setup()
+
+        # tries to find the root account (default) in case it's not
+        # found returns immediately nothing to be done
+        root = cls.find(username = "root")
+        if root: return
+
+        # creates the structure to be used as the server description
+        # using the values provided as parameters
+        account = {
+            "enabled" : True,
+            "username" : "root",
+            "email" : "root@root.com",
+            "password" : "root",
+            "type" : ADMIN_TYPE
+        }
+        collection = cls._collection()
+        collection.save(account)
 
     @classmethod
     def login(cls, username, password):
@@ -103,3 +143,15 @@ class Account(base.Base):
         account.last_login = time.time()
         account.save()
         return account
+
+    def tokens(self):
+        if self.type == ADMIN_TYPE:
+            return ["*"]
+
+        if self.type == USER_TYPE:
+            return ["base", "user"]
+
+    def type_s(self, capitalize = False):
+        type_s = ACCOUNT_S.get(self.type, None)
+        type_s = type_s.capitalize() if capitalize else type_s
+        return type_s
