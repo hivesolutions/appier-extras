@@ -1,1 +1,4 @@
 *.pyc
+
+/dist/
+/src/appier_extras.egg-info/
