@@ -1,8 +1,9 @@
 {% extends "partials/layout.simple.html.tpl" %}
+{% block title %}Login{% endblock %}
 {% block content %}
     <div class="login-panel">
         <h1>Login</h1>
-        <h3>Sign in to continue to {{ owner.name }}</h3>
+        <h3>Sign in to continue to <strong>{{ owner.name }}</strong></h3>
         <div class="quote error">
             {{ error }}
         </div>
