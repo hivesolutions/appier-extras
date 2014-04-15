@@ -2,7 +2,7 @@
 {% block content %}
     <div class="login-panel">
         <h1>Login</h1>
-        <h3>Sign in to continue to webook</h3>
+        <h3>Sign in to continue to {{ owner.name }}</h3>
         <div class="quote error">
             {{ error }}
         </div>
