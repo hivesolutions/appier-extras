@@ -1,4 +1,4 @@
-{% extends "partials/layout.fluid.html.tpl" %}
+{% extends "partials/layout.simple.html.tpl" %}
 {% block content %}
     <div class="login-panel">
         <h1>Login</h1>

@@ -76,7 +76,13 @@ class AdminPart(appier.Part):
 
     def template(self, template, style = "fluid", *args, **kwargs):
         template = "%s/%s" % (style, template)
-        return appier.Part.template(self, template, *args, **kwargs)
+        return appier.Part.template(
+            self,
+            template,
+            owner = self.owner,
+            *args,
+            **kwargs
+        )
 
     def index(self):
         return self.list_models()

@@ -3,7 +3,7 @@
     {% block head %}
         {% include "partials/content_type.html.tpl" %}
         {% include "partials/includes.html.tpl" %}
-        <title>Layout / {% block title %}{% endblock %}</title>
+        <title>{{ owner.name }} / {% block title %}{% endblock %}</title>
     {% endblock %}
 </head>
 <body class="ux wait-load fluid grey no-footer {{ session.sub_type }} {{ session.style }}" >

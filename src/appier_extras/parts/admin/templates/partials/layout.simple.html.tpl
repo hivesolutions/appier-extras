@@ -10,14 +10,6 @@
     <div id="overlay" class="overlay"></div>
     <div id="header" class="header">
         {% include "partials/header.html.tpl" %}
-        {% block header %}
-            <h1>{% block name %}{% endblock %}</h1>
-            <div class="links">
-                {% for model in models %}
-                    <a href="#">{{ model._name() }}</a>
-                {% endfor %}
-            </div>
-        {% endblock %}
     </div>
     <div id="content" class="content {% block style %}{% endblock %}">{% block content %}{% endblock %}</div>
     <div id="footer" class="footer">
