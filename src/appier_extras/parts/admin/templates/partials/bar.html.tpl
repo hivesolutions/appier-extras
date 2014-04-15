@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="footer-contents">
-                        <a href="#">Logout</a>
+                        <a href="{{ url_for('admin.logout') }}">Logout</a>
                     </div>
                 </div>
             </div>
