@@ -55,25 +55,25 @@ ACCOUNT_S = {
 
 class Account(base.Base):
 
-    username = dict(
+    username = appier.field(
         index = True
     )
 
-    email = dict(
+    email = appier.field(
         index = True,
         immutable = True
     )
 
-    password = dict(
+    password = appier.field(
         private = True
     )
 
-    type = dict(
+    type = appier.field(
         type = int,
         safe = True
     )
 
-    last_login = dict(
+    last_login = appier.field(
         type = int,
         safe = True
     )

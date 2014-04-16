@@ -41,18 +41,20 @@ import appier
 
 class Base(appier.Model):
 
-    id = dict(
+    id = appier.field(
         type = int,
         index = True,
         increment = True
     )
 
-    enabled = dict(
+    enabled = appier.field(
         type = bool,
         index = True
     )
 
-    description = dict()
+    description = appier.field(
+        meta = "text"
+    )
 
     @classmethod
     def create_names(cls):
