@@ -1,4 +1,5 @@
 recursive-include src/appier_extras/parts/admin/static/css *
+recursive-include src/appier_extras/parts/admin/static/images *
 recursive-include src/appier_extras/parts/admin/static/js *
 recursive-include src/appier_extras/parts/admin/templates/fluid *.tpl
 recursive-include src/appier_extras/parts/admin/templates/fluid/* *
