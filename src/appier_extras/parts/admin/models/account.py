@@ -39,6 +39,8 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import time
 import appier
+import hashlib
+import binascii
 
 import base
 
@@ -91,11 +93,35 @@ class Account(base.Base):
             "enabled" : True,
             "username" : "root",
             "email" : "root@root.com",
-            "password" : "root",
+            "password" : cls.generate("root"),
             "type" : ADMIN_TYPE
         }
         collection = cls._collection()
         collection.save(account)
+
+    @classmethod
+    def validate(cls):
+        return super(Account, cls).validate() + [
+            appier.not_null("username"),
+            appier.not_empty("username"),
+            appier.string_gt("username", 3),
+            appier.string_lt("username", 20),
+            appier.not_duplicate("username", cls._name()),
+
+            appier.not_null("type"),
+
+            appier.equals("password_confirm", "password")
+        ]
+
+    @classmethod
+    def validate_new(cls):
+        return super(Account, cls).validate_new() + [
+            appier.not_null("password"),
+            appier.not_empty("password"),
+
+            appier.not_null("password_confirm"),
+            appier.not_empty("password_confirm")
+        ]
 
     @classmethod
     def login(cls, username, password):
@@ -131,7 +157,7 @@ class Account(base.Base):
         # retrieves the value of the password for the stored account and then
         # verifies that the value matched the one that has been provided
         _password = account.password
-        if not password == _password:
+        if not cls.verify(_password, password):
             raise appier.OperationalError(
                 message = "Invalid or mismatch password",
                 code = 403
@@ -144,6 +170,45 @@ class Account(base.Base):
         account.save()
         return account
 
+    @classmethod
+    def verify(cls, encoded, decoded):
+        type, salt, digest, plain = cls.unpack(encoded)
+        if plain: return encoded == decoded
+        if salt: decoded += salt
+        type = type.lower()
+        hash = hashlib.new(type, decoded)
+        _digest = hash.hexdigest()
+        return _digest == digest
+
+    @classmethod
+    def generate(cls, password, type = "sha256", salt = "appier"):
+        if cls.is_encrypted(password): return password
+        if type == "plain" : return password
+        if salt: password += salt
+        hash = hashlib.new(type, password)
+        digest = hash.hexdigest()
+        if not salt: return "%s:%s" % (type, digest)
+        salt = binascii.hexlify(salt)
+        return "%s:%s:%s" % (type, salt, digest)
+
+    @classmethod
+    def unpack(cls, password):
+        count = password.count(":")
+        if count == 2: type, salt, digest = password.split(":")
+        elif count == 1: type, digest = password.split(":"); salt = None
+        else: plain = password; type = "plain"; salt = None; digest = None
+        if not type == "plain": plain = None
+        if salt: salt = binascii.unhexlify(salt)
+        return (type, salt, digest, plain)
+
+    @classmethod
+    def is_encrypted(cls, password):
+        return password.count(":") > 0
+
+    def pre_save(self):
+        base.Base.pre_save(self)
+        if hasattr(self, "password"): self.password = self.encrypt(self.password)
+
     def tokens(self):
         if self.type == ADMIN_TYPE:
             return ["*"]
@@ -155,3 +220,7 @@ class Account(base.Base):
         type_s = ACCOUNT_S.get(self.type, None)
         type_s = type_s.capitalize() if capitalize else type_s
         return type_s
+
+    def encrypt(self, value):
+        cls = self.__class__
+        return cls.generate(value)
