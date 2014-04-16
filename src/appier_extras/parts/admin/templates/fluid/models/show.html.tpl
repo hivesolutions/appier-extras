@@ -2,6 +2,11 @@
 {% block title %}{{ model._name() }}{% endblock %}
 {% block name %}{{ model._name() }}{% endblock %}
 {% block style %}no-padding{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    <div class="button button-color button-grey"
+    	 data-link="{{ url_for('admin.new_entity', model = model._name()) }}">New</div>
+{% endblock %}
 {% block content %}
     <div class="filter" data-no_input="1">
         <table>
