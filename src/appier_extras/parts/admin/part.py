@@ -179,9 +179,24 @@ class AdminPart(appier.Part):
         return self.template(
             "entities/new.html.tpl",
             model = model,
-            models = self.models_r
+            models = self.models_r,
+            errors = dict(),
         )
 
     @appier.ensure(token = "admin")
     def create_entity(self, model):
-        pass
+        model = self.get_model(model)
+        entity = model.new(safe = False)
+        try: entity.save()
+        except appier.ValidationError, error:
+            return self.template(
+                "entities/new.html.tpl",
+                entity = error.model,
+                errors = error.errors,
+                model = model,
+                models = self.models_r
+            )
+
+        return self.redirect(
+            self.url_for("admin.show_model", model = model._name())
+        )
