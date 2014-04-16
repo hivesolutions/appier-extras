@@ -137,10 +137,10 @@ class AdminPart(appier.Part):
         )
 
     def new_account(self):
-        raise appier.NotImplemented()
+        raise appier.NotImplementedError()
 
     def show_account(self, username):
-        raise appier.NotImplemented()
+        raise appier.NotImplementedError()
 
     @appier.ensure(token = "admin")
     def list_models(self):
