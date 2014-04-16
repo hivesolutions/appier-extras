@@ -12,7 +12,7 @@
                     </div>
                     <div class="input">
                         <input type="text" class="text-field" name="{{ name }}"
-                               data-error="{{ errors[name] }}" />
+                               value="{{ entity[name]|default('', True) }}" data-error="{{ errors[name] }}" />
                     </div>
                 </div>
             {% endfor %}

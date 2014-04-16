@@ -178,9 +178,10 @@ class AdminPart(appier.Part):
         model = self.get_model(model)
         return self.template(
             "entities/new.html.tpl",
-            model = model,
-            models = self.models_r,
+            entity = dict(),
             errors = dict(),
+            model = model,
+            models = self.models_r
         )
 
     @appier.ensure(token = "admin")
