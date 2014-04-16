@@ -7,20 +7,20 @@
         <table>
             <thead>
                 <tr class="table-row table-header">
-                	{% for name in model.definition() %}
-                		<th class="text-left">{{ name }}</th>
-                	{% endfor %}
+                    {% for name in model.definition() %}
+                        <th class="text-left">{{ name }}</th>
+                    {% endfor %}
                 </tr>
             </thead>
- 			<tbody class="filter-contents">
- 				{% for entity in entities %}
- 					<tr class="table-row">
-		 				{% for name in model.definition() %}
-		            		<td class="text-left">{{ entity[name] }}</td>
-		            	{% endfor %}
- 					</tr>
-	            {% endfor %}
- 			</tbody>
+             <tbody class="filter-contents">
+                 {% for entity in entities %}
+                     <tr class="table-row">
+                         {% for name in model.definition() %}
+                            <td class="text-left">{{ entity[name] }}</td>
+                        {% endfor %}
+                     </tr>
+                {% endfor %}
+             </tbody>
         </table>
     </div>
 {% endblock %}

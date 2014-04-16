@@ -70,6 +70,7 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/accounts/new", self.new_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/models", self.list_models),
+            (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model)
         ]
 
@@ -161,3 +162,11 @@ class AdminPart(appier.Part):
             entities = entities,
             models = self.models_r
         )
+
+    @appier.ensure(token = "admin")
+    def show_model_csv(self, model):
+        model = self.get_model(model)
+        entities = model.find(map = True)
+        result = appier.serialize_csv(entities)
+        self.content_type("text/csv")
+        return result
