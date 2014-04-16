@@ -6,7 +6,7 @@
         <div class="drop-field entities" placeholder="Search over some of the items"
              data-number_options="4">
             <li class="template">
-                <img class="picture" data-src="{{ url_for('static', filename = 'images/avatar_64.png') }}" />
+                <img class="picture" data-src="{{ url_for('admin', filename = 'images/avatar_64.png') }}" />
                 <div>
                     <p class="title">%[name]</p>
                     <p class="description">%[details]</p>
@@ -46,7 +46,7 @@
                 </div>
                 <div class="menu-contents">
                     <div class="header-contents">
-                        <img class="avatar-image" src="{{ url_for('static', filename = 'images/avatar_64.png') }}" />
+                        <img class="avatar-image" src="{{ url_for('admin', filename = 'images/avatar_64.png') }}" />
                         <div class="avatar-contents">
                             <h2>{{ session.username }}</h2>
                             <h3>{{ session.email }}</h3>
