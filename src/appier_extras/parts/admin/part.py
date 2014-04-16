@@ -71,7 +71,9 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
-            (("GET",), "/admin/models/<str:model>", self.show_model)
+            (("GET",), "/admin/models/<str:model>", self.show_model),
+            (("GET",), "/admin/models/<str:model>/new", self.new_entity),
+            (("POST",), "/admin/models/<str:model>", self.create_entity)
         ]
 
     def models(self):
@@ -170,3 +172,16 @@ class AdminPart(appier.Part):
         result = appier.serialize_csv(entities)
         self.content_type("text/csv")
         return result
+
+    @appier.ensure(token = "admin")
+    def new_entity(self, model):
+        model = self.get_model(model)
+        return self.template(
+            "entities/new.html.tpl",
+            model = model,
+            models = self.models_r
+        )
+
+    @appier.ensure(token = "admin")
+    def create_entity(self, model):
+        pass
