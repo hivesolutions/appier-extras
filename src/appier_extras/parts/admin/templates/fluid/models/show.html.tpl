@@ -5,27 +5,27 @@
 {% block buttons %}
     {{ super() }}
     <div class="button button-color button-grey"
-    	 data-link="{{ url_for('admin.new_entity', model = model._name()) }}">New</div>
+         data-link="{{ url_for('admin.new_entity', model = model._name()) }}">New</div>
 {% endblock %}
 {% block content %}
     <div class="filter" data-no_input="1">
         <table>
             <thead>
                 <tr class="table-row table-header">
-                    {% for name in model.definition() %}
+                    {% for name in model.list_names() %}
                         <th class="text-left">{{ name }}</th>
                     {% endfor %}
                 </tr>
             </thead>
-             <tbody class="filter-contents">
-                 {% for entity in entities %}
-                     <tr class="table-row">
-                         {% for name in model.definition() %}
-                            <td class="text-left">{{ entity[name] }}</td>
+            <tbody class="filter-contents">
+                {% for entity in entities %}
+                    <tr class="table-row">
+                        {% for name in model.list_names() %}
+                            <td class="text-left">{{ entity[name]|default('N/A', True) }}</td>
                         {% endfor %}
-                     </tr>
+                    </tr>
                 {% endfor %}
-             </tbody>
+            </tbody>
         </table>
     </div>
 {% endblock %}
