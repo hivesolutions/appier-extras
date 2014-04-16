@@ -111,6 +111,7 @@ class AdminPart(appier.Part):
         # updates the current session with the proper
         # values to correctly authenticate the user
         self.session["username"] = account.username
+        self.session["email"] = account.email
         self.session["type"] = account.type_s()
         self.session["tokens"] = account.tokens()
 
@@ -127,6 +128,7 @@ class AdminPart(appier.Part):
         # attributes and in case they exist removes them from session as
         # the user is currently logging out from session
         if "username" in self.session: del self.session["username"]
+        if "email" in self.session: del self.session["email"]
         if "type" in self.session: del self.session["type"]
         if "tokens" in self.session: del self.session["tokens"]
 

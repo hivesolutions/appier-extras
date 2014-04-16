@@ -42,14 +42,14 @@
         <div class="right">
             <div class="menu system-menu">
                 <div class="menu-button">
-                    <a class="menu-link" data-no_left="1">User</a>
+                    <a class="menu-link" data-no_left="1">{{ session.username }}</a>
                 </div>
                 <div class="menu-contents">
                     <div class="header-contents">
                         <img class="avatar-image" src="{{ url_for('static', filename = 'images/avatar_64.png') }}" />
                         <div class="avatar-contents">
-                            <h2>User</h2>
-                            <h3>user@hive.pt</h3>
+                            <h2>{{ session.username }}</h2>
+                            <h3>{{ session.email }}</h3>
                         </div>
                     </div>
                     <div class="footer-contents">
