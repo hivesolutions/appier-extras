@@ -54,6 +54,18 @@ class Base(appier.Model):
 
     description = dict()
 
+    @classmethod
+    def create_names(cls):
+        names = super(Base, cls).create_names()
+        names.remove("id")
+        return names
+
+    @classmethod
+    def list_names(cls):
+        names = super(Base, cls).list_names()
+        names.remove("enabled")
+        return names
+
     def pre_create(self):
         appier.Model.pre_create(self)
 
