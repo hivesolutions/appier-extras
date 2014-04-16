@@ -19,7 +19,7 @@
         {% block header %}
             <div class="side-links">
                 {% for model in models %}
-                    <a href="#">{{ model._name() }}</a>
+                    <a href="{{ url_for('admin.show_model', model = model._name()) }}">{{ model._name() }}</a>
                 {% endfor %}
             </div>
         {% endblock %}

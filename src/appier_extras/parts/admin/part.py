@@ -155,5 +155,6 @@ class AdminPart(appier.Part):
     def show_model(self, model):
         return self.template(
             "models/show.html.tpl",
-            model = model
+            model = model,
+            models = self.models_r
         )

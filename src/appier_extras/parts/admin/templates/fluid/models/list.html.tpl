@@ -1,12 +1,13 @@
 {% extends "partials/layout.fluid.html.tpl" %}
-{% block title %}Models{% endblock %}
-{% block name %}Models{% endblock %}
-{% block style %}no-header{% endblock %}
+{% block title %}Admin{% endblock %}
+{% block name %}Site administration{% endblock %}
 {% block content %}
-    <div class="show-panel">
+    <div>
         <ul>
             {% for model in models %}
-                <li>{{ model._name() }}</li>
+                <li>
+                    <a href="{{ url_for('admin.show_model', model = model._name()) }}">{{ model._name() }}</a>
+                </li>
             {% endfor %}
         </ul>
     </div>
