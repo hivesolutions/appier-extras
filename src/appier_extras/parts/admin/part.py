@@ -157,7 +157,7 @@ class AdminPart(appier.Part):
     @appier.ensure(token = "admin")
     def show_model(self, model):
         model = self.get_model(model)
-        entities = model.find()
+        entities = model.find(meta = True)
         return self.template(
             "models/show.html.tpl",
             model = model,
