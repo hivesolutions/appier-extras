@@ -70,7 +70,9 @@ class Account(base.Base):
 
     type = appier.field(
         type = int,
-        safe = True
+        safe = True,
+        meta = "enum",
+        enum = ACCOUNT_S
     )
 
     last_login = appier.field(
