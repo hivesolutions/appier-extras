@@ -21,7 +21,7 @@
                 {% for entity in entities %}
                     <tr class="table-row">
                         {% for name in model.list_names() %}
-                            <td class="text-left">{{ entity[name]|default('N/A', True) }}</td>
+                            <td class="text-left">{{ entity[name + '_meta']|default('N/A', True) }}</td>
                         {% endfor %}
                     </tr>
                 {% endfor %}
