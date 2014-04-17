@@ -75,7 +75,8 @@ class Account(base.Base):
 
     last_login = appier.field(
         type = int,
-        safe = True
+        safe = True,
+        meta = "datetime"
     )
 
     @classmethod
