@@ -124,6 +124,12 @@ class Account(base.Base):
         ]
 
     @classmethod
+    def extra_names(cls):
+        return super(Account, cls).extra_names() + [
+            "password_confirm"
+        ]
+
+    @classmethod
     def login(cls, username, password):
         # verifies that both the provided username and password are valid
         # and that are correctly and properly defined (required for validation)
