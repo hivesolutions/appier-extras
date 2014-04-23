@@ -124,8 +124,8 @@ class CaptchaPart(appier.Part):
         else: size = self._draw_text_simple(draw, font, value)
 
         text_width, text_height = size
-        initial_text_x = (image_width / 2) - (text_width / 2)
-        initial_text_y = (image_height / 2) - (text_height / 2)
+        initial_text_x = (image_width // 2) - (text_width // 2)
+        initial_text_y = (image_height // 2) - (text_height // 2)
 
         image.paste(text, (initial_text_x, initial_text_y), text)
 
