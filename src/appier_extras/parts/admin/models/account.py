@@ -42,7 +42,7 @@ import appier
 import hashlib
 import binascii
 
-import base
+from appier_extras.parts.admin.models import base
 
 ADMIN_TYPE = 1
 

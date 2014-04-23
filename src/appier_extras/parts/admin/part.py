@@ -103,7 +103,7 @@ class AdminPart(appier.Part):
         password = self.field("password")
         next = self.field("next")
         try: account = models.Account.login(username, password)
-        except appier.AppierException, error:
+        except appier.AppierException as error:
             return self.template(
                 "signin.html.tpl",
                 next = next,
@@ -189,7 +189,7 @@ class AdminPart(appier.Part):
         model = self.get_model(model)
         entity = model.new(safe = False)
         try: entity.save()
-        except appier.ValidationError, error:
+        except appier.ValidationError as error:
             return self.template(
                 "entities/new.html.tpl",
                 entity = error.model,
