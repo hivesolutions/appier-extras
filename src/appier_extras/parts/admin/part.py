@@ -39,7 +39,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import appier
 
-import models
+from appier_extras.parts.admin import models
 
 class AdminPart(appier.Part):
     """
