@@ -77,6 +77,9 @@ setuptools.setup(
             "static/patterns/*"
         ]
     },
+    install_requires = [
+        "appier"
+    ],
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",

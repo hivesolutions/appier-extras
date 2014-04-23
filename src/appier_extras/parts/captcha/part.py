@@ -39,7 +39,6 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import os
 import random
-import cStringIO
 
 import appier
 
@@ -94,7 +93,7 @@ class CaptchaPart(appier.Part):
         self._fill_pattern(image, pattern)
         self._draw_text(image, font, value, rotate = rotate)
 
-        buffer = cStringIO.StringIO()
+        buffer = appier.BytesIO()
         image.save(buffer, "jpeg")
         buffer.seek(0)
         return (value, buffer)
