@@ -185,6 +185,7 @@ class Account(base.Base):
         if plain: return encoded == decoded
         if salt: decoded += salt
         type = type.lower()
+        decoded = appier.bytes(decoded)
         hash = hashlib.new(type, decoded)
         _digest = hash.hexdigest()
         return _digest == digest
@@ -194,10 +195,13 @@ class Account(base.Base):
         if cls.is_encrypted(password): return password
         if type == "plain" : return password
         if salt: password += salt
+        password = appier.bytes(password)
         hash = hashlib.new(type, password)
         digest = hash.hexdigest()
         if not salt: return "%s:%s" % (type, digest)
+        salt = appier.bytes(salt)
         salt = binascii.hexlify(salt)
+        salt = appier.str(salt)
         return "%s:%s:%s" % (type, salt, digest)
 
     @classmethod
@@ -208,6 +212,7 @@ class Account(base.Base):
         else: plain = password; type = "plain"; salt = None; digest = None
         if not type == "plain": plain = None
         if salt: salt = binascii.unhexlify(salt)
+        if salt: salt = appier.str(salt)
         return (type, salt, digest, plain)
 
     @classmethod
