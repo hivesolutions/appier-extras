@@ -22,6 +22,6 @@
 {% else %}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 {% endif %}
-<script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux.js"></script>
+<script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux-min.js"></script>
 <script type="text/javascript" src="//libs.bemisc.com/layout/js/layout.js"></script>
 <script type="text/javascript" src="{{ url_for('admin', filename = 'js/main.js') }}"></script>
