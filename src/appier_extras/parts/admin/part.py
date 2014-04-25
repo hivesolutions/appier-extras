@@ -73,7 +73,8 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
-            (("POST",), "/admin/models/<str:model>", self.create_entity)
+            (("POST",), "/admin/models/<str:model>", self.create_entity),
+            (("GET",), "/admin/log.json", self.show_log)
         ]
 
     def models(self):
@@ -200,4 +201,13 @@ class AdminPart(appier.Part):
 
         return self.redirect(
             self.url_for("admin.show_model", model = model._name())
+        )
+
+    @appier.ensure(token = "admin")
+    def show_log(self):
+        memory_handler = self.owner.handler_memory
+        count = self.field("count", None, cast = int)
+        level = self.field("level", None)
+        return dict(
+            messages = memory_handler.get_latest(count = count, level = level)
         )
