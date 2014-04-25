@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import time
+
 import appier
 
 class Base(appier.Model):
@@ -56,6 +58,19 @@ class Base(appier.Model):
         meta = "text"
     )
 
+    created = appier.field(
+        type = int,
+        index = True,
+        immutable = True,
+        meta = "datetime"
+    )
+
+    modified = appier.field(
+        type = int,
+        index = True,
+        meta = "datetime"
+    )
+
     @classmethod
     def create_names(cls):
         names = super(Base, cls).create_names()
@@ -72,6 +87,13 @@ class Base(appier.Model):
         appier.Model.pre_create(self)
 
         if not hasattr(self, "enabled"): self.enabled = True
+        self.created = time.time()
+        self.modified = time.time()
+
+    def pre_update(self):
+        appier.Model.pre_update(self)
+
+        self.modified = time.time()
 
     def get_e(self, *args, **kwargs):
         return self.get(enabled = True, *args, **kwargs)
