@@ -44,16 +44,15 @@ import binascii
 
 from appier_extras.parts.admin.models import base
 
-ADMIN_TYPE = 1
-
-USER_TYPE = 2
-
-ACCOUNT_S = {
-    ADMIN_TYPE : "admin",
-    USER_TYPE : "user"
-}
-
 class Account(base.Base):
+
+    ADMIN_TYPE = 1
+    USER_TYPE = 2
+
+    ACCOUNT_S = {
+        ADMIN_TYPE : "admin",
+        USER_TYPE : "user"
+    }
 
     username = appier.field(
         index = True
@@ -97,7 +96,7 @@ class Account(base.Base):
             "username" : "root",
             "email" : "root@root.com",
             "password" : cls.generate("root"),
-            "type" : ADMIN_TYPE
+            "type" : Account.ADMIN_TYPE
         }
         collection = cls._collection()
         collection.save(account)
@@ -224,14 +223,14 @@ class Account(base.Base):
         if hasattr(self, "password"): self.password = self.encrypt(self.password)
 
     def tokens(self):
-        if self.type == ADMIN_TYPE:
+        if self.type == Account.ADMIN_TYPE:
             return ["*"]
 
-        if self.type == USER_TYPE:
+        if self.type == Account.USER_TYPE:
             return ["base", "user"]
 
     def type_s(self, capitalize = False):
-        type_s = ACCOUNT_S.get(self.type, None)
+        type_s = Account.ACCOUNT_S.get(self.type, None)
         type_s = type_s.capitalize() if capitalize else type_s
         return type_s
 
