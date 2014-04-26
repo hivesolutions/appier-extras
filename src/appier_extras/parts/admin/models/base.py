@@ -111,3 +111,22 @@ class Base(appier.Model):
 
     def to_locale(self, *args, **kwargs):
         return self.owner.to_locale(*args, **kwargs)
+
+    def send_email(self, *args, **kwargs):
+        bulk = kwargs.get("bulk", False)
+        sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.com>")
+        base_url = appier.conf("BASE_URL", "http://appier.com")
+        settings = dict(logo = True)
+        headers = {
+            "List-Unsubscribe" : "<" + base_url + "/unsubscribe>"
+        }
+        if bulk: headers["Auto-Submitted"] = "auto-generated"
+        if bulk: headers["Precedence"] = "bulk"
+        self.owner.email(
+            sender = sender,
+            base_url = base_url,
+            settings = settings,
+            headers = headers,
+            *args,
+            **kwargs
+        )
