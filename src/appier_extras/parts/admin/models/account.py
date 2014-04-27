@@ -210,6 +210,7 @@ class Account(base.Base):
         elif count == 1: type, digest = password.split(":"); salt = None
         else: plain = password; type = "plain"; salt = None; digest = None
         if not type == "plain": plain = None
+        if salt: salt = appier.bytes(salt)
         if salt: salt = binascii.unhexlify(salt)
         if salt: salt = appier.str(salt)
         return (type, salt, digest, plain)
