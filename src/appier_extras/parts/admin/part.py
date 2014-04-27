@@ -206,7 +206,7 @@ class AdminPart(appier.Part):
     @appier.ensure(token = "admin")
     def show_log(self):
         memory_handler = self.owner.handler_memory
-        count = self.field("count", None, cast = int)
+        count = self.field("count", 100, cast = int)
         level = self.field("level", None)
         return dict(
             messages = memory_handler.get_latest(count = count, level = level)
