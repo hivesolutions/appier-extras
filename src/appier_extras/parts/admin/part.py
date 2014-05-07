@@ -152,7 +152,7 @@ class AdminPart(appier.Part):
     def list_models(self):
         return self.template(
             "models/list.html.tpl",
-            models = self.models_r
+            models_d = self.models_d
         )
 
     @appier.ensure(token = "admin")
@@ -163,7 +163,7 @@ class AdminPart(appier.Part):
             "models/show.html.tpl",
             model = model,
             entities = entities,
-            models = self.models_r
+            models_d = self.models_d
         )
 
     @appier.ensure(token = "admin")
@@ -182,7 +182,7 @@ class AdminPart(appier.Part):
             entity = dict(),
             errors = dict(),
             model = model,
-            models = self.models_r
+            models_d = self.models_d
         )
 
     @appier.ensure(token = "admin")
@@ -196,7 +196,7 @@ class AdminPart(appier.Part):
                 entity = error.model,
                 errors = error.errors,
                 model = model,
-                models = self.models_r
+                models_d = self.models_d
             )
 
         return self.redirect(
