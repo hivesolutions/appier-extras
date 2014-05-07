@@ -1,10 +1,10 @@
 {% macro out(entity, name) -%}
+	{% set cls = entity.__class__ %}
     {% set value = entity[name + '_meta']|default('N/A', True) %}
-    {{ tag_out(entity, name, value) }}
+    {{ tag_out(cls, name, value) }}
 {%- endmacro %}
 
-{% macro tag_out(entity, name, value) -%}
-    {% set cls = entity.__class__ %}
+{% macro tag_out(cls, name, value) -%}
     {% set def = cls[name] %}
     {% set meta = def.get("meta", "text") %}
     {% if meta == "enum" %}
