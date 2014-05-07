@@ -152,6 +152,7 @@ class AdminPart(appier.Part):
     def list_models(self):
         return self.template(
             "models/list.html.tpl",
+            section = "admin",
             models_d = self.models_d
         )
 
@@ -161,6 +162,7 @@ class AdminPart(appier.Part):
         entities = model.find(meta = True)
         return self.template(
             "models/show.html.tpl",
+            section = "models",
             model = model,
             entities = entities,
             models_d = self.models_d
@@ -179,6 +181,7 @@ class AdminPart(appier.Part):
         model = self.get_model(model)
         return self.template(
             "entities/new.html.tpl",
+            section = "models",
             entity = dict(),
             errors = dict(),
             model = model,
@@ -193,6 +196,7 @@ class AdminPart(appier.Part):
         except appier.ValidationError as error:
             return self.template(
                 "entities/new.html.tpl",
+                section = "models",
                 entity = error.model,
                 errors = error.errors,
                 model = model,
