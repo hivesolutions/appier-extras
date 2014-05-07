@@ -126,6 +126,10 @@ class Account(base.Base):
         ]
 
     @classmethod
+    def list_names(cls):
+        return ["username", "email", "type", "last_login"]
+
+    @classmethod
     def extra_names(cls):
         return super(Account, cls).extra_names() + [
             "password_confirm"
