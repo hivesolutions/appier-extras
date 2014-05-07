@@ -1,5 +1,5 @@
 {% extends "partials/layout.fluid.html.tpl" %}
-{% block title %}Admin{% endblock %}
+{% block title %}admin{% endblock %}
 {% block name %}Site administration{% endblock %}
 {% block content %}
     <div>
