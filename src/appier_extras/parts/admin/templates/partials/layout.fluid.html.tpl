@@ -18,13 +18,16 @@
         {% include "partials/header.html.tpl" %}
         {% block header %}
             <div class="side-links">
-                {% for _model in models %}
-                    {% if model and model._name() == _model._name() %}
-                        <a class="selected"
-                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
-                    {% else %}
-                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
-                    {% endif %}
+                {% for section, models in models_d.items() %}
+                    {% for _model in models %}
+                        {% if model and model._name() == _model._name() %}
+                            <a class="selected"
+                               href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                        {% else %}
+                            <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="separator"></div>
                 {% endfor %}
             </div>
         {% endblock %}
