@@ -9,6 +9,10 @@
     {% set meta = def.get("meta", "text") %}
     {% if meta == "enum" %}
         <span class="tag {{ value }}">{{ value }}</span>
+    {% elif meta == "url" %}
+        <a href="{{ value }}">{{ value }}</a>
+    {% elif meta == "email" %}
+        <a href="mailto:{{ value }}">{{ value }}</a>
     {% else %}
         {{ value }}
     {% endif %}
