@@ -25,6 +25,11 @@
                     {% else %}
                         <a href="{{ url_for('admin.index') }}">home</a>
                     {% endif %}
+                    {% if section == "status" %}
+                        <a class="selected" href="{{ url_for('admin.status') }}">status</a>
+                    {% else %}
+                        <a href="{{ url_for('admin.status') }}">status</a>
+                    {% endif %}
                     <div class="separator"></div>
                     {% for _section, models in models_d.items() %}
                         {% for _model in models %}
