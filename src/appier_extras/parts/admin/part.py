@@ -67,6 +67,7 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
+            (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/models", self.list_models),
@@ -89,6 +90,7 @@ class AdminPart(appier.Part):
             self,
             template,
             owner = self.owner,
+            models_d = self.models_d,
             *args,
             **kwargs
         )
@@ -152,11 +154,17 @@ class AdminPart(appier.Part):
         raise appier.NotImplementedError()
 
     @appier.ensure(token = "admin")
+    def status(self):
+        return self.template(
+            "status.html.tpl",
+            section = "status"
+        )
+
+    @appier.ensure(token = "admin")
     def list_models(self):
         return self.template(
             "models/list.html.tpl",
-            section = "admin",
-            models_d = self.models_d
+            section = "admin"
         )
 
     @appier.ensure(token = "admin")
@@ -174,8 +182,7 @@ class AdminPart(appier.Part):
             section = "models",
             model = model,
             page = page,
-            entities = entities,
-            models_d = self.models_d
+            entities = entities
         )
 
     @appier.ensure(token = "admin")
@@ -194,8 +201,7 @@ class AdminPart(appier.Part):
             section = "models",
             entity = dict(),
             errors = dict(),
-            model = model,
-            models_d = self.models_d
+            model = model
         )
 
     @appier.ensure(token = "admin")
@@ -209,8 +215,7 @@ class AdminPart(appier.Part):
                 section = "models",
                 entity = error.model,
                 errors = error.errors,
-                model = model,
-                models_d = self.models_d
+                model = model
             )
 
         return self.redirect(
@@ -229,8 +234,7 @@ class AdminPart(appier.Part):
             "entities/show.html.tpl",
             section = "models",
             entity = entity,
-            model = model,
-            models_d = self.models_d
+            model = model
         )
 
     @appier.ensure(token = "admin")
@@ -246,8 +250,7 @@ class AdminPart(appier.Part):
             section = "models",
             entity = entity,
             errors = dict(),
-            model = model,
-            models_d = self.models_d
+            model = model
         )
 
     @appier.ensure(token = "admin")
@@ -266,8 +269,7 @@ class AdminPart(appier.Part):
                 section = "accounts",
                 entity = error.model,
                 errors = error.errors,
-                model = model,
-                models_d = self.models_d
+                model = model
             )
 
         return self.redirect(
