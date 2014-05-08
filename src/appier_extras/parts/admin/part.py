@@ -161,8 +161,8 @@ class AdminPart(appier.Part):
         model = self.get_model(model)
         object = appier.get_object(
             alias = True,
-            find = True,
-            page = True
+            page = True,
+            find = True
         )
         page = model.paginate(**object)
         entities = model.find(meta = True, **object)
