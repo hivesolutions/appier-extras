@@ -70,3 +70,55 @@
 .panel-model ul li .right {
     float: right;
 }
+
+.pages {
+    font-size: 0px;
+    font-weight: bold;
+    margin: 32px 0px 32px 0px;
+    text-align: center;
+}
+
+.pages > .page {
+    border-bottom: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    border-top: 1px solid #cccccc;
+    font-size: 14px;
+    margin: 0px 0px 0px 0px;
+    padding: 4px 10px 4px 10px;
+}
+
+.pages > .page:first-child {
+    border-radius: 4px 0px 0px 4px;
+}
+
+.pages > .page:last-child {
+    border-radius: 0px 4px 4px 0px;
+    border-right: 1px solid #cccccc;
+}
+
+.pages > .page:hover {
+    background-color: #f2f2f2;
+}
+
+.pages > .page.selected {
+    background-color: #888888;
+    border-color: #888888;
+    color: #ffffff;
+}
+
+.pages > .page.disabled {
+    color: #aaaaaa;
+}
+
+.pages > .page.disabled:hover {
+    background-color: #ffffff;
+}
+
+.pages > a.page {
+    color: #4d4d4d;
+}
+
+.filter .table-header a {
+    border-color: #4d4d4d;
+    color: #4d4d4d;
+}
