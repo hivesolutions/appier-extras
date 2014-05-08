@@ -12,9 +12,15 @@
         <thead>
             <tr class="table-row table-header">
                 {% for name in model.list_names() %}
-                    <th class="text-left">
-                        <a href="{{ page.query(sorter = name) }}">{{ name }}</a>
-                    </th>
+                    {% if name == page.sorter %}
+                        <th class="text-left direction {{ page.direction }}">
+                            <a href="{{ page.query(sorter = name) }}">{{ name }}</a>
+                        </th>
+                    {% else %}
+                        <th class="text-left">
+                            <a href="{{ page.query(sorter = name) }}">{{ name }}</a>
+                        </th>
+                    {% endif %}
                 {% endfor %}
             </tr>
         </thead>
