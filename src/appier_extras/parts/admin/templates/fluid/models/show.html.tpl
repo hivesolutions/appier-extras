@@ -13,7 +13,7 @@
             <tr class="table-row table-header">
                 {% for name in model.list_names() %}
                     <th class="text-left">
-                        <a href="?{{ page.query(sorter = name) }}">{{ name }}</a>
+                        <a href="{{ page.query(sorter = name) }}">{{ name }}</a>
                     </th>
                 {% endfor %}
             </tr>
@@ -40,13 +40,13 @@
                 {% if index == page.index %}
                     <span class="page selected">{{ index}}</span>
                 {% else %}
-                    <a href="?{{ page.query(page = index) }}" class="page">{{ index}}</a>
+                    <a href="{{ page.query(page = index) }}" class="page">{{ index}}</a>
                 {% endif %}
             {% endfor %}
             {% if page.index == page.count %}
                 <span class="page disabled">&#8594;</span>
             {% else %}
-                <a href="?{{ page.query(page = page.index + 1) }}" class="page">&#8594;</a>
+                <a href="{{ page.query(page = page.index + 1) }}" class="page">&#8594;</a>
             {% endif %}
         </div>
     {% endif %}
