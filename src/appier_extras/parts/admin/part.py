@@ -75,6 +75,8 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
+            (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
+            (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
             (("GET",), "/admin/log.json", self.show_log)
         ]
 
@@ -229,6 +231,51 @@ class AdminPart(appier.Part):
             entity = entity,
             model = model,
             models_d = self.models_d
+        )
+
+    @appier.ensure(token = "admin")
+    def edit_entity(self, model, _id):
+        model = self.get_model(model)
+        entity = model.get(
+            rules = False,
+            meta = True,
+            _id = appier.object_id(_id)
+        )
+        return self.template(
+            "entities/edit.html.tpl",
+            section = "models",
+            entity = entity,
+            errors = dict(),
+            model = model,
+            models_d = self.models_d
+        )
+
+    @appier.ensure(token = "admin")
+    def update_entity(self, model, _id):
+        model = self.get_model(model)
+        entity = model.get(
+            rules = False,
+            meta = True,
+            _id = appier.object_id(_id)
+        )
+        entity.apply()
+        try: entity.save()
+        except appier.ValidationError as error:
+            return self.template(
+                "entities/edit.html.tpl",
+                section = "accounts",
+                entity = error.model,
+                errors = error.errors,
+                model = model,
+                models_d = self.models_d
+            )
+
+        return self.redirect(
+            self.url_for(
+                "admin.show_entity",
+                model = model._name(),
+                _id = _id
+            )
         )
 
     @appier.ensure(token = "admin")
