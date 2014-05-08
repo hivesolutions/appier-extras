@@ -122,3 +122,15 @@
     border-color: #4d4d4d;
     color: #4d4d4d;
 }
+
+.filter .table-header th.direction {
+    background: transparent none no-repeat right center;
+}
+
+.filter .table-header th.direction.descending {
+	background-image: url(../images/arrow-down.png);
+}
+
+.filter .table-header th.direction.ascending {
+	background-image: url(../images/arrow-up.png);
+}
