@@ -1,9 +1,10 @@
 {% extends "partials/layout.fluid.html.tpl" %}
-{% block title %}{{ model._name() }} TO BE CHANGED{% endblock %}
-{% block name %}{{ model._name() }} TO BE CHANGED{% endblock %}
+{% block title %}{{ entity }}{% endblock %}
+{% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <div class="button button-color button-grey" data-link="#">Edit</div>
+    <div class="button button-color button-grey"
+         data-link="{{ url_for('admin.edit_entity', model = model._name(), _id = entity._id) }}">Edit</div>
 {% endblock %}
 {% block content %}
     <div class="show-panel">
