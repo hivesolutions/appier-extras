@@ -28,7 +28,15 @@
             {% for entity in entities %}
                 <tr class="table-row">
                     {% for name in model.list_names() %}
-                        <td class="text-left">{{ out(entity, name) }}</td>
+                        {% if loop.first %}
+                            <td class="text-left">
+                                <a href="{{ url_for('admin.show_entity', model = model._name(), _id = entity._id) }}">
+                                    {{ out(entity, name) }}
+                                </a>
+                            </td>
+                        {% else %}
+                            <td class="text-left">{{ out(entity, name) }}</td>
+                        {% endif %}
                     {% endfor %}
                 </tr>
             {% endfor %}
