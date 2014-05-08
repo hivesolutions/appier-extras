@@ -128,9 +128,9 @@
 }
 
 .filter .table-header th.direction.descending {
-	background-image: url(../images/arrow-down.png);
+    background-image: url(../images/arrow-down.png);
 }
 
 .filter .table-header th.direction.ascending {
-	background-image: url(../images/arrow-up.png);
+    background-image: url(../images/arrow-up.png);
 }
