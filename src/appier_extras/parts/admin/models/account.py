@@ -60,7 +60,8 @@ class Account(base.Base):
 
     email = appier.field(
         index = True,
-        immutable = True
+        immutable = True,
+        meta = "email"
     )
 
     password = appier.field(
