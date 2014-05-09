@@ -322,9 +322,10 @@ class MarkdownHTML(MarkdownGenerator):
 
     def generate_code(self, node):
         value = node["value"]
+        name = node.get("name", "undefined")
         multiline = node.get("multiline", False)
         tag = "pre" if multiline else "code"
-        self.emit("<%s>" % tag)
+        self.emit("<%s class=\"code language-%s\">" % (tag, name))
         self.emit(value)
         self.emit("</%s>" % tag)
 
