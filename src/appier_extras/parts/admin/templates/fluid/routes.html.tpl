@@ -8,6 +8,7 @@
             <tr class="table-row table-header">
                 <th class="text-left">Methods</th>
                 <th class="text-left">URL</th>
+                <th class="text-left">Name</th>
             </tr>
         </thead>
         <tbody class="filter-contents">
@@ -22,6 +23,9 @@
                     </td>
                     <td class="text-left">
                         <strong>{{ opts.base }}</strong>
+                    </td>
+                    <td class="text-left">
+                        <strong>{{ opts.name }}</strong>
                     </td>
                 </tr>
             {% endfor %}
