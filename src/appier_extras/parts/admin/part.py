@@ -70,6 +70,7 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/options", self.options),
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
+            (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/models", self.list_models),
@@ -208,6 +209,14 @@ class AdminPart(appier.Part):
         return self.template(
             "status.html.tpl",
             section = "status"
+        )
+
+    @appier.ensure(token = "admin")
+    def list_routes(self):
+        return self.template(
+            "routes.html.tpl",
+            section = "status",
+            routes = self._routes()
         )
 
     @appier.ensure(token = "admin")

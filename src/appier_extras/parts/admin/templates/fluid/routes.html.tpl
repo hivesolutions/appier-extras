@@ -1,0 +1,30 @@
+{% extends "partials/layout.fluid.html.tpl" %}
+{% block title %}routes{% endblock %}
+{% block name %}Routes{% endblock %}
+{% block style %}no-padding{% endblock %}
+{% block content %}
+    <table class="filter" data-no_input="1">
+        <thead>
+            <tr class="table-row table-header">
+                <th class="text-left">Methods</th>
+                <th class="text-left">URL</th>
+            </tr>
+        </thead>
+        <tbody class="filter-contents">
+            {% for route in routes %}
+                {% set methods = route[0] %}
+                {% set opts = route[3] if route|length > 3 else {} %}
+                <tr class="table-row">
+                    <td class="text-left">
+                        {% for method in methods %}
+                            <span class="tag {{ method }}">{{ method }}</span>
+                        {% endfor %}
+                    </td>
+                    <td class="text-left">
+                        <strong>{{ opts.base }}</strong>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
