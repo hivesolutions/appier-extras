@@ -56,6 +56,7 @@ setuptools.setup(
         "appier_extras.parts.admin",
         "appier_extras.parts.admin.models",
         "appier_extras.parts.captcha"
+        "appier_extras.utils"
     ],
     test_suite = "appier.test",
     package_dir = {
