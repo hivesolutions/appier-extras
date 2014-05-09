@@ -17,7 +17,7 @@
                 <tr class="table-row">
                     <td class="text-left">
                         {% for method in methods %}
-                            <span class="tag {{ method }}">{{ method }}</span>
+                            <span class="tag {{ method|lower }}">{{ method }}</span>
                         {% endfor %}
                     </td>
                     <td class="text-left">
