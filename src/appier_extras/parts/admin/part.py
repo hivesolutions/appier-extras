@@ -67,6 +67,8 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
+            (("GET",), "/admin/options", self.options),
+            (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
@@ -152,6 +154,54 @@ class AdminPart(appier.Part):
 
     def show_account(self, username):
         raise appier.NotImplementedError()
+
+    @appier.ensure(token = "admin")
+    def options(self):
+        return self.template(
+            "options.html.tpl",
+            section = "options",
+            errors = dict()
+        )
+
+    @appier.ensure(token = "admin")
+    def options_action(self):
+        type = self.field("type")
+        theme = self.field("theme")
+        libs = self.field("libs")
+        type_s = type.split("-", 1)
+        theme_s = theme.split("-", 1)
+        type_l = len(type_s)
+        theme_l = len(theme_s)
+
+        if type_l == 1: type_s.append("")
+        type_s, sub_type_s = type_s
+
+        if theme_l == 1: theme_s.append("")
+        theme_s, style_s = theme_s
+
+        type_s = type_s.lower().strip()
+        sub_type_s = sub_type_s.lower().strip()
+        theme_s = theme_s.lower().strip()
+        style_s = style_s.lower().strip()
+        libs_s = libs.lower().strip()
+
+        if style_s == "default": style_s = ""
+
+        self.session["type_label"] = type
+        self.session["type"] = type_s
+        self.session["sub_type"] = sub_type_s
+        self.session["label"] = theme
+        self.session["theme"] = theme_s
+        self.session["style"] = style_s
+        self.session["libs"] = libs_s
+        self.session["libs_label"] = libs
+        self.session.permanent = True
+
+        return self.template(
+            "options.html.tpl",
+            section = "options",
+            errors = dict()
+        )
 
     @appier.ensure(token = "admin")
     def status(self):

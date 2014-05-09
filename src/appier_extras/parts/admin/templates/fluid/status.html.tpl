@@ -1,6 +1,6 @@
 {% extends "partials/layout.fluid.html.tpl" %}
 {% block title %}status{% endblock %}
-{% block name %}status{% endblock %}
+{% block name %}Status{% endblock %}
 {% block style %}no-header{% endblock %}
 {% block content %}
     <div class="show-panel">

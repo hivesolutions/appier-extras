@@ -25,6 +25,11 @@
                     {% else %}
                         <a href="{{ url_for('admin.index') }}">home</a>
                     {% endif %}
+                    {% if section == "options" %}
+                        <a class="selected" href="{{ url_for('admin.options') }}">options</a>
+                    {% else %}
+                        <a href="{{ url_for('admin.options') }}">options</a>
+                    {% endif %}
                     {% if section == "status" %}
                         <a class="selected" href="{{ url_for('admin.status') }}">status</a>
                     {% else %}
