@@ -64,7 +64,7 @@ class MarkdownParser(object):
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
-        code_single =  r"(?P<code_single>`(?P<code_single_value>[^`]+)`)"
+        code_single =  r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
         self.master = re.compile(
             "|".join([
