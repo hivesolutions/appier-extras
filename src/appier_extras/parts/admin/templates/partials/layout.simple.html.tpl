@@ -5,7 +5,7 @@
         {% block head %}
             {% include "partials/content_type.html.tpl" %}
             {% include "partials/includes.html.tpl" %}
-            <title>{{ owner.name }} / {% block title %}{% endblock %}</title>
+            <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
     <body class="ux wait-load {{ session.sub_type }} {{ session.style }}" >

@@ -1,4 +1,4 @@
-{% extends "partials/layout.simple.html.tpl" %}
+{% extends "partials/admin.simple.html.tpl" %}
 {% block title %}Login{% endblock %}
 {% block content %}
     <div class="login-panel">
