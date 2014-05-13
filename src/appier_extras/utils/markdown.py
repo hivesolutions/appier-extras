@@ -262,6 +262,10 @@ class MarkdownGenerator(object):
 
 class MarkdownHTML(MarkdownGenerator):
 
+    def __init__(self, file = None, base_url = "/"):
+        MarkdownGenerator.__init__(self, file = file)
+        self.base_url = base_url
+
     def reset(self):
         MarkdownGenerator.reset(self)
         self.paragraph = False
@@ -304,6 +308,7 @@ class MarkdownHTML(MarkdownGenerator):
     def generate_link(self, node):
         label = node["label"]
         value = node["value"]
+        value = value if self.is_absolute(value) else self.base_url + value        
         self.emit("<a href=\"%s\">" % value)
         self._generate(label, open = True)
         self.emit("</a>")
@@ -332,6 +337,9 @@ class MarkdownHTML(MarkdownGenerator):
     def generate_normal(self, node):
         if self.open: self.emit(node)
         else: self.generate_newline(node); self.emit(node.lstrip())
+
+    def is_absolute(self, url):
+        return url.startswith(("http://", "https://"))
 
     def _generate(self, nodes, open = False):
         _open = self.open
