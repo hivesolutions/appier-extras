@@ -39,6 +39,8 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import re
 
+import appier
+
 class MarkdownParser(object):
     """
     Parser object for the md (markdown) format, should be able to
@@ -91,8 +93,11 @@ class MarkdownParser(object):
             re.MULTILINE | re.UNICODE
         )
 
-    def parse(self, data, regex = None):
+    def parse(self, data, regex = None, encoding = "utf-8"):
         regex = regex or self.master
+
+        is_unicode = appier.is_unicode(data)
+        if not is_unicode: data = data.decode(encoding)
 
         nodes = []
         matches = regex.finditer(data)
@@ -308,7 +313,7 @@ class MarkdownHTML(MarkdownGenerator):
     def generate_link(self, node):
         label = node["label"]
         value = node["value"]
-        value = value if self.is_absolute(value) else self.base_url + value        
+        value = value if self.is_absolute(value) else self.base_url + value
         self.emit("<a href=\"%s\">" % value)
         self._generate(label, open = True)
         self.emit("</a>")
