@@ -13,7 +13,7 @@
     {% elif meta == "email" %}
         <a href="mailto:{{ value }}">{{ value }}</a>
     {% elif meta == "bool" %}
-    	<span class="tag {{ value.lower() }}">{{ value }}</span>		
+        <span class="tag {{ value.lower() }}">{{ value }}</span>
     {% else %}
         {{ value }}
     {% endif %}
