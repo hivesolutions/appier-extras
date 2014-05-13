@@ -43,6 +43,11 @@ import appier
 
 class Base(appier.Model):
 
+    ENABLE_S = {
+        True : "enabled",
+        False : "disabled"
+    }
+
     id = appier.field(
         type = int,
         index = True,
@@ -51,7 +56,9 @@ class Base(appier.Model):
 
     enabled = appier.field(
         type = bool,
-        index = True
+        index = True,
+        meta = "enum",
+        enum = ENABLE_S
     )
 
     description = appier.field(
