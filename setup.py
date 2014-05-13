@@ -42,13 +42,13 @@ import setuptools
 
 setuptools.setup(
     name = "appier_extras",
-    version = "0.2.9",
+    version = "0.2.10",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Appier Framework Extra Elements",
     license = "GNU General Public License (GPL), Version 3",
     keywords = "appier extras framework web json",
-    url = "http://appier.com",
+    url = "http://appier.hive.pt",
     zip_safe = False,
     packages = [
         "appier_extras",
