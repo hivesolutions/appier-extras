@@ -60,12 +60,13 @@ class MarkdownParser(object):
     def __init__(self):
         newline = r"(?P<newline>(\n\n)|(\r\n\r\n))"
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
-        list = r"(?P<list>^(?P<list_index>\s*)[\*\+\-](?P<list_value>.+)$)"
+        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-](?P<list_value>.+)$)"
         image = r"(?P<image>\!(?P<image_label>\[.+?\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ ]+\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
+        code_line = r"(?P<code_line>^(    |\t)+(?P<code_line_value>.*)$)"
         code_single =  r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
         self.master = re.compile(
@@ -78,6 +79,7 @@ class MarkdownParser(object):
                 bold,
                 italic,
                 code,
+                code_line,
                 code_single
             ]),
             re.MULTILINE | re.UNICODE
@@ -224,6 +226,17 @@ class MarkdownParser(object):
         )
         return node
 
+    def parse_code_line(self, parts):
+        value = parts["code_line_value"]
+
+        node = dict(
+            type = "code",
+            value = value,
+            multiline = True,
+            close = False
+        )
+        return node
+
     def parse_code_single(self, parts):
         value = parts["code_single_value"]
 
@@ -271,11 +284,23 @@ class MarkdownHTML(MarkdownGenerator):
         MarkdownGenerator.__init__(self, file = file)
         self.base_url = base_url
 
+    def is_open(self):
+        return self.depth > 0
+
+    def open(self, value):
+        self.depth += 1
+        self.emit(value)
+
+    def close(self, value):
+        self.depth -= 1
+        self.emit(value)
+
     def reset(self):
         MarkdownGenerator.reset(self)
+        self.depth = 0
         self.paragraph = False
+        self.code = False
         self.list_item = False
-        self.open = False
         self.list_level = 0
 
     def flush(self):
@@ -284,26 +309,25 @@ class MarkdownHTML(MarkdownGenerator):
 
     def generate_newline(self, node):
         self._close_all()
-        self.emit("<p>")
-        self.open = True
+        self.open("<p>")
         self.paragraph = True
 
     def generate_header(self, node):
         level = node["level"]
         value = node["value"]
         self._close_all()
-        self.emit("<h%d>" % level)
-        self._generate(value, open = True)
-        self.emit("</h%d>" % level)
+        self.open("<h%d>" % level)
+        self._generate(value)
+        self.close("</h%d>" % level)
 
     def generate_list(self, node):
         level = node["level"]
         value = node["value"]
-        if self.list_item: self.emit("</li>")
+        if self.list_item: self.close("</li>")
         self._ensure_list(level = level)
-        self.emit("<li>")
+        self.open("<li>")
         self.list_item = True
-        self._generate(value, open = True)
+        self._generate(value)
 
     def generate_image(self, node):
         label = node["label"]
@@ -314,66 +338,70 @@ class MarkdownHTML(MarkdownGenerator):
         label = node["label"]
         value = node["value"]
         value = value if self.is_absolute(value) else self.base_url + value
-        self.emit("<a href=\"%s\">" % value)
-        self._generate(label, open = True)
-        self.emit("</a>")
+        self.open("<a href=\"%s\">" % value)
+        self._generate(label)
+        self.close("</a>")
 
     def generate_bold(self, node):
         value = node["value"]
-        self.emit("<strong>")
-        self._generate(value, open = True)
-        self.emit("</strong>")
+        self.open("<strong>")
+        self._generate(value)
+        self.close("</strong>")
 
     def generate_italic(self, node):
         value = node["value"]
-        self.emit("<em>")
-        self._generate(value, open = True)
-        self.emit("</em>")
+        self.open("<em>")
+        self._generate(value)
+        self.close("</em>")
 
     def generate_code(self, node):
         value = node["value"]
         name = node.get("name", "undefined")
         multiline = node.get("multiline", False)
+        close = node.get("close", True)
         tag = "pre" if multiline else "code"
-        self.emit("<%s class=\"code language-%s\">" % (tag, name))
+        self._ensure_code(tag, name)
         self.emit(value)
-        self.emit("</%s>" % tag)
+        if close: self._close_code(tag)
 
     def generate_normal(self, node):
-        if self.open: self.emit(node)
+        if self.is_open(): self.emit(node)
         else: self.generate_newline(node); self.emit(node.lstrip())
 
     def is_absolute(self, url):
         return url.startswith(("http://", "https://"))
 
-    def _generate(self, nodes, open = False):
-        _open = self.open
-        if open: self.open = True
-        MarkdownGenerator._generate(self, nodes)
-        if open: self.open = _open
+    def _ensure_code(self, tag, name):
+        if self.code: return
+        self.open("<%s class=\"code language-%s\">" % (tag, name))
+        self.code = True
 
     def _ensure_list(self, level = 1):
         if self.list_level == level: return
         self._close_paragraph()
         delta = level - self.list_level
         if delta < 0: self._close_list(delta * -1); return
-        for _index in range(delta): self.emit("<ul>")
+        for _index in range(delta): self.open("<ul>")
         self.list_level = level
-        self.open = True
 
     def _close_all(self):
         self._close_paragraph()
+        self._close_code()
         self._close_list()
-        self.open = False
 
     def _close_paragraph(self):
         if not self.paragraph: return
-        self.emit("</p>")
+        self.close("</p>")
         self.paragraph = False
 
+    def _close_code(self, tag = "pre"):
+        if not self.code: return
+        self.close("</%s>" % tag)
+        self.code = False
+
     def _close_list(self, count = None):
-        if self.list_item: self.emit("</li>")
+        if self.list_item: self.close("</li>")
         if not count: count = self.list_level
-        for _index in range(count): self.emit("</ul>")
+        for _index in range(count): self.close("</ul>")
         self.list_level -= count
         self.list_item = False
