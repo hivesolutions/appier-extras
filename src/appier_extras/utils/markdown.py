@@ -293,6 +293,7 @@ class MarkdownHTML(MarkdownGenerator):
 
     def close(self, value):
         self.depth -= 1
+        if self.depth < 0: raise AssertionError("Invalid depth")
         self.emit(value)
 
     def reset(self):
@@ -324,6 +325,7 @@ class MarkdownHTML(MarkdownGenerator):
         level = node["level"]
         value = node["value"]
         if self.list_item: self.close("</li>")
+        self.list_item = False
         self._ensure_list(level = level)
         self.open("<li>")
         self.list_item = True
