@@ -66,8 +66,8 @@ class MarkdownParser(object):
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
-        code_line = r"(?P<code_line>^(    |\t)+(?P<code_line_value>.*)$)"
-        code_single =  r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
+        code_line = r"(?P<code_line>^(    |\t)+(?P<code_line_value>.+)$)"
+        code_single = r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
         self.master = re.compile(
             "|".join([
@@ -365,6 +365,7 @@ class MarkdownHTML(MarkdownGenerator):
         if close: self._close_code(tag)
 
     def generate_normal(self, node):
+        if self.code: self.emit("\n"); return
         if self.is_open(): self.emit(node)
         else: self.generate_newline(node); self.emit(node.lstrip())
 
@@ -385,9 +386,9 @@ class MarkdownHTML(MarkdownGenerator):
         self.list_level = level
 
     def _close_all(self):
-        self._close_paragraph()
-        self._close_code()
         self._close_list()
+        self._close_code()
+        self._close_paragraph()
 
     def _close_paragraph(self):
         if not self.paragraph: return
