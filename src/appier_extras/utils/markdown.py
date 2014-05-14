@@ -60,13 +60,13 @@ class MarkdownParser(object):
     def __init__(self):
         newline = r"(?P<newline>(\n\n)|(\r\n\r\n))"
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
-        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-](?P<list_value>.+)$)"
+        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-] (?P<list_value>[^\r\n]+))"
         image = r"(?P<image>\!(?P<image_label>\[.+?\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ ]+\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
-        code_line = r"(?P<code_line>^(    |\t)+(?P<code_line_value>.+)$)"
+        code_line = r"(?P<code_line>^(    |\t)(?P<code_line_value>[^\r\n]+))"
         code_single = r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
         self.master = re.compile(
