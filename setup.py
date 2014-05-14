@@ -48,7 +48,7 @@ setuptools.setup(
     description = "Appier Framework Extra Elements",
     license = "GNU General Public License (GPL), Version 3",
     keywords = "appier extras framework web json",
-    url = "http://appier.hive.pt",
+    url = "http://appier_extras.hive.pt",
     zip_safe = False,
     packages = [
         "appier_extras",
