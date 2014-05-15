@@ -18,7 +18,7 @@
             </div>
             <div class="new">
                 <span>or</span>
-                <a href="{{ url_for('admin.login') }}">return to signin</a>
+                <a href="{{ url_for('admin.login') }}">return to sign in</a>
             </div>
         </form>
     </div>
