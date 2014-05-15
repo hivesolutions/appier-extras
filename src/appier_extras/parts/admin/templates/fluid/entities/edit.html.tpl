@@ -11,8 +11,7 @@
                         <label>{{ name }}</label>
                     </div>
                     <div class="input">
-                        <input type="text" class="text-field" name="{{ name }}"
-                               value="{{ entity[name]|default('', True) }}" data-error="{{ errors[name] }}" />
+                        {{ input(entity, name) }}
                     </div>
                 </div>
             {% endfor %}
