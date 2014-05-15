@@ -275,7 +275,7 @@ class AdminPart(appier.Part):
         return self.template(
             "entities/new.html.tpl",
             section = "models",
-            entity = dict(),
+            entity = model.__new__(model),
             errors = dict(),
             model = model
         )
