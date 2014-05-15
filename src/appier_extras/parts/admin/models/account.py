@@ -184,6 +184,39 @@ class Account(base.Base):
         return account
 
     @classmethod
+    def recover(cls, identifier):
+        # verifies if a valid identifier has been provided because that value
+        # is required for the proper account recover process to be executed
+        if not identifier:
+            raise appier.OperationalError(
+                message = "An identifier must be provided",
+                code = 400
+            )
+
+        # creates the keyword based arguments that are going to be used to provide
+        # an extra layer of or based filtering to the retrieval process of the account
+        # that is going to be performed next
+        kwargs = {
+            "$or" : [
+                dict(username = identifier),
+                dict(email = identifier)
+            ]
+        }
+        account = cls.get(
+            build = False,
+            raise_e = False,
+            **kwargs
+        )
+
+        # in case no account has been retrieved an error is raised indicating such
+        # problem, as that is required for the account recover process
+        if not account:
+            raise appier.OperationalError(
+                message = "No valid account found",
+                code = 403
+            )
+
+    @classmethod
     def verify(cls, encoded, decoded):
         type, salt, digest, plain = cls.unpack(encoded)
         if plain: return encoded == decoded
