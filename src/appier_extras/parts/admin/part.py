@@ -405,6 +405,19 @@ class AdminPart(appier.Part):
            self.url_for("admin.index")
         )
 
+    @appier.ensure(token = "admin")
+    def show_log(self):
+        memory_handler = self.owner.handler_memory
+        count = self.field("count", 100, cast = int)
+        level = self.field("level", None)
+        return dict(
+            messages = memory_handler.get_latest(count = count, level = level)
+        )
+
+    def socials(self):
+        socials = []
+        if self.has_facebook(): socials.append("facebook")
+
     def has_facebook(self):
         try: import facebook
         except: facebook = None
@@ -464,13 +477,4 @@ class AdminPart(appier.Part):
             client_secret = appier.conf("FB_SECRET"),
             redirect_url = redirect_url,
             access_token = access_token
-        )
-
-    @appier.ensure(token = "admin")
-    def show_log(self):
-        memory_handler = self.owner.handler_memory
-        count = self.field("count", 100, cast = int)
-        level = self.field("level", None)
-        return dict(
-            messages = memory_handler.get_latest(count = count, level = level)
         )
