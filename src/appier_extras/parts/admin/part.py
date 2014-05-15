@@ -389,7 +389,7 @@ class AdminPart(appier.Part):
 
     def facebook(self):
         next = self.field("next")
-        url = self.ensure_facebook_api()
+        url = self.ensure_facebook_api(state = next)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for("admin.index")
@@ -397,12 +397,13 @@ class AdminPart(appier.Part):
 
     def oauth_facebook(self):
         code = self.field("code")
+        next = self.field("state")
         api = self.get_facebook_api()
         access_token = api.oauth_access(code)
         self.session["fb.access_token"] = access_token
         self.ensure_facebook_account()
         return self.redirect(
-           self.url_for("admin.index")
+           next or self.url_for("admin.index")
         )
 
     @appier.ensure(token = "admin")
@@ -462,11 +463,11 @@ class AdminPart(appier.Part):
 
         return account
 
-    def ensure_facebook_api(self):
+    def ensure_facebook_api(self, state = None):
         access_token = self.session.get("fb.access_token", None)
         if access_token: return
         api = self.get_facebook_api()
-        return api.oauth_autorize()
+        return api.oauth_autorize(state = state)
 
     def get_facebook_api(self):
         import facebook
