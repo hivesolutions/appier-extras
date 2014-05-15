@@ -85,6 +85,8 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
+            (("GET",), "/admin/facebook", self.facebook),
+            (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
             (("GET",), "/admin/log.json", self.show_log)
         ]
 
@@ -147,6 +149,7 @@ class AdminPart(appier.Part):
         if "email" in self.session: del self.session["email"]
         if "type" in self.session: del self.session["type"]
         if "tokens" in self.session: del self.session["tokens"]
+        if "fb.access_token" in self.session: del self.session["fb.access_token"]
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
@@ -382,6 +385,85 @@ class AdminPart(appier.Part):
                 model = model._name(),
                 _id = _id
             )
+        )
+
+    def facebook(self):
+        next = self.field("next")
+        url = self.ensure_facebook_api()
+        if url: return self.redirect(url)
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
+    def oauth_facebook(self):
+        code = self.field("code")
+        api = self.get_facebook_api()
+        access_token = api.oauth_access(code)
+        self.session["fb.access_token"] = access_token
+        self.ensure_facebook_account()
+        return self.redirect(
+           self.url_for("admin.index")
+        )
+
+    def has_facebook(self):
+        try: import facebook
+        except: facebook = None
+        return facebook == None
+
+    def ensure_facebook_account(self):
+        api = self.get_facebook_api()
+        user = api.self_user()
+        account = models.Account.get(
+            email = user["email"],
+            rules = False,
+            raise_e = False
+        )
+
+        if not account:
+            account = models.Account(
+                username = user["email"],
+                email = user["email"],
+                password = api.access_token,
+                password_confirm = api.access_token,
+                facebook_id = user["id"],
+                facebook_token = api.access_token,
+                type = models.Account.ADMIN_TYPE #@todo this is unsafe
+            )
+            account.save()
+
+        if not account.facebook_id:
+            account.facebook_id = user["id"]
+            account.facebook_token = api.access_token
+            account.save()
+
+        if not account.facebook_token == account.facebook_token:
+            account.facebook_token = api.access_token
+            account.save()
+
+        account.touch_s()
+
+        self.session["username"] = account.username
+        self.session["email"] = account.email
+        self.session["type"] = account.type_s()
+        self.session["tokens"] = account.tokens()
+
+        return account
+
+    def ensure_facebook_api(self):
+        access_token = self.session.get("fb.access_token", None)
+        if access_token: return
+        api = self.get_facebook_api()
+        return api.oauth_autorize()
+
+    def get_facebook_api(self):
+        import facebook
+        redirect_url = self.url_for("admin.oauth_facebook", absolute = True)
+        access_token = self.session and self.session.get("fb.access_token", None)
+        return facebook.Api(
+            client_id = appier.conf("FB_ID"),
+            client_secret = appier.conf("FB_SECRET"),
+            redirect_url = redirect_url,
+            access_token = access_token
         )
 
     @appier.ensure(token = "admin")
