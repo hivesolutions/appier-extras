@@ -10,10 +10,11 @@
         <form action="{{ url_for('admin.login') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">
-                <input type="text" class="small focus" name="username" value="{{ username }}" placeholder="username" />
+                <input type="text" class="text-field small focus" name="username" value="{{ username }}"
+                	   placeholder="username" />
             </div>
             <div class="input">
-                <input type="password" class="small" name="password" placeholder="password"  />
+                <input type="password" class="text-field small" name="password" placeholder="password" />
             </div>
             <div class="forgot">
                 <a href="{{ url_for('admin.recover') }}">Forgot your password?</a>

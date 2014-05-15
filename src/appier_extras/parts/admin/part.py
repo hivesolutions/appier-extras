@@ -74,7 +74,9 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/accounts/new", self.new_account),
+            (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
+            (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
@@ -168,9 +170,35 @@ class AdminPart(appier.Part):
         return self.template("done.html.tpl")
 
     def new_account(self):
-        raise appier.NotImplementedError()
+        return self.template(
+            "account/new.html.tpl",
+            account = dict(),
+            errors = dict()
+        )
+
+    def create_account(self):
+        account = models.Account.new()
+        account.type = models.Account.USER_TYPE
+        account.enabled = False
+        try: account.save()
+        except appier.ValidationError as error:
+            return self.template(
+                "account/new.html.tpl",
+                account = error.model,
+                errors = error.errors
+            )
+
+        return self.redirect(
+            self.url_for(
+                "admin.mail_account",
+                username = account.username
+            )
+        )
 
     def show_account(self, username):
+        raise appier.NotImplementedError()
+
+    def mail_account(self, username):
         raise appier.NotImplementedError()
 
     @appier.ensure(token = "admin")
