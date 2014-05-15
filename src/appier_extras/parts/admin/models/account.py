@@ -204,13 +204,6 @@ class Account(base.Base):
                 code = 403
             )
 
-        # updates the last login of the account with the current timestamp
-        # and saves the account so that this value is persisted, then returns
-        # the account to the caller method so that it may be used
-        account.last_login = time.time()
-        account.save()
-        return account
-
     @classmethod
     def recover(cls, identifier):
         # verifies if a valid identifier has been provided because that value
@@ -243,6 +236,12 @@ class Account(base.Base):
                 message = "No valid account found",
                 code = 403
             )
+
+        # "touches" the current account meaning that the last login value will be
+        # update to reflect the current time and then returns the current logged
+        # in account to the caller method so that it may used (valid account)
+        account.touch_s()
+        return account
 
     @classmethod
     def verify(cls, encoded, decoded):
@@ -288,6 +287,12 @@ class Account(base.Base):
     def pre_save(self):
         base.Base.pre_save(self)
         if hasattr(self, "password"): self.password = self.encrypt(self.password)
+
+    def touch_s(self):
+        # updates the last login of the account with the current timestamp
+        # and saves the account so that this value is persisted
+        self.last_login = time.time()
+        self.save()
 
     def tokens(self):
         if self.type == Account.ADMIN_TYPE:
