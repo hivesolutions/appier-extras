@@ -121,8 +121,8 @@ class Base(appier.Model):
 
     def send_email(self, *args, **kwargs):
         bulk = kwargs.get("bulk", False)
-        sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.com>")
-        base_url = appier.conf("BASE_URL", "http://appier.com")
+        sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
+        base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
         settings = dict(logo = True)
         headers = {
             "List-Unsubscribe" : "<" + base_url + "/unsubscribe>"
