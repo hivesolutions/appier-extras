@@ -28,6 +28,6 @@
         </form>
     </div>
     <div class="login-footer">
-    	Sign in with <a href="#">Facebook</a>, <a href="#">Twitter</a> or <a href="#">Google</a>.
+        Sign in with <a href="#">Facebook</a>, <a href="#">Twitter</a> or <a href="#">Google</a>.
     </div>
 {% endblock %}
