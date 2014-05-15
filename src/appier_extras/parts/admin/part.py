@@ -165,7 +165,7 @@ class AdminPart(appier.Part):
                 error = error.message
             )
 
-        return self.template("recover.html.tpl")
+        return self.template("done.html.tpl")
 
     def new_account(self):
         raise appier.NotImplementedError()
