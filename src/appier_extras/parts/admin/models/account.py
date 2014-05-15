@@ -69,6 +69,33 @@ class Account(base.Base):
         meta = "secret"
     )
 
+    facebook_id = appier.field(
+        private = True
+    )
+
+    twitter_username = appier.field(
+        private = True
+    )
+
+    gihub_username = appier.field(
+        private = True
+    )
+
+    facebook_token = appier.field(
+        private = True,
+        meta = "secret"
+    )
+
+    twitter_token = appier.field(
+        private = True,
+        meta = "secret"
+    )
+
+    github_token = appier.field(
+        private = True,
+        meta = "secret"
+    )
+
     type = appier.field(
         type = int,
         safe = True,
