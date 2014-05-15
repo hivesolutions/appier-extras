@@ -16,7 +16,7 @@
                 <input type="password" class="small" name="password" placeholder="password"  />
             </div>
             <div class="forgot">
-                <a href="#">Forgot your password?</a>
+                <a href="{{ url_for('admin.recover') }}">Forgot your password?</a>
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Login</span>
