@@ -67,6 +67,8 @@ class AdminPart(appier.Part):
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
+            (("GET"), "/admin/recover", self.recover),
+            (("POST"), "/admin/recover", self.recover_do),
             (("GET",), "/admin/options", self.options),
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
@@ -149,6 +151,21 @@ class AdminPart(appier.Part):
         return self.redirect(
             next or self.url_for("admin.index")
         )
+
+    def recover(self):
+        return self.template("recover.html.tpl")
+
+    def recover_do(self):
+        identifier = self.field("identifier")
+        try: models.Account.recover(identifier)
+        except appier.AppierException as error:
+            return self.template(
+                "recover.html.tpl",
+                identifier = identifier,
+                error = error.message
+            )
+
+        return self.template("recover.html.tpl")
 
     def new_account(self):
         raise appier.NotImplementedError()
