@@ -70,15 +70,15 @@ class Account(base.Base):
     )
 
     facebook_id = appier.field(
-        private = True
+        index = True
     )
 
     twitter_username = appier.field(
-        private = True
+        index = True
     )
 
     gihub_username = appier.field(
-        private = True
+        index = True
     )
 
     facebook_token = appier.field(
