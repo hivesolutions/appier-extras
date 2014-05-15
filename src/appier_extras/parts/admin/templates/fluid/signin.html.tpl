@@ -11,7 +11,7 @@
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">
                 <input type="text" class="text-field small focus" name="username" value="{{ username }}"
-                	   placeholder="username" />
+                       placeholder="username" />
             </div>
             <div class="input">
                 <input type="password" class="text-field small" name="password" placeholder="password" />
