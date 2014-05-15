@@ -65,7 +65,8 @@ class Account(base.Base):
     )
 
     password = appier.field(
-        private = True
+        private = True,
+        meta = "secret"
     )
 
     type = appier.field(
