@@ -11,21 +11,20 @@
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">
                 <input type="text" class="text-field small focus" name="username" value="{{ account.username }}"
-                	   placeholder="username" data-error="{{ errors.username }}" />
+                       placeholder="username" data-error="{{ errors.username }}" />
             </div>
             <div class="input">
                 <input type="text" class="text-field small" name="email" value="{{ account.email }}"
-                	   placeholder="email" data-error="{{ errors.email }}"/>
+                       placeholder="email" data-error="{{ errors.email }}"/>
             </div>
             <div class="input">
-                <input type="password" class="text-field small" name="password" placeholder="password" 
-                	    data-error="{{ errors.password }}" />
+                <input type="password" class="text-field small" name="password" placeholder="password"
+                        data-error="{{ errors.password }}" />
             </div>
             <div class="input">
                 <input type="password" class="text-field small" name="password_confirm" placeholder="confirm password"
-                	   data-error="{{ errors.password_confirm }}" />
+                       data-error="{{ errors.password_confirm }}" />
             </div>
-            
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Sign up</span>
             </div>
