@@ -20,12 +20,20 @@
                     <dd>{{ own.info().uptime }}</dd>
                 </div>
                 <div class="item">
+                    <dt>Platform</dt>
+                    <dd>{{ own.info().platform }}</dd>
+                </div>
+                <div class="item">
                     <dt>Server</dt>
                     <dd>{{ own.info().server }}</dd>
                 </div>
                 <div class="item">
                     <dt>Appier</dt>
                     <dd>{{ own.info().appier }}</dd>
+                </div>
+                <div class="item">
+                    <dt>Models</dt>
+                    <dd>{{ own.models_r|length }} models</dd>
                 </div>
                 <div class="item">
                     <dt>Routes</dt>
