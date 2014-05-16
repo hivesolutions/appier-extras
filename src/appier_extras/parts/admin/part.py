@@ -448,6 +448,7 @@ class AdminPart(appier.Part):
                 type = models.Account.USER_TYPE
             )
             account.save()
+            account = account.reload(rules = False)
 
         if not account.facebook_id:
             account.facebook_id = user["id"]
