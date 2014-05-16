@@ -118,17 +118,17 @@ class Account(base.Base):
         root = cls.find(username = "root")
         if root: return
 
-        # creates the structure to be used as the server description
-        # using the values provided as parameters
-        account = {
-            "enabled" : True,
-            "username" : "root",
-            "email" : "root@root.com",
-            "password" : cls.generate("root"),
-            "type" : Account.ADMIN_TYPE
-        }
-        collection = cls._collection()
-        collection.save(account)
+        # creates the structure to be used as the root account description
+        # using the default value and then stores the account as it's going
+        # to be used as the default root entity (for administration)
+        account = cls(
+            enabled = True,
+            username = "root",
+            email = "root@root.com",
+            password = cls.generate("root"),
+            type = cls.ADMIN_TYPE
+        )
+        account.save(validate = False)
 
     @classmethod
     def validate(cls):
