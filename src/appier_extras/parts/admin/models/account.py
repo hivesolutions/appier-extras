@@ -204,6 +204,12 @@ class Account(base.Base):
                 code = 403
             )
 
+        # "touches" the current account meaning that the last login value will be
+        # update to reflect the current time and then returns the current logged
+        # in account to the caller method so that it may used (valid account)
+        account.touch_s()
+        return account
+
     @classmethod
     def recover(cls, identifier):
         # verifies if a valid identifier has been provided because that value
@@ -236,12 +242,6 @@ class Account(base.Base):
                 message = "No valid account found",
                 code = 403
             )
-
-        # "touches" the current account meaning that the last login value will be
-        # update to reflect the current time and then returns the current logged
-        # in account to the caller method so that it may used (valid account)
-        account.touch_s()
-        return account
 
     @classmethod
     def verify(cls, encoded, decoded):
