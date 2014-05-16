@@ -422,7 +422,10 @@ class AdminPart(appier.Part):
     def has_facebook(self):
         try: import facebook
         except: facebook = None
-        return facebook == None
+        if not facebook: return False
+        if not appier.conf("FB_ID"): return False
+        if not appier.conf("FB_SECRET"): return False
+        return True
 
     def ensure_facebook_account(self):
         api = self.get_facebook_api()
