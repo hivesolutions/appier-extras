@@ -108,7 +108,8 @@ class AdminPart(appier.Part):
         return self.list_models()
 
     def signin(self):
-        return self.template("signin.html.tpl")
+        next = self.field("next")
+        return self.template("signin.html.tpl", next = next)
 
     def login(self):
         # retrieves the various fields that are going to be
