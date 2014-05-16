@@ -471,7 +471,7 @@ class AdminPart(appier.Part):
         access_token = self.session.get("fb.access_token", None)
         if access_token: return
         api = self.get_facebook_api()
-        return api.oauth_autorize(state = state)
+        return api.oauth_authorize(state = state)
 
     def get_facebook_api(self):
         import facebook
