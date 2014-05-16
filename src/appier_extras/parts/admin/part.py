@@ -445,7 +445,7 @@ class AdminPart(appier.Part):
                 password_confirm = api.access_token,
                 facebook_id = user["id"],
                 facebook_token = api.access_token,
-                type = models.Account.ADMIN_TYPE #@todo this is unsafe
+                type = models.Account.USER_TYPE
             )
             account.save()
 
