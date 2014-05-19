@@ -87,6 +87,8 @@ class AdminPart(appier.Part):
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
             (("GET",), "/admin/facebook", self.facebook),
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
+            (("GET",), "/admin/twitter", self.twitter),
+            (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
             (("GET",), "/admin/log.json", self.show_log)
         ]
 
@@ -407,6 +409,25 @@ class AdminPart(appier.Part):
            next or self.url_for("admin.index")
         )
 
+    def twitter(self):
+        next = self.field("next")
+        url = self.ensure_twitter_api(state = next)
+        if url: return self.redirect(url)
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
+    def oauth_twitter(self):
+        oauth_verifier = self.field("oauth_verifier")
+        api = self.get_twitter_api()
+        oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
+        self.session["tw.oauth_token"] = oauth_token
+        self.session["tw.oauth_token_secret"] = oauth_token_secret
+        self.ensure_twitter_account()
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
     @appier.ensure(token = "admin")
     def show_log(self):
         memory_handler = self.owner.handler_memory
@@ -419,6 +440,7 @@ class AdminPart(appier.Part):
     def socials(self):
         socials = []
         if self.has_facebook(): socials.append("facebook")
+        if self.has_twitter(): socials.append("twitter")
 
     def has_facebook(self):
         try: import facebook
@@ -483,4 +505,73 @@ class AdminPart(appier.Part):
             client_secret = appier.conf("FB_SECRET"),
             redirect_url = redirect_url,
             access_token = access_token
+        )
+
+    def has_twitter(self):
+        try: import twitter
+        except: twitter = None
+        if not twitter: return False
+        if not appier.conf("TW_KEY"): return False
+        if not appier.conf("TW_SECRET"): return False
+        return True
+
+    def ensure_twitter_account(self):
+        api = self.get_twitter_api()
+        user = api.verify_account()
+        account = models.Account.get(
+            email = user["email"],
+            rules = False,
+            raise_e = False
+        )
+
+        if not account:
+            account = models.Account(
+                username = user["screen_name"],
+                email = "%s@twitter.com" % user["screen_name"],
+                password = api.access_token,
+                password_confirm = api.access_token,
+                twitter_username = user["screen_name"],
+                twitter_token = api.oauth_token,
+                type = models.Account.USER_TYPE
+            )
+            account.save()
+            account = account.reload(rules = False)
+
+        if not account.twitter_username:
+            account.twitter_username = user["screen_name"]
+            account.twitter_token = api.oauth_token
+            account.save()
+
+        if not account.twitter_token == account.twitter_token:
+            account.twitter_token = api.oauth_token
+            account.save()
+
+        account.touch_s()
+
+        self.session["username"] = account.username
+        self.session["email"] = account.email
+        self.session["type"] = account.type_s()
+        self.session["tokens"] = account.tokens()
+
+        return account
+
+    def ensure_twitter_api(self, state = None):
+        oauth_token = self.session.get("tw.oauth_token", None)
+        oauth_token_secret = self.session.get("tw.oauth_token_secret", None)
+        if oauth_token: return
+        if oauth_token_secret: return
+        api = self.get_twitter_api()
+        return api.oauth_authorize(state = state)
+
+    def get_twitter_api(self):
+        import twitter
+        redirect_url = self.url_for("admin.oauth_twitter", absolute = True)
+        oauth_token = self.session and self.session.get("tw.oauth_token", None)
+        oauth_token_secret = self.session and self.session.get("tw.oauth_token_secret", None)
+        return twitter.Api(
+            client_key = appier.conf("TWITTER_KEY"),
+            client_secret = appier.conf("TWITTER_SECRET"),
+            redirect_url = redirect_url,
+            oauth_token = oauth_token,
+            oauth_token_secret = oauth_token_secret
         )

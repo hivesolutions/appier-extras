@@ -29,6 +29,9 @@
         </form>
     </div>
     <div class="login-footer">
-        Sign in with <a href="{{ url_for('admin.facebook', next = next|default('', True)) }}">Facebook</a>, <a href="#">Twitter</a> or <a href="#">Google</a>.
+        Sign in with
+        <a href="{{ url_for('admin.facebook', next = next|default('', True)) }}">Facebook</a>,
+        <a href="{{ url_for('admin.twitter', next = next|default('', True)) }}">Twitter</a>, or
+        <a href="#">Google</a>.
     </div>
 {% endblock %}
