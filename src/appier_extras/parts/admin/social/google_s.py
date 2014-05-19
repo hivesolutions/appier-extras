@@ -54,7 +54,7 @@ class Google(object):
     def ensure_google_account(self):
         api = self.get_google_api()
         user = api.self_user()
-        email = user["emails"][0]
+        email = user["emails"][0]["value"]
         account = models.Account.get(
             email = email,
             rules = False,
@@ -104,7 +104,7 @@ class Google(object):
         access_token = self.session and self.session.get("gg.access_token", None)
         return google.Api(
             client_id = appier.conf("GOOGLE_ID"),
-            client_secret = appier.conf("FOOFLE_SECRET"),
+            client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,
             access_token = access_token
         )
