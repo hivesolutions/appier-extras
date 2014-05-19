@@ -90,6 +90,8 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
             (("GET",), "/admin/twitter", self.twitter),
             (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
+            (("GET",), "/admin/google", self.google),
+            (("GET",), "/admin/google/oauth", self.oauth_google),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/log.json", self.show_log)
@@ -442,6 +444,25 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
            next or self.url_for("admin.index")
         )
 
+    def google(self):
+        next = self.field("next")
+        url = self.ensure_google_api(state = next)
+        if url: return self.redirect(url)
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
+    def oauth_google(self):
+        code = self.field("code")
+        next = self.field("state")
+        api = self.get_google_api()
+        access_token = api.oauth_access(code)
+        self.session["gg.access_token"] = access_token
+        self.ensure_google_account()
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
     def live(self):
         next = self.field("next")
         url = self.ensure_live_api(state = next)
@@ -474,5 +495,6 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
         socials = []
         if self.has_facebook(): socials.append("facebook")
         if self.has_twitter(): socials.append("twitter")
+        if self.has_google(): socials.append("google")
         if self.has_live(): socials.append("live")
         return socials
