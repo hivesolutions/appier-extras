@@ -29,13 +29,13 @@
         </form>
     </div>
     {% if socials %}
-	    <div class="login-footer">
-	        Sign in with
-	        {% if socials|length == 1 %}
-	            <a href="{{ url_for('admin.' + socials[0], next = next|default('', True)) }}">socials[0]</a>,
-	        {% else %}
-	            {% for social in socials %}{% if loop.first%}{% elif loop.last %} or {% else %}, {%endif%}<a href="{{ url_for('admin.' + social, next = next|default('', True)) }}">{{ social|capitalize }}</a>{% endfor %}
-	        {% endif %}
-	    </div>
+        <div class="login-footer">
+            Sign in with
+            {% if socials|length == 1 %}
+                <a href="{{ url_for('admin.' + socials[0], next = next|default('', True)) }}">socials[0]</a>,
+            {% else %}
+                {% for social in socials %}{% if loop.first%}{% elif loop.last %} or {% else %}, {%endif%}<a href="{{ url_for('admin.' + social, next = next|default('', True)) }}">{{ social|capitalize }}</a>{% endfor %}
+            {% endif %}
+        </div>
     {% endif %}
 {% endblock %}
