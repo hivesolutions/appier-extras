@@ -369,7 +369,7 @@ class AdminPart(appier.Part):
             meta = True,
             _id = appier.object_id(_id)
         )
-        entity.apply()
+        entity.apply(safe_a = False)
         try: entity.save()
         except appier.ValidationError as error:
             return self.template(
