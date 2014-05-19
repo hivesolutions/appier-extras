@@ -30,9 +30,10 @@
     </div>
     <div class="login-footer">
         Sign in with
-        <a href="{{ url_for('admin.facebook', next = next|default('', True)) }}">Facebook</a>,
-        <a href="{{ url_for('admin.twitter', next = next|default('', True)) }}">Twitter</a>,
-        <a href="{{ url_for('admin.live', next = next|default('', True)) }}">Microsoft</a> or
-        <a href="#">Google</a>.
+        {% if socials|length == 1 %}
+            <a href="{{ url_for('admin.' + socials[0], next = next|default('', True)) }}">socials[0]</a>,
+        {% else %}
+            {% for social in socials %}{% if loop.first%}{% elif loop.last %} or {% else %}, {%endif%}<a href="{{ url_for('admin.' + social, next = next|default('', True)) }}">{{ social|capitalize }}</a>{% endfor %}
+        {% endif %}
     </div>
 {% endblock %}

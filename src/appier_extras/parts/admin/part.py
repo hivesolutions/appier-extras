@@ -114,7 +114,12 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
 
     def signin(self):
         next = self.field("next")
-        return self.template("signin.html.tpl", next = next)
+        socials = self.socials()
+        return self.template(
+            "signin.html.tpl",
+            next = next,
+            socials = socials
+        )
 
     def login(self):
         # retrieves the various fields that are going to be
@@ -123,11 +128,13 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
         username = self.field("username")
         password = self.field("password")
         next = self.field("next")
+        socials = self.socials()
         try: account = models.Account.login(username, password)
         except appier.AppierException as error:
             return self.template(
                 "signin.html.tpl",
                 next = next,
+                socials = socials,
                 username = username,
                 error = error.message
             )
@@ -467,3 +474,5 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
         socials = []
         if self.has_facebook(): socials.append("facebook")
         if self.has_twitter(): socials.append("twitter")
+        if self.has_live(): socials.append("live")
+        return socials
