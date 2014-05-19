@@ -98,6 +98,8 @@ class AdminPart(
             (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
             (("GET",), "/admin/google", self.google),
             (("GET",), "/admin/google/oauth", self.oauth_google),
+            (("GET",), "/admin/github", self.github),
+            (("GET",), "/admin/github/oauth", self.oauth_github),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/log.json", self.show_log)
@@ -470,6 +472,25 @@ class AdminPart(
            next or self.url_for("admin.index")
         )
 
+    def github(self):
+        next = self.field("next")
+        url = self.ensure_github_api(state = next)
+        if url: return self.redirect(url)
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
+    def oauth_github(self):
+        code = self.field("code")
+        next = self.field("state")
+        api = self.get_github_api()
+        access_token = api.oauth_access(code)
+        self.session["gh.access_token"] = access_token
+        self.ensure_github_account()
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
     def live(self):
         next = self.field("next")
         url = self.ensure_live_api(state = next)
@@ -503,5 +524,6 @@ class AdminPart(
         if self.has_facebook(): socials.append("facebook")
         if self.has_twitter(): socials.append("twitter")
         if self.has_google(): socials.append("google")
+        if self.has_github(): socials.append("github")
         if self.has_live(): socials.append("live")
         return socials
