@@ -42,7 +42,13 @@ import appier
 from appier_extras.parts.admin import models
 from appier_extras.parts.admin import social
 
-class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
+class AdminPart(
+    appier.Part,
+    social.Facebook,
+    social.Twitter,
+    social.Google,
+    social.Live
+):
     """
     Modular part class providing the automation functionality for
     the generation of a web interface based on the application
@@ -167,6 +173,7 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
         if "fb.access_token" in self.session: del self.session["fb.access_token"]
         if "tw.oauth_token" in self.session: del self.session["tw.oauth_token"]
         if "tw.oauth_token_secret" in self.session: del self.session["tw.oauth_token_secret"]
+        if "gg.access_token" in self.session: del self.session["gg.access_token"]
         if "live.access_token" in self.session: del self.session["live.access_token"]
 
         # runs the proper redirect operation, taking into account if the
