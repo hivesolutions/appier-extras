@@ -31,7 +31,8 @@
     <div class="login-footer">
         Sign in with
         <a href="{{ url_for('admin.facebook', next = next|default('', True)) }}">Facebook</a>,
-        <a href="{{ url_for('admin.twitter', next = next|default('', True)) }}">Twitter</a>, or
+        <a href="{{ url_for('admin.twitter', next = next|default('', True)) }}">Twitter</a>,
+        <a href="{{ url_for('admin.live', next = next|default('', True)) }}">Microsoft</a> or
         <a href="#">Google</a>.
     </div>
 {% endblock %}

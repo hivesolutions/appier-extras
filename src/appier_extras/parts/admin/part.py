@@ -42,7 +42,7 @@ import appier
 from appier_extras.parts.admin import models
 from appier_extras.parts.admin import social
 
-class AdminPart(appier.Part, social.Facebook, social.Twitter):
+class AdminPart(appier.Part, social.Facebook, social.Twitter, social.Live):
     """
     Modular part class providing the automation functionality for
     the generation of a web interface based on the application
@@ -90,6 +90,8 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter):
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
             (("GET",), "/admin/twitter", self.twitter),
             (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
+            (("GET",), "/admin/live", self.live),
+            (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/log.json", self.show_log)
         ]
 
@@ -156,6 +158,7 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter):
         if "fb.access_token" in self.session: del self.session["fb.access_token"]
         if "tw.oauth_token" in self.session: del self.session["tw.oauth_token"]
         if "tw.oauth_token_secret" in self.session: del self.session["tw.oauth_token_secret"]
+        if "live.access_token" in self.session: del self.session["live.access_token"]
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
@@ -428,6 +431,25 @@ class AdminPart(appier.Part, social.Facebook, social.Twitter):
         self.session["tw.oauth_token"] = oauth_token
         self.session["tw.oauth_token_secret"] = oauth_token_secret
         self.ensure_twitter_account()
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
+    def live(self):
+        next = self.field("next")
+        url = self.ensure_live_api(state = next)
+        if url: return self.redirect(url)
+        return self.redirect(
+           next or self.url_for("admin.index")
+        )
+
+    def oauth_live(self):
+        code = self.field("code")
+        next = self.field("state")
+        api = self.get_live_api()
+        access_token = api.oauth_access(code)
+        self.session["live.access_token"] = access_token
+        self.ensure_live_account()
         return self.redirect(
            next or self.url_for("admin.index")
         )

@@ -77,6 +77,10 @@ class Account(base.Base):
         index = True
     )
 
+    live_id = appier.field(
+        index = True
+    )
+
     gihub_username = appier.field(
         index = True
     )
@@ -87,6 +91,11 @@ class Account(base.Base):
     )
 
     twitter_token = appier.field(
+        private = True,
+        meta = "secret"
+    )
+
+    live_token = appier.field(
         private = True,
         meta = "secret"
     )
