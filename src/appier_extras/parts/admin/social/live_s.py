@@ -54,16 +54,17 @@ class Live(object):
     def ensure_live_account(self):
         api = self.get_live_api()
         user = api.self_user()
+        email = user["emails"]["preferred"]
         account = models.Account.get(
-            email = user["emails"]["preferred"],
+            email = email,
             rules = False,
             raise_e = False
         )
 
         if not account:
             account = models.Account(
-                username = user["emails"]["preferred"],
-                email = user["emails"]["preferred"],
+                username = email,
+                email = email,
                 password = api.access_token,
                 password_confirm = api.access_token,
                 live_id = user["id"],
