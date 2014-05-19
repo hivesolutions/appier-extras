@@ -47,6 +47,7 @@ class AdminPart(
     social.Facebook,
     social.Twitter,
     social.Google,
+    social.Github,
     social.Live
 ):
     """
@@ -176,6 +177,7 @@ class AdminPart(
         if "tw.oauth_token" in self.session: del self.session["tw.oauth_token"]
         if "tw.oauth_token_secret" in self.session: del self.session["tw.oauth_token_secret"]
         if "gg.access_token" in self.session: del self.session["gg.access_token"]
+        if "gh.access_token" in self.session: del self.session["gh.access_token"]
         if "live.access_token" in self.session: del self.session["live.access_token"]
 
         # runs the proper redirect operation, taking into account if the
