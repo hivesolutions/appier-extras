@@ -35,11 +35,13 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 from . import facebook_s
+from . import github_s
 from . import google_s
 from . import live_s
 from . import twitter_s
 
 from .facebook_s import *
+from .github_s import *
 from .google_s import *
 from .live_s import *
 from .twitter_s import *
