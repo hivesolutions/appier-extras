@@ -76,6 +76,10 @@ class Account(base.Base):
     twitter_username = appier.field(
         index = True
     )
+    
+    google_id = appier.field(
+        index = True
+    )
 
     live_id = appier.field(
         index = True
@@ -91,6 +95,11 @@ class Account(base.Base):
     )
 
     twitter_token = appier.field(
+        private = True,
+        meta = "secret"
+    )
+
+    google_token = appier.field(
         private = True,
         meta = "secret"
     )
