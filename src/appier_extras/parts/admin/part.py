@@ -59,6 +59,10 @@ class AdminPart(
     "annotations" in the data model attributes.
     """
 
+    def __init__(self, account_c = models.Account, *args, **kwargs):
+        appier.Part.__init__(self, *args, **kwargs)
+        self.account_c = account_c
+
     def load(self):
         appier.Part.load(self)
 
@@ -140,7 +144,7 @@ class AdminPart(
         password = self.field("password")
         next = self.field("next")
         socials = self.socials()
-        try: account = models.Account.login(username, password)
+        try: account = self.account_c.login(username, password)
         except appier.AppierException as error:
             return self.template(
                 "signin.html.tpl",
@@ -191,7 +195,7 @@ class AdminPart(
 
     def recover_do(self):
         identifier = self.field("identifier")
-        try: models.Account.recover(identifier)
+        try: self.account_c.recover(identifier)
         except appier.AppierException as error:
             return self.template(
                 "recover.html.tpl",
@@ -209,8 +213,8 @@ class AdminPart(
         )
 
     def create_account(self):
-        account = models.Account.new()
-        account.type = models.Account.USER_TYPE
+        account = self.account_c.new()
+        account.type = self.account_c.USER_TYPE
         account.enabled = False
         try: account.save()
         except appier.ValidationError as error:
