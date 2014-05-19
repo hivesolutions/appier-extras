@@ -153,6 +153,8 @@ class AdminPart(appier.Part):
         if "type" in self.session: del self.session["type"]
         if "tokens" in self.session: del self.session["tokens"]
         if "fb.access_token" in self.session: del self.session["fb.access_token"]
+        if "tw.oauth_token" in self.session: del self.session["tw.oauth_token"]
+        if "tw.oauth_token_secret" in self.session: del self.session["tw.oauth_token_secret"]
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
@@ -419,6 +421,7 @@ class AdminPart(appier.Part):
 
     def oauth_twitter(self):
         oauth_verifier = self.field("oauth_verifier")
+        next = self.field("state")
         api = self.get_twitter_api()
         oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
         self.session["tw.oauth_token"] = oauth_token
@@ -511,15 +514,16 @@ class AdminPart(appier.Part):
         try: import twitter
         except: twitter = None
         if not twitter: return False
-        if not appier.conf("TW_KEY"): return False
-        if not appier.conf("TW_SECRET"): return False
+        if not appier.conf("TWITTER_KEY"): return False
+        if not appier.conf("TWITTER_SECRET"): return False
         return True
 
     def ensure_twitter_account(self):
         api = self.get_twitter_api()
         user = api.verify_account()
+        email = "%s@twitter.com" % user["screen_name"]
         account = models.Account.get(
-            email = user["email"],
+            email = email,
             rules = False,
             raise_e = False
         )
@@ -527,9 +531,9 @@ class AdminPart(appier.Part):
         if not account:
             account = models.Account(
                 username = user["screen_name"],
-                email = "%s@twitter.com" % user["screen_name"],
-                password = api.access_token,
-                password_confirm = api.access_token,
+                email = email,
+                password = api.oauth_token,
+                password_confirm = api.oauth_token,
                 twitter_username = user["screen_name"],
                 twitter_token = api.oauth_token,
                 type = models.Account.USER_TYPE
@@ -561,7 +565,10 @@ class AdminPart(appier.Part):
         if oauth_token: return
         if oauth_token_secret: return
         api = self.get_twitter_api()
-        return api.oauth_authorize(state = state)
+        url = api.oauth_authorize(state = state)
+        self.session["tw.oauth_token"] = api.oauth_token
+        self.session["tw.oauth_token_secret"] = api.oauth_token_secret
+        return url
 
     def get_twitter_api(self):
         import twitter
