@@ -76,7 +76,7 @@ class Account(base.Base):
     twitter_username = appier.field(
         index = True
     )
-    
+
     google_id = appier.field(
         index = True
     )
@@ -85,7 +85,7 @@ class Account(base.Base):
         index = True
     )
 
-    gihub_username = appier.field(
+    github_login = appier.field(
         index = True
     )
 
