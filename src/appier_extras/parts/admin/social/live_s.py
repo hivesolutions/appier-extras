@@ -92,7 +92,7 @@ class Live(object):
         return account
 
     def ensure_live_api(self, state = None):
-        access_token = self.session.get("fb.access_token", None)
+        access_token = self.session.get("live.access_token", None)
         if access_token: return
         api = self.get_live_api()
         return api.oauth_authorize(state = state)
@@ -100,10 +100,10 @@ class Live(object):
     def get_live_api(self):
         import live
         redirect_url = self.url_for("admin.oauth_live", absolute = True)
-        access_token = self.session and self.session.get("fb.access_token", None)
+        access_token = self.session and self.session.get("live.access_token", None)
         return live.Api(
-            client_id = appier.conf("FB_ID"),
-            client_secret = appier.conf("FB_SECRET"),
+            client_id = appier.conf("LIVE_ID"),
+            client_secret = appier.conf("LIVE_SECRET"),
             redirect_url = redirect_url,
             access_token = access_token
         )
