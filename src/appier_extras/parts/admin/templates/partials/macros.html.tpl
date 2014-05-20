@@ -45,4 +45,27 @@
     {% endif %}
 {%- endmacro %}
 
+{% macro paging(current, count, caller = None) -%}
+	<div class="pages">
+        {% if current == 1 %}
+            <span class="page disabled">&#8592;</span>
+        {% else %}
+            <a href="?{{ caller(page = current - 1) }}" class="page">&#8592;</a>
+        {% endif %}
+        {% for index in range(count) %}
+            {% set index = index + 1 %}
+            {% if index == current %}
+                <span class="page selected">{{ index }}</span>
+            {% else %}
+                <a href="{{ caller(page = index) }}" class="page">{{ index }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if current == count %}
+            <span class="page disabled">&#8594;</span>
+        {% else %}
+            <a href="{{ caller(page = current + 1) }}" class="page">&#8594;</a>
+        {% endif %}
+    </div>
+{%- endmacro %}
+
 {% block html %}{% endblock %}

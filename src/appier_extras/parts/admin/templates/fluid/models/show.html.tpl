@@ -43,25 +43,6 @@
         </tbody>
     </table>
     {% if page.count > 1 %}
-        <div class="pages">
-            {% if page.index == 1 %}
-                <span class="page disabled">&#8592;</span>
-            {% else %}
-                <a href="?{{ page.query(page = page.index - 1) }}" class="page">&#8592;</a>
-            {% endif %}
-            {% for index in range(page.count) %}
-                {% set index = index + 1 %}
-                {% if index == page.index %}
-                    <span class="page selected">{{ index}}</span>
-                {% else %}
-                    <a href="{{ page.query(page = index) }}" class="page">{{ index}}</a>
-                {% endif %}
-            {% endfor %}
-            {% if page.index == page.count %}
-                <span class="page disabled">&#8594;</span>
-            {% else %}
-                <a href="{{ page.query(page = page.index + 1) }}" class="page">&#8594;</a>
-            {% endif %}
-        </div>
+        {{ paging(page.index, page.count, caller =  page.query) }}
     {% endif %}
 {% endblock %}
