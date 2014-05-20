@@ -97,6 +97,9 @@ class Twitter(object):
         oauth_token_secret = self.session.get("tw.oauth_token_secret", None)
         oauth_temporary = self.session.get("tw.oauth_temporary", True)
         if not oauth_temporary and oauth_token and oauth_token_secret: return
+        self.session["tw.oauth_token"] = None
+        self.session["tw.oauth_token_secret"] = None
+        self.session["tw.oauth_temporary"] = True
         api = self.get_twitter_api()
         url = api.oauth_authorize(state = state)
         self.session["tw.oauth_token"] = api.oauth_token
