@@ -1,5 +1,5 @@
 {% extends "partials/layout.fluid.html.tpl" %}
-{% block htitle %}{{ owner.name }} / {% block title %}{% endblock %}{% endblock %}
+{% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
     {% if section == "admin" %}
         <a class="selected" href="{{ url_for('admin.index') }}">home</a>

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="login-panel">
         <h1>Sign up</h1>
-        <h3>Create you new account on <strong>{{ owner.name }}</strong></h3>
+        <h3>Create you new account on <strong>{{ owner.description }}</strong></h3>
         <div class="quote error">
             {{ error }}
         </div>

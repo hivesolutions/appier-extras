@@ -1,2 +1,2 @@
 {% extends "partials/layout.simple.html.tpl" %}
-{% block htitle %}{{ owner.name }} / {% block title %}{% endblock %}{% endblock %}
+{% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}

@@ -7,7 +7,7 @@
         <div class="panel-header">
             <img class="image square" src="{{ url_for('admin', filename = 'images/logo_96.png') }}" />
             <div class="details">
-                <h2>{{ owner.name }}</h2>
+                <h2>{{ owner.description }}</h2>
             </div>
             <div class="buttons">
                 {{ self.buttons() }}
