@@ -95,12 +95,13 @@ class Twitter(object):
     def ensure_twitter_api(self, state = None):
         oauth_token = self.session.get("tw.oauth_token", None)
         oauth_token_secret = self.session.get("tw.oauth_token_secret", None)
-        if oauth_token: return
-        if oauth_token_secret: return
+        oauth_temporary = self.session.get("tw.oauth_temporary", True)
+        if not oauth_temporary and oauth_token and oauth_token_secret: return
         api = self.get_twitter_api()
         url = api.oauth_authorize(state = state)
         self.session["tw.oauth_token"] = api.oauth_token
         self.session["tw.oauth_token_secret"] = api.oauth_token_secret
+        self.session["tw.oauth_temporary"] = True
         return url
 
     def get_twitter_api(self):
