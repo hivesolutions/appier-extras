@@ -48,32 +48,34 @@
 {% macro paging(current, count, caller = None) -%}
     <div class="pages">
         {% if caller %}
-            {% set href = caller(page = current - 1) %}
+            {% set previous = caller(page = current - 1) %}
+            {% set next = caller(page = current + 1) %}
         {% else %}
-            {% set href = "#" %}
+            {% set previous = "#" %}
+            {% set next = "#" %}
         {% endif %}
         {% if current == 1 %}
             <span class="page disabled">&#8592;</span>
         {% else %}
-            <a href="?{{ href }}" class="page">&#8592;</a>
+            <a href="{{ previous }}" class="page">&#8592;</a>
         {% endif %}
         {% for index in range(count) %}
             {% set index = index + 1 %}
             {% if caller %}
-                {% set lhref = caller(page = index) %}
+                {% set href = caller(page = index) %}
             {% else %}
-                {% set lhref = "#" %}
+                {% set href = "#" %}
             {% endif %}
             {% if index == current %}
                 <span class="page selected">{{ index }}</span>
             {% else %}
-                <a href="{{ lhref }}" class="page">{{ index }}</a>
+                <a href="{{ href }}" class="page">{{ index }}</a>
             {% endif %}
         {% endfor %}
         {% if current == count %}
             <span class="page disabled">&#8594;</span>
         {% else %}
-            <a href="{{ href }}" class="page">&#8594;</a>
+            <a href="{{ next }}" class="page">&#8594;</a>
         {% endif %}
     </div>
 {%- endmacro %}
