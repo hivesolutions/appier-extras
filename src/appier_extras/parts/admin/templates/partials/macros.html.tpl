@@ -37,4 +37,12 @@
     {% endif %}
 {%- endmacro %}
 
+{% macro menu_link(name, href = "#") -%}
+    {% if area == name %}
+        <a class="active" href="{{ href }}">{{ name }}</a>
+    {% else %}
+        <a href="{{ href }}">{{ name }}</a>
+    {% endif %}
+{%- endmacro %}
+
 {% block html %}{% endblock %}
