@@ -1,5 +1,5 @@
 {% extends "partials/admin.fluid.html.tpl" %}
-{% block title %}status{% endblock %}
+{% block title %}Status{% endblock %}
 {% block name %}Status{% endblock %}
 {% block style %}no-header{% endblock %}
 {% block content %}

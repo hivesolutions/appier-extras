@@ -1,5 +1,5 @@
 {% extends "partials/admin.fluid.html.tpl" %}
-{% block title %}routes{% endblock %}
+{% block title %}Routes{% endblock %}
 {% block name %}Routes{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block content %}
