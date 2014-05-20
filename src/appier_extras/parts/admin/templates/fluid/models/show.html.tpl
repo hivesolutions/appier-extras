@@ -43,6 +43,6 @@
         </tbody>
     </table>
     {% if page.count > 1 %}
-        {{ paging(page.index, page.count, caller =  page.query) }}
+        {{ paging(page.index, page.count, caller = page.query) }}
     {% endif %}
 {% endblock %}
