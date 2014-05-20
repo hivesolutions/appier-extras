@@ -180,6 +180,7 @@ class AdminPart(
         if "fb.access_token" in self.session: del self.session["fb.access_token"]
         if "tw.oauth_token" in self.session: del self.session["tw.oauth_token"]
         if "tw.oauth_token_secret" in self.session: del self.session["tw.oauth_token_secret"]
+        if "tw.oauth_temporary" in self.session: del self.session["tw.oauth_temporary"]
         if "gg.access_token" in self.session: del self.session["gg.access_token"]
         if "gh.access_token" in self.session: del self.session["gh.access_token"]
         if "live.access_token" in self.session: del self.session["live.access_token"]
@@ -454,6 +455,7 @@ class AdminPart(
         oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
         self.session["tw.oauth_token"] = oauth_token
         self.session["tw.oauth_token_secret"] = oauth_token_secret
+        self.session["tw.oauth_temporary"] = False
         self.ensure_twitter_account()
         return self.redirect(
            next or self.url_for("admin.index")
