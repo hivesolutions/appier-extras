@@ -87,8 +87,6 @@
         {% endif %}
 
         {% for index in range(current - offset_start - 1, current + offset_end) %}
-            {% if index < 0 %}{% continue %}{% endif %}
-            {% if index >= count %}{% continue %}{% endif %}
             {% set index = index + 1 %}
             {% if caller %}
                 {% set href = caller(page = index) %}
