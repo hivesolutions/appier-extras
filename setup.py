@@ -42,7 +42,7 @@ import setuptools
 
 setuptools.setup(
     name = "appier_extras",
-    version = "0.2.12",
+    version = "0.2.14",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Appier Framework Extra Elements",
@@ -55,6 +55,7 @@ setuptools.setup(
         "appier_extras.parts",
         "appier_extras.parts.admin",
         "appier_extras.parts.admin.models",
+        "appier_extras.parts.admin.social",
         "appier_extras.parts.captcha",
         "appier_extras.utils"
     ],
