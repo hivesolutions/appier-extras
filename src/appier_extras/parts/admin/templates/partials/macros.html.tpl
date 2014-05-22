@@ -45,11 +45,13 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro paging(current, count, caller = None) -%}
+{% macro paging(current, count, caller = None, size = 5) -%}
     <div class="pages">
         {% if caller %}
             {% set previous = caller(page = current - 1) %}
             {% set next = caller(page = current + 1) %}
+            {% set first = caller(page = 1) %}
+            {% set last = caller(page = count) %}
         {% else %}
             {% set previous = "#" %}
             {% set next = "#" %}
@@ -59,7 +61,34 @@
         {% else %}
             <a href="{{ previous }}" class="page">&#8592;</a>
         {% endif %}
-        {% for index in range(count) %}
+        {% if current != 1 %}
+            <a href="{{ first }}" class="page">first</a>
+        {% endif %}
+
+        {% set offset_start = (current - size - 1) %}
+        {% if offset_start > 0 %}{% set offset_start = size %}
+        {% else %}{% set offset_start = size + offset_start %}
+        {% endif %}
+
+        {% set extra = size - offset_start %}
+        {% set size_end = size + extra %}
+
+        {% set offset_end = count - (current + size_end) %}
+        {% if offset_end > 0 %}{% set offset_end = size_end %}
+        {% else %}{% set offset_end = size_end + offset_end %}
+        {% endif %}
+
+        {% set extra = size - offset_end %}
+        {% set size_start = size + extra %}
+
+        {% set offset_start = (current - size_start - 1) %}
+        {% if offset_start > 0 %}{% set offset_start = size_start %}
+        {% else %}{% set offset_start = size_start + offset_start %}
+        {% endif %}
+
+        {% for index in range(current - offset_start - 1, current + offset_end) %}
+            {% if index < 0 %}{% continue %}{% endif %}
+            {% if index >= count %}{% continue %}{% endif %}
             {% set index = index + 1 %}
             {% if caller %}
                 {% set href = caller(page = index) %}
@@ -72,6 +101,9 @@
                 <a href="{{ href }}" class="page">{{ index }}</a>
             {% endif %}
         {% endfor %}
+        {% if current != count %}
+            <a href="{{ last }}" class="page">last</a>
+        {% endif %}
         {% if current == count %}
             <span class="page disabled">&#8594;</span>
         {% else %}
