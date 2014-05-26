@@ -43,7 +43,7 @@ from appier_extras.parts.admin.models import base
 
 class Settings(base.Base):
 
-    meta = appier.field(
+    extra = appier.field(
         type = dict,
         index = True
     )
