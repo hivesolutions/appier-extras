@@ -79,6 +79,14 @@ class Base(appier.Model):
     )
 
     @classmethod
+    def get_e(cls, *args, **kwargs):
+        return cls.get(enabled = True, *args, **kwargs)
+
+    @classmethod
+    def find_e(cls, *args, **kwargs):
+        return cls.find(enabled = True, *args, **kwargs)
+
+    @classmethod
     def create_names(cls):
         names = super(Base, cls).create_names()
         names.remove("id")
@@ -101,12 +109,6 @@ class Base(appier.Model):
         appier.Model.pre_update(self)
 
         self.modified = time.time()
-
-    def get_e(self, *args, **kwargs):
-        return self.get(enabled = True, *args, **kwargs)
-
-    def find_e(self, *args, **kwargs):
-        return self.find(enabled = True, *args, **kwargs)
 
     def enable_s(self):
         self.enabled = True
