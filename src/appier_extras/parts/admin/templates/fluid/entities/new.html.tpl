@@ -11,7 +11,7 @@
                         <label>{{ name }}</label>
                     </div>
                     <div class="input">
-                        {{ input(entity, name) }}
+                        {{ input(entity, name, create = True) }}
                     </div>
                 </div>
             {% endfor %}
