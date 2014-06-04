@@ -4,18 +4,20 @@
     {{ tag_out(cls, name, value, entity) }}
 {%- endmacro %}
 
-{% macro input(entity, name, placeholder = None, boolean = True) -%}
+{% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
     {% set cls = entity.__class__ %}
+    {% set info = cls[name] %}
+    {% set disabled = info.get('immutable', False) and not create %}
     {% set value = entity[name]|default('', boolean) %}
     {% set error = errors[name] %}
-    {{ tag_input(cls, name, value, entity, error) }}
+    {{ tag_input(cls, name, value, entity, error, disabled = disabled) }}
 {%- endmacro %}
 
 {% macro tag_out(cls, name, value, entity) -%}
     {% set meta = cls._solve(name) %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
-        {% set type = info['type'] %}
+        {% set type = info["type"] %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
         {% if _value %}
@@ -41,14 +43,15 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro tag_input(cls, name, value, entity, error) -%}
+{% macro tag_input(cls, name, value, entity, error, disabled = False) -%}
     {% set meta = cls._solve(name) %}
+    {% set disabled_s = "\" data-disabled=\"1" if disabled else "" %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
-        {% set type = info['type'] %}
+        {% set type = info["type"] %}
         {% set target = type._target() %}
         {% set _name = type._name %}
-        <div class="drop-field"  value="{{ value }}" data-error="{{ error }}"
+        <div class="drop-field {{ disabled_s|safe }}"  value="{{ value }}" data-error="{{ error }}"
              data-value_attribute="{{ _name }}"  data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ value }}" />
             <div class="data-source" data-type="json"
@@ -56,26 +59,26 @@
         </div>
     {% elif meta == "references" %}
         {% set info = cls[name] %}
-        {% set type = info['type'] %}
+        {% set type = info["type"] %}
         {% set target = type._target() %}
         {% set _name = type._name %}
-        <div class="tag-field"  value="{{ value }}" data-error="{{ error }}"
+        <div class="tag-field {{ disabled_s|safe }}" value="{{ value }}" data-error="{{ error }}"
              data-value_attribute="{{ _name }}"  data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ value }}" />
             <div class="data-source" data-type="json"
                  data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
         </div>
     {% elif meta == "date" %}
-        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+        <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}" value="{{ value }}"
                data-type="date" data-error="{{ error }}" />
     {% elif meta == "datetime" %}
-        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+        <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}" value="{{ value }}"
                data-type="date" data-error="{{ error }}" />
     {% elif meta == "secret" %}
-        <input type="password" class="text-field" name="{{ name }}"
+        <input type="password" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
                value="{{ value }}" data-error="{{ error }}" />
     {% else %}
-        <input type="text" class="text-field" name="{{ name }}"
+        <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
                value="{{ value }}" data-error="{{ error }}" />
     {% endif %}
 {%- endmacro %}
