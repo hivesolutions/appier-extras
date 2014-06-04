@@ -1,6 +1,11 @@
 {% extends "partials/admin.fluid.html.tpl" %}
 {% block title %}{{ entity }}{% endblock %}
 {% block name %}{{ entity }}{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    <div class="button button-color button-red button-confirm" data-link="{{ url_for('admin.delete_entity', model = model._name(), _id = entity._id) }}"
+         data-message="Do you really want to delete [[{{ entity }}]] ?">Delete</div>
+{% endblock %}
 {% block content %}
     <form action="{{ url_for('admin.update_entity', model = model._name(), _id = entity._id) }}"
           enctype="multipart/form-data" method="post" class="form inline">

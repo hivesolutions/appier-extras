@@ -98,6 +98,7 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
+            (("GET",), "/admin/models/<str:model>/<str:_id>/delete", self.delete_entity),
             (("GET",), "/admin/facebook", self.facebook),
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
             (("GET",), "/admin/twitter", self.twitter),
@@ -426,6 +427,18 @@ class AdminPart(
                 "admin.show_entity",
                 model = model._name(),
                 _id = _id
+            )
+        )
+
+    @appier.ensure(token = "admin")
+    def delete_entity(self, model, _id):
+        model = self.get_model(model)
+        entity = model.get(_id = appier.object_id(_id))
+        entity.delete()
+        return self.redirect(
+            self.url_for(
+                "admin.show_model",
+                model = model._name()
             )
         )
 
