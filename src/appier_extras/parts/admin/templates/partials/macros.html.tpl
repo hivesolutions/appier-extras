@@ -1,19 +1,34 @@
 {% macro out(entity, name, boolean = True) -%}
     {% set cls = entity.__class__ %}
     {% set value = entity[name + '_meta']|default('N/A', boolean) %}
-    {{ tag_out(cls, name, value) }}
+    {{ tag_out(cls, name, value, entity) }}
 {%- endmacro %}
 
 {% macro input(entity, name, placeholder = None, boolean = True) -%}
     {% set cls = entity.__class__ %}
     {% set value = entity[name]|default('', boolean) %}
     {% set error = errors[name] %}
-    {{ tag_input(cls, name, value, error) }}
+    {{ tag_input(cls, name, value, entity, error) }}
 {%- endmacro %}
 
-{% macro tag_out(cls, name, value) -%}
+{% macro tag_out(cls, name, value, entity) -%}
     {% set meta = cls._solve(name) %}
-    {% if meta == "enum" %}
+    {% if meta == "reference" %}
+        {% set info = cls[name] %}
+        {% set type = info['type'] %}
+        {% set target = type._target() %}
+        {% set _value = entity[name] %}
+        {% if _value %}
+            <a href="{{ url_for('admin.show_entity', model = target._name(), _id = _value._id) }}">{{ value }}</a>
+        {% else %}
+            {{ value }}
+        {% endif %}
+    {% elif meta == "references" %}
+        {% set _value = entity[name] %}
+        {% for item in _value %}
+            {{ item }}
+        {% endfor %}
+    {% elif meta == "enum" %}
         <span class="tag {{ value }}">{{ value }}</span>
     {% elif meta == "url" %}
         <a href="{{ value }}">{{ value }}</a>
@@ -26,9 +41,37 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro tag_input(cls, name, value, error) -%}
+{% macro tag_input(cls, name, value, entity, error) -%}
     {% set meta = cls._solve(name) %}
-    {% if meta == "secret" %}
+    {% if meta == "reference" %}
+        {% set info = cls[name] %}
+        {% set type = info['type'] %}
+        {% set target = type._target() %}
+        {% set _name = type._name %}
+        <div class="drop-field"  value="{{ value }}" data-error="{{ error }}"
+             data-value_attribute="{{ _name }}"  data-number_options="-1">
+            <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ value }}" />
+            <div class="data-source" data-type="json"
+                 data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
+        </div>
+    {% elif meta == "references" %}
+        {% set info = cls[name] %}
+        {% set type = info['type'] %}
+        {% set target = type._target() %}
+        {% set _name = type._name %}
+        <div class="tag-field"  value="{{ value }}" data-error="{{ error }}"
+             data-value_attribute="{{ _name }}"  data-number_options="-1">
+            <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ value }}" />
+            <div class="data-source" data-type="json"
+                 data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
+        </div>
+    {% elif meta == "date" %}
+        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+               data-type="date" data-error="{{ error }}" />
+    {% elif meta == "datetime" %}
+        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+               data-type="date" data-error="{{ error }}" />
+    {% elif meta == "secret" %}
         <input type="password" class="text-field" name="{{ name }}"
                value="{{ value }}" data-error="{{ error }}" />
     {% else %}
