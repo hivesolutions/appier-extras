@@ -90,6 +90,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/models", self.list_models),
+            (("GET",), "/admin/models/<str:model>.json", self.show_model_json),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
@@ -325,6 +326,13 @@ class AdminPart(
             page = page,
             entities = entities
         )
+
+    @appier.ensure(token = "admin")
+    def show_model_json(self, model):
+        model = self.get_model(model)
+        object = appier.get_object(alias = True, find = True)
+        entities = model.find(meta = True, map = True, **object)
+        return entities
 
     @appier.ensure(token = "admin")
     def show_model_csv(self, model):
