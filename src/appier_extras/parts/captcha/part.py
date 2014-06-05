@@ -108,11 +108,11 @@ class CaptchaPart(appier.Part):
         if captcha: del self.session["captcha"]
         if not captcha: raise appier.SecurityError(
             message = "No captcha available",
-            error_code = 401
+            code = 401
         )
         if not value == captcha: raise appier.SecurityError(
             message = "Invalid captcha value",
-            error_code = 401
+            code = 401
         )
 
     def _draw_text(self, image, font, value, rotate = True):
