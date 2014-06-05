@@ -109,7 +109,8 @@ class AdminPart(
             (("GET",), "/admin/github/oauth", self.oauth_github),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
-            (("GET",), "/admin/log.json", self.show_log)
+            (("GET",), "/admin/log.json", self.show_log),
+            (("GET", "POST"), "/api/admin/login", self.login_api)
         ]
 
     def models(self):
@@ -548,6 +549,35 @@ class AdminPart(
         level = self.field("level", None)
         return dict(
             messages = memory_handler.get_latest(count = count, level = level)
+        )
+
+    def login_api(self):
+        # retrieves the various fields that are going to be
+        # used for the validation of the user under the current
+        # authentication/authorization process
+        username = self.field("username")
+        password = self.field("password")
+        next = self.field("next")
+        account = self.account_c.login(username, password)
+
+        # updates the current session with the proper
+        # values to correctly authenticate the user
+        self.session["username"] = account.username
+        self.session["email"] = account.email
+        self.session["type"] = account.type_s()
+        self.session["tokens"] = account.tokens()
+
+        # retrieves the session identifier (sid) for the currently
+        # assigned session, this is going to be used in the next
+        # requests to refer to the proper session
+        sid = self.session.sid
+
+        # redirects the current operation to the next url or in
+        # alternative to the root index of the administration
+        return dict(
+            sid = sid,
+            session_id = sid,
+            username = username
         )
 
     def socials(self):
