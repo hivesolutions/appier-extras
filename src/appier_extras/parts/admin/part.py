@@ -163,6 +163,8 @@ class AdminPart(
         self.session["type"] = account.type_s()
         self.session["tokens"] = account.tokens()
 
+        # redirects the current operation to the next url or in
+        # alternative to the root index of the administration
         return self.redirect(
             next or self.url_for("admin.index")
         )
