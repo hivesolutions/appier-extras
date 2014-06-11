@@ -6,7 +6,7 @@
 
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
     {% set cls = entity.__class__ %}
-    {% set info = cls[name] %}
+    {% set info = cls[name]|default({}, True) %}
     {% set disabled = info.get('immutable', False) and not create %}
     {% set value = entity[name]|default('', boolean) %}
     {% set error = errors[name] %}
