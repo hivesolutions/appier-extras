@@ -1,6 +1,7 @@
 {% macro out(entity, name, boolean = True) -%}
     {% set cls = entity.__class__ %}
-    {% set value = entity[name + '_meta']|default('N/A', boolean) %}
+    {% set value = entity[name + '_meta']|default('N/A') %}
+    {% if value in (None, '') and boolean %}{% set value = 'N/A' %}{% endif %}
     {{ tag_out(cls, name, value, entity) }}
 {%- endmacro %}
 
@@ -8,8 +9,9 @@
     {% set cls = entity.__class__ %}
     {% set info = cls[name]|default({}, True) %}
     {% set disabled = info.get('immutable', False) and not create %}
-    {% set value = entity[name]|default('', boolean) %}
+    {% set value = entity[name]|default('') %}
     {% set error = errors[name] %}
+    {% if value in (None, '') and boolean %}{% set value = '' %}{% endif %}
     {{ tag_input(cls, name, value, entity, error, disabled = disabled) }}
 {%- endmacro %}
 
