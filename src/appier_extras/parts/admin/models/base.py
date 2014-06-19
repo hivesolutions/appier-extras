@@ -78,6 +78,18 @@ class Base(appier.Model):
         meta = "datetime"
     )
 
+    def __cmp__(self, value):
+        if not hasattr(value, "id"): return -1
+        return self.id.__cmp__(value.id)
+
+    def __lt__(self, value):
+        if not hasattr(value, "id"): return False
+        return self.id.__lt__(value.id)
+
+    def __eq__(self, value):
+        if not hasattr(value, "id"): return False
+        return self.id.__eq__(value.id)
+
     @classmethod
     def get_e(cls, *args, **kwargs):
         return cls.get(enabled = True, *args, **kwargs)
