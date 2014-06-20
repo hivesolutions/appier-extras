@@ -557,7 +557,6 @@ class AdminPart(
         # authentication/authorization process
         username = self.field("username")
         password = self.field("password")
-        next = self.field("next")
         account = self.account_c.login(username, password)
 
         # updates the current session with the proper
