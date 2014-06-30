@@ -30,7 +30,7 @@
     {% elif meta == "references" %}
         {% set _value = entity[name] %}
         {% for item in _value %}
-            {{ item }}
+            <a href="{{ url_for('admin.show_entity', model = item.resolve().__class__._name(), _id = item._id) }}">{{ item }}</a>
         {% endfor %}
     {% elif meta == "enum" %}
         <span class="tag {{ value }}">{{ value }}</span>
