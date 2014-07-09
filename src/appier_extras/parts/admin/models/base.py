@@ -90,6 +90,9 @@ class Base(appier.Model):
         if not hasattr(value, "id"): return False
         return self.id.__eq__(value.id)
 
+    def __ne__(self, value):
+        return not self.__eq__(value)
+
     @classmethod
     def get_e(cls, *args, **kwargs):
         return cls.get(enabled = True, *args, **kwargs)
