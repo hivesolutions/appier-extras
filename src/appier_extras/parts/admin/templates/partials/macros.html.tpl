@@ -70,6 +70,9 @@
             <div class="data-source" data-type="json"
                  data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
         </div>
+    {% elif meta == "file" %}
+    	<input type="file" class="file-field {{ disabled_s|safe }}" name="{{ name }}"
+    		   data-error="{{ error }}" />
     {% elif meta == "date" %}
         <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}" value="{{ value }}"
                data-type="date" data-error="{{ error }}" />
