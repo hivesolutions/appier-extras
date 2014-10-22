@@ -417,7 +417,6 @@ class MarkdownHTML(MarkdownGenerator):
         self.list_item = False
 
     def _escape_xml(self, value, encoding = "utf-8"):
-        value_s = value.encode(encoding) if appier.PYTHON_3 else value
-        print(value_s)
+        value_s = value if appier.PYTHON_3 else value.encode(encoding)
         escaped = xml.sax.saxutils.escape(value_s)
-        return escaped.decode(encoding) if appier.PYTHON_3 else value
+        return value if appier.PYTHON_3 else escaped.decode(encoding) 
