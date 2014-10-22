@@ -273,6 +273,7 @@ class MarkdownGenerator(object):
 
     def emit(self, value):
         if not self.file: return
+        value = appier.UNICODE(value)
         self.file.write(value)
 
     def _generate(self, nodes):
@@ -414,8 +415,9 @@ class MarkdownHTML(MarkdownGenerator):
         for _index in range(count): self.close("</ul>")
         self.list_level -= count
         self.list_item = False
-        
+
     def _escape_xml(self, value, encoding = "utf-8"):
-        value_s = value.encode("utf-8")
+        value_s = value.encode(encoding) if appier.PYTHON_3 else value
+        print(value_s)
         escaped = xml.sax.saxutils.escape(value_s)
-        return escaped.decode("utf-8")
+        return escaped.decode(encoding) if appier.PYTHON_3 else value
