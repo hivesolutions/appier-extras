@@ -39,6 +39,8 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import re
 
+import xml.sax.saxutils
+
 import appier
 
 class MarkdownParser(object):
@@ -222,7 +224,8 @@ class MarkdownParser(object):
             type = "code",
             name = name,
             value = value,
-            multiline = True
+            multiline = True,
+            escape = True
         )
         return node
 
@@ -233,6 +236,7 @@ class MarkdownParser(object):
             type = "code",
             value = value,
             multiline = True,
+            escape = True,
             close = False
         )
         return node
@@ -360,8 +364,10 @@ class MarkdownHTML(MarkdownGenerator):
         value = node["value"]
         name = node.get("name", "undefined")
         multiline = node.get("multiline", False)
+        escape = node.get("escape", False)
         close = node.get("close", True)
         tag = "pre" if multiline else "code"
+        value = xml.sax.saxutils.escape(value) if escape else value
         self._ensure_code(tag, name)
         self.emit(value)
         if close: self._close_code(tag)
