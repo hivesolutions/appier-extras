@@ -367,7 +367,7 @@ class MarkdownHTML(MarkdownGenerator):
         escape = node.get("escape", False)
         close = node.get("close", True)
         tag = "pre" if multiline else "code"
-        value = xml.sax.saxutils.escape(value) if escape else value
+        value = self._escape_xml(value) if escape else value
         self._ensure_code(tag, name)
         self.emit(value)
         if close: self._close_code(tag)
@@ -414,3 +414,8 @@ class MarkdownHTML(MarkdownGenerator):
         for _index in range(count): self.close("</ul>")
         self.list_level -= count
         self.list_item = False
+        
+    def _escape_xml(self, value, encoding = "utf-8"):
+        value_s = value.encode("utf-8")
+        escaped = xml.sax.saxutils.escape(value_s)
+        return escaped.decode("utf-8")
