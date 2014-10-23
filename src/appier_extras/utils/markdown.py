@@ -285,7 +285,7 @@ class MarkdownGenerator(object):
 
 class MarkdownHTML(MarkdownGenerator):
 
-    def __init__(self, file = None, base_url = "/"):
+    def __init__(self, file = None, base_url = ""):
         MarkdownGenerator.__init__(self, file = file)
         self.base_url = base_url
 
