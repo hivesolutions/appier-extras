@@ -1,6 +1,6 @@
 # [![Appier Framework Extras](res/logo.png)](http://appier_extras.hive.pt)
 
-Set of extra elements for [Appier Framework](https://github.com/hivesolutions/appier) infra-structure.
+Set of extra elements for [Appier Framework](https://appier.hive.pt) infra-structure.
 
 ```python
 import appier
