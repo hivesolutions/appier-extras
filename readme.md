@@ -1,6 +1,6 @@
-# [Appier Framework Extras](http://appier_extras.hive.pt)
+# [![Appier Framework Extras](res/logo.png)](http://appier_extras.hive.pt)
 
-Set of extra elements for [Appier Framework](https://github.com/hivesolutions/appier) infra-structure.
+Set of extra elements for [Appier Framework](http://appier.hive.pt) infra-structure.
 
 ```python
 import appier
@@ -21,6 +21,10 @@ class HelloApp(appier.WebApp):
 
 HelloApp().serve()
 ```
+
+## Licensing
+
+Appier Extras is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
 
 ## Build Automation
 
