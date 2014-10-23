@@ -63,6 +63,7 @@ class MarkdownParser(object):
         newline = r"(?P<newline>(\n\n)|(\r\n\r\n))"
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
         list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-] (?P<list_value>[^\r\n]+))"
+        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\. (?P<listo_value>[^\r\n]+))"
         image = r"(?P<image>\!(?P<image_label>\[.+?\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ ]+\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
@@ -76,6 +77,7 @@ class MarkdownParser(object):
                 newline,
                 header,
                 list,
+                listo,
                 image,
                 link,
                 bold,
@@ -158,6 +160,20 @@ class MarkdownParser(object):
         node = dict(
             type = "list",
             level = len(index) + 1,
+            value = value
+        )
+        return node
+
+    def parse_listo(self, parts):
+        index = parts["listo_index"]
+        number = parts["listo_number"]
+        value = parts["listo_value"]
+        value = self.parse(value, regex = self.simple)
+
+        node = dict(
+            type = "listo",
+            level = len(index) + 1,
+            number = int(number),
             value = value
         )
         return node
@@ -310,6 +326,7 @@ class MarkdownHTML(MarkdownGenerator):
         self.code = False
         self.list_item = False
         self.list_level = 0
+        self.listo_level = 0
 
     def flush(self):
         MarkdownGenerator.flush(self)
@@ -334,6 +351,16 @@ class MarkdownHTML(MarkdownGenerator):
         if self.list_item: self.close("</li>")
         self.list_item = False
         self._ensure_list(level = level)
+        self.open("<li>")
+        self.list_item = True
+        self._generate(value)
+
+    def generate_listo(self, node):
+        level = node["level"]
+        value = node["value"]
+        if self.list_item: self.close("</li>")
+        self.list_item = False
+        self._ensure_listo(level = level)
         self.open("<li>")
         self.list_item = True
         self._generate(value)
@@ -388,13 +415,22 @@ class MarkdownHTML(MarkdownGenerator):
 
     def _ensure_list(self, level = 1):
         if self.list_level == level: return
-        self._close_paragraph()
+        self._close_all()
         delta = level - self.list_level
         if delta < 0: self._close_list(delta * -1); return
         for _index in range(delta): self.open("<ul>")
         self.list_level = level
 
+    def _ensure_listo(self, level = 1):
+        if self.listo_level == level: return
+        self._close_all()
+        delta = level - self.listo_level
+        if delta < 0: self._close_listo(delta * -1); return
+        for _index in range(delta): self.open("<ol>")
+        self.listo_level = level
+
     def _close_all(self):
+        self._close_listo()
         self._close_list()
         self._close_code()
         self._close_paragraph()
@@ -416,7 +452,14 @@ class MarkdownHTML(MarkdownGenerator):
         self.list_level -= count
         self.list_item = False
 
+    def _close_listo(self, count = None):
+        if self.list_item: self.close("</li>")
+        if not count: count = self.listo_level
+        for _index in range(count): self.close("</ol>")
+        self.listo_level -= count
+        self.list_item = False
+
     def _escape_xml(self, value, encoding = "utf-8"):
         value_s = value if appier.PYTHON_3 else value.encode(encoding)
         escaped = xml.sax.saxutils.escape(value_s)
-        return escaped if appier.PYTHON_3 else escaped.decode(encoding) 
+        return escaped if appier.PYTHON_3 else escaped.decode(encoding)
