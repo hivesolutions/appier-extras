@@ -224,8 +224,7 @@ class MarkdownParser(object):
             type = "code",
             name = name,
             value = value,
-            multiline = True,
-            escape = True
+            multiline = True
         )
         return node
 
@@ -236,7 +235,6 @@ class MarkdownParser(object):
             type = "code",
             value = value,
             multiline = True,
-            escape = True,
             close = False
         )
         return node
@@ -288,6 +286,10 @@ class MarkdownHTML(MarkdownGenerator):
     def __init__(self, file = None, base_url = ""):
         MarkdownGenerator.__init__(self, file = file)
         self.base_url = base_url
+
+    def emit(self, value, escape = False):
+        if escape: value = self._escape_xml(value)
+        MarkdownGenerator.emit(self, value)
 
     def is_open(self):
         return self.depth > 0
@@ -365,17 +367,15 @@ class MarkdownHTML(MarkdownGenerator):
         value = node["value"]
         name = node.get("name", "undefined")
         multiline = node.get("multiline", False)
-        escape = node.get("escape", False)
         close = node.get("close", True)
         tag = "pre" if multiline else "code"
-        value = self._escape_xml(value) if escape else value
         self._ensure_code(tag, name)
-        self.emit(value)
+        self.emit(value, escape = True)
         if close: self._close_code(tag)
 
     def generate_normal(self, node):
         if self.code: self.emit("\n"); return
-        if self.is_open(): self.emit(node)
+        if self.is_open(): self.emit(node, escape = True)
         else: self.generate_newline(node); self.emit(node.lstrip())
 
     def is_absolute(self, url):
@@ -419,4 +419,4 @@ class MarkdownHTML(MarkdownGenerator):
     def _escape_xml(self, value, encoding = "utf-8"):
         value_s = value if appier.PYTHON_3 else value.encode(encoding)
         escaped = xml.sax.saxutils.escape(value_s)
-        return value if appier.PYTHON_3 else escaped.decode(encoding) 
+        return escaped if appier.PYTHON_3 else escaped.decode(encoding) 
