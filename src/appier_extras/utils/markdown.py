@@ -415,7 +415,7 @@ class MarkdownHTML(MarkdownGenerator):
 
     def _ensure_list(self, level = 1):
         if self.list_level == level: return
-        self._close_all()
+        self._close_all(exceptions = ("list",))
         delta = level - self.list_level
         if delta < 0: self._close_list(delta * -1); return
         for _index in range(delta): self.open("<ul>")
@@ -423,17 +423,17 @@ class MarkdownHTML(MarkdownGenerator):
 
     def _ensure_listo(self, level = 1):
         if self.listo_level == level: return
-        self._close_all()
+        self._close_all(exceptions = ("listo",))
         delta = level - self.listo_level
         if delta < 0: self._close_listo(delta * -1); return
         for _index in range(delta): self.open("<ol>")
         self.listo_level = level
 
-    def _close_all(self):
-        self._close_listo()
-        self._close_list()
-        self._close_code()
-        self._close_paragraph()
+    def _close_all(self, exceptions = ()):
+        if not "listo" in exceptions: self._close_listo()
+        if not "list" in exceptions: self._close_list()
+        if not "code" in exceptions: self._close_code()
+        if not "paragraph" in exceptions: self._close_paragraph()
 
     def _close_paragraph(self):
         if not self.paragraph: return
