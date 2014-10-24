@@ -22,7 +22,7 @@ class HelloApp(appier.WebApp):
 HelloApp().serve()
 ```
 
-## Licensing
+## License
 
 Appier Extras is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
 
