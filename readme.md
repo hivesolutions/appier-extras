@@ -16,9 +16,6 @@ class HelloApp(appier.WebApp):
             )
         )
 
-    def start(self):
-        appier.WebApp.start(self)
-
 HelloApp().serve()
 ```
 
