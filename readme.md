@@ -2,6 +2,8 @@
 
 Set of extra elements for [Appier Framework](http://appier.hive.pt) infra-structure.
 
+Here's a basic example:
+
 ```python
 import appier
 import appier_extras
@@ -18,6 +20,9 @@ class HelloApp(appier.WebApp):
 
 HelloApp().serve()
 ```
+
+After running the previous examples, go to [http://localhost:8080/admin](http://localhost:8080/admin) 
+and login with root/root.
 
 ## License
 
