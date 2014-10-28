@@ -89,10 +89,14 @@
 
 .pages > .page:first-child {
     border-radius: 4px 0px 0px 4px;
+    -moz-border-radius: 4px 0px 0px 4px;
+    -webkit-border-radius: 4px 0px 0px 4px;
 }
 
 .pages > .page:last-child {
     border-radius: 0px 4px 4px 0px;
+    -moz-border-radius: 0px 4px 4px 0px;
+    -webkit-border-radius: 0px 4px 4px 0px;
     border-right: 1px solid #cccccc;
 }
 
