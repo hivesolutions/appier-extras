@@ -102,7 +102,7 @@ class MarkdownParser(object):
     def parse(self, data, regex = None, encoding = "utf-8"):
         regex = regex or self.master
 
-        is_unicode = appier.is_unicode(data)
+        is_unicode = appier.legacy.is_unicode(data)
         if not is_unicode: data = data.decode(encoding)
 
         nodes = []
@@ -287,7 +287,7 @@ class MarkdownGenerator(object):
 
     def emit(self, value):
         if not self.file: return
-        value = appier.UNICODE(value)
+        value = appier.legacy.UNICODE(value)
         self.file.write(value)
 
     def _generate(self, nodes):
@@ -460,6 +460,6 @@ class MarkdownHTML(MarkdownGenerator):
         self.list_item = False
 
     def _escape_xml(self, value, encoding = "utf-8"):
-        value_s = value if appier.PYTHON_3 else value.encode(encoding)
+        value_s = value if appier.legacy.PYTHON_3 else value.encode(encoding)
         escaped = xml.sax.saxutils.escape(value_s)
-        return escaped if appier.PYTHON_3 else escaped.decode(encoding)
+        return escaped if appier.legacy.PYTHON_3 else escaped.decode(encoding)

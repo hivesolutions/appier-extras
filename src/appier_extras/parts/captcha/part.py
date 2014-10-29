@@ -93,7 +93,7 @@ class CaptchaPart(appier.Part):
         self._fill_pattern(image, pattern)
         self._draw_text(image, font, value, rotate = rotate)
 
-        buffer = appier.BytesIO()
+        buffer = appier.legacy.BytesIO()
         image.save(buffer, "jpeg")
         buffer.seek(0)
         return (value, buffer)

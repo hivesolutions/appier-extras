@@ -40,8 +40,8 @@ from . import google_s
 from . import live_s
 from . import twitter_s
 
-from .facebook_s import *
-from .github_s import *
-from .google_s import *
-from .live_s import *
-from .twitter_s import *
+from .facebook_s import Facebook
+from .github_s import Github
+from .google_s import Google
+from .live_s import Live
+from .twitter_s import Twitter

@@ -40,4 +40,4 @@ from . import part
 
 from .models import *
 from .social import *
-from .part import *
+from .part import AdminPart

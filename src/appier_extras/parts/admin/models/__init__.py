@@ -38,6 +38,6 @@ from . import account
 from . import base
 from . import settings
 
-from .account import *
-from .base import *
-from .settings import *
+from .account import Account
+from .base import Base
+from .settings import Settings
