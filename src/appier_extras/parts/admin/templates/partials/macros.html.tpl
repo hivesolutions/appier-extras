@@ -82,6 +82,9 @@
     {% elif meta == "secret" %}
         <input type="password" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
                value="{{ value }}" data-error="{{ error }}" />
+    {% elif meta == "longtext" %}
+        <textarea class="text-area {{ disabled_s|safe }}" name="{{ name }}"
+                  data-error="{{ error }}">{{ value }}</textarea>
     {% else %}
         <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
                value="{{ value }}" data-error="{{ error }}" />
