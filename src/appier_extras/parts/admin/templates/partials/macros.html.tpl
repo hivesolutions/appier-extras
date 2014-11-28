@@ -85,6 +85,19 @@
     {% elif meta == "longtext" %}
         <textarea class="text-area {{ disabled_s|safe }}" name="{{ name }}"
                   data-error="{{ error }}">{{ value }}</textarea>
+    {% elif meta == "bool" %}
+        {% if value %}
+            <input type="radio" name="{{ name }}" id="{{ name }}-1" value="1" checked="1" />
+        {% else %}
+            <input type="radio" name="{{ name }}" id="{{ name }}-1" value="1" />
+        {% endif %}
+        <label class="radio-label" for="{{ name }}-1">True</label>
+        {% if value %}
+            <input type="radio" name="{{ name }}" id="{{ name }}-0" value="0" />
+        {% else %}
+            <input type="radio" name="{{ name }}" id="{{ name }}-0" value="0" checked="1" />
+        {% endif %}
+        <label class="radio-label" for="{{ name }}-0">False</label>
     {% else %}
         <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
                value="{{ value }}" data-error="{{ error }}" />
