@@ -70,6 +70,23 @@
             <div class="data-source" data-type="json"
                  data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
         </div>
+    {% elif meta == "enum" %}
+        {% set info = cls[name] %}
+        {% set enum = info["enum"] %}
+        <div class="drop-field drop-field-select {{ disabled_s|safe }}"
+               data-error="{{ error }}" data-display_attribute="name"
+               data-value_attribute="internal" data-number_options="-1">
+            <input name="{{ name }}" type="hidden" class="hidden-field"
+                   value="{{ value }}" />
+              <ul class="data-source" data-type="local">
+                  {% for key, value in enum.items() %}
+                    <li>
+                        <span name="name">{{ value }}</span>
+                        <span name="internal">{{ key }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% elif meta == "file" %}
         <input type="file" class="file-field {{ disabled_s|safe }}" name="{{ name }}"
                data-error="{{ error }}" />
