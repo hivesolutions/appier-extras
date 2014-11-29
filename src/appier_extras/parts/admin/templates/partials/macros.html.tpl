@@ -78,8 +78,8 @@
                data-value_attribute="internal" data-number_options="-1">
             <input name="{{ name }}" type="hidden" class="hidden-field"
                    value="{{ value }}" />
-              <ul class="data-source" data-type="local">
-                  {% for key, value in enum.items() %}
+            <ul class="data-source" data-type="local">
+                {% for key, value in enum.items() %}
                     <li>
                         <span name="name">{{ value }}</span>
                         <span name="internal">{{ key }}</span>
