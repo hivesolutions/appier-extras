@@ -21,7 +21,7 @@ class HelloApp(appier.WebApp):
 HelloApp().serve()
 ```
 
-After running the previous examples, go to [http://localhost:8080/admin](http://localhost:8080/admin) 
+After running the previous examples, go to [http://localhost:8080/admin](http://localhost:8080/admin)
 and login with root/root.
 
 Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface.
