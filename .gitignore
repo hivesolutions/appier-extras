@@ -2,5 +2,5 @@
 
 session.shelve*
 
-/dist/
-/src/appier_extras.egg-info/
+/dist
+/src/appier_extras.egg-info
