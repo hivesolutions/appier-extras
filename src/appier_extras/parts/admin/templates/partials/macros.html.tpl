@@ -38,6 +38,8 @@
         <a href="{{ value }}">{{ value }}</a>
     {% elif meta == "email" %}
         <a href="mailto:{{ value }}">{{ value }}</a>
+    {% elif meta == "longtext" %}
+        {{ value[:60] + " ..." if value|length > 64 else value }}
     {% elif meta == "bool" %}
         <span class="tag {{ value.lower() }}">{{ value }}</span>
     {% else %}
