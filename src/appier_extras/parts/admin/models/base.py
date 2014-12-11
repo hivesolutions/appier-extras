@@ -138,14 +138,14 @@ class Base(appier.Model):
 
     def send_email(self, *args, **kwargs):
         bulk = kwargs.get("bulk", False)
+        unsubscribe = kwargs.get("unsubscribe", False)
         sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
         base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
         settings = dict(logo = True)
-        headers = {
-            "List-Unsubscribe" : "<" + base_url + "/unsubscribe>"
-        }
+        headers = dict()
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
+        if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
         self.owner.email(
             sender = sender,
             base_url = base_url,
