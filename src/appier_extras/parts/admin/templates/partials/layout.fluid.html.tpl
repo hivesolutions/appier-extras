@@ -17,8 +17,8 @@
             {% include "partials/bar.html.tpl" %}
         </div>
         <div id="header" class="header">
-            {% include "partials/header.html.tpl" %}
             {% block header %}
+                {% include "partials/header.html.tpl" %}
                 <div class="side-links">
                     {% block links %}{% endblock %}
                 </div>
@@ -36,8 +36,9 @@
             </div>
         </div>
         <div id="footer" class="footer">
-            {% include "partials/footer.html.tpl" %}
-            {% block footer %}{% endblock %}
+            {% block footer %}
+                {% include "partials/footer.html.tpl" %}
+            {% endblock %}
         </div>
     </body>
     {% include "partials/end_doctype.html.tpl" %}

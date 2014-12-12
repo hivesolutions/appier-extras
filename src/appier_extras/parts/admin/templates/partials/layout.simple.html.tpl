@@ -11,12 +11,15 @@
     <body class="ux wait-load simple {{ style }} {{ session.sub_type }} {{ session.style }}" >
         <div id="overlay" class="overlay"></div>
         <div id="header" class="header">
-            {% include "partials/header.html.tpl" %}
+            {% block header %}
+                {% include "partials/header.html.tpl" %}
+            {% endblock %}
         </div>
         <div id="content" class="content {% block style %}{% endblock %}">{% block content %}{% endblock %}</div>
         <div id="footer" class="footer">
-            {% include "partials/footer.html.tpl" %}
-            {% block footer %}{% endblock %}
+            {% block footer %}
+                {% include "partials/footer.html.tpl" %}
+            {% endblock %}
         </div>
     </body>
     {% include "partials/end_doctype.html.tpl" %}
