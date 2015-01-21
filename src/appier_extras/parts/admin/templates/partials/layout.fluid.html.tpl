@@ -8,7 +8,7 @@
             <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
-    <body class="ux wait-load fluid grey no-footer {{ sub_type_r }} {{ style_r }}">
+    <body class="ux wait-load fluid grey no-footer {{ sub_layout_r }} {{ style_r }}">
         {% block extras %}
             {% include "partials/extras.html.tpl" %}
         {% endblock %}
