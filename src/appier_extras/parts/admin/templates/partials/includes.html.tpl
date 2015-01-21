@@ -1,6 +1,5 @@
 <!-- css inclusion -->
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
-{% set theme_r = session.theme or theme or own.theme %}
 {% if theme_r %}
     {% if theme_r == 'default' %}
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
@@ -20,7 +19,6 @@
 <link rel="shortcut icon" href="{{ url_for('admin', filename = 'images/favicon.ico') }}" />
 
 <!-- javascript inclusion -->
-{% set libs_r = session.libs or libs or own.libs %}
 {% if libs_r == "legacy" %}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 {% else %}

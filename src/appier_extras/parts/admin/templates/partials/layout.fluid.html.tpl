@@ -1,4 +1,4 @@
-{% extends "partials/macros.html.tpl" %}
+{% extends "partials/layout.base.html.tpl" %}
 {% block html %}
     {% include "partials/doctype.html.tpl" %}
     <head>
@@ -8,9 +8,7 @@
             <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
-    <body class="ux wait-load fluid grey no-footer
-                 {{ session.sub_type|default(sub_type)|default(own.sub_type) }}
-                 {{ session.style|default(style)|default(own.style) }}">
+    <body class="ux wait-load fluid grey no-footer {{ sub_type_r }} {{ style_r }}">
         {% block extras %}
             {% include "partials/extras.html.tpl" %}
         {% endblock %}
