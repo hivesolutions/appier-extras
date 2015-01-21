@@ -1,3 +1,6 @@
+{% set theme_r = owner.admin_part._hybrid('theme') %}
+{% set libs_r = owner.admin_part._hybrid('libs') %}
+
 <!-- css inclusion -->
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
 {% if theme_r %}

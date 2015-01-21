@@ -117,8 +117,8 @@ class AdminPart(
     def models(self):
         return models
 
-    def template(self, template, style = "fluid", *args, **kwargs):
-        template = "%s/%s" % (style, template)
+    def template(self, template, layout = "fluid", *args, **kwargs):
+        template = "%s/%s" % (layout, template)
         return appier.Part.template(
             self,
             template,
@@ -249,46 +249,43 @@ class AdminPart(
         return self.template(
             "options.html.tpl",
             section = "options",
+            labels = self._labels(),
             errors = dict()
         )
 
     @appier.ensure(token = "admin")
     def options_action(self):
-        type = self.field("type")
+        layout = self.field("layout")
         theme = self.field("theme")
         libs = self.field("libs")
-        type_s = type.split("-", 1)
+        layout_s = layout.split("-", 1)
         theme_s = theme.split("-", 1)
-        type_l = len(type_s)
+        layout_l = len(layout_s)
         theme_l = len(theme_s)
 
-        if type_l == 1: type_s.append("")
-        type_s, sub_type_s = type_s
+        if layout_l == 1: layout_s.append("")
+        layout_s, sub_layout_s = layout_s
 
         if theme_l == 1: theme_s.append("")
         theme_s, style_s = theme_s
 
-        type_s = type_s.lower().strip()
-        sub_type_s = sub_type_s.lower().strip()
+        layout_s = layout_s.lower().strip()
+        sub_layout_s = sub_layout_s.lower().strip()
         theme_s = theme_s.lower().strip()
         style_s = style_s.lower().strip()
         libs_s = libs.lower().strip()
 
-        if style_s == "default": style_s = ""
-
-        self.session["type_label"] = type
-        self.session["type"] = type_s
-        self.session["sub_type"] = sub_type_s
-        self.session["label"] = theme
+        self.session["layout"] = layout_s
+        self.session["sub_layout"] = sub_layout_s
         self.session["theme"] = theme_s
         self.session["style"] = style_s
         self.session["libs"] = libs_s
-        self.session["libs_label"] = libs
         self.session.permanent = True
 
         return self.template(
             "options.html.tpl",
             section = "options",
+            labels = self._labels(),
             errors = dict()
         )
 
@@ -588,3 +585,34 @@ class AdminPart(
         if self.has_github(): socials.append("github")
         if self.has_live(): socials.append("live")
         return socials
+
+    def _hybrid(self, name, default = None):
+        if name in self.session: return self.session[name]
+        if hasattr(self, name): return getattr(self, name)
+        if hasattr(self.owner, name): return getattr(self.owner, name)
+        return default
+
+    def _labels(self):
+        layout = self._hybrid("layout")
+        sub_layout = self._hybrid("sub_layout")
+        theme = self._hybrid("theme")
+        style = self._hybrid("style")
+        libs = self._hybrid("libs")
+
+        layout_label = str()
+        label = str()
+        libs_label = str()
+
+        if layout: layout_label += layout.capitalize()
+        if sub_layout: layout_label += " - " + sub_layout.capitalize()
+
+        if theme: label += theme.capitalize()
+        if style: label += " - " + style.capitalize()
+
+        if libs: libs_label += libs.capitalize()
+
+        return dict(
+            layout_label = layout_label,
+            label = label,
+            libs_label = libs_label
+        )
