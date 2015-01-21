@@ -1,10 +1,13 @@
 <!-- css inclusion -->
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
-{% if session.theme %}
-    {% if session.theme == 'default' %}
+{% set theme_r = session.theme or theme or own.theme %}
+{% if theme_r %}
+    {% if theme_r == 'default' %}
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
-    {% elif session.theme == 'modern' %}
+    {% elif theme_r == 'modern' %}
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
+    {% elif theme_r == 'webook' %}
+        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.webook.css" />
     {% endif %}
 {% else %}
     <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
@@ -17,7 +20,8 @@
 <link rel="shortcut icon" href="{{ url_for('admin', filename = 'images/favicon.ico') }}" />
 
 <!-- javascript inclusion -->
-{% if session.libs == "legacy" %}
+{% set libs_r = session.libs or libs or own.libs %}
+{% if libs_r == "legacy" %}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 {% else %}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
