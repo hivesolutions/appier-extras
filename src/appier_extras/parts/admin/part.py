@@ -337,9 +337,10 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_model_json(self, model):
+        meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
-        object = appier.get_object(alias = True, find = True)
-        entities = model.find(meta = True, map = True, **object)
+        object = appier.get_object(meta = meta, alias = True, find = True)
+        entities = model.find(map = True, **object)
         return entities
 
     @appier.ensure(token = "admin")
@@ -396,10 +397,12 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_entity_json(self, model, _id):
+        rules = self.field("rules", False, cast = bool)
+        meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
         entity = model.get(
-            rules = False,
-            meta = True,
+            rules = rules,
+            meta = meta,
             map = True,
             _id = appier.object_id(_id)
         )
