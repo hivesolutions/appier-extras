@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2015 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import time
+
 import appier
 
 from appier_extras.parts.admin import models
@@ -112,6 +114,7 @@ class AdminPart(
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/log.json", self.show_log, None, True),
+            (("GET",), "/api/admin/ping", self.ping_api, None, True),
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, True),
             (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, True)
@@ -562,6 +565,9 @@ class AdminPart(
         return dict(
             messages = memory_handler.get_latest(count = count, level = level)
         )
+
+    def ping_api(self):
+        return dict(time = time.time())
 
     def login_api(self):
         # retrieves the various fields that are going to be
