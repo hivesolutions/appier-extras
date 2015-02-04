@@ -96,6 +96,7 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>", self.show_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
+            (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, dict(json = True)),
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
@@ -111,7 +112,9 @@ class AdminPart(
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/log.json", self.show_log, None, dict(json = True)),
-            (("GET", "POST"), "/api/admin/login", self.login_api, None, dict(json = True))
+            (("GET", "POST"), "/api/admin/login", self.login_api, None, dict(json = True)),
+            (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, dict(json = True)),
+            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, dict(json = True))
         ]
 
     def models(self):
@@ -387,6 +390,17 @@ class AdminPart(
             entity = entity,
             model = model
         )
+
+    @appier.ensure(token = "admin")
+    def show_entity_json(self, model, _id):
+        model = self.get_model(model)
+        entity = model.get(
+            rules = False,
+            meta = True,
+            map = True,
+            _id = appier.object_id(_id)
+        )
+        return entity
 
     @appier.ensure(token = "admin")
     def edit_entity(self, model, _id):
