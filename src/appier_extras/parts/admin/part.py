@@ -91,12 +91,12 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/models", self.list_models),
-            (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, dict(json = True)),
+            (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
-            (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, dict(json = True)),
+            (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, True),
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
@@ -111,10 +111,10 @@ class AdminPart(
             (("GET",), "/admin/github/oauth", self.oauth_github),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
-            (("GET",), "/admin/log.json", self.show_log, None, dict(json = True)),
-            (("GET", "POST"), "/api/admin/login", self.login_api, None, dict(json = True)),
-            (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, dict(json = True)),
-            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, dict(json = True))
+            (("GET",), "/admin/log.json", self.show_log, None, True),
+            (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
+            (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, True),
+            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, True)
         ]
 
     def models(self):
