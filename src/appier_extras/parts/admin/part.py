@@ -594,7 +594,8 @@ class AdminPart(
         return dict(
             sid = sid,
             session_id = sid,
-            username = username
+            username = username,
+            tokens = account.tokens()
         )
 
     def socials(self):
