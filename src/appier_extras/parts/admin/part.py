@@ -339,8 +339,8 @@ class AdminPart(
     def show_model_json(self, model):
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
-        object = appier.get_object(meta = meta, alias = True, find = True)
-        entities = model.find(map = True, **object)
+        object = appier.get_object(alias = True, find = True)
+        entities = model.find(meta = meta, map = True, **object)
         return entities
 
     @appier.ensure(token = "admin")
