@@ -57,6 +57,7 @@ class Base(appier.Model):
     enabled = appier.field(
         type = bool,
         index = True,
+        initial = True,
         meta = "enum",
         enum = ENABLE_S
     )
