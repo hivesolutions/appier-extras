@@ -64,6 +64,10 @@ class AdminPart(
     def __init__(self, account_c = models.Account, *args, **kwargs):
         appier.Part.__init__(self, *args, **kwargs)
         self.account_c = account_c
+        self.layout = "fluid"
+        self.theme = "modern"
+        self.style = "romantic"
+        self.libs = "latest"
 
     def load(self):
         appier.Part.load(self)
@@ -612,8 +616,8 @@ class AdminPart(
 
     def _hybrid(self, name, default = None):
         if name in self.session: return self.session[name]
-        if hasattr(self, name): return getattr(self, name)
         if hasattr(self.owner, name): return getattr(self.owner, name)
+        if hasattr(self, name): return getattr(self, name)
         return default
 
     def _labels(self):
