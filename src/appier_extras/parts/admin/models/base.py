@@ -63,7 +63,8 @@ class Base(appier.Model):
     )
 
     description = appier.field(
-        meta = "text"
+        meta = "text",
+        default = True
     )
 
     created = appier.field(
