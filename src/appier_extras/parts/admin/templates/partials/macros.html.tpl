@@ -1,8 +1,8 @@
-{% macro out(entity, name, boolean = True) -%}
+{% macro out(entity, name, boolean = True, default = 'N/A') -%}
     {% set cls = entity.__class__ %}
-    {% set value = entity[name + '_meta']|default('N/A') %}
-    {% if value in (None, '') and boolean %}{% set value = 'N/A' %}{% endif %}
-    {{ tag_out(cls, name, value, entity) }}
+    {% set value = entity[name + '_meta']|default(default) %}
+    {% if value in (None, '') and boolean %}{% set value = default %}{% endif %}
+    {{ tag_out(cls, name, value, entity, default) }}
 {%- endmacro %}
 
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
@@ -15,7 +15,7 @@
     {{ tag_input(cls, name, value, entity, error, disabled = disabled) }}
 {%- endmacro %}
 
-{% macro tag_out(cls, name, value, entity) -%}
+{% macro tag_out(cls, name, value, entity, default) -%}
     {% set meta = cls._solve(name) %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
@@ -29,9 +29,14 @@
         {% endif %}
     {% elif meta == "references" %}
         {% set _value = entity[name] %}
-        {% for item in _value %}
-            <a href="{{ url_for('admin.show_entity', model = item.resolve().__class__._name(), _id = item._id) }}">{{ item }}</a>
-        {% endfor %}
+        {% if _value %}
+            {% for item in _value %}
+                {% if loop.index0 > 0 %},{% endif %}
+                <a href="{{ url_for('admin.show_entity', model = item.resolve().__class__._name(), _id = item._id) }}">{{ item }}</a>
+            {% endfor %}
+        {% else %}
+            {{ default }}
+        {% endif %}
     {% elif meta == "enum" %}
         <span class="tag {{ value }}">{{ value }}</span>
     {% elif meta == "url" %}
