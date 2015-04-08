@@ -55,10 +55,11 @@
         {% set type = info["type"] %}
         {% set target = type._target() %}
         {% set _name = type._name %}
+        {% set _default = target.default()|default('name') %}
         {% set logic = value[_name]|default('') %}
-        {% set display = value["name"]|default('') %}
-        <div class="drop-field {{ disabled_s|safe }}"  value="{{ display }}" data-error="{{ error }}"
-             data-value_attribute="{{ _name }}"  data-number_options="-1">
+        {% set display = value[_default]|default('') %}
+        <div class="drop-field {{ disabled_s|safe }}" value="{{ display }}" data-error="{{ error }}"
+             data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic }}" />
             <div class="data-source" data-type="json"
                  data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
@@ -68,12 +69,13 @@
         {% set type = info["type"] %}
         {% set target = type._target() %}
         {% set _name = type._name %}
+        {% set _default = target.default()|default('name') %}
         <div name="{{ name }}" class="tag-field {{ disabled_s|safe }}" data-error="{{ error }}"
-             data-value_attribute="{{ _name }}"  data-number_options="-1">
+             data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <ul class="tags">
                 {% for item in value %}
                     {% set logic = item[_name]|default('') %}
-                    {% set display = item["name"]|default('') %}
+                    {% set display = item[_default]|default('') %}
                     <li data-value="{{ logic }}">{{ display }}</li>
                 {% endfor %}
             </ul>
