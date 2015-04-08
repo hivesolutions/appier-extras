@@ -114,6 +114,12 @@ class Base(appier.Model):
         names.remove("enabled")
         return names
 
+    @classmethod
+    def _build(cls, model, map):
+        default = cls.default()
+        has_name = "name" in model
+        if not has_name and default: model["name"] = model[default]
+
     def pre_create(self):
         appier.Model.pre_create(self)
 
