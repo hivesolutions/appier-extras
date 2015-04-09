@@ -32,13 +32,18 @@
     {% elif meta == "references" %}
         {% set _value = entity[name] %}
         {% if _value %}
+            {% set counter = [] %}
             {% for item in _value %}
                 {% set model = item.resolve() %}
                 {% if model != None %}
-                    {% if loop.index0 > 0 %},{% endif %}
+                    {% if counter|length > 0 %},{% endif %}
                     <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
+                    {% do counter.append(1) %}
                 {% endif %}
             {% endfor %}
+            {% if counter|length == 0 %}
+                <span>{{ default }}</span>
+            {% endif %}
         {% else %}
             <span>{{ default }}</span>
         {% endif %}
