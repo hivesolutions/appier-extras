@@ -24,10 +24,10 @@
         {% set type = info["type"] %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
-        {% if _value %}
+        {% if _value and _value._id %}
             <a href="{{ url_for('admin.show_entity', model = target._name(), _id = _value._id) }}">{{ value }}</a>
         {% else %}
-            <span>{{ value }}</span>
+            <span>{{ default }}</span>
         {% endif %}
     {% elif meta == "references" %}
         {% set _value = entity[name] %}
