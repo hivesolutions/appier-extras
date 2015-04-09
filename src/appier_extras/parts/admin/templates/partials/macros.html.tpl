@@ -35,8 +35,8 @@
             {% for item in _value %}
                 {% set model = item.resolve() %}
                 {% if model != None %}
-	                {% if loop.index0 > 0 %},{% endif %}
-	                <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
+                    {% if loop.index0 > 0 %},{% endif %}
+                    <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
                 {% endif %}
             {% endfor %}
         {% else %}
@@ -88,11 +88,11 @@
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <ul class="tags">
                 {% for item in value %}
-                	{% set model = item.resolve() %}
+                    {% set model = item.resolve() %}
                     {% set logic = item[_name]|default('') %}
                     {% set display = item[_default]|default('') %}
                     {% if model != None %}
-                    	<li data-value="{{ logic }}">{{ display }}</li>
+                        <li data-value="{{ logic }}">{{ display }}</li>
                     {% endif %}
                 {% endfor %}
             </ul>
