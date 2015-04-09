@@ -27,17 +27,20 @@
         {% if _value %}
             <a href="{{ url_for('admin.show_entity', model = target._name(), _id = _value._id) }}">{{ value }}</a>
         {% else %}
-            {{ value }}
+            <span>{{ value }}</span>
         {% endif %}
     {% elif meta == "references" %}
         {% set _value = entity[name] %}
         {% if _value %}
             {% for item in _value %}
-                {% if loop.index0 > 0 %},{% endif %}
-                <a href="{{ url_for('admin.show_entity', model = item.resolve().__class__._name(), _id = item._id) }}">{{ item }}</a>
+                {% set model = item.resolve() %}
+                {% if model != None %}
+	                {% if loop.index0 > 0 %},{% endif %}
+	                <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
+                {% endif %}
             {% endfor %}
         {% else %}
-            {{ default }}
+            <span>{{ default }}</span>
         {% endif %}
     {% elif meta == "enum" %}
         <span class="tag {{ value }}">{{ value }}</span>
@@ -85,9 +88,12 @@
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <ul class="tags">
                 {% for item in value %}
+                	{% set model = item.resolve() %}
                     {% set logic = item[_name]|default('') %}
                     {% set display = item[_default]|default('') %}
-                    <li data-value="{{ logic }}">{{ display }}</li>
+                    {% if model != None %}
+                    	<li data-value="{{ logic }}">{{ display }}</li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             <div class="data-source" data-type="json"
