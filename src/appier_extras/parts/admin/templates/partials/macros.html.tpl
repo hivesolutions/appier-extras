@@ -17,6 +17,7 @@
 
 {% macro tag_out(cls, name, value, entity, default) -%}
     {% set meta = cls._solve(name) %}
+    {% set is_default = value == default %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
         {% set type = info["type"] %}
@@ -40,7 +41,11 @@
     {% elif meta == "enum" %}
         <span class="tag {{ value }}">{{ value }}</span>
     {% elif meta == "url" %}
-        <a href="{{ value }}">{{ value }}</a>
+        {% if is_default %}
+            <span>{{ value }}</span>
+        {% else %}
+            <a href="{{ value }}">{{ value }}</a>
+        {% endif %}
     {% elif meta == "email" %}
         <a href="mailto:{{ value }}">{{ value }}</a>
     {% elif meta == "longtext" %}
