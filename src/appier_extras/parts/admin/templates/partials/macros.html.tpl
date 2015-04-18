@@ -90,7 +90,8 @@
         {% set _name = type._name %}
         {% set _default = target.default()|default('name') %}
         <div name="{{ name }}" class="tag-field {{ disabled_s|safe }}" data-error="{{ error }}"
-             data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
+             data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1"
+             data-auto_width="1">
             <ul class="tags">
                 {% for item in value %}
                     {% set model = item.resolve() %}
