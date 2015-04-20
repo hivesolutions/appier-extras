@@ -131,8 +131,8 @@
     height: 30px;
     line-height: 30px;
     margin: -17px auto -15px auto;
-    width: 300px;
     text-align: center;
+    width: 300px;
 }
 
 .header-message.error .message-contents {

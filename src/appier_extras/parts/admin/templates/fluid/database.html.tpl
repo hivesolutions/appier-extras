@@ -1,7 +1,7 @@
 {% extends "partials/admin.fluid.html.tpl" %}
 {% block title %}Database{% endblock %}
 {% block name %}Database{% endblock %}
-{% block content %}    
+{% block content %}
     <ul class="sections-list">
         <li>
             <div class="name"><a href="{{ url_for('admin.database_import') }}">Import</a></div>
