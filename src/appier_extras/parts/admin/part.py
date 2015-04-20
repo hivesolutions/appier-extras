@@ -37,7 +37,10 @@ __copyright__ = "Copyright (c) 2008-2015 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import os
 import time
+import datetime
+import tempfile
 
 import appier
 
@@ -92,6 +95,11 @@ class AdminPart(
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/routes", self.list_routes),
+            (("GET",), "/admin/database", self.database),
+            (("GET",), "/admin/database/export", self.database_export),
+            (("GET",), "/admin/database/import", self.database_import),
+            (("POST",), "/admin/database/import", self.database_import_do),
+            (("GET",), "/admin/database/reset", self.database_reset),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
@@ -312,6 +320,86 @@ class AdminPart(
             "routes.html.tpl",
             section = "status",
             routes = self._routes()
+        )
+
+    @appier.ensure(token = "admin")
+    def database(self):
+        return self.template(
+            "database.html.tpl",
+            section = "database"
+        )
+
+    @appier.ensure(token = "admin")
+    def database_export(self):
+        database = appier.get_db()
+        file = appier.legacy.BytesIO()
+        manager = appier.ExportManager(
+            database,
+            multiple = self.resolve()
+        )
+        manager.export_data(file)
+
+        date_time = datetime.datetime.utcnow()
+        date_time_s = date_time.strftime("%Y%m%d")
+        file_name = "%s_%s.dat" % (self.owner.name, date_time_s)
+
+        self.content_type("application/octet-stream")
+        self.request.set_header(
+            "Content-Disposition",
+            "attachment; filename=%s" % file_name
+        )
+
+        return file.getvalue()
+
+    @appier.ensure(token = "admin")
+    def database_import(self):
+        return self.template(
+            "database/import.html.tpl",
+            section = "database"
+        )
+
+    @appier.ensure(token = "admin")
+    def database_import_do(self):
+        # tries to retrieve the reference to the import file tuple
+        # and in case it's not found raises an error to the template
+        import_file = self.field("import_file", None)
+        if import_file == None:
+            return self.template(
+                "database/import.html.tpl",
+                section = "database",
+                error = "No file defined"
+            )
+
+        # creates a temporary file path for the storage of the file
+        # and then saves it into that directory
+        fd, file_path = tempfile.mkstemp()
+        import_file.save(file_path)
+
+        # retrieves the database and creates a new export manager for
+        # the currently defined entities then imports the data defined
+        # in the current temporary path
+        database = appier.get_db()
+        manager = appier.ExportManager(
+            database,
+            multiple = self.resolve()
+        )
+        try: manager.import_data(file_path)
+        finally: os.close(fd); os.remove(file_path)
+        return self.redirect(
+            self.url_for(
+                "admin.database_import",
+                message = "Database file imported with success"
+            )
+        )
+
+    @appier.ensure(token = "admin")
+    def database_reset(self):
+        appier.drop_db()
+        return self.redirect(
+            self.url_for(
+                "admin.database",
+                message = "Database dropped/reset with success"
+            )
         )
 
     @appier.ensure(token = "admin")
