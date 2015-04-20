@@ -121,3 +121,21 @@
 .pages > a.page {
     color: #4d4d4d;
 }
+
+.header-message .message-contents {
+    background-color: #cee6c5;
+    border: 1px solid #86c795;
+    color: #4d4d4d;
+    cursor: pointer;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    margin: -17px auto -15px auto;
+    width: 300px;
+    text-align: center;
+}
+
+.header-message.error .message-contents {
+    background-color: #fcc0c0;
+    border-color: #f68f8f;
+}

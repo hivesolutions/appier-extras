@@ -31,6 +31,7 @@
                     {% block buttons %}{% endblock %}
                 </div>
             </div>
+            {% include "partials/message.html.tpl" %}
             <div class="content-container">
                 {% block content %}{% endblock %}
             </div>
