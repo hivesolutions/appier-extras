@@ -8,7 +8,7 @@
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
     {% set cls = entity.__class__ %}
     {% set info = cls[name]|default({}, True) %}
-    {% set default = cls[name].get('initial', '') if create else '' %}
+    {% set default = info.get('initial', '') if create else '' %}
     {% set disabled = info.get('immutable', False) and not create %}
     {% set value = entity[name]|default(default) %}
     {% set error = errors[name] %}
