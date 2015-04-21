@@ -68,9 +68,9 @@ setuptools.setup(
             "static/css/*",
             "static/images/*",
             "static/js/*",
+            "templates/admin/*",
             "templates/fluid/*.tpl",
             "templates/fluid/*/*",
-            "templates/partials/*",
             "templates/static/*.tpl",
             "templates/static/*/*"
         ],
