@@ -1,4 +1,4 @@
-{% extends "partials/admin.static.html.tpl" %}
+{% extends "admin/admin.static.html.tpl" %}
 {% block title %}Models{% endblock %}
 {% block name %}Models{% endblock %}
 {% block content %}

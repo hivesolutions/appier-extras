@@ -1,10 +1,10 @@
-{% extends "partials/layout.base.html.tpl" %}
+{% extends "admin/layout.base.html.tpl" %}
 {% block html %}
-    {% include "partials/doctype.html.tpl" %}
+    {% include "admin/doctype.html.tpl" %}
     <head>
         {% block head %}
-            {% include "partials/content_type.html.tpl" %}
-            {% include "partials/includes.html.tpl" %}
+            {% include "admin/content_type.html.tpl" %}
+            {% include "admin/includes.html.tpl" %}
             <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
@@ -12,15 +12,15 @@
         <div id="overlay" class="overlay"></div>
         <div id="header" class="header">
             {% block header %}
-                {% include "partials/header.html.tpl" %}
+                {% include "admin/header.html.tpl" %}
             {% endblock %}
         </div>
         <div id="content" class="content {% block style %}{% endblock %}">{% block content %}{% endblock %}</div>
         <div id="footer" class="footer">
             {% block footer %}
-                {% include "partials/footer.html.tpl" %}
+                {% include "admin/footer.html.tpl" %}
             {% endblock %}
         </div>
     </body>
-    {% include "partials/end_doctype.html.tpl" %}
+    {% include "admin/end_doctype.html.tpl" %}
 {% endblock %}

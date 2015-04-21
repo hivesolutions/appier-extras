@@ -1,4 +1,4 @@
-{% extends "partials/admin.fluid.html.tpl" %}
+{% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}Database{% endblock %}
 {% block name %}Database{% endblock %}
 {% block content %}

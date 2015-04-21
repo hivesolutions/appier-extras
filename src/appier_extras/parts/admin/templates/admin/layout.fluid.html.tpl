@@ -1,24 +1,24 @@
-{% extends "partials/layout.base.html.tpl" %}
+{% extends "admin/layout.base.html.tpl" %}
 {% block html %}
-    {% include "partials/doctype.html.tpl" %}
+    {% include "admin/doctype.html.tpl" %}
     <head>
         {% block head %}
-            {% include "partials/content_type.html.tpl" %}
-            {% include "partials/includes.html.tpl" %}
+            {% include "admin/content_type.html.tpl" %}
+            {% include "admin/includes.html.tpl" %}
             <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
     <body class="ux wait-load fluid grey no-footer {{ sub_layout_r }} {{ style_r }} {{ style_flags }}">
         {% block extras %}
-            {% include "partials/extras.html.tpl" %}
+            {% include "admin/extras.html.tpl" %}
         {% endblock %}
         <div id="overlay" class="overlay"></div>
         <div id="bar" class="bar">
-            {% include "partials/bar.html.tpl" %}
+            {% include "admin/bar.html.tpl" %}
         </div>
         <div id="header" class="header">
             {% block header %}
-                {% include "partials/header.html.tpl" %}
+                {% include "admin/header.html.tpl" %}
                 <div class="side-links">
                     {% block links %}{% endblock %}
                 </div>
@@ -31,16 +31,16 @@
                     {% block buttons %}{% endblock %}
                 </div>
             </div>
-            {% include "partials/message.html.tpl" %}
+            {% include "admin/message.html.tpl" %}
             <div class="content-container">
                 {% block content %}{% endblock %}
             </div>
         </div>
         <div id="footer" class="footer">
             {% block footer %}
-                {% include "partials/footer.html.tpl" %}
+                {% include "admin/footer.html.tpl" %}
             {% endblock %}
         </div>
     </body>
-    {% include "partials/end_doctype.html.tpl" %}
+    {% include "admin/end_doctype.html.tpl" %}
 {% endblock %}

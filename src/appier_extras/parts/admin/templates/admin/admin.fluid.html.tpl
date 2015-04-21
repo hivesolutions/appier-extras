@@ -1,4 +1,4 @@
-{% extends "partials/layout.fluid.html.tpl" %}
+{% extends "admin/layout.fluid.html.tpl" %}
 {% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
     {% if section == "admin" %}

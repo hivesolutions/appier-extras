@@ -1,4 +1,4 @@
-{% extends "partials/admin.fluid.html.tpl" %}
+{% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}{{ model._name() }}{% endblock %}
 {% block name %}{{ model._name() }}{% endblock %}
 {% block style %}no-padding{% endblock %}

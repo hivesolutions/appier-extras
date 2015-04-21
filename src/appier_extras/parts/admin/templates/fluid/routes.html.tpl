@@ -1,4 +1,4 @@
-{% extends "partials/admin.fluid.html.tpl" %}
+{% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}Routes{% endblock %}
 {% block name %}Routes{% endblock %}
 {% block style %}no-padding{% endblock %}

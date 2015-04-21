@@ -1,4 +1,4 @@
-{% extends "partials/layout.static.html.tpl" %}
+{% extends "admin/layout.static.html.tpl" %}
 {% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
     {% for model in models %}
