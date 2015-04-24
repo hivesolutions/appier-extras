@@ -147,13 +147,11 @@ class Base(appier.Model):
         unsubscribe = kwargs.get("unsubscribe", False)
         sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
         base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
-        locale = appier.conf("EMAIL_LOCALE", None)
         settings = dict(logo = True)
         headers = dict()
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
         if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
-        if locale and not "locale" in kwargs: kwargs["locale"] = locale
         self.owner.email(
             sender = sender,
             base_url = base_url,
