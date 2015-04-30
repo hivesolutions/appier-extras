@@ -31,7 +31,7 @@
             {% for entity in entities %}
                 <tr class="table-row">
                 	<td class="text-left selection">
-                		<input type="checkbox" class="square small"  />
+                		<input type="checkbox" class="square small" />
                     </td>
                     {% for name in model.list_names() %}
                         {% if loop.first %}
