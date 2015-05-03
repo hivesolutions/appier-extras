@@ -4,16 +4,22 @@
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <div class="button button-color button-grey"
+    <span class="operations">
+        {% for operation in model.operations() %}
+            <div class="button button-color button-grey"
+                 data-link="{{ url_for('admin.new_entity', model = model._name()) }}">{{ operation }}</div>
+        {% endfor %}
+    </span>
+    <div class="button button-color button-green"
          data-link="{{ url_for('admin.new_entity', model = model._name()) }}">New</div>
 {% endblock %}
 {% block content %}
     <table class="filter bulk" data-no_input="1">
         <thead>
             <tr class="table-row table-header">
-            	<th class="text-left selection">
-            		<input type="checkbox" class="square small" />
-            	</th>
+                <th class="text-left selection">
+                    <input type="checkbox" class="square small" />
+                </th>
                 {% for name in model.list_names() %}
                     {% if name == page.sorter %}
                         <th class="text-left direction {{ page.direction }}">
@@ -30,8 +36,8 @@
         <tbody class="filter-contents">
             {% for entity in entities %}
                 <tr class="table-row">
-                	<td class="text-left selection">
-                		<input type="checkbox" class="square small" />
+                    <td class="text-left selection">
+                        <input type="checkbox" class="square small" />
                     </td>
                     {% for name in model.list_names() %}
                         {% if loop.first %}
