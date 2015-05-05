@@ -108,6 +108,7 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
+            (("GET",), "/admin/models/<str:model>/operations/<str:operation>", self.operation_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, True),
@@ -442,6 +443,20 @@ class AdminPart(
         result = appier.serialize_csv(entities)
         self.content_type("text/csv")
         return result
+
+    @appier.ensure(token = "admin")
+    def operation_model(self, model, operation):
+        ids = self.field("ids", "")
+        ids = ids.split(",")
+        ids = [appier.object_id(_id) for _id in ids]
+        model = self.get_model(model)
+        entities = model.find(_id = {"$in" : ids})
+        for entity in entities:
+            method = getattr(entity, operation)
+            method()
+        return self.redirect(
+            self.url_for("admin.show_model", model = model._name())
+        )
 
     @appier.ensure(token = "admin")
     def new_entity(self, model):
