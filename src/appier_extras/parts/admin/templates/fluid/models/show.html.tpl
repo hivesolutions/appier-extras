@@ -4,12 +4,15 @@
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <span class="operations">
-        {% for operation in model.operations() %}
-            <div class="button button-color button-grey"
-                 data-link="{{ url_for('admin.new_entity', model = model._name()) }}">{{ operation }}</div>
-        {% endfor %}
-    </span>
+	{% if model.operations() %}
+	    <ul class="drop-down operations" data-name="Operations">
+	    	{% for operation in model.operations() %}
+		    	<li>
+		            <a href="{{ url_for('admin.new_entity', model = model._name()) }}">{{ operation.name }}</a>
+		        </li>
+	        {% endfor %}
+	    </ul>
+	{% endif %}
     <div class="button button-color button-green"
          data-link="{{ url_for('admin.new_entity', model = model._name()) }}">New</div>
 {% endblock %}
