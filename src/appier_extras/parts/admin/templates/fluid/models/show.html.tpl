@@ -38,7 +38,7 @@
         </thead>
         <tbody class="filter-contents">
             {% for entity in entities %}
-                <tr class="table-row">
+                <tr class="table-row" data-id="{{ entity._id }}">
                     <td class="text-left selection">
                         <input type="checkbox" class="square small" />
                     </td>
