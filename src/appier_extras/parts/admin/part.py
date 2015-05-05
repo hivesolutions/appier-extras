@@ -448,7 +448,7 @@ class AdminPart(
     def operation_model(self, model, operation):
         ids = self.field("ids", "")
         ids = ids.split(",")
-        ids = [appier.object_id(_id) for _id in ids]
+        ids = [appier.object_id(_id) for _id in ids if _id]
         model = self.get_model(model)
         entities = model.find(_id = {"$in" : ids})
         for entity in entities:
