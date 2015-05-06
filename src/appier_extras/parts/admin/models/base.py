@@ -116,6 +116,10 @@ class Base(appier.Model):
         return names
 
     @classmethod
+    def order_name(self):
+        return "id"
+
+    @classmethod
     def _build(cls, model, map):
         pass
 

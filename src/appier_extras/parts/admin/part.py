@@ -419,6 +419,7 @@ class AdminPart(
             find = True
         )
         page = model.paginate(**object)
+        object = self._sort(object, model)
         entities = model.find(meta = True, **object)
         return self.template(
             "models/show.html.tpl",
@@ -717,6 +718,15 @@ class AdminPart(
         if self.has_github(): socials.append("github")
         if self.has_live(): socials.append("live")
         return socials
+
+    def _sort(self, object, model):
+        if "sort" in object: return object
+        order = model.order_name()
+        if not order: return object
+        is_sequence = isinstance(order, (list, tuple))
+        if not is_sequence: order = (order, -1)
+        object["sort"] = (order,)
+        return object
 
     def _hybrid(self, name, default = None):
         if name in self.session: return self.session[name]
