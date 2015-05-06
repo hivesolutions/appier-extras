@@ -725,7 +725,7 @@ class AdminPart(
         if not order: return object
         is_sequence = isinstance(order, (list, tuple))
         if not is_sequence: order = (order, -1)
-        object["sort"] = (order,)
+        object["sort"] = [order]
         return object
 
     def _hybrid(self, name, default = None):
