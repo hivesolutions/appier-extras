@@ -4,7 +4,7 @@
 {% block buttons %}
     {{ super() }}
     {% if model.operations() %}
-        <ul class="drop-down operations" data-name="Operations">
+        <ul class="drop-down operations force" data-name="Operations">
             {% for operation in model.operations() %}
                 <li>
                     <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id) }}">{{ operation.name }}</a>
