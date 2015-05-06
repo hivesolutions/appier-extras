@@ -724,7 +724,7 @@ class AdminPart(
         order = model.order_name()
         if not order: return object
         is_sequence = isinstance(order, (list, tuple))
-        if not is_sequence: order = (order, -1)
+        if not is_sequence: order = (order, 1)
         object["sort"] = [order]
         return object
 
