@@ -8,7 +8,7 @@
         <ul class="drop-down operations" data-name="Operations">
             {% for operation in model.operations() %}
                 <li>
-                    <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, next = location) }}">{{ operation.name }}</a>
+                    <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, next = location_f) }}">{{ operation.name }}</a>
                 </li>
             {% endfor %}
         </ul>
