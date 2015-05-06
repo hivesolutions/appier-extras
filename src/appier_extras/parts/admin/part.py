@@ -446,6 +446,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def operation_model(self, model, operation):
+        next = self.field("next")
         ids = self.field("ids", "")
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
@@ -455,7 +456,7 @@ class AdminPart(
             method = getattr(entity, operation)
             method()
         return self.redirect(
-            self.url_for("admin.show_model", model = model._name())
+            next or self.url_for("admin.show_model", model = model._name())
         )
 
     @appier.ensure(token = "admin")
