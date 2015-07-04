@@ -38,6 +38,7 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import time
+import datetime
 
 import appier
 
@@ -164,3 +165,11 @@ class Base(appier.Model):
             *args,
             **kwargs
         )
+
+    @property
+    def created_d(self):
+        return datetime.datetime.fromtimestamp(self.created)
+
+    @property
+    def modified_d(self):
+        return datetime.datetime.fromtimestamp(self.modified)
