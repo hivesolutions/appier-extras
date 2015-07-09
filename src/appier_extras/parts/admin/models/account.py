@@ -55,7 +55,8 @@ class Account(base.Base):
     }
 
     username = appier.field(
-        index = True
+        index = True,
+        default = True
     )
 
     email = appier.field(
