@@ -454,7 +454,6 @@ class AdminPart(
         ids = [appier.object_id(_id) for _id in ids if _id]
         model = self.get_model(model)
         entities = model.find(_id = {"$in" : ids})
-        print(parameters)
         for entity in entities:
             method = getattr(entity, operation)
             method(*parameters)
