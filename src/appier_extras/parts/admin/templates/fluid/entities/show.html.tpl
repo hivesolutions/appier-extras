@@ -33,7 +33,7 @@
 						<input type="text" class="text-field" name="parameters" />
 					{% endfor %}
 					<div class="window-buttons">
-					    <span class="button button-cancel">Cancel</span>
+					    <span class="button button-cancel close-button">Cancel</span>
 					    <span class="button button-confirm" data-submit="1">Confirm</span>
 					</div>
 				</form>
