@@ -41,6 +41,9 @@
                 {% include "admin/footer.html.tpl" %}
             {% endblock %}
         </div>
+        <div id="windows" class="windows">
+        	{% block windows %}{% endblock %}
+        </div>
     </body>
     {% include "admin/end_doctype.html.tpl" %}
 {% endblock %}
