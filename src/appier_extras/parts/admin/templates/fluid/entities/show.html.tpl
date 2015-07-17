@@ -27,7 +27,8 @@
 		{% if operation.parameters %}
 			<div id="window-{{ operation.method }}" class="window">
 				<h1>{{ operation.name }}</h1>
-				<form action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}" method="post">
+				<form class="form" method="post"
+					  action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}" >
 					{% for parameter in operation.parameters %}
 						<label>{{ parameter[0] }}</label>
 						<input type="text" class="text-field" name="parameters" />
