@@ -108,7 +108,7 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
-            (("GET", "POST"), "/admin/models/<str:model>/urls/<str:url>", self.url_model),
+            (("GET", "POST"), "/admin/models/<str:model>/links/<str:link>", self.link_model),
             (("GET", "POST"), "/admin/models/<str:model>/operations/<str:operation>", self.operation_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
@@ -447,7 +447,7 @@ class AdminPart(
         return result
 
     @appier.ensure(token = "admin")
-    def url_model(self, model, url):
+    def link_model(self, model, link):
         parameters = self.get_fields("parameters", [])
         next = self.field("next")
         ids = self.field("ids", "")
@@ -457,7 +457,7 @@ class AdminPart(
         entities = model.find(_id = {"$in" : ids})
         result = None
         for entity in entities:
-            method = getattr(entity, url)
+            method = getattr(entity, link)
             result = method(*parameters)
         return self.redirect(result)
 
