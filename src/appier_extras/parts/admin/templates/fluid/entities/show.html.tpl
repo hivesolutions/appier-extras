@@ -3,12 +3,12 @@
 {% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
-    {% if model.urls() %}
-        <ul class="drop-down urls force" data-name="urls">
-            {% for url in model.urls() %}
+    {% if model.links() %}
+        <ul class="drop-down links force" data-name="links">
+            {% for link in model.links() %}
                 <li>
                     <a class="no-async" target="_blank"
-                       href="{{ url_for('admin.url_model', model = model._name(), url = url.method, ids = entity._id) }}" >{{ url.name }}</a>
+                       href="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
                 </li>
             {% endfor %}
         </ul>
