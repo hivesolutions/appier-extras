@@ -7,7 +7,8 @@
         <ul class="drop-down urls force" data-name="urls">
             {% for url in model.urls() %}
                 <li>
-                    <a href="{{ url_for('admin.url_model', model = model._name(), url = url.method, ids = entity._id) }}" target="_blank">{{ url.name }}</a>
+                    <a class="no-async" target="_blank"
+                       href="{{ url_for('admin.url_model', model = model._name(), url = url.method, ids = entity._id) }}" >{{ url.name }}</a>
                 </li>
             {% endfor %}
         </ul>
