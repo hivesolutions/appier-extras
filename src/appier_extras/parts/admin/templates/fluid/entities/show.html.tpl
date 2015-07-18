@@ -3,6 +3,15 @@
 {% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
+    {% if model.urls() %}
+        <ul class="drop-down urls force" data-name="urls">
+            {% for url in model.urls() %}
+                <li>
+                    <a href="{{ url_for('admin.url_model', model = model._name(), url = url.method, ids = entity._id) }}" target="_blank">{{ url.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     {% if model.operations() %}
         <ul class="drop-down operations force" data-name="Operations">
             {% for operation in model.operations() %}
