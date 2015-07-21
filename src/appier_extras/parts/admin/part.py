@@ -216,7 +216,7 @@ class AdminPart(
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
         return self.redirect(
-            next or self.url_for(self.owner.login_redirect)
+            next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def recover(self):
@@ -596,7 +596,7 @@ class AdminPart(
         url = self.ensure_facebook_api(state = next)
         if url: return self.redirect(url)
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_facebook(self):
@@ -607,7 +607,7 @@ class AdminPart(
         self.session["fb.access_token"] = access_token
         self.ensure_facebook_account()
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def twitter(self):
@@ -615,7 +615,7 @@ class AdminPart(
         url = self.ensure_twitter_api(state = next)
         if url: return self.redirect(url)
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_twitter(self):
@@ -628,7 +628,7 @@ class AdminPart(
         self.session["tw.oauth_temporary"] = False
         self.ensure_twitter_account()
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def google(self):
@@ -636,7 +636,7 @@ class AdminPart(
         url = self.ensure_google_api(state = next)
         if url: return self.redirect(url)
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_google(self):
@@ -647,7 +647,7 @@ class AdminPart(
         self.session["gg.access_token"] = access_token
         self.ensure_google_account()
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def github(self):
@@ -655,7 +655,7 @@ class AdminPart(
         url = self.ensure_github_api(state = next)
         if url: return self.redirect(url)
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_github(self):
@@ -666,7 +666,7 @@ class AdminPart(
         self.session["gh.access_token"] = access_token
         self.ensure_github_account()
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def live(self):
@@ -674,7 +674,7 @@ class AdminPart(
         url = self.ensure_live_api(state = next)
         if url: return self.redirect(url)
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_live(self):
@@ -685,7 +685,7 @@ class AdminPart(
         self.session["live.access_token"] = access_token
         self.ensure_live_account()
         return self.redirect(
-           next or self.url_for(self.owner.login_redirect)
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     @appier.ensure(token = "admin")
