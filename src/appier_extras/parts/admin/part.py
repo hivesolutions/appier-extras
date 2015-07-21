@@ -321,9 +321,11 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def social(self):
+        socials = self.socials()
         return self.template(
             "social.html.tpl",
-            section = "social"
+            section = "social",
+            socials = socials
         )
 
     @appier.ensure(token = "admin")
