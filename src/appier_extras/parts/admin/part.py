@@ -80,6 +80,7 @@ class AdminPart(
         self.owner.login_redirect = "admin.index"
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
+        self.owner.admin_google_scope = ("email",)
 
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:

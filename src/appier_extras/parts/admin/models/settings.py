@@ -106,11 +106,13 @@ class Settings(base.Base):
         import google
         redirect_url = self.url_for("admin.oauth_google", absolute = True)
         access_token = self.google_token
+        scope = self.owner.admin_google_scope
         return google.Api(
             client_id = appier.conf("GOOGLE_ID"),
             client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,
-            access_token = access_token
+            access_token = access_token,
+            scope = scope
         )
 
     def get_live_api(self):
