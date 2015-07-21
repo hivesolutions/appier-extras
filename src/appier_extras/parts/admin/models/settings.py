@@ -44,32 +44,26 @@ from appier_extras.parts.admin.models import base
 class Settings(base.Base):
 
     facebook_token = appier.field(
-        type = dict,
         index = True
     )
 
     github_token = appier.field(
-        type = dict,
         index = True
     )
 
     google_token = appier.field(
-        type = dict,
         index = True
     )
 
     live_token = appier.field(
-        type = dict,
         index = True
     )
 
     twitter_token = appier.field(
-        type = dict,
         index = True
     )
 
     twitter_token_secret = appier.field(
-        type = dict,
         index = True
     )
 
@@ -77,6 +71,10 @@ class Settings(base.Base):
         type = dict,
         index = True
     )
+
+    @classmethod
+    def list_names(cls):
+        return ["id", "description", "created"]
 
     @classmethod
     def get_settings(cls, *args, **kwargs):
