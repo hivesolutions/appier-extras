@@ -96,6 +96,7 @@ class AdminPart(
             (("GET",), "/admin/options", self.options),
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
+            (("GET",), "/admin/social", self.social),
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
@@ -316,6 +317,13 @@ class AdminPart(
         return self.template(
             "status.html.tpl",
             section = "status"
+        )
+
+    @appier.ensure(token = "admin")
+    def social(self):
+        return self.template(
+            "social.html.tpl",
+            section = "social"
         )
 
     @appier.ensure(token = "admin")
@@ -593,7 +601,9 @@ class AdminPart(
 
     def facebook(self):
         next = self.field("next")
-        url = self.ensure_facebook_api(state = next)
+        context = self.field("context", "login")
+        state = context + ":" + next
+        url = self.ensure_facebook_api(state = state)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -601,18 +611,26 @@ class AdminPart(
 
     def oauth_facebook(self):
         code = self.field("code")
-        next = self.field("state")
+        state = self.field("state")
+        context, next = state.split(":", 1)
         api = self.get_facebook_api()
         access_token = api.oauth_access(code)
-        self.session["fb.access_token"] = access_token
-        self.ensure_facebook_account()
+        if context == "login":
+            self.session["fb.access_token"] = access_token
+            self.ensure_facebook_account()
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.facebook_token = access_token
+            settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def twitter(self):
         next = self.field("next")
-        url = self.ensure_twitter_api(state = next)
+        context = self.field("context", "login")
+        state = context + ":" + next
+        url = self.ensure_twitter_api(state = state)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -620,20 +638,30 @@ class AdminPart(
 
     def oauth_twitter(self):
         oauth_verifier = self.field("oauth_verifier")
-        next = self.field("state")
+        state = self.field("state")
+        context, next = state.split(":", 1)
         api = self.get_twitter_api()
         oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
-        self.session["tw.oauth_token"] = oauth_token
-        self.session["tw.oauth_token_secret"] = oauth_token_secret
-        self.session["tw.oauth_temporary"] = False
-        self.ensure_twitter_account()
+        if context == "login":
+            self.session["tw.oauth_token"] = oauth_token
+            self.session["tw.oauth_token_secret"] = oauth_token_secret
+            self.session["tw.oauth_temporary"] = False
+            self.ensure_twitter_account()
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.twitter_token = oauth_token
+            settings.twitter_token_secret = oauth_token_secret
+            settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def google(self):
         next = self.field("next")
-        url = self.ensure_google_api(state = next)
+        context = self.field("context", "login")
+        state = context + ":" + next
+        refresh = not context == "login"
+        url = self.ensure_google_api(state = state, refresh = refresh)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -641,18 +669,26 @@ class AdminPart(
 
     def oauth_google(self):
         code = self.field("code")
-        next = self.field("state")
+        state = self.field("state")
+        context, next = state.split(":", 1)
         api = self.get_google_api()
         access_token = api.oauth_access(code)
-        self.session["gg.access_token"] = access_token
-        self.ensure_google_account()
+        if context == "login":
+            self.session["gg.access_token"] = access_token
+            self.ensure_google_account()
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.google_token = access_token
+            settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def github(self):
         next = self.field("next")
-        url = self.ensure_github_api(state = next)
+        context = self.field("context", "login")
+        state = context + ":" + next
+        url = self.ensure_github_api(state = state)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -660,18 +696,26 @@ class AdminPart(
 
     def oauth_github(self):
         code = self.field("code")
-        next = self.field("state")
+        state = self.field("state")
+        context, next = state.split(":", 1)
         api = self.get_github_api()
         access_token = api.oauth_access(code)
-        self.session["gh.access_token"] = access_token
-        self.ensure_github_account()
+        if context == "login":
+            self.session["gh.access_token"] = access_token
+            self.ensure_github_account()
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.github_token = access_token
+            settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def live(self):
         next = self.field("next")
-        url = self.ensure_live_api(state = next)
+        context = self.field("context", "login")
+        state = context + ":" + next
+        url = self.ensure_live_api(state = state)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -679,11 +723,17 @@ class AdminPart(
 
     def oauth_live(self):
         code = self.field("code")
-        next = self.field("state")
+        state = self.field("state")
+        context, next = state.split(":", 1)
         api = self.get_live_api()
         access_token = api.oauth_access(code)
-        self.session["live.access_token"] = access_token
-        self.ensure_live_account()
+        if context == "login":
+            self.session["live.access_token"] = access_token
+            self.ensure_live_account()
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.live_token = access_token
+            settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
         )
