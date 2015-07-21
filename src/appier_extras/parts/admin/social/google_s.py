@@ -92,19 +92,22 @@ class Google(object):
 
         return account
 
-    def ensure_google_api(self, state = None, refresh = False):
+    def ensure_google_api(self, state = None, scope = None, refresh = False):
         access_token = self.session.get("gg.access_token", None)
         if access_token and not refresh: return
-        api = self.get_google_api()
+        api = self.get_google_api(scope = scope)
         return api.oauth_authorize(state = state)
 
-    def get_google_api(self):
+    def get_google_api(self, scope = None):
         import google
+        kwargs = dict()
         redirect_url = self.url_for("admin.oauth_google", absolute = True)
         access_token = self.session and self.session.get("gg.access_token", None)
+        if scope: kwargs["scope"] = scope
         return google.Api(
             client_id = appier.conf("GOOGLE_ID"),
             client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,
-            access_token = access_token
+            access_token = access_token,
+            **kwargs
         )
