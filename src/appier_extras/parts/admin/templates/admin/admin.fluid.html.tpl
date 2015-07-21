@@ -16,7 +16,7 @@
     {% else %}
         <a href="{{ url_for('admin.database') }}">database</a>
     {% endif %}
-	{% if section == "social" %}
+    {% if section == "social" %}
         <a class="selected" href="{{ url_for('admin.social') }}">social</a>
     {% else %}
         <a href="{{ url_for('admin.social') }}">social</a>
