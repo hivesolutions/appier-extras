@@ -43,6 +43,36 @@ from appier_extras.parts.admin.models import base
 
 class Settings(base.Base):
 
+    facebook_token = appier.field(
+        type = dict,
+        index = True
+    )
+
+    github_token = appier.field(
+        type = dict,
+        index = True
+    )
+
+    google_token = appier.field(
+        type = dict,
+        index = True
+    )
+
+    live_token = appier.field(
+        type = dict,
+        index = True
+    )
+
+    twitter_token = appier.field(
+        type = dict,
+        index = True
+    )
+
+    twitter_token_secret = appier.field(
+        type = dict,
+        index = True
+    )
+
     extra = appier.field(
         type = dict,
         index = True
@@ -51,3 +81,60 @@ class Settings(base.Base):
     @classmethod
     def get_settings(cls, *args, **kwargs):
         return cls.singleton(*args, **kwargs)
+
+    def get_facebook_api(self):
+        import facebook
+        redirect_url = self.url_for("admin.oauth_facebook", absolute = True)
+        access_token = self.facebook_token
+        return facebook.Api(
+            client_id = appier.conf("FB_ID"),
+            client_secret = appier.conf("FB_SECRET"),
+            redirect_url = redirect_url,
+            access_token = access_token
+        )
+
+    def get_github_api(self):
+        import github
+        redirect_url = self.url_for("admin.oauth_github", absolute = True)
+        access_token = self.github_token
+        return github.Api(
+            client_id = appier.conf("GITHUB_ID"),
+            client_secret = appier.conf("GITHUB_SECRET"),
+            redirect_url = redirect_url,
+            access_token = access_token
+        )
+
+    def get_google_api(self):
+        import google
+        redirect_url = self.url_for("admin.oauth_google", absolute = True)
+        access_token = self.google_token
+        return google.Api(
+            client_id = appier.conf("GOOGLE_ID"),
+            client_secret = appier.conf("GOOGLE_SECRET"),
+            redirect_url = redirect_url,
+            access_token = access_token
+        )
+
+    def get_live_api(self):
+        import live
+        redirect_url = self.url_for("admin.oauth_live", absolute = True)
+        access_token = self.live_token
+        return live.Api(
+            client_id = appier.conf("LIVE_ID"),
+            client_secret = appier.conf("LIVE_SECRET"),
+            redirect_url = redirect_url,
+            access_token = access_token
+        )
+
+    def get_twitter_api(self):
+        import twitter
+        redirect_url = self.url_for("admin.oauth_twitter", absolute = True)
+        oauth_token = self.twitter_token
+        oauth_token_secret = self.twitter_token_secret
+        return twitter.Api(
+            client_key = appier.conf("TWITTER_KEY"),
+            client_secret = appier.conf("TWITTER_SECRET"),
+            redirect_url = redirect_url,
+            oauth_token = oauth_token,
+            oauth_token_secret = oauth_token_secret
+        )
