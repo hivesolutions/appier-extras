@@ -4,8 +4,8 @@
 {% block content %}
     <ul class="sections-list">
         <li>
-            <div class="name"><a href="{{ url_for('admin.google', next = location) }}">Google</a></div>
-            <div class="description"><span>Link you Google account</span></div>
+            <div class="name"><a href="{{ url_for('admin.google', context = 'global', next = location) }}">Link Google account</a></div>
+            <div class="description"><span>Acces you Google account data and files</span></div>
         </li>
     </ul>
 {% endblock %}
