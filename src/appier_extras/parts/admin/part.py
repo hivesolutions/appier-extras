@@ -603,7 +603,9 @@ class AdminPart(
         next = self.field("next")
         context = self.field("context", "login")
         state = context + ":" + next
-        url = self.ensure_facebook_api(state = state)
+        secure = not context == "login"
+        if secure: appier.ensure("admin")
+        url = self.ensure_facebook_api(state = state, refresh = secure)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -630,7 +632,9 @@ class AdminPart(
         next = self.field("next")
         context = self.field("context", "login")
         state = context + ":" + next
-        url = self.ensure_twitter_api(state = state)
+        secure = not context == "login"
+        if secure: appier.ensure("admin")
+        url = self.ensure_twitter_api(state = state, refresh = secure)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -660,8 +664,9 @@ class AdminPart(
         next = self.field("next")
         context = self.field("context", "login")
         state = context + ":" + next
-        refresh = not context == "login"
-        url = self.ensure_google_api(state = state, refresh = refresh)
+        secure = not context == "login"
+        if secure: appier.ensure("admin")
+        url = self.ensure_google_api(state = state, refresh = secure)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -688,7 +693,9 @@ class AdminPart(
         next = self.field("next")
         context = self.field("context", "login")
         state = context + ":" + next
-        url = self.ensure_github_api(state = state)
+        secure = not context == "login"
+        if secure: appier.ensure("admin")
+        url = self.ensure_github_api(state = state, refresh = secure)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -715,7 +722,9 @@ class AdminPart(
         next = self.field("next")
         context = self.field("context", "login")
         state = context + ":" + next
-        url = self.ensure_live_api(state = state)
+        secure = not context == "login"
+        if secure: appier.ensure("admin")
+        url = self.ensure_live_api(state = state, refresh = secure)
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)

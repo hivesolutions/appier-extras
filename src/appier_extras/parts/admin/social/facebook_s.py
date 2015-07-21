@@ -91,9 +91,9 @@ class Facebook(object):
 
         return account
 
-    def ensure_facebook_api(self, state = None):
+    def ensure_facebook_api(self, state = None, refresh = False):
         access_token = self.session.get("fb.access_token", None)
-        if access_token: return
+        if access_token and not refresh: return
         api = self.get_facebook_api()
         return api.oauth_authorize(state = state)
 

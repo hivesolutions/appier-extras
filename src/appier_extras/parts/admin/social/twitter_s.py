@@ -92,11 +92,12 @@ class Twitter(object):
 
         return account
 
-    def ensure_twitter_api(self, state = None):
+    def ensure_twitter_api(self, state = None, refresh = False):
         oauth_token = self.session.get("tw.oauth_token", None)
         oauth_token_secret = self.session.get("tw.oauth_token_secret", None)
         oauth_temporary = self.session.get("tw.oauth_temporary", True)
-        if not oauth_temporary and oauth_token and oauth_token_secret: return
+        if not oauth_temporary and oauth_token and\
+            oauth_token_secret and not refresh: return
         self.session["tw.oauth_token"] = None
         self.session["tw.oauth_token_secret"] = None
         self.session["tw.oauth_temporary"] = True
