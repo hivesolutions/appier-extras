@@ -91,19 +91,22 @@ class Github(object):
 
         return account
 
-    def ensure_github_api(self, state = None, refresh = False):
+    def ensure_github_api(self, state = None, scope = None, refresh = False):
         access_token = self.session.get("gh.access_token", None)
         if access_token and not refresh: return
-        api = self.get_github_api()
+        api = self.get_github_api(scope = scope)
         return api.oauth_authorize(state = state)
 
-    def get_github_api(self):
+    def get_github_api(self, scope = None):
         import github
+        kwargs = dict()
         redirect_url = self.url_for("admin.oauth_github", absolute = True)
         access_token = self.session and self.session.get("gh.access_token", None)
+        if scope: kwargs["scope"] = scope
         return github.Api(
             client_id = appier.conf("GITHUB_ID"),
             client_secret = appier.conf("GITHUB_SECRET"),
             redirect_url = redirect_url,
-            access_token = access_token
+            access_token = access_token,
+            **kwargs
         )

@@ -81,7 +81,9 @@ class AdminPart(
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
         self.owner.admin_facebook_scope = ("email",)
+        self.owner.admin_github_scope = ("user:email",)
         self.owner.admin_google_scope = ("email",)
+        self.owner.admin_live_scope = ("wl.basic", "wl.emails")
 
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:
@@ -709,7 +711,12 @@ class AdminPart(
         state = context + ":" + next
         secure = not context == "login"
         if secure: appier.ensure("admin")
-        url = self.ensure_github_api(state = state, refresh = secure)
+        scope = self.owner.admin_github_scope if secure else None
+        url = self.ensure_github_api(
+            state = state,
+            scope = scope,
+            refresh = secure
+        )
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -738,7 +745,12 @@ class AdminPart(
         state = context + ":" + next
         secure = not context == "login"
         if secure: appier.ensure("admin")
-        url = self.ensure_live_api(state = state, refresh = secure)
+        scope = self.owner.admin_live_scope if secure else None
+        url = self.ensure_live_api(
+            state = state,
+            scope = scope,
+            refresh = secure
+        )
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
