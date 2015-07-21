@@ -78,6 +78,8 @@ class AdminPart(
         self.logger.debug("Updating pre-defined application routes ...")
         self.owner.login_route = "admin.login"
         self.owner.login_redirect = "admin.index"
+        self.owner.admin_login_route = "admin.login"
+        self.owner.admin_login_redirect = "admin.index"
 
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:
@@ -188,7 +190,7 @@ class AdminPart(
         # redirects the current operation to the next url or in
         # alternative to the root index of the administration
         return self.redirect(
-            next or self.url_for(self.owner.login_redirect)
+            next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def logout(self):
