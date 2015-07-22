@@ -678,8 +678,10 @@ class AdminPart(
         secure = not context == "login"
         if secure: appier.ensure("admin")
         scope = self.owner.admin_google_scope if secure else None
+        access_type = "offline" if secure else None
         url = self.ensure_google_api(
             state = state,
+            access_type = access_type,
             scope = scope,
             refresh = secure
         )
@@ -700,6 +702,7 @@ class AdminPart(
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.google_token = access_token
+            settings.google_refresh_token = api.refresh_token
             settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)

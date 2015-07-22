@@ -92,11 +92,17 @@ class Google(object):
 
         return account
 
-    def ensure_google_api(self, state = None, scope = None, refresh = False):
+    def ensure_google_api(
+        self,
+        state = None,
+        access_type = None,
+        scope = None,
+        refresh = False
+    ):
         access_token = self.session.get("gg.access_token", None)
         if access_token and not refresh: return
         api = self.get_google_api(scope = scope)
-        return api.oauth_authorize(state = state)
+        return api.oauth_authorize(state = state, access_type = access_type)
 
     def get_google_api(self, scope = None):
         import google

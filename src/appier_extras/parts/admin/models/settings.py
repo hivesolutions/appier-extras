@@ -55,6 +55,10 @@ class Settings(base.Base):
         index = True
     )
 
+    google_refresh_token = appier.field(
+        index = True
+    )
+
     live_token = appier.field(
         index = True
     )
@@ -79,6 +83,12 @@ class Settings(base.Base):
     @classmethod
     def get_settings(cls, *args, **kwargs):
         return cls.singleton(*args, **kwargs)
+
+    @classmethod
+    def refresh_google_api(cls, access_token):
+        settings = cls.get_settings()
+        settings.google_token = access_token
+        settings.save()
 
     def get_facebook_api(self):
         try: import facebook
@@ -110,14 +120,17 @@ class Settings(base.Base):
         try: import google
         except: return None
         if not self.google_token: return None
+        cls = self.__class__
         redirect_url = self.owner.url_for("admin.oauth_google", absolute = True)
         access_token = self.google_token
-        return google.Api(
+        api = google.Api(
             client_id = appier.conf("GOOGLE_ID"),
             client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,
             access_token = access_token
         )
+        api.bind("access_token", cls.refresh_google_api)
+        return api
 
     def get_live_api(self):
         try: import live
