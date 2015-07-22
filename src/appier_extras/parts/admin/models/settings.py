@@ -123,11 +123,13 @@ class Settings(base.Base):
         cls = self.__class__
         redirect_url = self.owner.url_for("admin.oauth_google", absolute = True)
         access_token = self.google_token
+        refresh_token = self.google_refresh_token
         api = google.Api(
             client_id = appier.conf("GOOGLE_ID"),
             client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,
-            access_token = access_token
+            access_token = access_token,
+            refresh_token = refresh_token
         )
         api.bind("access_token", cls.refresh_google_api)
         return api
