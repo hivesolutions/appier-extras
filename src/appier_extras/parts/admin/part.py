@@ -686,9 +686,11 @@ class AdminPart(
         if secure: appier.ensure("admin")
         scope = self.owner.admin_google_scope if secure else None
         access_type = "offline" if secure else None
+        approval_prompt = True if secure else False
         url = self.ensure_google_api(
             state = state,
             access_type = access_type,
+            approval_prompt = approval_prompt,
             scope = scope,
             refresh = secure
         )

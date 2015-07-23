@@ -100,13 +100,18 @@ class Google(object):
         self,
         state = None,
         access_type = None,
+        approval_prompt = False,
         scope = None,
         refresh = False
     ):
         access_token = self.session.get("gg.access_token", None)
         if access_token and not refresh: return
         api = self.get_google_api(scope = scope)
-        return api.oauth_authorize(state = state, access_type = access_type)
+        return api.oauth_authorize(
+            state = state,
+            access_type = access_type,
+            approval_prompt = approval_prompt
+        )
 
     def get_google_api(self, scope = None):
         import google
