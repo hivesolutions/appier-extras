@@ -51,7 +51,7 @@ class Twitter(object):
         if not appier.conf("TWITTER_SECRET"): return False
         return True
 
-    def ensure_twitter_account(self):
+    def ensure_twitter_account(self, create = True):
         api = self.get_twitter_api()
         user = api.verify_account()
         email = "%s@twitter.com" % user["screen_name"]
@@ -62,6 +62,10 @@ class Twitter(object):
         )
 
         if not account:
+            if not create: raise appier.NotFoundError(
+                message = "no account found for twitter account"
+            )
+
             account = models.Account(
                 username = user["screen_name"],
                 email = email,

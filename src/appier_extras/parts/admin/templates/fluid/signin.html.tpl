@@ -23,11 +23,11 @@
                 <span class="button medium button-color button-blue" data-submit="true">Login</span>
             </div>
             {% if owner.admin_open %}
-	            <div class="new">
-	                <span>or</span>
-	                <a href="{{ url_for('admin.new_account') }}">create new account</a>
-	            </div>
-	        {% endif %}
+                <div class="new">
+                    <span>or</span>
+                    <a href="{{ url_for('admin.new_account') }}">create new account</a>
+                </div>
+            {% endif %}
         </form>
     </div>
     {% if socials %}

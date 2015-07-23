@@ -51,7 +51,7 @@ class Google(object):
         if not appier.conf("GOOGLE_SECRET"): return False
         return True
 
-    def ensure_google_account(self):
+    def ensure_google_account(self, create = True):
         api = self.get_google_api()
         user = api.self_user()
         email = user["emails"][0]["value"]
@@ -62,6 +62,10 @@ class Google(object):
         )
 
         if not account:
+            if not create: raise appier.NotFoundError(
+                message = "no account found for google account"
+            )
+
             account = models.Account(
                 username = email,
                 email = email,

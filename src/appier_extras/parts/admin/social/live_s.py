@@ -51,7 +51,7 @@ class Live(object):
         if not appier.conf("LIVE_SECRET"): return False
         return True
 
-    def ensure_live_account(self):
+    def ensure_live_account(self, create = True):
         api = self.get_live_api()
         user = api.self_user()
         email = user["emails"]["preferred"]
@@ -62,6 +62,10 @@ class Live(object):
         )
 
         if not account:
+            if not create: raise appier.NotFoundError(
+                message = "no account found for live account"
+            )
+
             account = models.Account(
                 username = email,
                 email = email,

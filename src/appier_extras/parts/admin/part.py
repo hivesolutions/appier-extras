@@ -637,7 +637,7 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["fb.access_token"] = access_token
-            self.ensure_facebook_account()
+            self.ensure_facebook_account(create = self.owner.admin_open)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.facebook_token = access_token
@@ -668,7 +668,7 @@ class AdminPart(
             self.session["tw.oauth_token"] = oauth_token
             self.session["tw.oauth_token_secret"] = oauth_token_secret
             self.session["tw.oauth_temporary"] = False
-            self.ensure_twitter_account()
+            self.ensure_twitter_account(create = self.owner.admin_open)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.twitter_token = oauth_token
@@ -705,7 +705,7 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["gg.access_token"] = access_token
-            self.ensure_google_account()
+            self.ensure_google_account(create = self.owner.admin_open)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.google_token = access_token
@@ -740,7 +740,7 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["gh.access_token"] = access_token
-            self.ensure_github_account()
+            self.ensure_github_account(create = self.owner.admin_open)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.github_token = access_token
@@ -774,7 +774,7 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["live.access_token"] = access_token
-            self.ensure_live_account()
+            self.ensure_live_account(create = self.owner.admin_open)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.live_token = access_token

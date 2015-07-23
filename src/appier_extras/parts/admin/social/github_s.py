@@ -51,7 +51,7 @@ class Github(object):
         if not appier.conf("GITHUB_SECRET"): return False
         return True
 
-    def ensure_github_account(self):
+    def ensure_github_account(self, create = True):
         api = self.get_github_api()
         user = api.self_user()
         account = models.Account.get(
@@ -61,6 +61,10 @@ class Github(object):
         )
 
         if not account:
+            if not create: raise appier.NotFoundError(
+                message = "no account found for github account"
+            )
+
             account = models.Account(
                 username = user["email"],
                 email = user["email"],
