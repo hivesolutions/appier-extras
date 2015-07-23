@@ -78,6 +78,7 @@ class AdminPart(
         self.logger.debug("Updating pre-defined application routes ...")
         self.owner.login_route = "admin.login"
         self.owner.login_redirect = "admin.index"
+        self.owner.admin_open = True
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
         self.owner.admin_facebook_scope = ("email",)
@@ -240,6 +241,9 @@ class AdminPart(
         return self.template("done.html.tpl")
 
     def new_account(self):
+        if not self.owner.admin_open: raise appier.SecurityError(
+            message = "signup not allowed"
+        )
         return self.template(
             "account/new.html.tpl",
             account = dict(),
@@ -247,6 +251,9 @@ class AdminPart(
         )
 
     def create_account(self):
+        if not self.owner.admin_open: raise appier.SecurityError(
+            message = "signup not allowed"
+        )
         account = self.account_c.new()
         account.type = self.account_c.USER_TYPE
         account.enabled = False

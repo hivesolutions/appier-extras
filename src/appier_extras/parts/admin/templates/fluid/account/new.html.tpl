@@ -1,5 +1,5 @@
 {% extends "admin/admin.simple.html.tpl" %}
-{% block title %}Login{% endblock %}
+{% block title %}Sign Up{% endblock %}
 {% block content %}
     <div class="login-panel">
         <h1>Sign up</h1>
