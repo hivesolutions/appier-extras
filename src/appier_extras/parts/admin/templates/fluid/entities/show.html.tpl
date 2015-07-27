@@ -3,33 +3,29 @@
 {% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
-    {% if model.links() %}
-        <ul class="drop-down links force" data-name="Links">
-            {% for link in model.links() %}
-                {% if link.instance %}
-                    <li>
-                        <a class="no-async" target="_blank"
-                           href="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% if model.operations() %}
-        <ul class="drop-down operations force" data-name="Operations">
-            {% for operation in model.operations() %}
-                {% if operation.parameters %}
-                    <li>
-                        <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <ul class="drop-down links force" data-name="Links">
+        {% for link in model.links() %}
+            {% if link.instance %}
+                <li>
+                    <a class="no-async" target="_blank"
+                       href="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <ul class="drop-down operations force" data-name="Operations">
+        {% for operation in model.operations() %}
+            {% if operation.parameters %}
+                <li>
+                    <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
     <div class="button button-color button-grey"
          data-link="{{ url_for('admin.edit_entity', model = model._name(), _id = entity._id) }}">Edit</div>
 {% endblock %}
