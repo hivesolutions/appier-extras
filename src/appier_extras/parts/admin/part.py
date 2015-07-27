@@ -492,6 +492,8 @@ class AdminPart(
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
         model = self.get_model(model)
+        definition = model.operation(operation)
+        parameters = definition.cast(parameters)
         entities = model.find(_id = {"$in" : ids})
         for entity in entities:
             method = getattr(entity, operation)
