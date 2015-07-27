@@ -472,12 +472,12 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def link_model(self, model, link):
         parameters = self.get_fields("parameters", [])
-        next = self.field("next")
         ids = self.field("ids", "")
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
         model = self.get_model(model)
         entities = model.find(_id = {"$in" : ids})
+        if not entities: entities = (model,)
         result = None
         for entity in entities:
             method = getattr(entity, link)
@@ -495,6 +495,7 @@ class AdminPart(
         definition = model.operation(operation)
         parameters = definition.cast(parameters)
         entities = model.find(_id = {"$in" : ids})
+        if not entities: entities = (model,)
         for entity in entities:
             method = getattr(entity, operation)
             method(*parameters)
