@@ -6,6 +6,16 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
+  - "3.5-dev"
   - "pypy"
   - "pypy3"
 script: python setup.py test
+deploy:
+  provider: pypi
+  user: joamag
+  password:
+    secure: dnYGdBjQu6dbRwluKTG1N2xYDKRV1j7XezDvnz0PqcsY7a7miImvpD+zcQn5n4AburJFtR5H9JBc/2DB9qsiIXsHnN/pYAxoJHxtgR05Mtw5IY+R21xztb79TyO/mUu9VVuUCAkLZzQT1McbrQ1g/ZHJcrBW+w8SEgmWmJp17jE=
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    python: "2.7"
