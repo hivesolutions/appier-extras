@@ -57,6 +57,7 @@ setuptools.setup(
         "appier_extras.parts.admin.models",
         "appier_extras.parts.admin.social",
         "appier_extras.parts.captcha",
+        "appier_extras.test",
         "appier_extras.utils"
     ],
     test_suite = "appier_extras.test",
