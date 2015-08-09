@@ -10,8 +10,11 @@ python:
   - "pypy"
   - "pypy3"
 install:
+  - pip install -r requirements.txt
+  - pip install coveralls
   - pip install twine
-script: python setup.py test
+script: coverage run --source=appier_extras setup.py test
+after_success: coveralls
 deploy:
   provider: pypi
   user: joamag
