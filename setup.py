@@ -59,7 +59,7 @@ setuptools.setup(
         "appier_extras.parts.captcha",
         "appier_extras.utils"
     ],
-    test_suite = "appier.test",
+    test_suite = "appier_extras.test",
     package_dir = {
         "" : os.path.normpath("src")
     },
