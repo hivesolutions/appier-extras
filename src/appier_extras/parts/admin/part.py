@@ -126,15 +126,19 @@ class AdminPart(
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/delete", self.delete_entity),
             (("GET",), "/admin/facebook", self.facebook),
+            (("GET",), "/admin/facebook/unlink", self.unlink_facebook),
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
             (("GET",), "/admin/github", self.github),
+            (("GET",), "/admin/github/unlink", self.unlink_github),
             (("GET",), "/admin/github/oauth", self.oauth_github),
             (("GET",), "/admin/google", self.google),
             (("GET",), "/admin/google/unlink", self.unlink_google),
             (("GET",), "/admin/google/oauth", self.oauth_google),
             (("GET",), "/admin/live", self.live),
+            (("GET",), "/admin/live/unlink", self.unlink_live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/twitter", self.twitter),
+            (("GET",), "/admin/twitter/unlink", self.unlink_twitter),
             (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
             (("GET",), "/admin/log.json", self.show_log, None, True),
             (("GET",), "/api/admin/ping", self.ping_api, None, True),
@@ -635,6 +639,19 @@ class AdminPart(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
+    def unlink_facebook(self):
+        next = self.field("next")
+        context = self.field("context", "login")
+        if context == "login":
+            self.session.pop("fb.access_token", None)
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.facebook_token = None
+            settings.save()
+        return self.redirect(
+           next or self.url_for("admin.social")
+        )
+
     def oauth_facebook(self):
         code = self.field("code")
         state = self.field("state")
@@ -667,6 +684,19 @@ class AdminPart(
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
+        )
+
+    def unlink_github(self):
+        next = self.field("next")
+        context = self.field("context", "login")
+        if context == "login":
+            self.session.pop("gh.access_token", None)
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.github_token = None
+            settings.save()
+        return self.redirect(
+           next or self.url_for("admin.social")
         )
 
     def oauth_github(self):
@@ -765,6 +795,19 @@ class AdminPart(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
+    def unlink_live(self):
+        next = self.field("next")
+        context = self.field("context", "login")
+        if context == "login":
+            self.session.pop("live.access_token", None)
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.live_token = None
+            settings.save()
+        return self.redirect(
+           next or self.url_for("admin.social")
+        )
+
     def oauth_live(self):
         code = self.field("code")
         state = self.field("state")
@@ -792,6 +835,22 @@ class AdminPart(
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
+        )
+
+    def unlink_twitter(self):
+        next = self.field("next")
+        context = self.field("context", "login")
+        if context == "login":
+            self.session.pop("tw.access_token", None)
+            self.session.pop("tw.oauth_token_secret", None)
+            self.session.pop("tw.oauth_temporary", None)
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.twitter_token = None
+            settings.twitter_token_secret = None
+            settings.save()
+        return self.redirect(
+           next or self.url_for("admin.social")
         )
 
     def oauth_twitter(self):
