@@ -5,10 +5,17 @@
     {% if socials %}
         <ul class="sections-list">
             {% if "facebook" in socials %}
-                <li>
-                    <div class="name"><a href="{{ url_for('admin.facebook', context = 'global', next = location) }}">Link Facebook account</a></div>
-                    <div class="description"><span>Enable acces to you social Facebbok information</span></div>
-                </li>
+                {% if "facebook" in linked %}
+                    <li>
+                        <div class="name"><a href="{{ url_for('admin.facebook', context = 'global', next = location) }}">Unlink Facebook account</a></div>
+                        <div class="description"><span>You're currently linked to Facebook under <strong>joamag@gmail.com</strong></span></div>
+                    </li>
+                {% else %}
+                    <li>
+                        <div class="name"><a href="{{ url_for('admin.facebook', context = 'global', next = location) }}">Link Facebook account</a></div>
+                        <div class="description"><span>Enable access to you social Facebbok information</span></div>
+                    </li>
+                {% endif %}
             {% endif %}
             {% if "github" in socials %}
                 <li>
@@ -17,10 +24,17 @@
                 </li>
             {% endif %}
             {% if "google" in socials %}
-                <li>
-                    <div class="name"><a href="{{ url_for('admin.google', context = 'global', next = location) }}">Link Google account</a></div>
-                    <div class="description"><span>Enable access to you Google account data and files</span></div>
-                </li>
+                {% if "google" in linked %}
+                    <li>
+                        <div class="name"><a class="warning" href="{{ url_for('admin.facebook', context = 'global', next = location) }}">Unlink Google account</a></div>
+                        <div class="description"><span>You're currently linked to Google under <strong>joamag@gmail.com</strong></span></div>
+                    </li>
+                {% else %}
+                    <li>
+                        <div class="name"><a href="{{ url_for('admin.google', context = 'global', next = location) }}">Link Google account</a></div>
+                        <div class="description"><span>Enable access to you Google account data and files</span></div>
+                    </li>
+                {% endif %}
             {% endif %}
             {% if "live" in socials %}
                 <li>
@@ -31,7 +45,7 @@
             {% if "twitter" in socials %}
                 <li>
                     <div class="name"><a href="{{ url_for('admin.twitter', context = 'global', next = location) }}">Link Twitter account</a></div>
-                    <div class="description"><span>Enable acces to you social Twitter information</span></div>
+                    <div class="description"><span>Enable access to you social Twitter information</span></div>
                 </li>
             {% endif %}
         </ul>

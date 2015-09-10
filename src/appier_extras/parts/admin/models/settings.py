@@ -99,6 +99,7 @@ class Settings(base.Base):
         if settings.google_token: linked.append("google")
         if settings.live_token: linked.append("live")
         if settings.twitter_token: linked.append("twitter")
+        return linked
 
     def get_facebook_api(self):
         try: import facebook

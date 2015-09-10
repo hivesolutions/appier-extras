@@ -162,12 +162,10 @@ class AdminPart(
     def signin(self):
         next = self.field("next")
         socials = self.socials()
-        linked = self.linked()
         return self.template(
             "signin.html.tpl",
             next = next,
-            socials = socials,
-            linked = linked
+            socials = socials
         )
 
     def login(self):
@@ -335,10 +333,12 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def social(self):
         socials = self.socials()
+        linked = self.linked()
         return self.template(
             "social.html.tpl",
             section = "social",
-            socials = socials
+            socials = socials,
+            linked = linked
         )
 
     @appier.ensure(token = "admin")
