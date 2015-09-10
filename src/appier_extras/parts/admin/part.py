@@ -709,7 +709,7 @@ class AdminPart(
 
     def unlink_google(self):
         next = self.field("next")
-        context = self.field("context", "global")
+        context = self.field("context", "login")
         if context == "login":
             self.session.pop("gg.access_token", None)
         elif context == "global":
