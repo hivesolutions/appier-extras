@@ -59,6 +59,10 @@ class Settings(base.Base):
         index = True
     )
 
+    google_email = appier.field(
+        index = True
+    )
+
     live_token = appier.field(
         index = True
     )
@@ -96,7 +100,7 @@ class Settings(base.Base):
         settings = cls.get_settings()
         if settings.facebook_token: linked["facebook"] = settings.facebook_token
         if settings.github_token: linked["github"] = settings.github_token
-        if settings.google_token: linked["google"] = settings.google_token
+        if settings.google_token: linked["google"] = settings.google_email
         if settings.live_token: linked["live"] = settings.live_token
         if settings.twitter_token: linked["twitter"] = settings.twitter_token
         return linked

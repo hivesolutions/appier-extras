@@ -731,9 +731,12 @@ class AdminPart(
             self.session["gg.access_token"] = access_token
             self.ensure_google_account(create = self.owner.admin_open)
         elif context == "global":
+            user = api.self_user()
+            email = user["emails"][0]["value"]
             settings = models.Settings.get_settings()
             settings.google_token = access_token
             settings.google_refresh_token = api.refresh_token
+            settings.google_email = email
             settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
