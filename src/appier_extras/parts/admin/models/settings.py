@@ -90,6 +90,16 @@ class Settings(base.Base):
         settings.google_token = access_token
         settings.save()
 
+    @classmethod
+    def linked_apis(cls):
+        linked = []
+        settings = cls.get_settings()
+        if settings.facebook_token: linked.append("facebook")
+        if settings.github_token: linked.append("github")
+        if settings.google_token: linked.append("google")
+        if settings.live_token: linked.append("live")
+        if settings.twitter_token: linked.append("twitter")
+
     def get_facebook_api(self):
         try: import facebook
         except: return None

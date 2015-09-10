@@ -127,14 +127,14 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>/<str:_id>/delete", self.delete_entity),
             (("GET",), "/admin/facebook", self.facebook),
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
-            (("GET",), "/admin/twitter", self.twitter),
-            (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
-            (("GET",), "/admin/google", self.google),
-            (("GET",), "/admin/google/oauth", self.oauth_google),
             (("GET",), "/admin/github", self.github),
             (("GET",), "/admin/github/oauth", self.oauth_github),
+            (("GET",), "/admin/google", self.google),
+            (("GET",), "/admin/google/oauth", self.oauth_google),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
+            (("GET",), "/admin/twitter", self.twitter),
+            (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
             (("GET",), "/admin/log.json", self.show_log, None, True),
             (("GET",), "/api/admin/ping", self.ping_api, None, True),
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
@@ -162,10 +162,12 @@ class AdminPart(
     def signin(self):
         next = self.field("next")
         socials = self.socials()
+        linked = self.linked()
         return self.template(
             "signin.html.tpl",
             next = next,
-            socials = socials
+            socials = socials,
+            linked = linked
         )
 
     def login(self):
@@ -649,33 +651,35 @@ class AdminPart(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
-    def twitter(self):
+    def github(self):
         next = self.field("next")
         context = self.field("context", "login")
         state = context + ":" + next
         secure = not context == "login"
         if secure: appier.ensure("admin")
-        url = self.ensure_twitter_api(state = state, refresh = secure)
+        scope = self.owner.admin_github_scope if secure else None
+        url = self.ensure_github_api(
+            state = state,
+            scope = scope,
+            refresh = secure
+        )
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
-    def oauth_twitter(self):
-        oauth_verifier = self.field("oauth_verifier")
+    def oauth_github(self):
+        code = self.field("code")
         state = self.field("state")
         context, next = state.split(":", 1)
-        api = self.get_twitter_api()
-        oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
+        api = self.get_github_api()
+        access_token = api.oauth_access(code)
         if context == "login":
-            self.session["tw.oauth_token"] = oauth_token
-            self.session["tw.oauth_token_secret"] = oauth_token_secret
-            self.session["tw.oauth_temporary"] = False
-            self.ensure_twitter_account(create = self.owner.admin_open)
+            self.session["gh.access_token"] = access_token
+            self.ensure_github_account(create = self.owner.admin_open)
         elif context == "global":
             settings = models.Settings.get_settings()
-            settings.twitter_token = oauth_token
-            settings.twitter_token_secret = oauth_token_secret
+            settings.github_token = access_token
             settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -720,40 +724,6 @@ class AdminPart(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
-    def github(self):
-        next = self.field("next")
-        context = self.field("context", "login")
-        state = context + ":" + next
-        secure = not context == "login"
-        if secure: appier.ensure("admin")
-        scope = self.owner.admin_github_scope if secure else None
-        url = self.ensure_github_api(
-            state = state,
-            scope = scope,
-            refresh = secure
-        )
-        if url: return self.redirect(url)
-        return self.redirect(
-           next or self.url_for(self.owner.admin_login_redirect)
-        )
-
-    def oauth_github(self):
-        code = self.field("code")
-        state = self.field("state")
-        context, next = state.split(":", 1)
-        api = self.get_github_api()
-        access_token = api.oauth_access(code)
-        if context == "login":
-            self.session["gh.access_token"] = access_token
-            self.ensure_github_account(create = self.owner.admin_open)
-        elif context == "global":
-            settings = models.Settings.get_settings()
-            settings.github_token = access_token
-            settings.save()
-        return self.redirect(
-           next or self.url_for(self.owner.admin_login_redirect)
-        )
-
     def live(self):
         next = self.field("next")
         context = self.field("context", "login")
@@ -783,6 +753,38 @@ class AdminPart(
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.live_token = access_token
+            settings.save()
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
+        )
+
+    def twitter(self):
+        next = self.field("next")
+        context = self.field("context", "login")
+        state = context + ":" + next
+        secure = not context == "login"
+        if secure: appier.ensure("admin")
+        url = self.ensure_twitter_api(state = state, refresh = secure)
+        if url: return self.redirect(url)
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
+        )
+
+    def oauth_twitter(self):
+        oauth_verifier = self.field("oauth_verifier")
+        state = self.field("state")
+        context, next = state.split(":", 1)
+        api = self.get_twitter_api()
+        oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
+        if context == "login":
+            self.session["tw.oauth_token"] = oauth_token
+            self.session["tw.oauth_token_secret"] = oauth_token_secret
+            self.session["tw.oauth_temporary"] = False
+            self.ensure_twitter_account(create = self.owner.admin_open)
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.twitter_token = oauth_token
+            settings.twitter_token_secret = oauth_token_secret
             settings.save()
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
@@ -832,11 +834,14 @@ class AdminPart(
     def socials(self):
         socials = []
         if self.has_facebook(): socials.append("facebook")
-        if self.has_twitter(): socials.append("twitter")
-        if self.has_google(): socials.append("google")
         if self.has_github(): socials.append("github")
+        if self.has_google(): socials.append("google")
         if self.has_live(): socials.append("live")
+        if self.has_twitter(): socials.append("twitter")
         return socials
+
+    def linked(self):
+        return models.Settings.linked_apis()
 
     def _sort(self, object, model):
         if "sort" in object: return object
