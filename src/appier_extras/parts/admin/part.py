@@ -689,12 +689,12 @@ class AdminPart(
     def google(self):
         next = self.field("next")
         context = self.field("context", "login")
+        state = context + ":" + next
         secure = not context == "login"
         if secure: appier.ensure("admin")
         scope = self.owner.admin_google_scope if secure else None
         access_type = "offline" if secure else None
         approval_prompt = True if secure else False
-        state = context + ":" + next + ":" + " ".join(scope)
         url = self.ensure_google_api(
             state = state,
             access_type = access_type,
@@ -726,8 +726,7 @@ class AdminPart(
     def oauth_google(self):
         code = self.field("code")
         state = self.field("state")
-        context, next, scope = state.split(":", 2)
-        scope = scope.split(" ")
+        context, next = state.split(":", 1)
         api = self.get_google_api()
         access_token = api.oauth_access(code)
         if context == "login":
@@ -736,6 +735,9 @@ class AdminPart(
         elif context == "global":
             user = api.self_user()
             email = user["emails"][0]["value"]
+            info = api.token_info()
+            scope = info["scope"]
+            scope = scope.split(" ")
             settings = models.Settings.get_settings()
             settings.google_token = access_token
             settings.google_refresh_token = api.refresh_token
