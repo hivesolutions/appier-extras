@@ -63,6 +63,11 @@ class Settings(base.Base):
         index = True
     )
 
+    google_scope = appier.field(
+        index = True,
+        type = list
+    )
+
     live_token = appier.field(
         index = True
     )
