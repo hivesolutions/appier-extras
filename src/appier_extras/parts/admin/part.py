@@ -130,6 +130,7 @@ class AdminPart(
             (("GET",), "/admin/github", self.github),
             (("GET",), "/admin/github/oauth", self.oauth_github),
             (("GET",), "/admin/google", self.google),
+            (("GET",), "/admin/google/unlink", self.unlink_google),
             (("GET",), "/admin/google/oauth", self.oauth_google),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
@@ -704,6 +705,20 @@ class AdminPart(
         if url: return self.redirect(url)
         return self.redirect(
            next or self.url_for(self.owner.admin_login_redirect)
+        )
+
+    def unlink_google(self):
+        next = self.field("next")
+        context = self.field("context", "global")
+        if context == "login":
+            self.session.pop("gg.access_token", None)
+        elif context == "global":
+            settings = models.Settings.get_settings()
+            settings.google_token = None
+            settings.google_refresh_token = None
+            settings.save()
+        return self.redirect(
+           next or self.url_for("admin.social")
         )
 
     def oauth_google(self):

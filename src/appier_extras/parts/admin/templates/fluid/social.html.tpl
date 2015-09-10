@@ -26,8 +26,8 @@
             {% if "google" in socials %}
                 {% if "google" in linked %}
                     <li>
-                        <div class="name"><a class="warning" href="{{ url_for('admin.facebook', context = 'global', next = location) }}">Unlink Google account</a></div>
-                        <div class="description"><span>You're currently linked to Google under <strong>joamag@gmail.com</strong></span></div>
+                        <div class="name"><a class="warning" href="{{ url_for('admin.unlink_google', context = 'global', next = location) }}">Unlink Google account</a></div>
+                        <div class="description"><span>You're currently linked to Google under <strong>{{ linked.google }}</strong></span></div>
                     </li>
                 {% else %}
                     <li>
