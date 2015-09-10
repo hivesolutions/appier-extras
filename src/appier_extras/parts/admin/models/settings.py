@@ -92,13 +92,13 @@ class Settings(base.Base):
 
     @classmethod
     def linked_apis(cls):
-        linked = []
+        linked = dict()
         settings = cls.get_settings()
-        if settings.facebook_token: linked.append("facebook")
-        if settings.github_token: linked.append("github")
-        if settings.google_token: linked.append("google")
-        if settings.live_token: linked.append("live")
-        if settings.twitter_token: linked.append("twitter")
+        if settings.facebook_token: linked["facebook"] = settings.facebook_token
+        if settings.github_token: linked["github"] = settings.github_token
+        if settings.google_token: linked["google"] = settings.google_token
+        if settings.live_token: linked["live"] = settings.live_token
+        if settings.twitter_token: linked["twitter"] = settings.twitter_token
         return linked
 
     def get_facebook_api(self):
