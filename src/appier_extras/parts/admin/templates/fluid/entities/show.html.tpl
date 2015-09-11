@@ -15,14 +15,16 @@
     </ul>
     <ul class="drop-down operations force" data-name="Operations">
         {% for operation in model.operations() %}
-            {% if operation.parameters %}
-                <li>
-                    <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
-                </li>
+            {% if operation.instance %}
+                {% if operation.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
+                    </li>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </ul>
