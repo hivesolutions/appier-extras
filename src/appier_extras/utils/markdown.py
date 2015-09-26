@@ -278,7 +278,7 @@ class MarkdownParser(object):
 
 class MarkdownGenerator(object):
 
-    def __init__(self, file = None, options = None, encoding = "utf-8"):
+    def __init__(self, file = None, options = dict(), encoding = "utf-8"):
         self.file = file
         self.options = options or dict()
         self.encoding = encoding
@@ -322,7 +322,9 @@ class MarkdownHTML(MarkdownGenerator):
         self,
         file = None,
         encoding = "utf-8",
-        options = None,
+        options = dict(
+            anchors = True
+        ),
         base_url = ""
     ):
         MarkdownGenerator.__init__(
@@ -371,10 +373,11 @@ class MarkdownHTML(MarkdownGenerator):
         hash = node["hash"]
         level = node["level"]
         value = node["value"]
+        achors = self.options.get("anchors", True)
         self._close_all()
         self.open("<h%d id=\"%s\">" % (level, hash))
         self._generate(value)
-        self.emit("<a class=\"anchor\" href=\"#%s\">¶</a>" % hash)
+        if achors: self.emit("<a class=\"anchor\" href=\"#%s\">¶</a>" % hash)
         self.close("</h%d>" % level)
 
     def generate_list(self, node):
