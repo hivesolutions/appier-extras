@@ -279,11 +279,11 @@ class MarkdownParser(object):
         value = value.lower()
         value = value.replace(" ", "-")
         value = "global" if is_global else value
-        value = self._resolve(value)
+        value = self._resolve_id(value)
         self.ids.append(value)
         return value
 
-    def _resolve(self, value):
+    def _resolve_id(self, value):
         if not value in self.ids: return value
         value_b = value
         index = 1
