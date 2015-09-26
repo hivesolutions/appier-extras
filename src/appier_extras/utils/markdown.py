@@ -377,7 +377,7 @@ class MarkdownHTML(MarkdownGenerator):
         self._close_all()
         self.open("<h%d id=\"%s\">" % (level, hash))
         self._generate(value)
-        if achors: self.emit("<a class=\"anchor\" href=\"#%s\">¶</a>" % hash)
+        if achors: self.emit("<a class=\"anchor\" href=\"#%s\">&para;</a>" % hash)
         self.close("</h%d>" % level)
 
     def generate_list(self, node):
