@@ -306,7 +306,7 @@ class MarkdownGenerator(object):
     def emit(self, value):
         if not self.file: return
         value = appier.legacy.UNICODE(value)
-        value = value.encode(self.encoding)
+        if self.encoding: value = value.encode(self.encoding)
         self.file.write(value)
 
     def _generate(self, nodes):
