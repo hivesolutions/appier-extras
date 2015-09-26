@@ -340,8 +340,9 @@ class MarkdownHTML(MarkdownGenerator):
     def generate_header(self, node):
         level = node["level"]
         value = node["value"]
+        hash = self._to_id(value)
         self._close_all()
-        self.open("<h%d>" % level)
+        self.open("<h%d id=\"%s\">" % (level, hash))
         self._generate(value)
         self.close("</h%d>" % level)
 
@@ -463,3 +464,8 @@ class MarkdownHTML(MarkdownGenerator):
         value_s = value if appier.legacy.PYTHON_3 else value.encode(encoding)
         escaped = xml.sax.saxutils.escape(value_s)
         return escaped if appier.legacy.PYTHON_3 else escaped.decode(encoding)
+
+    def _to_id(self, value):
+        value = value.lower()
+        value = value.replace(" ", "-")
+        return value
