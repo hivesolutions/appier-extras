@@ -38,6 +38,7 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import re
+import sys
 
 import xml.sax.saxutils
 
@@ -143,11 +144,13 @@ class MarkdownParser(object):
         value = parts["header_value"]
 
         if value.endswith(" " + index): value = value.rstrip(" #")
+        hash = self._to_id(value)
         value = self.parse(value, regex = self.simple)
 
         node = dict(
             type = "header",
             level = len(index),
+            hash = hash,
             value = value
         )
         return node
@@ -268,11 +271,25 @@ class MarkdownParser(object):
     def parse_normal(self, parts):
         return parts["value"]
 
+    def _to_id(self, value):
+        value = value.lower()
+        value = value.replace(" ", "-")
+        return value
+
 class MarkdownGenerator(object):
 
-    def __init__(self, file = None):
+    def __init__(self, file = None, encoding = "utf-8"):
         self.file = file
+        self.encoding = encoding
         self.reset()
+
+    @classmethod
+    def process(cls, in_file, out_file, parser = MarkdownParser):
+        parser = parser()
+        generator = cls(file = out_file)
+        contents = in_file.read()
+        nodes = parser.parse(contents)
+        generator.generate(nodes)
 
     def reset(self):
         pass
@@ -288,6 +305,7 @@ class MarkdownGenerator(object):
     def emit(self, value):
         if not self.file: return
         value = appier.legacy.UNICODE(value)
+        value = value.encode(self.encoding)
         self.file.write(value)
 
     def _generate(self, nodes):
@@ -338,9 +356,9 @@ class MarkdownHTML(MarkdownGenerator):
         self.paragraph = True
 
     def generate_header(self, node):
+        hash = node["hash"]
         level = node["level"]
         value = node["value"]
-        hash = self._to_id(value)
         self._close_all()
         self.open("<h%d id=\"%s\">" % (level, hash))
         self._generate(value)
@@ -465,7 +483,15 @@ class MarkdownHTML(MarkdownGenerator):
         escaped = xml.sax.saxutils.escape(value_s)
         return escaped if appier.legacy.PYTHON_3 else escaped.decode(encoding)
 
-    def _to_id(self, value):
-        value = value.lower()
-        value = value.replace(" ", "-")
-        return value
+def run():
+    if len(sys.argv) < 3:
+        print("Invalid number of arguments")
+        sys.exit(2)
+
+    in_file = open(sys.argv[1], "rb")
+    out_file = open(sys.argv[2], "wb")
+    try: MarkdownHTML.process(in_file, out_file)
+    finally: in_file.close(); out_file.close()
+
+if __name__ == "__main__":
+    run()

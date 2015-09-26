@@ -80,6 +80,11 @@ setuptools.setup(
             "static/patterns/*"
         ]
     },
+    entry_points = {
+        "console_scripts" : [
+            "markdown = appier_extras.utils.markdown:run"
+        ]
+    },
     install_requires = [
         "appier"
     ],
