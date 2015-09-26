@@ -99,6 +99,7 @@ class MarkdownParser(object):
             ]),
             re.MULTILINE | re.UNICODE
         )
+        self.ids = []
 
     def parse(self, data, regex = None, encoding = "utf-8"):
         regex = regex or self.master
@@ -272,9 +273,24 @@ class MarkdownParser(object):
         return parts["value"]
 
     def _to_id(self, value):
+        is_global = False
+        is_global = is_global or value.startswith("#")
+        is_global = is_global or value.startswith("[")
         value = value.lower()
         value = value.replace(" ", "-")
+        value = "global" if is_global else value
+        value = self._resolve(value)
+        self.ids.append(value)
         return value
+
+    def _resolve(self, value):
+        if not value in self.ids: return value
+        value_b = value
+        index = 1
+        while True:
+            value = "%s-%d" % (value_b, index)
+            if not value in self.ids: return value
+            index += 1
 
 class MarkdownGenerator(object):
 
