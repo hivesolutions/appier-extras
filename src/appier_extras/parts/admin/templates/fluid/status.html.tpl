@@ -16,6 +16,14 @@
         <div class="panel-contents">
             <dl class="inline">
                 <div class="item">
+                    <dt>Name</dt>
+                    <dd>{{ own.info().name }}</dd>
+                </div>
+                <div class="item">
+                    <dt>Instance</dt>
+                    <dd>{{ own.info().instance|default("global", True) }}</dd>
+                </div>
+                <div class="item">
                     <dt>Uptime</dt>
                     <dd>{{ own.info().uptime }}</dd>
                 </div>
