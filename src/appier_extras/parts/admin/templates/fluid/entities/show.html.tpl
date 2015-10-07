@@ -37,11 +37,16 @@
         {% if operation.parameters %}
             <div id="window-{{ operation.method }}" class="window window-operation">
                 <h1>{{ operation.name }}</h1>
-                <form class="form" method="post"
+                <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}" >
                     {% for parameter in operation.parameters %}
-                        <label>{{ parameter[0] }}</label>
-                        <input type="text" class="text-field" name="parameters" />
+                        {% set label, name, data_type = parameter %}
+                        <label>{{ label }}</label>
+                        {% if data_type == "file" %}
+                            <a data-name="parameters" class="uploader">Select file</a>
+                        {% else %}
+                            <input type="text" class="text-field" name="parameters" />
+                        {% endif %}
                     {% endfor %}
                     <div class="window-buttons">
                         <span class="button button-cancel close-button">Cancel</span>
