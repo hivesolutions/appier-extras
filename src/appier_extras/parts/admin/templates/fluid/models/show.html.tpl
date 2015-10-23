@@ -61,6 +61,8 @@
                         <label>{{ label }}</label>
                         {% if data_type == "file" %}
                             <a data-name="parameters" class="uploader">Select file</a>
+                        {% elif data_type == "longtext" %}
+                            <textarea class="text-area" name="parameters"></textarea>
                         {% elif data_type_s == "bool" %}
                             <input type="checkbox" class="check-field" name="parameters" />
                         {% else %}

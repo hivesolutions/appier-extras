@@ -48,7 +48,10 @@
             <span>{{ default }}</span>
         {% endif %}
     {% elif meta == "enum" %}
-        <span class="tag {{ value }}">{{ value }}</span>
+        {% set info = cls[name] %}
+        {% set colors = info.get("colors", {}) %}
+        {% set color = colors.get(value, "") %}
+        <span class="tag {{ value }} {{ color }}">{{ value }}</span>
     {% elif meta == "url" %}
         {% if is_default %}
             <span>{{ value }}</span>
