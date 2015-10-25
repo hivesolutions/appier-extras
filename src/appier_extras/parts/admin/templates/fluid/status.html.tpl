@@ -60,6 +60,21 @@
                         <a href="#">{{ request.session_c.count() }} sessions</a>
                     </dd>
                 </div>
+                {% if appier.Git.is_git() %}
+                    <div class="separator"></div>
+                    <div class="item">
+                        <dt>Branch</dt>
+                        <dd>{{ appier.Git.get_branch() }}</dd>
+                    </div>
+                    <div class="item">
+                        <dt>Commit</dt>
+                        <dd>{{ appier.Git.get_commit() }}</dd>
+                    </div>
+                    <div class="item">
+                        <dt>Origin</dt>
+                        <dd>{{ appier.Git.get_origin() }}</dd>
+                    </div>
+                {% endif %}
             </dl>
         </div>
     </div>
