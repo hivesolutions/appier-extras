@@ -81,6 +81,16 @@ class Base(appier.Model):
         meta = "datetime"
     )
 
+    def __str__(self):
+        value = appier.Model.__str__(self)
+        if not value: value = str(self.id)
+        return value
+
+    def __unicode__(self):
+        value = appier.Model.__unicode__(self)
+        if not value: value = appier.legacy.UNICODE(self.id)
+        return value
+
     def __cmp__(self, value):
         if not hasattr(value, "id"): return -1
         return self.id.__cmp__(value.id)
