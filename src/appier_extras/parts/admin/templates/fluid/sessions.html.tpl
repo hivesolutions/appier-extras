@@ -21,7 +21,7 @@
                     </td>
                     <td class="text-left">{{ date_time(session.create, format = "%d %b %Y %H:%M:%S") }}</td>
                     <td class="text-left">{{ date_time(session.expire, format = "%d %b %Y %H:%M:%S") }}</td>
-                    <td class="text-left"></td>
+                    <td class="text-left">{{ session.address }}</td>
                 </tr>
             {% endfor %}
         </tbody>
