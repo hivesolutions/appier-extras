@@ -80,7 +80,7 @@
 {% endblock %}
 {% block content %}
     <table class="filter bulk" data-no_input="1" data-size="{{ page.size }}"
-           data-total="{{ page.total }}">
+           data-total="{{ page.total }}" data-pages="{{ page.count }}">
         <thead>
             <tr class="table-row table-header">
                 <th class="text-left selection">
