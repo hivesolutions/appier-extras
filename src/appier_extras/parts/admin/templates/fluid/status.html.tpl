@@ -57,7 +57,7 @@
                 <div class="item">
                     <dt>Session count</dt>
                     <dd>
-                        <a href="#">{{ request.session_c.count() }} sessions</a>
+                        <a href="{{ url_for('admin.list_sessions') }}">{{ request.session_c.count() }} sessions</a>
                     </dd>
                 </div>
                 {% if appier.Git.is_git() %}

@@ -103,6 +103,7 @@ class AdminPart(
             (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/social", self.social),
             (("GET",), "/admin/routes", self.list_routes),
+            (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
             (("GET",), "/admin/database/import", self.database_import),
@@ -352,6 +353,14 @@ class AdminPart(
             "routes.html.tpl",
             section = "status",
             routes = self._routes()
+        )
+
+    @appier.ensure(token = "admin")
+    def list_sessions(self):
+        return self.template(
+            "sessions.html.tpl",
+            section = "status",
+            sessions = self.request.session_c.all()
         )
 
     @appier.ensure(token = "admin")
