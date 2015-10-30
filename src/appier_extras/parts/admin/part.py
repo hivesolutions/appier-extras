@@ -492,7 +492,9 @@ class AdminPart(
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
         model = self.get_model(model)
-        entities = model.find(_id = {"$in" : ids})
+        if ids: kwargs = dict(_id = {"$in" : ids}, limit = 0)
+        else: kwargs = dict(limit = 0)
+        entities = model.find(**kwargs)
         if not entities: entities = (model,)
         result = None
         for entity in entities:
@@ -510,7 +512,9 @@ class AdminPart(
         model = self.get_model(model)
         definition = model.operation(operation)
         parameters = definition.cast(parameters)
-        entities = model.find(_id = {"$in" : ids})
+        if ids: kwargs = dict(_id = {"$in" : ids}, limit = 0)
+        else: kwargs = dict(limit = 0)
+        entities = model.find(**kwargs)
         if not entities: entities = (model,)
         for entity in entities:
             method = getattr(entity, operation)
