@@ -491,11 +491,12 @@ class AdminPart(
         ids = self.field("ids", "")
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
+        is_global = self.field("is_global", False, cast = bool)
         model = self.get_model(model)
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
-        entities = model.find(**kwargs)
-        if not entities: entities = (model,)
+        if is_global: entities = (model,)
+        else: entities = model.find(**kwargs)
         result = None
         for entity in entities:
             method = getattr(entity, link)
@@ -509,13 +510,14 @@ class AdminPart(
         ids = self.field("ids", "")
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
+        is_global = self.field("is_global", False, cast = bool)
         model = self.get_model(model)
         definition = model.operation(operation)
         parameters = definition.cast(parameters)
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
-        entities = model.find(**kwargs)
-        if not entities: entities = (model,)
+        if is_global: entities = (model,)
+        else: entities = model.find(**kwargs)
         for entity in entities:
             method = getattr(entity, operation)
             method(*parameters)

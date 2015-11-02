@@ -9,7 +9,7 @@
             {% if not link.instance %}
                 <li>
                     <a class="no-async" target="_blank"
-                       href="{{ url_for('admin.link_model', model = model._name(), link = link.method) }}" >{{ link.name }}</a>
+                       href="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '1') }}" >{{ link.name }}</a>
                 </li>
             {% endif %}
         {% endfor %}
@@ -23,7 +23,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, next = location_f) }}">{{ operation.name }}</a>
+                        <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, is_global = '1', next = location_f) }}">{{ operation.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -54,7 +54,7 @@
             <div id="window-{{ operation.method }}" class="window window-operation">
                 <h1>{{ operation.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
-                      action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, next = location_f) }}">
+                      action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, is_global = '' if operation.instance else '1', next = location_f) }}">
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set data_type_s = data_type.__name__ %}
