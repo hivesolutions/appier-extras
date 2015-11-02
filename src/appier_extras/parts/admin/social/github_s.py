@@ -82,7 +82,7 @@ class Github(object):
             account.github_token = api.access_token
             account.save()
 
-        if not account.github_token == account.github_token:
+        if not account.github_token == api.access_token:
             account.github_token = api.access_token
             account.save()
 

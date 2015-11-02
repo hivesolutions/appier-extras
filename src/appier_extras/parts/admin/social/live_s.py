@@ -83,7 +83,7 @@ class Live(object):
             account.live_token = api.access_token
             account.save()
 
-        if not account.live_token == account.live_token:
+        if not account.live_token == api.access_token:
             account.live_token = api.access_token
             account.save()
 

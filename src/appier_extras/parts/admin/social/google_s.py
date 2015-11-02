@@ -83,7 +83,7 @@ class Google(object):
             account.google_token = api.access_token
             account.save()
 
-        if not account.google_token == account.google_token:
+        if not account.google_token == api.access_token:
             account.google_token = api.access_token
             account.save()
 

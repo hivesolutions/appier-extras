@@ -82,7 +82,7 @@ class Facebook(object):
             account.facebook_token = api.access_token
             account.save()
 
-        if not account.facebook_token == account.facebook_token:
+        if not account.facebook_token == api.access_token:
             account.facebook_token = api.access_token
             account.save()
 

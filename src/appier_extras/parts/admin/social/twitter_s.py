@@ -83,7 +83,7 @@ class Twitter(object):
             account.twitter_token = api.oauth_token
             account.save()
 
-        if not account.twitter_token == account.twitter_token:
+        if not account.twitter_token == api.oauth_token:
             account.twitter_token = api.oauth_token
             account.save()
 
