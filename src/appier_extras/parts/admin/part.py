@@ -103,6 +103,7 @@ class AdminPart(
             (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/social", self.social),
             (("GET",), "/admin/routes", self.list_routes),
+            (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
@@ -353,6 +354,17 @@ class AdminPart(
             "routes.html.tpl",
             section = "status",
             routes = self._routes()
+        )
+
+    @appier.ensure(token = "admin")
+    def list_configs(self):
+        configs = appier.config.CONFIGS
+        configs = appier.legacy.items(configs)
+        configs.sort()
+        return self.template(
+            "configs.html.tpl",
+            section = "status",
+            configs = configs
         )
 
     @appier.ensure(token = "admin")

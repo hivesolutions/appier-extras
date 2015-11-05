@@ -49,6 +49,12 @@
                         <a href="{{ url_for('admin.list_routes') }}">{{ own.info().routes }} routes</a>
                     </dd>
                 </div>
+                <div class="item">
+                    <dt>Configuration</dt>
+                    <dd>
+                        <a href="{{ url_for('admin.list_configs') }}">{{ own.info().configs }} items</a>
+                    </dd>
+                </div>
                 <div class="separator"></div>
                 <div class="item">
                     <dt>Session class</dt>
