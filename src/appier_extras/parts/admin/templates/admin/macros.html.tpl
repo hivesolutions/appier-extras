@@ -146,10 +146,10 @@
                   data-error="{{ error }}">{{ value }}</textarea>
     {% elif meta == "list" %}
         <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
-               value="{{ value|dumps }}" data-error="{{ error }}" />
+               value="{{ value|dumps if value else '[]' }}" data-error="{{ error }}" />
     {% elif meta == "map" %}
         <input type="text" class="text-field {{ disabled_s|safe }}" name="{{ name }}"
-               value="{{ value|dumps }}" data-error="{{ error }}" />
+               value="{{ value|dumps if value else '{}' }}" data-error="{{ error }}" />
     {% elif meta == "bool" %}
         {% if value %}
             <input type="radio" name="{{ name }}" id="{{ name }}-1" value="1" checked="1" />
