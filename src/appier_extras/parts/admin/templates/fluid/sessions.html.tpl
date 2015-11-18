@@ -3,7 +3,7 @@
 {% block name %}Sessions{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block content %}
-    <table class="filter" data-no_input="1">
+    <table class="filter no-fixed" data-no_input="1">
         <thead>
             <tr class="table-row table-header">
                 <th class="text-left">Session ID</th>
