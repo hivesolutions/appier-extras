@@ -55,6 +55,12 @@
                         <a href="{{ url_for('admin.list_configs') }}">{{ own.info().configs }} items</a>
                     </dd>
                 </div>
+                <div class="item">
+                    <dt>Libraries</dt>
+                    <dd>
+                        <a href="{{ url_for('admin.list_libraries') }}">{{ own.info().libraries|length }} libraries</a>
+                    </dd>
+                </div>
                 <div class="separator"></div>
                 <div class="item">
                     <dt>Session class</dt>

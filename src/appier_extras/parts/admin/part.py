@@ -86,6 +86,12 @@ class AdminPart(
         self.owner.admin_google_scope = ("email",)
         self.owner.admin_live_scope = ("wl.basic", "wl.emails")
 
+        self.owner.lib_loaders["netius"] = self._netius_loader
+        self.owner.lib_loaders["PIL"] = self._pil_loader
+        self.owner.lib_loaders["pymongo"] = self._pymongo_loader
+        self.owner.lib_loaders["redis"] = self._redis_loader
+        self.owner.lib_loaders["jinja2"] = self._jinja2_loader
+
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:
             self.logger.debug(model_c)
@@ -104,6 +110,7 @@ class AdminPart(
             (("GET",), "/admin/social", self.social),
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/configs", self.list_configs),
+            (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
@@ -365,6 +372,16 @@ class AdminPart(
             "configs.html.tpl",
             section = "status",
             configs = configs
+        )
+
+    @appier.ensure(token = "admin")
+    def list_libraries(self):
+        app = appier.get_app()
+        libraries = app.get_libraries()
+        return self.template(
+            "libraries.html.tpl",
+            section = "status",
+            libraries = libraries
         )
 
     @appier.ensure(token = "admin")
@@ -952,6 +969,39 @@ class AdminPart(
 
     def linked(self):
         return models.Settings.linked_apis()
+
+    def _netius_loader(self, module):
+        versions = []
+        if hasattr(module, "VERSION"):
+            versions.append(("Netius", module.VERSION))
+        return versions
+
+    def _pil_loader(self, module):
+        versions = []
+        if hasattr(module, "VERSION"):
+            versions.append(("PIL", module.VERSION))
+        if hasattr(module, "PILLOW_VERSION"):
+            versions.append(("Pillow", module.PILLOW_VERSION))
+        return versions
+
+    def _pymongo_loader(self, module):
+        versions = []
+        if hasattr(module, "version"):
+            versions.append(("PyMongo", module.version))
+        return versions
+
+    def _redis_loader(self, module):
+        versions = []
+        if hasattr(module, "VERSION"):
+            version = ".".join([str(item) for item in module.VERSION])
+            versions.append(("redis-py", version))
+        return versions
+
+    def _jinja2_loader(self, module):
+        versions = []
+        if hasattr(module, "__version__"):
+            versions.append(("Jinja2", module.__version__))
+        return versions
 
     def _sort(self, object, model):
         if "sort" in object: return object
