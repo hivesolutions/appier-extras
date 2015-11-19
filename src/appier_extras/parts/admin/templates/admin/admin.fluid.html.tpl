@@ -28,14 +28,17 @@
     {% endif %}
     <div class="separator"></div>
     {% for _section, models in models_d.items() %}
-        {% for _model in models %}
-            {% if section == "models" and model and model._name() == _model._name() %}
-                <a class="selected"
-                   href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
-            {% else %}
-                <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
-            {% endif %}
-        {% endfor %}
-        <div class="separator"></div>
+        {% set attached = own._attached(models) %}
+        {% if attached|length > 0 %}
+            {% for _model in models %}
+                {% if section == "models" and model and model._name() == _model._name() %}
+                    <a class="selected"
+                       href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                {% else %}
+                    <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                {% endif %}
+            {% endfor %}
+            <div class="separator"></div>
+        {% endif %}
     {% endfor %}
 {% endblock %}
