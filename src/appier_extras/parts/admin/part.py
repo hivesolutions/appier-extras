@@ -1003,6 +1003,9 @@ class AdminPart(
             versions.append(("Jinja2", module.__version__))
         return versions
 
+    def _attached(self, models):
+        return [model for model in models if model.is_attached()]
+
     def _sort(self, object, model):
         if "sort" in object: return object
         order = model.order_name()
