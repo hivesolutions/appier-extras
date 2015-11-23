@@ -129,6 +129,12 @@
                 {% endfor %}
             </ul>
         </div>
+    {% elif meta == "country" %}
+         <div class="drop-field drop-field-select {{ disabled_s|safe }}" data-error="{{ error }}"
+              data-number_options="-1">
+            <input name="{{ name }}" type="hidden" class="hidden-field" value="{{ value }}" />
+            <div class="data-source" data-type="isocountries" data-iso="iso2"></div>
+        </div>
     {% elif meta == "file" %}
         <input type="file" class="file-field {{ disabled_s|safe }}" name="{{ name }}"
                data-error="{{ error }}" />
