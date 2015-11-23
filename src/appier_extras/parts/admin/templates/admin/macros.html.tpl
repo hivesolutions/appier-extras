@@ -175,6 +175,24 @@
     {% endif %}
 {%- endmacro %}
 
+{% macro tag_input_b(name, value = "", error = "", type = None, disabled = False) -%}
+    {% if type == "file" %}
+        <a data-name="{{ name }}" class="uploader" data-error="{{ error }}">Select file</a>
+    {% elif type == "longtext" %}
+        <textarea class="text-area" name="{{ name }}" data-error="{{ error }}"></textarea>
+    {% elif type == "country" %}
+        <div class="drop-field drop-field-select {{ disabled_s|safe }}" data-error="{{ error }}"
+             data-number_options="-1">
+            <input name="{{ name }}" type="hidden" class="hidden-field" />
+            <div class="data-source" data-type="isocountries" data-iso="iso2"></div>
+        </div>
+    {% elif type == "bool" %}
+        <input type="checkbox" class="check-field" name="{{ name }}" data-error="{{ error }}" />
+    {% else %}
+        <input type="text" class="text-field" name="{{ name }}" data-error="{{ error }}" />
+    {% endif %}
+{%- endmacro %}
+
 {% macro menu_link(name, href = "#") -%}
     {% if area == name %}
         <a class="active" href="{{ href }}">{{ name }}</a>

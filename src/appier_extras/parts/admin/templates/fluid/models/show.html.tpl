@@ -59,15 +59,7 @@
                         {% set label, name, data_type = parameter[:3] %}
                         {% set data_type_s = data_type.__name__ %}
                         <label>{{ label }}</label>
-                        {% if data_type == "file" %}
-                            <a data-name="parameters" class="uploader">Select file</a>
-                        {% elif data_type == "longtext" %}
-                            <textarea class="text-area" name="parameters"></textarea>
-                        {% elif data_type_s == "bool" %}
-                            <input type="checkbox" class="check-field" name="parameters" />
-                        {% else %}
-                            <input type="text" class="text-field" name="parameters" />
-                        {% endif %}
+                        {{ tag_input_b("parameters", type = data_type) }}
                     {% endfor %}
                     <div class="window-buttons">
                         <span class="button button-cancel close-button">Cancel</span>
