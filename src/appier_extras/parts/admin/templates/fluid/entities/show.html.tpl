@@ -42,8 +42,9 @@
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set data_type_s = data_type.__name__ %}
+                        {% set data_type_s = data_type_s or data_type %}
                         <label>{{ label }}</label>
-                        {{ tag_input_b("parameters", type = data_type) }}
+                        {{ tag_input_b("parameters", type = data_type_s) }}
                     {% endfor %}
                     <div class="window-buttons">
                         <span class="button button-cancel close-button">Cancel</span>
