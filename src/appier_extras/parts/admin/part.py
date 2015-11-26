@@ -401,7 +401,8 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def database_export(self):
-        database = appier.get_db()
+        adapter = appier.get_adapter()
+        database = adapter.get_db()
         file = appier.legacy.BytesIO()
         manager = appier.ExportManager(
             database,
@@ -448,7 +449,8 @@ class AdminPart(
         # retrieves the database and creates a new export manager for
         # the currently defined entities then imports the data defined
         # in the current temporary path
-        database = appier.get_db()
+        adapter = appier.get_adapter()
+        database = adapter.get_db()
         manager = appier.ExportManager(
             database,
             multiple = self.resolve()
@@ -464,7 +466,8 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def database_reset(self):
-        appier.drop_db()
+        adapter = appier.get_adapter()
+        adapter.drop_db()
         return self.redirect(
             self.url_for(
                 "admin.database",
