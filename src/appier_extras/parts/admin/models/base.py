@@ -52,7 +52,8 @@ class Base(appier.Model):
     id = appier.field(
         type = int,
         index = True,
-        increment = True
+        increment = True,
+        safe = True
     )
 
     enabled = appier.field(
