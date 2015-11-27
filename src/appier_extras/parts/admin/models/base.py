@@ -72,6 +72,7 @@ class Base(appier.Model):
     created = appier.field(
         type = int,
         index = True,
+        safe = True,
         immutable = True,
         meta = "datetime"
     )
@@ -79,6 +80,7 @@ class Base(appier.Model):
     modified = appier.field(
         type = int,
         index = True,
+        safe = True,
         meta = "datetime"
     )
 
