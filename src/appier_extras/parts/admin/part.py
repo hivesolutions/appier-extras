@@ -150,6 +150,7 @@ class AdminPart(
             (("GET",), "/admin/twitter/unlink", self.unlink_twitter),
             (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
             (("GET",), "/admin/log.json", self.show_log, None, True),
+            (("GET",), "/admin/configs.json", self.show_configs, None, True),
             (("GET",), "/api/admin/ping", self.ping_api, None, True),
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, True),
@@ -928,6 +929,10 @@ class AdminPart(
         return dict(
             messages = memory_handler.get_latest(count = count, level = level)
         )
+
+    @appier.ensure(token = "admin")
+    def show_configs(self):
+        return appier.config.CONFIGS
 
     def ping_api(self):
         return dict(time = time.time())
