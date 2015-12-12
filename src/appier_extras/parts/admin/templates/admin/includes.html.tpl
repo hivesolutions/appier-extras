@@ -1,5 +1,5 @@
-{% set theme_r = theme|default(own._hybrid('theme')) %}
-{% set libs_r = libs|default(own._hybrid('libs')) %}
+{% set theme_r = theme|default(own.admin_part._hybrid('theme')) %}
+{% set libs_r = libs|default(own.admin_part._hybrid('libs')) %}
 
 <!-- css inclusion -->
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
