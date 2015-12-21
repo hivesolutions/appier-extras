@@ -134,6 +134,27 @@ class Base(appier.Model):
         return "id"
 
     @classmethod
+    def send_email_g(cls, owner, *args, **kwargs):
+        owner = owner or appier.get_app()
+        bulk = kwargs.get("bulk", False)
+        unsubscribe = kwargs.get("unsubscribe", False)
+        sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
+        base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
+        settings = dict(logo = True)
+        headers = dict()
+        if bulk: headers["Auto-Submitted"] = "auto-generated"
+        if bulk: headers["Precedence"] = "bulk"
+        if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
+        owner.email(
+            sender = sender,
+            base_url = base_url,
+            settings = settings,
+            headers = headers,
+            *args,
+            **kwargs
+        )
+
+    @classmethod
     def _build(cls, model, map):
         pass
 
@@ -161,23 +182,8 @@ class Base(appier.Model):
         return self.owner.to_locale(*args, **kwargs)
 
     def send_email(self, *args, **kwargs):
-        bulk = kwargs.get("bulk", False)
-        unsubscribe = kwargs.get("unsubscribe", False)
-        sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
-        base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
-        settings = dict(logo = True)
-        headers = dict()
-        if bulk: headers["Auto-Submitted"] = "auto-generated"
-        if bulk: headers["Precedence"] = "bulk"
-        if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
-        self.owner.email(
-            sender = sender,
-            base_url = base_url,
-            settings = settings,
-            headers = headers,
-            *args,
-            **kwargs
-        )
+        cls = self.__class__
+        return cls.send_email_g(self.owner, *args, **kwargs)
 
     @property
     def created_d(self):
