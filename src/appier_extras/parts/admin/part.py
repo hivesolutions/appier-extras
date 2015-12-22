@@ -77,6 +77,7 @@ class AdminPart(
 
         self.logger.debug("Updating pre-defined application routes ...")
         self.owner.login_route = "admin.login"
+        self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
         self.owner.admin_open = True
         self.owner.admin_login_route = "admin.login"
