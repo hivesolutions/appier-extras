@@ -7,10 +7,16 @@
     <ul class="drop-down links force" data-name="Links">
         {% for link in model.links() %}
             {% if not link.instance %}
-                <li>
-                    <a class="no-async" target="_blank"
-                       href="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '1') }}" >{{ link.name }}</a>
-                </li>
+                {% if link.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="no-async" target="_blank"
+                           href="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '1') }}" >{{ link.name }}</a>
+                    </li>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </ul>
@@ -49,6 +55,27 @@
 {% endblock %}
 {% block windows %}
     {{ super() }}
+    {% for link in model.links() %}
+        {% if link.parameters %}
+            <div id="window-{{ link.method }}" class="window window-link">
+                <h1>{{ link.name }}</h1>
+                <form class="form" method="post" enctype="multipart/form-data"
+                      action="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '' if link.instance else '1') }}">
+                    {% for parameter in link.parameters %}
+                        {% set label, name, data_type = parameter[:3] %}
+                        {% set data_type_s = data_type.__name__ %}
+                        {% set data_type_s = data_type_s or data_type %}
+                        <label>{{ label }}</label>
+                        {{ tag_input_b("parameters", type = data_type_s) }}
+                    {% endfor %}
+                    <div class="window-buttons">
+                        <span class="button button-cancel close-button">Cancel</span>
+                        <span class="button button-confirm" data-submit="1">Confirm</span>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    {% endfor %}
     {% for operation in model.operations() %}
         {% if operation.parameters %}
             <div id="window-{{ operation.method }}" class="window window-operation">
