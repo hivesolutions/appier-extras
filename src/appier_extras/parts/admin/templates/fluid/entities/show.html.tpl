@@ -45,7 +45,7 @@
                 <h1>{{ link.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >
-                    {% for parameter in operation.parameters %}
+                    {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set data_type_s = data_type.__name__ %}
                         {% set data_type_s = data_type_s or data_type %}
