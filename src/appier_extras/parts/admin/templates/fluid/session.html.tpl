@@ -2,6 +2,12 @@
 {% block title %}{{ session_s.sid }}{% endblock %}
 {% block name %}{{ session_s.sid }}{% endblock %}
 {% block style %}no-padding{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    <div class="button button-color button-red button-confirm"
+         data-message="Do you really want to delete [[{{ session_s.sid }}]] ?"
+         data-link="{{ url_for('admin.delete_session', sid = session_s.sid) }}">Delete</div>
+{% endblock %}
 {% block content %}
     <table class="filter" data-no_input="1">
         <thead>

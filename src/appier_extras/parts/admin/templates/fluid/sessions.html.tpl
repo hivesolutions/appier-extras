@@ -2,6 +2,12 @@
 {% block title %}Sessions{% endblock %}
 {% block name %}Sessions{% endblock %}
 {% block style %}no-padding{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    <div class="button button-color button-red button-confirm"
+         data-message="Do you really want to [[clear all sessions]] ?"
+         data-link="{{ url_for('admin.empty_sessions') }}">Empty</div>
+{% endblock %}
 {% block content %}
     <table class="filter no-fixed" data-no_input="1">
         <thead>

@@ -113,7 +113,9 @@ class AdminPart(
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/sessions", self.list_sessions),
+            (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
+            (("GET",), "/admin/sessions/<str:sid>/delete", self.delete_session),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
             (("GET",), "/admin/database/import", self.database_import),
@@ -383,11 +385,33 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin")
+    def empty_sessions(self):
+        self.request.session_c.empty()
+        return self.redirect(
+            self.url_for(
+                "admin.list_sessions",
+                message = "Sessions emptied with success"
+            )
+        )
+
+    @appier.ensure(token = "admin")
     def show_session(self, sid):
+        sid = str(sid)
         return self.template(
             "session.html.tpl",
             section = "status",
             session_s = self.request.session_c.get_s(sid)
+        )
+
+    @appier.ensure(token = "admin")
+    def delete_session(self, sid):
+        sid = str(sid)
+        self.request.session_c.expire(sid)
+        return self.redirect(
+            self.url_for(
+                "admin.list_sessions",
+                message = "Session deleted with success"
+            )
         )
 
     @appier.ensure(token = "admin")
