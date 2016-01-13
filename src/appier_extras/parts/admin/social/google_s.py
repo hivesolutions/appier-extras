@@ -88,11 +88,7 @@ class Google(object):
             account.save()
 
         account.touch_s()
-
-        self.session["username"] = account.username
-        self.session["email"] = account.email
-        self.session["type"] = account.type_s()
-        self.session["tokens"] = account.tokens()
+        account._set_session()
 
         return account
 

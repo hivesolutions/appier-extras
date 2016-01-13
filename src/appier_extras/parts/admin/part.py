@@ -204,10 +204,7 @@ class AdminPart(
 
         # updates the current session with the proper
         # values to correctly authenticate the user
-        self.session["username"] = account.username
-        self.session["email"] = account.email
-        self.session["type"] = account.type_s()
-        self.session["tokens"] = account.tokens()
+        account._set_session()
 
         # redirects the current operation to the next url or in
         # alternative to the root index of the administration

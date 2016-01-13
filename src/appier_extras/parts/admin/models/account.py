@@ -333,3 +333,10 @@ class Account(base.Base):
     def encrypt(self, value):
         cls = self.__class__
         return cls.generate(value)
+
+    def _set_session(self):
+        self.session["username"] = self.username
+        self.session["email"] = self.email
+        self.session["type"] = self.type_s()
+        self.session["tokens"] = self.tokens()
+        self.session["params"] = dict()
