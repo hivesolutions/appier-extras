@@ -308,6 +308,23 @@ class Account(base.Base):
     def is_encrypted(cls, password):
         return password.count(":") > 0
 
+    @classmethod
+    def _unset_session(cls):
+        session = appier.get_session()
+        if "username" in session: del session["username"]
+        if "name" in session: del session["name"]
+        if "email" in session: del session["email"]
+        if "type" in session: del session["type"]
+        if "tokens" in session: del session["tokens"]
+        if "params" in session: del session["params"]
+        if "fb.access_token" in session: del session["fb.access_token"]
+        if "tw.oauth_token" in session: del session["tw.oauth_token"]
+        if "tw.oauth_token_secret" in session: del session["tw.oauth_token_secret"]
+        if "tw.oauth_temporary" in session: del session["tw.oauth_temporary"]
+        if "gg.access_token" in session: del session["gg.access_token"]
+        if "gh.access_token" in session: del session["gh.access_token"]
+        if "live.access_token" in session: del session["live.access_token"]
+
     def pre_save(self):
         base.Base.pre_save(self)
         if hasattr(self, "password"): self.password = self.encrypt(self.password)

@@ -220,17 +220,7 @@ class AdminPart(
         # verifies the existence of the various account related session
         # attributes and in case they exist removes them from session as
         # the user is currently logging out from session
-        if "username" in self.session: del self.session["username"]
-        if "email" in self.session: del self.session["email"]
-        if "type" in self.session: del self.session["type"]
-        if "tokens" in self.session: del self.session["tokens"]
-        if "fb.access_token" in self.session: del self.session["fb.access_token"]
-        if "tw.oauth_token" in self.session: del self.session["tw.oauth_token"]
-        if "tw.oauth_token_secret" in self.session: del self.session["tw.oauth_token_secret"]
-        if "tw.oauth_temporary" in self.session: del self.session["tw.oauth_temporary"]
-        if "gg.access_token" in self.session: del self.session["gg.access_token"]
-        if "gh.access_token" in self.session: del self.session["gh.access_token"]
-        if "live.access_token" in self.session: del self.session["live.access_token"]
+        models.Account._unset_session()
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
@@ -945,10 +935,7 @@ class AdminPart(
 
         # updates the current session with the proper
         # values to correctly authenticate the user
-        self.session["username"] = account.username
-        self.session["email"] = account.email
-        self.session["type"] = account.type_s()
-        self.session["tokens"] = account.tokens()
+        account._set_session()
 
         # retrieves the session identifier (sid) for the currently
         # assigned session, this is going to be used in the next
