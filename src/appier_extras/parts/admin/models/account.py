@@ -318,7 +318,7 @@ class Account(base.Base):
         return password.count(":") > 0
 
     @classmethod
-    def _unset_session(cls, prefixes = None):
+    def _unset_session(cls, prefixes = None, safes = []):
         prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
         if "username" in session: del session["username"]
@@ -328,10 +328,15 @@ class Account(base.Base):
         if "tokens" in session: del session["tokens"]
         if "params" in session: del session["params"]
         for key in appier.legacy.keys(session):
+            is_removable = False
             for prefix in prefixes:
-                removable = key.startswith(prefix)
-                if removable: break
-            if not removable: continue
+                is_safe = key in safes
+                if is_safe: continue
+                is_prefix = key.startswith(prefix)
+                if not is_prefix: continue
+                is_removable = True
+                break
+            if not is_removable: continue
             del session[key]
 
     def pre_save(self):
@@ -360,9 +365,9 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
-    def _set_session(self, unset = True):
+    def _set_session(self, unset = True, safes = []):
         cls = self.__class__
-        if unset: cls._unset_session()
+        if unset: cls._unset_session(safes = safes)
         self.session["username"] = self.username
         self.session["name"] = self.email
         self.session["email"] = self.email
