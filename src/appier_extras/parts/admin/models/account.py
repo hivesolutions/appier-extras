@@ -168,7 +168,7 @@ class Account(base.Base):
             appier.not_null("username"),
             appier.not_empty("username"),
             appier.string_gt("username", 3),
-            appier.string_lt("username", 20),
+            appier.string_lt("username", 64),
             appier.not_duplicate("username", cls._name()),
 
             appier.not_null("type"),
