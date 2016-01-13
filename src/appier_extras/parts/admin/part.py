@@ -113,6 +113,7 @@ class AdminPart(
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/sessions", self.list_sessions),
+            (("GET",), "/admin/sessions/<str:sid>", self.show_session),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
             (("GET",), "/admin/database/import", self.database_import),
@@ -379,6 +380,14 @@ class AdminPart(
             "sessions.html.tpl",
             section = "status",
             sessions = self.request.session_c.all()
+        )
+
+    @appier.ensure(token = "admin")
+    def show_session(self, sid):
+        return self.template(
+            "session.html.tpl",
+            section = "status",
+            session = self.request.session_c.get_s(sid)
         )
 
     @appier.ensure(token = "admin")

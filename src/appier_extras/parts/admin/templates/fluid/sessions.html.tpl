@@ -17,7 +17,9 @@
                 {% set session = sessions[sid] %}
                 <tr class="table-row">
                     <td class="text-left">
-                        <strong>{{ session.sid }}</strong>
+                        <strong>
+                        	<a href="{{ url_for('admin.show_session', sid = session.sid) }}">{{ session.sid }}</a>
+                        </strong>
                     </td>
                     <td class="text-left">{{ date_time(session.create, format = "%d %b %Y %H:%M:%S") }}</td>
                     <td class="text-left">{{ date_time(session.expire, format = "%d %b %Y %H:%M:%S") }}</td>
