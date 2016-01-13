@@ -18,7 +18,7 @@
                 <tr class="table-row">
                     <td class="text-left">
                         <strong>
-                        	<a href="{{ url_for('admin.show_session', sid = session.sid) }}">{{ session.sid }}</a>
+                            <a href="{{ url_for('admin.show_session', sid = session.sid) }}">{{ session.sid }}</a>
                         </strong>
                     </td>
                     <td class="text-left">{{ date_time(session.create, format = "%d %b %Y %H:%M:%S") }}</td>

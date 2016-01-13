@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}{{ session.sid }}{% endblock %}
-{% block name %}{{ session.sid }}{% endblock %}
+{% block title %}{{ session_s.sid }}{% endblock %}
+{% block name %}{{ session_s.sid }}{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block content %}
     <table class="filter" data-no_input="1">
@@ -11,8 +11,8 @@
             </tr>
         </thead>
         <tbody class="filter-contents">
-            {% for key in session.sorted() %}
-            	{% set value = session[key] %}
+            {% for key in session_s.sorted() %}
+                {% set value = session_s[key] %}
                 <tr class="table-row">
                     <td class="text-left">
                         <strong>{{ key }}</strong>

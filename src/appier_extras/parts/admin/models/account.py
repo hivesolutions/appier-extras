@@ -54,6 +54,15 @@ class Account(base.Base):
         USER_TYPE : "user"
     }
 
+    PREFIXES = (
+        "fb.",
+        "tw.",
+        "gg.",
+        "gh.",
+        "live.",
+        "params."
+    )
+
     username = appier.field(
         index = True,
         default = True
@@ -309,7 +318,8 @@ class Account(base.Base):
         return password.count(":") > 0
 
     @classmethod
-    def _unset_session(cls):
+    def _unset_session(cls, prefixes = None):
+        prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
         if "username" in session: del session["username"]
         if "name" in session: del session["name"]
@@ -317,13 +327,12 @@ class Account(base.Base):
         if "type" in session: del session["type"]
         if "tokens" in session: del session["tokens"]
         if "params" in session: del session["params"]
-        if "fb.access_token" in session: del session["fb.access_token"]
-        if "tw.oauth_token" in session: del session["tw.oauth_token"]
-        if "tw.oauth_token_secret" in session: del session["tw.oauth_token_secret"]
-        if "tw.oauth_temporary" in session: del session["tw.oauth_temporary"]
-        if "gg.access_token" in session: del session["gg.access_token"]
-        if "gh.access_token" in session: del session["gh.access_token"]
-        if "live.access_token" in session: del session["live.access_token"]
+        for key in appier.legacy.keys(session):
+            for prefix in prefixes:
+                removable = key.startswith(prefix)
+                if removable: break
+            if not removable: continue
+            del session[key]
 
     def pre_save(self):
         base.Base.pre_save(self)

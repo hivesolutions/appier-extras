@@ -387,7 +387,7 @@ class AdminPart(
         return self.template(
             "session.html.tpl",
             section = "status",
-            session = self.request.session_c.get_s(sid)
+            session_s = self.request.session_c.get_s(sid)
         )
 
     @appier.ensure(token = "admin")
