@@ -54,14 +54,14 @@ class Account(base.Base):
         USER_TYPE : "user"
     }
 
-    PREFIXES = (
+    PREFIXES = [
         "fb.",
         "tw.",
         "gg.",
         "gh.",
         "live.",
         "params."
-    )
+    ]
 
     username = appier.field(
         index = True,
