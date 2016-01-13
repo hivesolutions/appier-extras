@@ -351,7 +351,9 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
-    def _set_session(self):
+    def _set_session(self, unset = True):
+        cls = self.__class__
+        if unset: cls._unset_session()
         self.session["username"] = self.username
         self.session["email"] = self.email
         self.session["type"] = self.type_s()
