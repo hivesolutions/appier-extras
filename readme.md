@@ -47,7 +47,7 @@ def generate_key(self):
     self.save()
 ```
 
-This decorator accepts a ``name`` attribute that describes the operation and is shown in the interface, a ``parameters`` tuple containing the parameters to be sent to the operation where each parameter is represented by a ``tuple`` consisting of the descriptor of the parameter, it's name, type and default value. The operation's severity level can by set by specifying the ``level`` <em>keyword</em> where higher levels are more severe: 
+This decorator accepts a ``name`` attribute that describes the operation and is shown in the interface, a ``parameters`` tuple containing the parameters to be sent to the operation where each parameter is represented by a ``tuple`` consisting of the description of the parameter, it's name, type and default value. When the user executes the operation a dialog is presented with a form to set the defined parameters. The operation's severity level can by set by specifying the ``level`` <em>keyword</em> where higher levels are more severe: 
 
 ```python
 @appier.operation(
@@ -57,8 +57,8 @@ This decorator accepts a ``name`` attribute that describes the operation and is 
 	),
 	level = 1
 )
-def generate_key(self):
-    self.key = self._random()
+def generate_key(self, encoding):
+    self.key = self._random(encoding)
     self.save()
 ```
 
@@ -66,7 +66,7 @@ To make a class operation instead of one applicable only to a specific instance 
 
 ## Model Links
 
-A link can be added to a model to provide a direct access from the admin interface to a location of interest related to the model. It is defined by decorating a function that returns an URL with the ``@appier.link`` decorator. This decorator accepts a name describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. By adding the ``@classmethod`` decorator the link will be related to the model class:
+A link can be added to a model to provide a direct access from the admin interface to a location of interest related to it. It is defined by decorating a function that returns an URL with the ``@appier.link`` decorator. This decorator accepts a name describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. By adding the ``@classmethod`` decorator the link will be related to the model class:
 
 ```python
 @classmethod
