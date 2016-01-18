@@ -7,14 +7,14 @@ You can find more information about Appier models [here](http://appier.hive.pt/d
 ## Model Attributes
 
 The admin interface has support for the attribute types provided by Appier:
-* A text field is presented for attributes of type ``str``, ``unicode``, ``int`` and ``float``
+* A text field is used for attributes of type ``str``, ``unicode``, ``int`` and ``float``
 * ``bool``attributes are set with a toggle switch.
 * Attributes of type ``list`` or ``dict`` can be edited in JSON format.
-* If the attribute is an ``appier.File`` object then a file upload input is shown. 
-* For an ``appier.reference`` attribute its text field has support for autocomplete.
+* A file upload input is shown for ``appier.File`` attributes. 
+* An ``appier.reference`` attribute has a text field with support for autocomplete.
 
 Attributes with the ``private`` <em>keyword</em> set to ``True`` are only shown in the model edit view.
-Immutable attributes cannot be edited.
+Immutable attributes can only be set at creation time.
 
 ## Model Operations
 
