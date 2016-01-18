@@ -26,15 +26,6 @@ and login with root/root.
 
 Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface.
 
-## License
-
-Appier Extras is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
-
-## Build Automation
-
-[![Build Status](https://travis-ci.org/hivesolutions/appier_extras.svg?branch=master)](https://travis-ci.org/hivesolutions/appier_extras)
-[![Coverage Status](https://coveralls.io/repos/hivesolutions/appier_extras/badge.svg?branch=master)](https://coveralls.io/r/hivesolutions/appier_extras?branch=master)
-[![PyPi Status](https://img.shields.io/pypi/v/appier_extras.svg)](https://pypi.python.org/pypi/appier_extras)
 
 ## Model Operations
 
@@ -95,6 +86,7 @@ In the same way, if the link is just for a particular instance, just use an inst
 Links can receive parameters as well:
 
 ```python
+    @classmethod
     @appier.link(
         name = "Export Cats (CSV)"
        	parameters = (
@@ -109,3 +101,13 @@ Links can receive parameters as well:
             number_records = number_records
         )
 ```
+
+## License
+
+Appier Extras is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
+
+## Build Automation
+
+[![Build Status](https://travis-ci.org/hivesolutions/appier_extras.svg?branch=master)](https://travis-ci.org/hivesolutions/appier_extras)
+[![Coverage Status](https://coveralls.io/repos/hivesolutions/appier_extras/badge.svg?branch=master)](https://coveralls.io/r/hivesolutions/appier_extras?branch=master)
+[![PyPi Status](https://img.shields.io/pypi/v/appier_extras.svg)](https://pypi.python.org/pypi/appier_extras)
