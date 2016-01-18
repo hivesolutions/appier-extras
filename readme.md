@@ -54,7 +54,7 @@ An operation can receive parameters that will be sent to the handler method:
 ```python
     @appier.operation(
         name = "Meow",
-       	parameters = (
+        parameters = (
             ("Number of meows", "number_meows", int),
         )
     )
@@ -89,7 +89,7 @@ Links can receive parameters as well:
     @classmethod
     @appier.link(
         name = "Export Cats (CSV)",
-       	parameters = (
+        parameters = (
             ("Start record", "start_record", int),
             ("Number of records", "number_records", int)
         )
