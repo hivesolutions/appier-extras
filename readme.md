@@ -66,7 +66,7 @@ To make a class operation instead of one applicable only to a specific instance 
 
 ## Model Links
 
-A link can be added to a model to provide a direct access from the admin interface to a location of interest related to it. It is defined by decorating a function that returns an URL with the ``@appier.link`` decorator. This decorator accepts a name describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. By adding the ``@classmethod`` decorator the link will be related to the model class:
+A link can be added to a model to provide a direct access from the admin interface to a location of interest related to it. It is defined by decorating a function that returns an URL with the ``@appier.link`` decorator which accepts a name describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. By adding the ``@classmethod`` decorator the link will be related to the model class:
 
 ```python
 @classmethod
