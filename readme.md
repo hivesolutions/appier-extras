@@ -37,8 +37,8 @@ class Cat:
     @classmethod
     @appier.operation(name = "Meow")
     def meow(cls):
-        cats = cls.Cat.find()
-        for cat in cats: cat.meow()
+        cats = cls.find()
+        for cat in cats: cat._meow()
 ```
 
 To make the same operation be associated with a single instance, just to apply to an instance method instead:
@@ -46,20 +46,20 @@ To make the same operation be associated with a single instance, just to apply t
 ```python
     @appier.operation(name = "Meow")
     def meow(self):
-        self.meow()
+        self._meow()
 ```
 
 An operation can receive parameters that will be sent to the handler method:
 
 ```python
     @appier.operation(
-        name = "Meow"
+        name = "Meow",
        	parameters = (
-            ("Number of meows", "number_meows", int, 5)
+            ("Number of meows", "number_meows", int),
         )
     )
-    def meow(self, number_meows):
-        for x in range(number_meows): self.meow()
+    def meow(self, number_meows = 5):
+        for x in range(number_meows): self._meow()
 ```
 
 ## Model Links
@@ -72,7 +72,7 @@ class Cat
     @classmethod
     @appier.link(name = "Export Cats (CSV)")
     def export_csv(cls):
-    	return cls.get_app().url_for("cat.list_csv")
+    	return appier.get_app().url_for("cat.list_csv")
 ```
 
 In the same way, if the link is just for a particular instance, just use an instance method:
@@ -88,14 +88,14 @@ Links can receive parameters as well:
 ```python
     @classmethod
     @appier.link(
-        name = "Export Cats (CSV)"
+        name = "Export Cats (CSV)",
        	parameters = (
-            ("Start record", "start_record", int, 0),
-            ("Number of records", "number_records", int, 10)
+            ("Start record", "start_record", int),
+            ("Number of records", "number_records", int)
         )
     )
-    def export_csv(cls, start_record, number_records):
-    	return self.get_app().url_for(
+    def export_csv(cls, start_record = 0, number_records = 10):
+    	return appier.get_app().url_for(
             "cat.list_csv", 
             start_record = start_record, 
             number_records = number_records
