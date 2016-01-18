@@ -38,43 +38,74 @@ Appier Extras is currently licensed under the [Apache License, Version 2.0](http
 
 ## Model Operations
 
-Operations to change the state and behavior of a model's instance can be easily added to the admin interface. The desired function should be defined in the model and decorated with the ``@appier.operation`` decorator, as shown below:
-
-```python
-@appier.operation(name = "Generate Key")
-def generate_key(self):
-    self.key = self._random()
-    self.save()
-```
-
-This decorator accepts a ``name`` attribute that describes the operation and is shown in the interface, a ``parameters`` tuple containing the parameters to be sent to the operation where each parameter is represented by a ``tuple`` consisting of the description of the parameter, it's name, type and default value. When the user executes the operation a dialog is presented with a form to set the defined parameters. The operation's severity level can by set by specifying the ``level`` <em>keyword</em> where higher levels are more severe: 
+To add an operation accessible from the the admin interface be executed on a model, add this to the model definition:
 
 ```python
 class Cat:
 
-    @appier.operation(
-        name = "Generate Key"
-		parameters = (
-		    ("Encoding", "encoding", str, "ascii")
-		),
-		level = 1
-	)
-	def generate_key(self, encoding):
-        self.key = self._random(encoding)
-	    self.save()
-	```
+    @classmethod
+    @appier.operation(name = "Meow")
+    def meow(cls):
+        cats = cls.Cat.find()
+        for cat in cats: cat.meow()
+```
 
-To make a class operation instead of one applicable only to a specific instance then add the ``@classmethod`` decorator to the function.
+To make the same operation be associated with a single instance, just to apply to an instance method instead:
+
+```python
+    @appier.operation(name = "Meow")
+    def meow(self):
+        self.meow()
+```
+
+An operation can receive parameters that will be sent to the handler method:
+
+```python
+    @appier.operation(
+        name = "Meow"
+       	parameters = (
+            ("Number of meows", "number_meows", int, 5)
+        )
+    )
+    def meow(self, number_meows):
+        for x in range(number_meows): self.meow()
+```
 
 ## Model Links
 
-To add a link from the model in the admin interface to another point of the app then define a function that returns the desired URL and decorate it with the ``@appier.link`` decorator. This decorator accepts a ``name`` describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. The link can be related to a single instance or to the model's class.
+To add a link from the model list page in the admin interface to anywhere else, add this to the model definition:
 
 ```python
 class Cat
 
-	@classmethod
-	@appier.link(name = "Export CSV")
-	def export_csv_url(cls):
-	    return appier.get_app().url_for("list.csv")
+    @classmethod
+    @appier.link(name = "Export Cats (CSV)")
+    def export_csv(cls):
+    	return cls.get_app().url_for("cat.list_csv")
+```
+
+In the same way, if the link is just for a particular instance, just use an instance method:
+
+```python
+    @appier.link(name = "Export Cat (CSV)")
+    def export_csv(self):
+    	return self.get_app().url_for("cat.show_csv")
+```
+
+Links can receive parameters as well:
+
+```python
+    @appier.link(
+        name = "Export Cats (CSV)"
+       	parameters = (
+            ("Start record", "start_record", int, 0),
+            ("Number of records", "number_records", int, 10)
+        )
+    )
+    def export_csv(cls, start_record, number_records):
+    	return self.get_app().url_for(
+            "cat.list_csv", 
+            start_record = start_record, 
+            number_records = number_records
+        )
 ```
