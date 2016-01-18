@@ -25,8 +25,6 @@ After running the previous examples, go to [http://localhost:8080/admin](http://
 and login with root/root.
 
 ## Learn more
-
-### Basic
 * [Models](doc/models.md) - admin interface for the app's models
 
 ## License

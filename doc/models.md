@@ -1,7 +1,20 @@
 # Models
 
 Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface.
+
 You can find more information about Appier models [here](http://appier.hive.pt/doc/models.md).
+
+## Model Attributes
+
+The admin interface has support for the attribute types provided by Appier:
+* A text field is presented for attributes of type ``str``, ``unicode``, ``int`` and ``float``
+* ``bool``attributes are set with a toggle switch.
+* Attributes of type ``list`` or ``dict`` can be edited in JSON format.
+* If the attribute is an ``appier.File`` object then a file upload input is shown. 
+* For an ``appier.reference`` attribute its text field has support for autocomplete.
+
+Attributes with the ``private`` <em>keyword</em> set to ``True`` are only shown in the model edit view.
+Immutable attributes cannot be edited.
 
 ## Model Operations
 
@@ -77,3 +90,4 @@ Links can receive parameters as well:
             number_records = number_records
         )
 ```
+
