@@ -50,30 +50,31 @@ def generate_key(self):
 This decorator accepts a ``name`` attribute that describes the operation and is shown in the interface, a ``parameters`` tuple containing the parameters to be sent to the operation where each parameter is represented by a ``tuple`` consisting of the description of the parameter, it's name, type and default value. When the user executes the operation a dialog is presented with a form to set the defined parameters. The operation's severity level can by set by specifying the ``level`` <em>keyword</em> where higher levels are more severe: 
 
 ```python
-@appier.operation(
-	name = "Generate Key"
-	parameters = (
-		("Encoding", "encoding", str, "ascii")
-	),
-	level = 1
-)
-def generate_key(self, encoding):
-    self.key = self._random(encoding)
-    self.save()
-```
+class Cat:
+
+    @appier.operation(
+        name = "Generate Key"
+		parameters = (
+		    ("Encoding", "encoding", str, "ascii")
+		),
+		level = 1
+	)
+	def generate_key(self, encoding):
+        self.key = self._random(encoding)
+	    self.save()
+	```
 
 To make a class operation instead of one applicable only to a specific instance then add the ``@classmethod`` decorator to the function.
 
 ## Model Links
 
-A link can be added to a model to provide a direct access from the admin interface to a location of interest related to it. It is defined by decorating a function that returns an URL with the ``@appier.link`` decorator which accepts a name describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. By adding the ``@classmethod`` decorator the link will be related to the model class:
+To add a link from the model in the admin interface to another point of the app then define a function that returns the desired URL and decorate it with the ``@appier.link`` decorator. This decorator accepts a ``name`` describing the link and a tuple of parameters like in the ``@appier.operation`` decorator. The link can be related to a single instance or to the model's class.
 
 ```python
-@classmethod
-@appier.operation(name = "Export CSV")
-def export_csv_url(cls):
-    return appier.get_app().url_for("list.csv")
+class Cat
+
+	@classmethod
+	@appier.link(name = "Export CSV")
+	def export_csv_url(cls):
+	    return appier.get_app().url_for("list.csv")
 ```
-
-
-
