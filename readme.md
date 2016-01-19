@@ -1,6 +1,6 @@
 # [![Appier Framework Extras](res/logo.png)](http://appier_extras.hive.pt)
 
-**Appier with Batteries Included**
+**Appier on Steroids**
 
 Appier Extras is a set of extra elements for [Appier Framework](http://appier.hive.pt).
 Amongst other features, it brings an admin interface that is automatically generated
