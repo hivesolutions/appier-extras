@@ -1,8 +1,13 @@
 # [![Appier Framework Extras](res/logo.png)](http://appier_extras.hive.pt)
 
-Set of extra elements for [Appier Framework](http://appier.hive.pt) infra-structure.
+**Appier with Batteries Included**
 
-Here's a basic example:
+Appier Extras is a set of extra elements for [Appier Framework](http://appier.hive.pt).
+Amongst other features, it brings an admin interface that is automatically generated
+by inspecting the application models, allowing the developer to easily have a way to manage
+the data and processes for an instance.
+
+Here's how to launch a minimal app with Appier Extras:
 
 ```python
 import appier
