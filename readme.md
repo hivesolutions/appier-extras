@@ -26,11 +26,18 @@ class HelloApp(appier.WebApp):
 HelloApp().serve()
 ```
 
-After running the previous examples, go to [http://localhost:8080/admin](http://localhost:8080/admin)
-and login with root/root.
+Running it is just as simple:
+
+```bash
+pip install appier appier_extras
+python hello.py
+```
+
+You can now go to [http://localhost:8080/admin](http://localhost:8080/admin) and login with root/root.
 
 ## Learn more
-* [Models](doc/models.md) - admin interface for the app's models
+
+* [Models](doc/models.md) - extra model features
 
 ## License
 
