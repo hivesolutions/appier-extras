@@ -1,24 +1,30 @@
 # Models
 
-Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface.
-
+Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface. 
 You can find more information about Appier models [here](http://appier.hive.pt/doc/models.md).
 
-## Model Attributes
+## Attributes
 
-The admin interface has support for the attribute types provided by Appier:
-* A text field is used for attributes of type ``str``, ``unicode``, ``int`` and ``float``
-* ``bool``attributes are set with a toggle switch.
-* Attributes of type ``list`` or ``dict`` can be edited in JSON format.
-* A file upload input is shown for ``appier.File`` attributes. 
-* An ``appier.reference`` attribute has a text field with support for autocomplete.
+The admin input component for each model attribute is automatically chosen according to the attribute's data type:
 
-Attributes with the ``private`` <em>keyword</em> set to ``True`` are only shown in the model edit view.
-Immutable attributes can only be set at creation time.
+* ``str``: textfield
+* ``unicode``: textfield
+* ``int``: textfield
+* ``float``: textfield
+* ``bool``: switch
+* ``list``: textfield (JSON format)
+* ``dict``: textfield (JSON format)
+* ``appier.File``: file upload field
+* ``appier.reference``: dropfield with auto-complete
 
-## Model Operations
+Certain interface behaviours change according to other attribute modifiers besides the data type:
 
-To add an operation accessible from the the admin interface be executed on a model, add this to the model definition:
+* ``private``: only visible in the edit view
+* ``immutable``: only modifiable in the creation view
+
+## Operations
+
+Appier operations are picked up by the admin and made accessible through the interface. Here's an example:
 
 ```python
 class Cat:
@@ -30,7 +36,7 @@ class Cat:
         for cat in cats: cat._meow()
 ```
 
-To make the same operation be associated with a single instance, just to apply to an instance method instead:
+To make the same operation be associated with a single instance, just apply to an instance method instead:
 
 ```python
     @appier.operation(name = "Meow")
@@ -44,16 +50,16 @@ An operation can receive parameters that will be sent to the handler method:
     @appier.operation(
         name = "Meow",
         parameters = (
-            ("Number of meows", "number_meows", int),
+            ("Number of meows", "number_meows", int, 5),
         )
     )
-    def meow(self, number_meows = 5):
+    def meow(self, number_meows):
         for x in range(number_meows): self._meow()
 ```
 
-## Model Links
+## Links
 
-To add a link from the model list page in the admin interface to anywhere else, add this to the model definition:
+Appier links are also picked up by the admin interface. Here's an example:
 
 ```python
 class Cat
@@ -79,11 +85,11 @@ Links can receive parameters as well:
     @appier.link(
         name = "Export Cats (CSV)",
         parameters = (
-            ("Start record", "start_record", int),
-            ("Number of records", "number_records", int)
+            ("Start record", "start_record", int, 0),
+            ("Number of records", "number_records", int, 10)
         )
     )
-    def export_csv(cls, start_record = 0, number_records = 10):
+    def export_csv(cls, start_record, number_records):
     	return appier.get_app().url_for(
             "cat.list_csv", 
             start_record = start_record, 
