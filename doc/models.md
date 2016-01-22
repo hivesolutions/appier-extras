@@ -1,6 +1,6 @@
 # Models
 
-Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface. 
+Models that inherit from ``appier_extras.admin.Base`` are automatically added to the admin interface.
 You can find more information about Appier models [here](http://appier.hive.pt/doc/models.md).
 
 ## Attributes
@@ -67,7 +67,7 @@ class Cat
     @classmethod
     @appier.link(name = "Export Cats (CSV)")
     def export_csv(cls):
-    	return appier.get_app().url_for("cat.list_csv")
+        return appier.get_app().url_for("cat.list_csv")
 ```
 
 In the same way, if the link is just for a particular instance, just use an instance method:
@@ -75,7 +75,7 @@ In the same way, if the link is just for a particular instance, just use an inst
 ```python
     @appier.link(name = "Export Cat (CSV)")
     def export_csv(self):
-    	return self.get_app().url_for("cat.show_csv")
+        return self.get_app().url_for("cat.show_csv")
 ```
 
 Links can receive parameters as well:
@@ -90,10 +90,9 @@ Links can receive parameters as well:
         )
     )
     def export_csv(cls, start_record, number_records):
-    	return appier.get_app().url_for(
-            "cat.list_csv", 
-            start_record = start_record, 
+        return appier.get_app().url_for(
+            "cat.list_csv",
+            start_record = start_record,
             number_records = number_records
         )
 ```
-
