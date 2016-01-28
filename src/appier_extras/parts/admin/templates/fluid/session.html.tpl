@@ -5,7 +5,7 @@
 {% block buttons %}
     {{ super() }}
     <div class="button button-color button-red button-confirm"
-         data-message="Do you really want to delete [[{{ session_s.sid }}]] ?"
+         data-message="Do you really want to delete [{{ session_s.sid }}] ?"
          data-link="{{ url_for('admin.delete_session', sid = session_s.sid) }}">Delete</div>
 {% endblock %}
 {% block content %}
