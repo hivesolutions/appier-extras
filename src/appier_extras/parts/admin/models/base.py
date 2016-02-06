@@ -141,12 +141,16 @@ class Base(appier.Model):
         bulk = appier.conf("BULK_EMAIL", False, cast = bool)
         unsubscribe = appier.conf("UNSUBSCRIBE_EMAIL", False, cast = bool)
         logo = appier.conf("LOGO_EMAIL", False, cast = bool)
-        sender = kwargs.get("sender", sender)
-        base_url = kwargs.get("base_url", base_url)
-        bulk = kwargs.get("bulk", bulk)
-        unsubscribe = kwargs.get("unsubscribe", unsubscribe)
-        logo = kwargs.get("logo", logo)
-        settings = dict(logo = logo)
+        sender = kwargs.pop("sender", sender)
+        base_url = kwargs.pop("base_url", base_url)
+        bulk = kwargs.pop("bulk", bulk)
+        unsubscribe = kwargs.pop("unsubscribe", unsubscribe)
+        logo = kwargs.pop("logo", logo)
+        settings = dict(
+            bulk = bulk,
+            unsubscribe = unsubscribe,
+            logo = logo
+        )
         headers = dict()
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
