@@ -142,7 +142,7 @@ class Base(appier.Model):
         unsubscribe = appier.conf("UNSUBSCRIBE_EMAIL", False, cast = bool)
         logo = appier.conf("LOGO_EMAIL", False, cast = bool)
         sender = kwargs.get("sender", sender)
-        base_url = kwargs.get("sender", base_url)
+        base_url = kwargs.get("base_url", base_url)
         bulk = kwargs.get("bulk", bulk)
         unsubscribe = kwargs.get("unsubscribe", unsubscribe)
         logo = kwargs.get("logo", logo)
