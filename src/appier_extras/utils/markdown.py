@@ -65,6 +65,7 @@ class MarkdownParser(object):
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
         list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-] (?P<list_value>[^\r\n]+))"
         listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\. (?P<listo_value>[^\r\n]+))"
+        blockquote = r"(?P<blockquote>^[\>] (?P<blockquote_value>[^\r\n]+))"
         image = r"(?P<image>\!(?P<image_label>\[.+?\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ ]+\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
@@ -79,6 +80,7 @@ class MarkdownParser(object):
                 header,
                 list,
                 listo,
+                blockquote,
                 image,
                 link,
                 bold,
@@ -178,6 +180,16 @@ class MarkdownParser(object):
             type = "listo",
             level = len(index) + 1,
             number = int(number),
+            value = value
+        )
+        return node
+
+    def parse_blockquote(self, parts):
+        value = parts["blockquote_value"]
+        value = self.parse(value, regex = self.simple)
+
+        node = dict(
+            type = "blockquote",
             value = value
         )
         return node
@@ -372,6 +384,7 @@ class MarkdownHTML(MarkdownGenerator):
         self.depth = 0
         self.paragraph = False
         self.code = False
+        self.blockquote = False
         self.list_item = False
         self.list_level = 0
         self.listo_level = 0
@@ -451,6 +464,11 @@ class MarkdownHTML(MarkdownGenerator):
         self.emit(value, escape = True)
         if close: self._close_code(tag)
 
+    def generate_blockquote(self, node):
+        value = node["value"]
+        self._ensure_blockquote()
+        self._generate(value)
+
     def generate_normal(self, node):
         if self.code: self.emit("\n"); return
         if self.is_open(): self.emit(node, escape = True)
@@ -463,6 +481,11 @@ class MarkdownHTML(MarkdownGenerator):
         if self.code: return
         self.open("<%s class=\"code language-%s\">" % (tag, name))
         self.code = True
+
+    def _ensure_blockquote(self):
+        if self.blockquote: return
+        self.open("<blockquote>")
+        self.blockquote = True
 
     def _ensure_list(self, level = 1):
         if self.list_level == level: return
@@ -483,6 +506,7 @@ class MarkdownHTML(MarkdownGenerator):
     def _close_all(self, exceptions = ()):
         if not "listo" in exceptions: self._close_listo()
         if not "list" in exceptions: self._close_list()
+        if not "blockquote" in exceptions: self._close_blockquote()
         if not "code" in exceptions: self._close_code()
         if not "paragraph" in exceptions: self._close_paragraph()
 
@@ -495,6 +519,11 @@ class MarkdownHTML(MarkdownGenerator):
         if not self.code: return
         self.close("</%s>" % tag)
         self.code = False
+
+    def _close_blockquote(self, count = None):
+        if not self.blockquote: return
+        self.close("</blockquote>")
+        self.blockquote = False
 
     def _close_list(self, count = None):
         if self.list_item: self.close("</li>")
