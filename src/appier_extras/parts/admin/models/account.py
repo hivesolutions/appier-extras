@@ -195,6 +195,10 @@ class Account(base.Base):
             appier.string_lt("username", 64),
             appier.not_duplicate("username", cls._name()),
 
+            appier.not_null("email"),
+            appier.not_empty("email"),
+            appier.is_email("email"),
+
             appier.not_null("type"),
 
             appier.equals("password_confirm", "password")
