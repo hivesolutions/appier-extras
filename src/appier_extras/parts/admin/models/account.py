@@ -238,7 +238,7 @@ class Account(base.Base):
             )
 
         # "touches" the current account meaning that the last login value will be
-        # update to reflect the current time and then returns the current logged
+        # updated to reflect the current time and then returns the current logged
         # in account to the caller method so that it may used (valid account)
         account.touch_s()
         return account
