@@ -389,6 +389,7 @@ class Account(base.Base):
         if "email" in session: delete("email")
         if "type" in session: delete("type")
         if "tokens" in session: delete("tokens")
+        if "meta" in session: delete("meta")
         if "params" in session: delete("params")
         for key in appier.legacy.keys(session):
             is_removable = False
@@ -441,4 +442,5 @@ class Account(base.Base):
         set("email", self.email)
         set("type", self.type_s())
         set("tokens", self.tokens())
+        set("meta", self.meta)
         set("params", dict())
