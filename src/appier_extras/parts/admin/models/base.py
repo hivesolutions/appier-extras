@@ -38,9 +38,17 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import time
+import random
+import string
+import hashlib
 import datetime
 
 import appier
+
+RANDOM_RANGE = string.ascii_uppercase + string.digits
+""" The range defining the various characters that are
+going to be used in the generation of the random string
+value that is going to be used as basis for secret generation """
 
 class Base(appier.Model):
 
@@ -194,6 +202,12 @@ class Base(appier.Model):
     def send_email(self, *args, **kwargs):
         cls = self.__class__
         return cls.send_email_g(self.owner, *args, **kwargs)
+
+    def secret(self):
+        token = "".join(random.choice(RANDOM_RANGE) for _index in range(32))
+        token_bytes = appier.legacy.bytes(token)
+        url_sha1 = hashlib.sha1(token_bytes)
+        return url_sha1.hexdigest()
 
     @property
     def created_d(self):

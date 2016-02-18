@@ -79,6 +79,11 @@ class Account(base.Base):
         meta = "secret"
     )
 
+    key = appier.field(
+        private = True,
+        meta = "secret"
+    )
+
     facebook_id = appier.field(
         index = True
     )
@@ -338,6 +343,10 @@ class Account(base.Base):
                 break
             if not is_removable: continue
             del session[key]
+
+    def pre_create(self):
+        base.Base.pre_create(self)
+        self.key = self.secret()
 
     def pre_save(self):
         base.Base.pre_save(self)
