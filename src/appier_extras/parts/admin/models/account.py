@@ -63,6 +63,12 @@ class Account(base.Base):
         "params."
     ]
 
+    ROOT_USERNAME = "root"
+
+    ROOT_PASSWORD = "root"
+
+    ROOT_EMAIL = "root@root.com"
+
     username = appier.field(
         index = True,
         default = True
@@ -155,17 +161,30 @@ class Account(base.Base):
         root = cls.find(username = "root")
         if root: return
 
+        # retrieves the reference to the global logger that is going
+        # to be used (should be initialized) and then prints the initial
+        # information about the account to be generated
+        logger = appier.get_logger()
+        logger.info("Generating initial root account ...")
+
         # creates the structure to be used as the root account description
         # using the default value and then stores the account as it's going
         # to be used as the default root entity (for administration)
         account = cls(
             enabled = True,
-            username = "root",
-            email = "root@root.com",
-            password = cls.generate("root"),
+            username = cls.ROOT_USERNAME,
+            email = cls.ROOT_EMAIL,
+            password = cls.generate(cls.ROOT_PASSWORD),
             type = cls.ADMIN_TYPE
         )
         account.save(validate = False)
+
+        # tries to retrieve the newly generated account with no rules and then
+        # uses it to print information about the newly created account
+        account = cls.get(id = account.id, rules = False)
+        logger.info("Username: %s" % account.username)
+        logger.info("Password: %s" % cls.ROOT_PASSWORD)
+        logger.info("Secret Key: %s" % account.key)
 
     @classmethod
     def validate(cls):
@@ -239,6 +258,44 @@ class Account(base.Base):
         if not cls.verify(_password, password):
             raise appier.OperationalError(
                 message = "Invalid or mismatch password",
+                code = 403
+            )
+
+        # "touches" the current account meaning that the last login value will be
+        # updated to reflect the current time and then returns the current logged
+        # in account to the caller method so that it may used (valid account)
+        account.touch_s()
+        return account
+
+    @classmethod
+    def login_key(cls, key):
+        # verifies that secret key is provided, is considered valid for domain
+        # and that it is correctly and properly defined (required for validation)
+        if not key:
+            raise appier.OperationalError(
+                message = "Secret key must be provided",
+                code = 400
+            )
+
+        # tries to retrieve the account with the provided username, so that
+        # the other validation steps may be done as required by login operation
+        account = cls.get(
+            key = key,
+            rules = False,
+            build = False,
+            raise_e = False
+        )
+        if not account:
+            raise appier.OperationalError(
+                message = "No valid account found",
+                code = 403
+            )
+
+        # verifies that the retrieved account is currently enabled, because
+        # disabled accounts are not considered to be valid ones
+        if not account.enabled:
+            raise appier.OperationalError(
+                message = "Account is not enabled",
                 code = 403
             )
 
@@ -323,15 +380,16 @@ class Account(base.Base):
         return password.count(":") > 0
 
     @classmethod
-    def _unset_session(cls, prefixes = None, safes = []):
+    def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
         prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
-        if "username" in session: del session["username"]
-        if "name" in session: del session["name"]
-        if "email" in session: del session["email"]
-        if "type" in session: del session["type"]
-        if "tokens" in session: del session["tokens"]
-        if "params" in session: del session["params"]
+        delete = getattr(session, method)
+        if "username" in session: delete("username")
+        if "name" in session: delete("name")
+        if "email" in session: delete("email")
+        if "type" in session: delete("type")
+        if "tokens" in session: delete("tokens")
+        if "params" in session: delete("params")
         for key in appier.legacy.keys(session):
             is_removable = False
             for prefix in prefixes:
@@ -342,7 +400,7 @@ class Account(base.Base):
                 is_removable = True
                 break
             if not is_removable: continue
-            del session[key]
+            delete(session[key])
 
     def pre_create(self):
         base.Base.pre_create(self)
@@ -374,12 +432,13 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
-    def _set_session(self, unset = True, safes = []):
+    def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
         if unset: cls._unset_session(safes = safes)
-        self.session["username"] = self.username
-        self.session["name"] = self.email
-        self.session["email"] = self.email
-        self.session["type"] = self.type_s()
-        self.session["tokens"] = self.tokens()
-        self.session["params"] = dict()
+        set = getattr(self.session, method)
+        set("username", self.username)
+        set("name", self.email)
+        set("email", self.email)
+        set("type", self.type_s())
+        set("tokens", self.tokens())
+        set("params", dict())

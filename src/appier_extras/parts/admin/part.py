@@ -75,6 +75,9 @@ class AdminPart(
     def load(self):
         appier.Part.load(self)
 
+        self.logger.debug("Registering pre request handler ...")
+        appier.App.add_custom("before_request", self.before_request)
+
         self.logger.debug("Updating pre-defined application routes ...")
         self.owner.login_route = "admin.login"
         self.owner.login_route_admin = "admin.login"
@@ -174,6 +177,15 @@ class AdminPart(
             *args,
             **kwargs
         )
+
+    def before_request(self):
+        key = self.get_field("skey", None)
+        key = self.get_field("secret_key", key)
+        key = self.request.get_header("X-Secret-Key", key)
+        if not key: return
+        try: account = models.Account.login_key(key)
+        except appier.OperationalError: pass
+        else: account._set_session(method = "set_t")
 
     def index(self):
         return self.list_models()
