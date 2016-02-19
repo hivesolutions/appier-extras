@@ -216,7 +216,7 @@ class Base(appier.Model):
         names = cls.index_names()
         title_name = cls.title_name()
         description_name = cls.description_name()
-        search.Search.delete_indexes(self.id, cls)
+        search.Search.delete_indexes(self._id, cls)
         for name in names:
             value = self[name]
             title = self[title_name]
@@ -224,7 +224,7 @@ class Base(appier.Model):
             else: description = None
             search.Search.create_index(
                 value,
-                self.id,
+                self._id,
                 cls,
                 title,
                 target_description = description

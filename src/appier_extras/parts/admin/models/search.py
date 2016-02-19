@@ -49,7 +49,6 @@ class Search(base.Base):
     )
 
     target_id = appier.field(
-        type = int,
         index = True
     )
 
@@ -106,21 +105,12 @@ class Search(base.Base):
         index.save()
 
     @classmethod
-    def find_indexes(cls, target_id, target_cls, map = True, url = True):
+    def find_indexes(cls, target_id, target_cls):
         target_cls = target_cls.__name__
-        indexes = cls.find(
+        return cls.find(
             target_id = target_id,
-            target_cls = target_cls,
-            map = map
+            target_cls = target_cls
         )
-        if not url: return indexes
-        for index in indexes:
-            index.url = appier.get_app().url_for(
-                "admin.show_entity",
-                model = index.target_cls,
-                id = index.target_id
-            )
-        return indexes
 
     @classmethod
     def delete_indexes(cls, target_id, target_cls):
@@ -134,7 +124,7 @@ class Search(base.Base):
         target_id = model["target_id"]
         model["url"] = appier.get_app().url_for(
             "admin.show_entity",
-            model = target_cls,
+            model = target_cls.lower(),
             _id = target_id
         )
         return model
