@@ -41,7 +41,7 @@
                 </div>
                 <div class="item">
                     <dt>Models</dt>
-                    <dd>{{ own.models_r|length }} models</dd>
+                    <dd>{{ own._attached(own.models_r)|length }} models</dd>
                 </div>
                 <div class="item">
                     <dt>Routes</dt>
