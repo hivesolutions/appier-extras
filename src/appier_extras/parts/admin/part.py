@@ -98,6 +98,7 @@ class AdminPart(
 
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:
+            if not model_c.is_attached(): continue
             self.logger.debug(model_c)
 
     def routes(self):
