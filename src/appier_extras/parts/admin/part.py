@@ -124,6 +124,7 @@ class AdminPart(
             (("GET",), "/admin/database/import", self.database_import),
             (("POST",), "/admin/database/import", self.database_import_do),
             (("GET",), "/admin/database/reset", self.database_reset),
+            (("GET",), "/admin/search", self.search),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
@@ -497,6 +498,12 @@ class AdminPart(
                 message = "Database file imported with success"
             )
         )
+
+    @appier.ensure(token = "admin")
+    def search(self):
+        object = appier.get_object(alias = True, find = True)
+        indexes = models.Search.find(map = True, **object)
+        return indexes
 
     @appier.ensure(token = "admin")
     def database_reset(self):

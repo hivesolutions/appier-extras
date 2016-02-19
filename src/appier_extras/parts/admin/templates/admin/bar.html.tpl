@@ -6,38 +6,14 @@
         <div class="drop-field entities" placeholder="Search over some of the items"
              data-number_options="4">
             <li class="template">
-                <img class="picture" data-src="{{ url_for('admin', filename = 'images/avatar_64.png') }}" />
                 <div>
-                    <p class="title">%[name]</p>
-                    <p class="description">%[details]</p>
+                    <p class="title">
+                        <a href="%[url]">%[target_title]</a>
+                    </p>
+                    <p class="description">%[target_description]</p>
                 </div>
             </li>
-            <ul class="data-source" data-type="local">
-                <li>
-                    <span name="name">User 1</span>
-                    <span name="details">user1@hive.pt</span>
-                </li>
-                <li>
-                    <span name="name">User 2</span>
-                    <span name="details">user2@hive.pt</span>
-                </li>
-                <li>
-                    <span name="name">User 3</span>
-                    <span name="details">user3@hive.pt</span>
-                </li>
-                <li>
-                    <span name="name">User 4</span>
-                    <span name="details">user4@hive.pt</span>
-                </li>
-                <li>
-                    <span name="name">User 5</span>
-                    <span name="details">user5@hive.pt</span>
-                </li>
-                <li>
-                    <span name="name">User 6</span>
-                    <span name="details">user6@hive.pt</span>
-                </li>
-            </ul>
+            <div class="data-source" data-url="{{ url_for('admin.search') }}" data-type="json"></div>
         </div>
         <div class="right">
             <div class="menu system-menu">

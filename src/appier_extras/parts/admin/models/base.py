@@ -142,6 +142,22 @@ class Base(appier.Model):
         return "id"
 
     @classmethod
+    def index_names(cls):
+        return [cls.default()]
+
+    @classmethod
+    def title_name(cls):
+        return cls.default()
+
+    @classmethod
+    def description_name(cls):
+        return None
+
+    @classmethod
+    def is_indexed(cls):
+        return True
+
+    @classmethod
     def send_email_g(cls, owner, *args, **kwargs):
         owner = owner or appier.get_app()
         sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
@@ -187,6 +203,32 @@ class Base(appier.Model):
         appier.Model.pre_update(self)
 
         self.modified = time.time()
+
+    def post_save(self):
+        appier.Model.post_save(self)
+
+        self.build_index()
+
+    def build_index(self):
+        from appier_extras.parts.admin.models import search
+        cls = self.__class__
+        if not cls.is_indexed(): return
+        names = cls.index_names()
+        title_name = cls.title_name()
+        description_name = cls.description_name()
+        search.Search.delete_indexes(self.id, cls)
+        for name in names:
+            value = self[name]
+            title = self[title_name]
+            if description_name: description = self[description_name]
+            else: description = None
+            search.Search.create_index(
+                value,
+                self.id,
+                cls,
+                title,
+                target_description = description
+            )
 
     def enable_s(self):
         self.enabled = True

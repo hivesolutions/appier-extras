@@ -37,9 +37,11 @@ __license__ = "Apache License, Version 2.0"
 from . import account
 from . import base
 from . import config
+from . import search
 from . import settings
 
 from .account import Account
 from .base import Base
 from .config import Config
+from .search import Search
 from .settings import Settings
