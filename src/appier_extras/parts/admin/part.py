@@ -524,7 +524,12 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def search(self):
-        object = appier.get_object(alias = True, find = True)
+        object = appier.get_object(
+            alias = True,
+            find = True,
+            find_i = True,
+            find_t = "right"
+        )
         indexes = models.Search.find(map = True, **object)
         return indexes
 
