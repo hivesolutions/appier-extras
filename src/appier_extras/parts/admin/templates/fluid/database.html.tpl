@@ -13,7 +13,7 @@
         </li>
         <li>
             <div class="name">
-                <a class="link warning link-confirm" href="{{ url_for('admin.database_reset') }}"
+                <a class="link link-confirm warning" href="{{ url_for('admin.database_reset') }}"
                    data-message="Are you really sure you want to reset the database ?">Reset
                 </a>
             </div>

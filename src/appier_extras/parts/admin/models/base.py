@@ -214,10 +214,11 @@ class Base(appier.Model):
 
         self.build_index()
 
-    def build_index(self):
+    def build_index(self, use_class = True):
         from appier_extras.parts.admin.models import search
         cls = self.__class__
         if not cls.is_indexed(): return
+        cls_name = cls._name()
         names = cls.index_names()
         title_name = cls.title_name()
         description_name = cls.description_name()
@@ -226,6 +227,7 @@ class Base(appier.Model):
             value = self[name]
             title = self[title_name]
             if description_name: description = self[description_name]
+            elif use_class: description = cls_name
             else: description = None
             if not self._id: continue
             if not title: continue

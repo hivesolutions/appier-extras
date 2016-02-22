@@ -13,7 +13,8 @@
                     <p class="description">%[target_description]</p>
                 </div>
             </li>
-            <div class="data-source" data-url="{{ url_for('admin.search') }}" data-type="json"></div>
+            <div class="data-source" data-url="{{ url_for('admin.search') }}" data-type="json"
+                 data-timeout="0"></div>
         </div>
         <div class="right">
             <div class="menu system-menu">
