@@ -21,6 +21,11 @@
     {% else %}
         <a href="{{ url_for('admin.social') }}">social</a>
     {% endif %}
+    {% if section == "operations" %}
+        <a class="selected" href="{{ url_for('admin.operations') }}">operations</a>
+    {% else %}
+        <a href="{{ url_for('admin.operations') }}">operations</a>
+    {% endif %}
     {% if section == "status" %}
         <a class="selected" href="{{ url_for('admin.status') }}">status</a>
     {% else %}

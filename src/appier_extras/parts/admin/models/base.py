@@ -158,6 +158,11 @@ class Base(appier.Model):
         return True
 
     @classmethod
+    def build_index_g(cls, *args, **kwargs):
+        models = cls.find(*args, **kwargs)
+        for model in models: model.build_index()
+
+    @classmethod
     def send_email_g(cls, owner, *args, **kwargs):
         owner = owner or appier.get_app()
         sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")

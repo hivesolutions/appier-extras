@@ -113,9 +113,11 @@ class AdminPart(
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/social", self.social),
+            (("GET",), "/admin/operations", self.operations),
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/libraries", self.list_libraries),
+            (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
@@ -362,6 +364,13 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin")
+    def operations(self):
+        return self.template(
+            "operations.html.tpl",
+            section = "operations"
+        )
+
+    @appier.ensure(token = "admin")
     def list_routes(self):
         return self.template(
             "routes.html.tpl",
@@ -388,6 +397,17 @@ class AdminPart(
             "libraries.html.tpl",
             section = "status",
             libraries = libraries
+        )
+
+    @appier.ensure(token = "admin")
+    def build_index(self):
+        for model in self._attached(self.models_r):
+            model.build_index_g()
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Search index built with success"
+            )
         )
 
     @appier.ensure(token = "admin")
