@@ -401,6 +401,8 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def build_index(self):
+        empty = self.field("empty", True, cast = bool)
+        if empty: models.Search.delete_c()
         for model in self._attached(self.models_r):
             model.build_index_g()
         return self.redirect(

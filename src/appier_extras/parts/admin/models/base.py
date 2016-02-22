@@ -227,6 +227,8 @@ class Base(appier.Model):
             title = self[title_name]
             if description_name: description = self[description_name]
             else: description = None
+            if not self._id: continue
+            if not title: continue
             search.Search.create_index(
                 value,
                 self._id,
