@@ -606,22 +606,70 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def operation_model(self, model, operation):
+        # retrieves the complete set of fields that are going to
+        # be used while performing the operation and runs the
+        # complete set of casting operations for each of them
         parameters = self.get_fields("parameters", [])
         next = self.field("next")
         ids = self.field("ids", "")
         ids = ids.split(",")
         ids = [appier.object_id(_id) for _id in ids if _id]
         is_global = self.field("is_global", False, cast = bool)
+
+        # retrieves the model information (class) for the provided
+        # name and then also the operation definition (metadata)
         model = self.get_model(model)
         definition = model.operation(operation)
+
+        # using the retrieved information determines if the operation
+        # is considered to be a factory one (generates entity) and
+        # then casts the provided parameters according to metadata
+        factory = definition.get("factory", False)
         parameters = definition.cast(parameters)
+
+        # determines the filter information that is going to be passed
+        # to the find operations and retrieves the associated entities
+        # that are going to be the target for the operations, note that
+        # if this is a global operation classes are used instead
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
         if is_global: entities = (model,)
         else: entities = model.find(**kwargs)
+
+        # determines if this is going to be a single entity target
+        # operation or if otherwise it's a multiple target one, taking
+        # that into account determines if this is considered a factory
+        # operation, note that only single operations are allowed
+        is_single = len(entities) == 1
+        factory = factory and is_single
+
+        # defines the original/default result value for the complete
+        # set of operations to be performed
+        result = None
+
+        # iterates over the complete set of selected entities and
+        # performs the requested operation for each of them
         for entity in entities:
             method = getattr(entity, operation)
-            method(*parameters)
+            result = method(*parameters)
+
+        # in case the factory mode is enabled, a new entity has been
+        # created and proper redirection must be performed so that the
+        # new entity is shown instead of the default show model
+        if factory:
+            cls = result.__class__
+            model_name = cls._name()
+            model_id = result._id
+            return self.redirect(
+                self.url_for(
+                    "admin.show_entity",
+                    model = model_name,
+                    _id = model_id
+                )
+            )
+
+        # runs the default redirection process that displays the model
+        # page for the model used as target for the operation
         return self.redirect(
             next or self.url_for("admin.show_model", model = model._name())
         )
