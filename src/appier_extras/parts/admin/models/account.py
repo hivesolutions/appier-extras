@@ -405,7 +405,7 @@ class Account(base.Base):
                 is_removable = True
                 break
             if not is_removable: continue
-            delete(session[key])
+            delete(key)
 
     def pre_create(self):
         base.Base.pre_create(self)
