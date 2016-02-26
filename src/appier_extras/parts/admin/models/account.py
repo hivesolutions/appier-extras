@@ -152,6 +152,10 @@ class Account(base.Base):
         meta = "datetime"
     )
 
+    def __init__(self, *args, **kwargs):
+        base.Base.__init__(self, *args, **kwargs)
+        self.meta = dict()
+
     @classmethod
     def setup(cls):
         super(Account, cls).setup()
