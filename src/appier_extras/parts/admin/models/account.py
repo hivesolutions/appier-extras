@@ -444,6 +444,7 @@ class Account(base.Base):
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
         if unset: cls._unset_session(safes = safes)
+        self.session.ensure()
         set = getattr(self.session, method)
         set("username", self.username)
         set("name", self.email)
