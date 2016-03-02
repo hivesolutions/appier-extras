@@ -72,6 +72,14 @@
                         <a href="{{ url_for('admin.list_sessions') }}">{{ request.session_c.count() }} sessions</a>
                     </dd>
                 </div>
+                <div class="item">
+                    <dt>Adapter class</dt>
+                    <dd>{{ own.adapter.__class__.__name__ }}</dd>
+                </div>
+                <div class="item">
+                    <dt>Manager class</dt>
+                    <dd>{{ own.manager.__class__.__name__ }}</dd>
+                </div>
                 {% if appier.Git.is_git() %}
                     <div class="separator"></div>
                     <div class="item">

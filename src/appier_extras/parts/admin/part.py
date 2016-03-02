@@ -591,7 +591,7 @@ class AdminPart(
         parameters = self.get_fields("parameters", [])
         ids = self.field("ids", "")
         ids = ids.split(",")
-        ids = [appier.object_id(_id) for _id in ids if _id]
+        ids = [appier.get_adapter().object_id(_id) for _id in ids if _id]
         is_global = self.field("is_global", False, cast = bool)
         model = self.get_model(model)
         if ids: kwargs = dict(_id = {"$in" : ids})
@@ -613,7 +613,7 @@ class AdminPart(
         next = self.field("next")
         ids = self.field("ids", "")
         ids = ids.split(",")
-        ids = [appier.object_id(_id) for _id in ids if _id]
+        ids = [appier.get_adapter().object_id(_id) for _id in ids if _id]
         is_global = self.field("is_global", False, cast = bool)
 
         # retrieves the model information (class) for the provided
@@ -709,7 +709,7 @@ class AdminPart(
         entity = model.get(
             rules = False,
             meta = True,
-            _id = appier.object_id(_id)
+            _id = appier.get_adapter().object_id(_id)
         )
         return self.template(
             "entities/show.html.tpl",
@@ -727,7 +727,7 @@ class AdminPart(
             rules = rules,
             meta = meta,
             map = True,
-            _id = appier.object_id(_id)
+            _id = appier.get_adapter().object_id(_id)
         )
         return entity
 
@@ -737,7 +737,7 @@ class AdminPart(
         entity = model.get(
             rules = False,
             meta = True,
-            _id = appier.object_id(_id)
+            _id = appier.get_adapter().object_id(_id)
         )
         return self.template(
             "entities/edit.html.tpl",
@@ -753,7 +753,7 @@ class AdminPart(
         entity = model.get(
             rules = False,
             meta = True,
-            _id = appier.object_id(_id)
+            _id = appier.get_adapter().object_id(_id)
         )
         entity.apply(safe_a = False)
         try: entity.save()
@@ -777,7 +777,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def delete_entity(self, model, _id):
         model = self.get_model(model)
-        entity = model.get(_id = appier.object_id(_id))
+        entity = model.get(_id = appier.get_adapter().object_id(_id))
         entity.delete()
         return self.redirect(
             self.url_for(
