@@ -460,10 +460,9 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def database_export(self):
         adapter = self.get_adapter()
-        database = adapter.get_db()
         file = appier.legacy.BytesIO()
         manager = appier.ExportManager(
-            database,
+            adapter,
             multiple = self.resolve()
         )
         manager.export_data(file)
@@ -508,9 +507,8 @@ class AdminPart(
         # the currently defined entities then imports the data defined
         # in the current temporary path
         adapter = self.get_adapter()
-        database = adapter.get_db()
         manager = appier.ExportManager(
-            database,
+            adapter,
             multiple = self.resolve()
         )
         try: manager.import_data(file_path)
