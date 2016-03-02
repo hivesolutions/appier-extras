@@ -218,11 +218,15 @@ class Base(appier.Model):
         from appier_extras.parts.admin.models import search
         cls = self.__class__
         if not cls.is_indexed(): return
+
         cls_name = cls._name()
         names = cls.index_names()
         title_name = cls.title_name()
         description_name = cls.description_name()
+
+        self = self.reload()
         search.Search.delete_indexes(self._id, cls)
+
         for name in names:
             value = self[name]
             title = self[title_name]
