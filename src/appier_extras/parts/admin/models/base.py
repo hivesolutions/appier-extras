@@ -216,25 +216,44 @@ class Base(appier.Model):
 
     def build_index(self, use_class = True):
         from appier_extras.parts.admin.models import search
+
+        # retrieves the reference to the class of the entity to be indexed
+        # and verifies that the (model) class is enabled for indexing, in
+        # case it's not returns the control flow immediately no indexing required
         cls = self.__class__
         if not cls.is_indexed(): return
 
+        # retrieves the complete set of attribute names that are going
+        # to be used for characterization of the current entity, these
+        # values should be changed on a model basis
         cls_name = cls._name()
         names = cls.index_names()
         title_name = cls.title_name()
         description_name = cls.description_name()
 
+        # reloads the current instance, critical to obtain default values
+        # and then deletes the complete set of indexes of the entity as
+        # new ones are going to be built
         self = self.reload()
         search.Search.delete_indexes(self._id, cls)
 
+        # retrieves both the title and the description representation
+        # values for the current entity, as expected for creation
+        title = self[title_name]
+        if description_name: description = self[description_name]
+        elif use_class: description = cls_name
+        else: description = None
+
+        # verifies that the current instance contains both the identifier
+        # and the title (requires representation) otherwise returns control
+        if not self._id: return
+        if not title: return
+
+        # iterates over the complete set of names that are going to
+        # be used in the indexing process and for each of them creates
+        # new search index entry with the information of the entity
         for name in names:
             value = self[name]
-            title = self[title_name]
-            if description_name: description = self[description_name]
-            elif use_class: description = cls_name
-            else: description = None
-            if not self._id: continue
-            if not title: continue
             search.Search.create_index(
                 value,
                 self._id,
