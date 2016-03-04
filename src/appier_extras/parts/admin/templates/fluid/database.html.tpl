@@ -8,7 +8,7 @@
             <div class="description"><span>Import data from a database file</span></div>
         </li>
         <li>
-            <div class="name"><a href="{{ url_for('admin.database_export') }}">Export</a></div>
+            <div class="name"><a class="no-async" href="{{ url_for('admin.database_export') }}">Export</a></div>
             <div class="description"><span>Export your current database into an external file</span></div>
         </li>
         <li>
