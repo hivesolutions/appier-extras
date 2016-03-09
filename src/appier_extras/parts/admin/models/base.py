@@ -214,6 +214,11 @@ class Base(appier.Model):
 
         self.build_index()
 
+    def post_delete(self):
+        appier.Model.post_delete(self)
+
+        self.destroy_index()
+
     def build_index(self, use_class = True):
         from appier_extras.parts.admin.models import search
 
@@ -235,7 +240,7 @@ class Base(appier.Model):
         # and then deletes the complete set of indexes of the entity as
         # new ones are going to be built
         self = self.reload()
-        search.Search.delete_indexes(self._id, cls)
+        self.destroy_index()
 
         # retrieves both the title and the description representation
         # values for the current entity, as expected for creation
@@ -261,6 +266,12 @@ class Base(appier.Model):
                 title,
                 target_description = description
             )
+
+    def destroy_index(self):
+        from appier_extras.parts.admin.models import search
+
+        cls = self.__class__
+        search.Search.delete_indexes(self._id, cls)
 
     def enable_s(self):
         self.enabled = True
