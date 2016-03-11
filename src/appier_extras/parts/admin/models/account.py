@@ -155,8 +155,8 @@ class Account(base.Base):
 
     def __init__(self, *args, **kwargs):
         base.Base.__init__(self, *args, **kwargs)
-        self.type = Account.USER_TYPE
-        self.meta = dict()
+        self.type = kwargs.get("type", Account.USER_TYPE)
+        self.meta = kwargs.get("meta", dict())
 
     @classmethod
     def setup(cls):
@@ -384,6 +384,15 @@ class Account(base.Base):
         if salt: salt = binascii.unhexlify(salt)
         if salt: salt = appier.legacy.str(salt)
         return (type, salt, digest, plain)
+
+    @classmethod
+    def from_session(cls, *args, **kwargs):
+        session = appier.get_session()
+        if not "username" in session: return None
+        return cls.get(
+            username = session["username"],
+            *args, **kwargs
+        )
 
     @classmethod
     def is_encrypted(cls, password):
