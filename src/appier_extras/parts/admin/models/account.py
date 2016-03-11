@@ -141,6 +141,7 @@ class Account(base.Base):
 
     type = appier.field(
         type = int,
+        initial = USER_TYPE,
         safe = True,
         meta = "enum",
         enum = ACCOUNT_S
@@ -154,6 +155,7 @@ class Account(base.Base):
 
     def __init__(self, *args, **kwargs):
         base.Base.__init__(self, *args, **kwargs)
+        self.type = Account.USER_TYPE
         self.meta = dict()
 
     @classmethod
