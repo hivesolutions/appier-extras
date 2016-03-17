@@ -86,7 +86,7 @@
         {% set display = value[_default]|default('') %}
         <div class="drop-field {{ disabled_s|safe }}" value="{{ display }}" data-error="{{ error }}"
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
-            <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic }}" />
+            <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic|default('', True) }}" />
             <div class="data-source" data-type="json"
                  data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
         </div>
@@ -119,7 +119,7 @@
                data-error="{{ error }}" data-display_attribute="name"
                data-value_attribute="internal" data-number_options="-1">
             <input name="{{ name }}" type="hidden" class="hidden-field"
-                   value="{{ value }}" />
+                   value="{{ value|default('', True) }}" />
             <ul class="data-source" data-type="local">
                 {% for key, value in enum.items() %}
                     <li>
@@ -132,7 +132,7 @@
     {% elif meta == "country" %}
          <div class="drop-field drop-field-select {{ disabled_s|safe }}" data-error="{{ error }}"
               data-number_options="-1">
-            <input name="{{ name }}" type="hidden" class="hidden-field" value="{{ value }}" />
+            <input name="{{ name }}" type="hidden" class="hidden-field" value="{{ value|default('', True) }}" />
             <div class="data-source" data-type="isocountries" data-iso="iso2"></div>
         </div>
     {% elif meta == "file" %}
