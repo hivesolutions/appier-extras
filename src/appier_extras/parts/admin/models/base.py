@@ -273,10 +273,12 @@ class Base(appier.Model):
         cls = self.__class__
         search.Search.delete_indexes(self._id, cls)
 
+    @appier.operation(name = "Enable")
     def enable_s(self):
         self.enabled = True
         self.save()
 
+    @appier.operation(name = "Disable")
     def disable_s(self):
         self.enabled = False
         self.save()
