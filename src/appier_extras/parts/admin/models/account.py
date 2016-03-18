@@ -222,7 +222,7 @@ class Account(base.Base):
 
     @classmethod
     def list_names(cls):
-        return ["username", "email", "type", "last_login"]
+        return ["username", "email", "type", "last_login", "enabled"]
 
     @classmethod
     def extra_names(cls):

@@ -273,12 +273,10 @@ class Base(appier.Model):
         cls = self.__class__
         search.Search.delete_indexes(self._id, cls)
 
-    @appier.operation(name = "Enable")
     def enable_s(self):
         self.enabled = True
         self.save()
 
-    @appier.operation(name = "Disable")
     def disable_s(self):
         self.enabled = False
         self.save()
@@ -295,6 +293,16 @@ class Base(appier.Model):
         token_bytes = appier.legacy.bytes(token)
         url_sha1 = hashlib.sha1(token_bytes)
         return url_sha1.hexdigest()
+
+    @appier.operation(name = "Enable")
+    def op_enable_s(self):
+        self = self.reload(rules = False)
+        self.enable_s()
+
+    @appier.operation(name = "Disable")
+    def op_disable_s(self):
+        self = self.reload(rules = False)
+        self.disable_s()
 
     @property
     def created_d(self):
