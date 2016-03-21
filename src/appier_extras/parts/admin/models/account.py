@@ -428,7 +428,8 @@ class Account(base.Base):
 
     def pre_save(self):
         base.Base.pre_save(self)
-        if hasattr(self, "password"): self.password = self.encrypt(self.password)
+        if hasattr(self, "password") and self.password:
+            self.password = self.encrypt(self.password)
 
     def touch_s(self):
         # updates the last login of the account with the current timestamp
