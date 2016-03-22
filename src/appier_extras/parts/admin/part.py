@@ -122,6 +122,7 @@ class AdminPart(
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
             (("GET",), "/admin/sessions/<str:sid>/delete", self.delete_session),
+            (("GET",), "/admin/counters", self.list_counters),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
             (("GET",), "/admin/database/import", self.database_import),
@@ -448,6 +449,16 @@ class AdminPart(
                 "admin.list_sessions",
                 message = "Session deleted with success"
             )
+        )
+
+    @appier.ensure(token = "admin")
+    def list_counters(self):
+        collection = self._counters()
+        counters = collection.find()
+        return self.template(
+            "counters.html.tpl",
+            section = "status",
+            counters = counters
         )
 
     @appier.ensure(token = "admin")
@@ -1088,6 +1099,11 @@ class AdminPart(
 
     def linked(self):
         return models.Settings.linked_apis()
+
+    def _counters(self):
+        adapter = self.get_adapter()
+        collection = adapter.collection("counters")
+        return collection
 
     def _netius_loader(self, module):
         versions = []

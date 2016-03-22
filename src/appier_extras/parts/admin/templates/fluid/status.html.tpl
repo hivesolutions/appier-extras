@@ -73,6 +73,12 @@
                     </dd>
                 </div>
                 <div class="item">
+                    <dt>Counters</dt>
+                    <dd>
+                        <a href="{{ url_for('admin.list_counters') }}">{{ own._counters().count() }} counters</a>
+                    </dd>
+                </div>
+                <div class="item">
                     <dt>Adapter class</dt>
                     <dd>{{ own.adapter.__class__.__name__ }}</dd>
                 </div>
