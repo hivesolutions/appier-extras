@@ -71,8 +71,11 @@ class Event(base.Base):
         return ["name", "handler"]
 
     @classmethod
-    def handle_g(cls, name, handlers = None, arguments = {}):
-        pass
+    def notify_g(cls, name, handlers = None, arguments = {}):
+        kwargs = dict(name = name)
+        if handlers: kwargs["handler"] = {"$in" : handlers}
+        events = cls.find()
+        for event in events: event.notify(arguments = arguments)
 
-    def handle(self, arguments = {}):
+    def notify(self, arguments = {}):
         pass
