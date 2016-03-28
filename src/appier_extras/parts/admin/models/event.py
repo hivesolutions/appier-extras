@@ -74,7 +74,7 @@ class Event(base.Base):
     def notify_g(cls, name, handlers = None, arguments = {}):
         kwargs = dict(name = name)
         if handlers: kwargs["handler"] = {"$in" : handlers}
-        events = cls.find()
+        events = cls.find(**kwargs)
         for event in events: event.notify(arguments = arguments)
 
     @appier.operation(name = "Notify")
