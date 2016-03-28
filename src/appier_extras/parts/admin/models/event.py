@@ -77,5 +77,16 @@ class Event(base.Base):
         events = cls.find()
         for event in events: event.notify(arguments = arguments)
 
+    @appier.operation(name = "Notify")
     def notify(self, arguments = {}):
-        pass
+        method = getattr(self, "notify_" + self.handler)
+        arguments_m = dict(self.arguments)
+        arguments_m.update(arguments)
+        return method(arguments = arguments_m)
+
+    def notify_http(self, arguments = {}):
+        url = arguments.get("url", None)
+        return appier.post(url, data_j = arguments)
+
+    def notify_mailme(self, arguments = {}):
+        import mailme
