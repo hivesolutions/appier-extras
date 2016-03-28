@@ -78,11 +78,14 @@ class Event(base.Base):
         for event in events: event.notify(arguments = arguments)
 
     @appier.operation(name = "Notify")
-    def notify(self, arguments = {}):
+    def notify(self, arguments = {}, delay = True, owner = None):
+        owner = owner or appier.get_app()
         method = getattr(self, "notify_" + self.handler)
         arguments_m = dict(self.arguments)
         arguments_m.update(arguments)
-        return method(arguments = arguments_m)
+        kwargs = dict(arguments = arguments_m)
+        if delay: owner.delay(method, kwargs = kwargs)
+        else: method(arguments, **kwargs)
 
     def notify_http(self, arguments = {}):
         url = arguments.get("url", None)
@@ -90,3 +93,5 @@ class Event(base.Base):
 
     def notify_mailme(self, arguments = {}):
         import mailme
+        api = mailme.Api()
+        return api.send(arguments)
