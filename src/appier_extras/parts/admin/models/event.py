@@ -83,6 +83,7 @@ class Event(base.Base):
         method = getattr(self, "notify_" + self.handler)
         arguments_m = dict(self.arguments)
         arguments_m.update(arguments)
+        arguments_m.update(event = self.name, handler = self.handler)
         kwargs = dict(arguments = arguments_m)
         if delay: owner.delay(method, kwargs = kwargs)
         else: method(arguments, **kwargs)
