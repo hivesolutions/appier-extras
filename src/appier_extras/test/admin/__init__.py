@@ -33,19 +33,3 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
-
-from . import account
-from . import base
-from . import config
-from . import event
-from . import search
-from . import settings
-from . import snapshot
-
-from .account import Account
-from .base import Base
-from .config import Config
-from .event import Event
-from .search import Search
-from .settings import Settings
-from .snapshot import Snapshot
