@@ -58,3 +58,17 @@ class SnapshotTest(unittest.TestCase):
         person.name = "Name"
 
         person.save()
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "Name")
+
+        person = mock.AdminPerson.get(1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "Name")
+
+        person.name = "NameChanged"
+        person.save()
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "NameChanged")

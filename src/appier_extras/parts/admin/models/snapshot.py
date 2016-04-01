@@ -43,11 +43,6 @@ from appier_extras.parts.admin.models import base
 
 class Snapshot(base.Base):
 
-    token = appier.field(
-        index = True,
-        default = True
-    )
-
     target_id = appier.field(
         index = True
     )
@@ -63,9 +58,6 @@ class Snapshot(base.Base):
     @classmethod
     def validate(cls):
         return super(Snapshot, cls).validate() + [
-            appier.not_null("token"),
-            appier.not_empty("token"),
-
             appier.not_null("target_id"),
 
             appier.not_null("target_cls"),
@@ -81,3 +73,20 @@ class Snapshot(base.Base):
     @classmethod
     def is_indexed(cls):
         return False
+
+    @classmethod
+    def create_snapshot(
+        cls,
+        target_id,
+        target_cls,
+        model_data
+    ):
+        snapshot = cls(
+            target_id = target_id,
+            target_cls = target_cls.__name__,
+            model_data = model_data
+        )
+        snapshot.save()
+
+    def restore(self):
+        pass

@@ -158,6 +158,10 @@ class Base(appier.Model):
         return True
 
     @classmethod
+    def is_snapshot(cls):
+        return False
+
+    @classmethod
     def build_index_g(cls, *args, **kwargs):
         models = cls.find(*args, **kwargs)
         for model in models: model.build_index()
@@ -208,6 +212,7 @@ class Base(appier.Model):
         appier.Model.pre_update(self)
 
         self.modified = time.time()
+        self.build_snapshot()
 
     def post_save(self):
         appier.Model.post_save(self)
@@ -272,6 +277,34 @@ class Base(appier.Model):
 
         cls = self.__class__
         search.Search.delete_indexes(self._id, cls)
+
+    def build_snapshot(self):
+        from appier_extras.parts.admin.models import snapshot
+
+        # retrieves the reference to the class of the entity to have a snapshot
+        # and verifies that the (model) class is enabled for snapshotting, in
+        # case it's not returns the control flow immediately no snapshot required
+        cls = self.__class__
+        if not cls.is_snapshot(): return
+
+        self = self.reload(
+            eager_l = False,
+            rules = False,
+            build = False,
+            meta = False
+        )
+
+        model = self._filter(
+            increment_a = False,
+            immutables_a = False,
+            normalize = True
+        )
+
+        snapshot.Snapshot.create_snapshot(
+            self._id,
+            cls,
+            model_data = model
+        )
 
     def enable_s(self):
         self.enabled = True

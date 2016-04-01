@@ -105,17 +105,18 @@ class Search(base.Base):
         index.save()
 
     @classmethod
-    def find_indexes(cls, target_id, target_cls):
+    def find_indexes(cls, target_id, target_cls, *args, **kwargs):
         target_cls = target_cls.__name__
         return cls.find(
             target_id = target_id,
-            target_cls = target_cls
+            target_cls = target_cls,
+            *args, **kwargs
         )
 
     @classmethod
-    def delete_indexes(cls, target_id, target_cls):
-        indexes = cls.find_indexes(target_id, target_cls)
-        for index in indexes: index.delete()
+    def delete_indexes(cls, target_id, target_cls, *args, **kwargs):
+        indexes = cls.find_indexes(target_id, target_cls, build = False)
+        for index in indexes: index.delete(*args, **kwargs)
 
     @classmethod
     def _build(cls, model, map):

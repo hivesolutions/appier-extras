@@ -92,3 +92,7 @@ class AdminPerson(appier_extras.admin.Base):
             appier.not_empty("name"),
             appier.not_duplicate("name", cls._name())
         ]
+
+    @classmethod
+    def is_snapshot(cls):
+        return True
