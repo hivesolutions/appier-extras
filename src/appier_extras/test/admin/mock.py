@@ -37,24 +37,58 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-import unittest
+import appier_extras
 
-import appier
+from appier.test.mock import * #@UnusedWildImport
 
-from . import mock
+class AdminPerson(appier_extras.admin.Base):
 
-class SnapshotTest(unittest.TestCase):
+    identifier = appier.field(
+        type = int,
+        index = True,
+        increment = True,
+        default = True
+    )
 
-    def setUp(self):
-        app = appier.App()
-        app._register_models_m(mock, "Mocks")
+    identifier_safe = appier.field(
+        type = int,
+        index = True,
+        increment = True,
+        safe = True
+    )
 
-    def tearDown(self):
-        adapter = appier.get_adapter()
-        adapter.drop_db()
+    name = appier.field()
 
-    def test_basic(self):
-        person = mock.AdminPerson()
-        person.name = "Name"
+    age = appier.field(
+        type = int
+    )
 
-        person.save()
+    father = appier.field(
+        type = appier.reference(
+            "Person",
+            name = "identifier"
+        )
+    )
+
+    car = appier.field(
+        type = appier.reference(
+            "Car",
+            name = "identifier"
+        ),
+        eager = True
+    )
+
+    cats = appier.field(
+        type = appier.references(
+            "Cat",
+            name = "identifier"
+        )
+    )
+
+    @classmethod
+    def validate(cls):
+        return super(AdminPerson, cls).validate() + [
+            appier.not_null("name"),
+            appier.not_empty("name"),
+            appier.not_duplicate("name", cls._name())
+        ]
