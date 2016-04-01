@@ -89,13 +89,14 @@ class Snapshot(base.Base):
         )
         snapshot.save()
 
-    def restore(self, save = True):
+    def restore(self, save = True, validate = False):
         target_cls = appier.get_model(self.target_cls)
         target_cls.types(self.model_data)
         model = target_cls.old(model = self.model_data, safe = False)
         if not save: return model
         exists = not target_cls.get(id = self.target_id, raise_e = False) == None
         if save: model.save(
+            validate = validate,
             is_new = not exists,
             increment_a = False,
             immutables_a = False
