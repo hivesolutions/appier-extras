@@ -176,7 +176,7 @@ class Base(appier.Model):
         )
         if snapshot_id: kwargs["id"] = snapshot_id
         snapshot = snapshot.Snapshot.get(**kwargs)
-        return snapshot.restore()
+        return snapshot.restore_s()
 
     @classmethod
     def send_email_g(cls, owner, *args, **kwargs):

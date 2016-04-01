@@ -80,6 +80,10 @@ class Search(base.Base):
         return ["id", "token", "target_id", "target_cls"]
 
     @classmethod
+    def order_name(self):
+        return ["id", -1]
+
+    @classmethod
     def is_indexed(cls):
         return False
 

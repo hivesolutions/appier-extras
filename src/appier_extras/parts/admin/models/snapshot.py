@@ -72,6 +72,10 @@ class Snapshot(base.Base):
         return ["id", "created", "target_id", "target_cls"]
 
     @classmethod
+    def order_name(self):
+        return ["id", -1]
+
+    @classmethod
     def is_indexed(cls):
         return False
 
@@ -89,7 +93,8 @@ class Snapshot(base.Base):
         )
         snapshot.save()
 
-    def restore(self, save = True, validate = False):
+    @appier.operation(name = "Restore")
+    def restore_s(self, save = True, validate = False):
         target_cls = appier.get_model(self.target_cls)
         target_cls.types(self.model_data)
         model = target_cls.old(model = self.model_data, safe = False)
