@@ -167,9 +167,15 @@ class Base(appier.Model):
         for model in models: model.build_index()
 
     @classmethod
-    def restore_snapshot(cls, id):
+    def restore_snapshot(cls, id, snapshot_id = None):
         from appier_extras.parts.admin.models import snapshot
-        snapshot = snapshot.Snapshot.get(id = id)
+        kwargs = dict(
+            target_id = id,
+            target_cls = cls.__name__,
+            sort = [("id", -1)]
+        )
+        if snapshot_id: kwargs["id"] = snapshot_id
+        snapshot = snapshot.Snapshot.get(**kwargs)
         return snapshot.restore()
 
     @classmethod

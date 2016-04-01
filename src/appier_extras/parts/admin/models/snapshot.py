@@ -95,5 +95,9 @@ class Snapshot(base.Base):
         model = target_cls.old(model = self.model_data, safe = False)
         if not save: return model
         exists = not target_cls.get(id = self.target_id, raise_e = False) == None
-        if save: model.save(is_new = not exists)
+        if save: model.save(
+            is_new = not exists,
+            increment_a = False,
+            immutables_a = False
+        )
         return model

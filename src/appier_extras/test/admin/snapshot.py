@@ -40,6 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import unittest
 
 import appier
+import appier_extras
 
 from . import mock
 
@@ -56,7 +57,6 @@ class SnapshotTest(unittest.TestCase):
     def test_basic(self):
         person = mock.AdminPerson()
         person.name = "Name"
-
         person.save()
 
         self.assertEqual(person.id, 1)
@@ -72,16 +72,32 @@ class SnapshotTest(unittest.TestCase):
 
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "NameChanged")
+        self.assertEqual(appier_extras.admin.Snapshot.count(), 1)
+
+        person.name = "NameChangedAgain"
+        person.save()
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "NameChangedAgain")
+        self.assertEqual(appier_extras.admin.Snapshot.count(), 2)
 
         person = mock.AdminPerson.restore_snapshot(1)
 
         self.assertEqual(person.id, 1)
-        self.assertEqual(person.name, "Name")
+        self.assertEqual(person.name, "NameChanged")
+        self.assertEqual(appier_extras.admin.Snapshot.count(), 3)
 
         person = mock.AdminPerson.get(id = 1)
 
         self.assertEqual(person.id, 1)
-        self.assertEqual(person.name, "Name")
+        self.assertEqual(person.name, "NameChanged")
+        self.assertEqual(appier_extras.admin.Snapshot.count(), 3)
+
+        person = mock.AdminPerson.restore_snapshot(1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "NameChangedAgain")
+        self.assertEqual(appier_extras.admin.Snapshot.count(), 4)
 
         person.delete()
 
@@ -90,3 +106,37 @@ class SnapshotTest(unittest.TestCase):
         self.assertEqual(person, None)
 
         person = mock.AdminPerson.restore_snapshot(1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "NameChangedAgain")
+
+        person = mock.AdminPerson.get(id = 1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "NameChangedAgain")
+
+        person.delete()
+
+        father = mock.AdminPerson()
+        father.name = "Father"
+        father.save()
+
+        self.assertEqual(father.id, 2)
+        self.assertEqual(father.name, "Father")
+
+        father = mock.AdminPerson.get(id = 2)
+
+        self.assertEqual(father.id, 2)
+        self.assertEqual(father.name, "Father")
+
+        father.delete()
+
+        person = mock.AdminPerson.restore_snapshot(1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "NameChangedAgain")
+
+        father = mock.AdminPerson.restore_snapshot(2)
+
+        self.assertEqual(father.id, 2)
+        self.assertEqual(father.name, "Father")
