@@ -43,20 +43,6 @@ from appier.test.mock import * #@UnusedWildImport
 
 class AdminPerson(appier_extras.admin.Base):
 
-    identifier = appier.field(
-        type = int,
-        index = True,
-        increment = True,
-        default = True
-    )
-
-    identifier_safe = appier.field(
-        type = int,
-        index = True,
-        increment = True,
-        safe = True
-    )
-
     name = appier.field()
 
     age = appier.field(

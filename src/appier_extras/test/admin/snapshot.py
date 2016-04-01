@@ -62,7 +62,7 @@ class SnapshotTest(unittest.TestCase):
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "Name")
 
-        person = mock.AdminPerson.get(1)
+        person = mock.AdminPerson.get(id = 1)
 
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "Name")
@@ -72,3 +72,21 @@ class SnapshotTest(unittest.TestCase):
 
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "NameChanged")
+
+        person = mock.AdminPerson.restore_snapshot(1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "Name")
+
+        person = mock.AdminPerson.get(id = 1)
+
+        self.assertEqual(person.id, 1)
+        self.assertEqual(person.name, "Name")
+
+        person.delete()
+
+        person = mock.AdminPerson.get(id = 1, raise_e = False)
+
+        self.assertEqual(person, None)
+
+        person = mock.AdminPerson.restore_snapshot(1)

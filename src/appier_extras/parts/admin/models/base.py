@@ -167,6 +167,12 @@ class Base(appier.Model):
         for model in models: model.build_index()
 
     @classmethod
+    def restore_snapshot(cls, id):
+        from appier_extras.parts.admin.models import snapshot
+        snapshot = snapshot.Snapshot.get(id = id)
+        return snapshot.restore()
+
+    @classmethod
     def send_email_g(cls, owner, *args, **kwargs):
         owner = owner or appier.get_app()
         sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
@@ -212,6 +218,11 @@ class Base(appier.Model):
         appier.Model.pre_update(self)
 
         self.modified = time.time()
+        self.build_snapshot()
+
+    def pre_delete(self):
+        appier.Model.pre_delete(self)
+
         self.build_snapshot()
 
     def post_save(self):
@@ -287,24 +298,33 @@ class Base(appier.Model):
         cls = self.__class__
         if not cls.is_snapshot(): return
 
+        # reloads the current model with the proper settings to be able to store
+        # any data present in the model including safe, private and immutable as
+        # this model is going to be used as the basis of the snapshot
         self = self.reload(
             eager_l = False,
             rules = False,
             build = False,
-            meta = False
+            meta = False,
+            raise_e = False
         )
 
+        # in case the instance was not found, possible under some circumstances where
+        # the data is not currently stored in the data source (eg: snapshot restore)
+        # the control flow is returned immediately (not possible to restore data)
+        if not self: return
+
+        # applies the filter to the model to be able to retrieve a sanitized map
+        # based model to be used in the snapshot process
         model = self._filter(
             increment_a = False,
             immutables_a = False,
             normalize = True
         )
 
-        snapshot.Snapshot.create_snapshot(
-            self._id,
-            cls,
-            model_data = model
-        )
+        # runs the snapshot creation process for the current instance, note that
+        # the provided model data should always represent the complete state
+        snapshot.Snapshot.create_snapshot(self.id, cls, model_data = model)
 
     def enable_s(self):
         self.enabled = True

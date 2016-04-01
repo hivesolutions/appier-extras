@@ -44,6 +44,7 @@ from appier_extras.parts.admin.models import base
 class Snapshot(base.Base):
 
     target_id = appier.field(
+        type = int,
         index = True
     )
 
@@ -88,5 +89,11 @@ class Snapshot(base.Base):
         )
         snapshot.save()
 
-    def restore(self):
-        pass
+    def restore(self, save = True):
+        target_cls = appier.get_model(self.target_cls)
+        target_cls.types(self.model_data)
+        model = target_cls.old(model = self.model_data, safe = False)
+        if not save: return model
+        exists = not target_cls.get(id = self.target_id, raise_e = False) == None
+        if save: model.save(is_new = not exists)
+        return model
