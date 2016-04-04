@@ -453,6 +453,13 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
+    @appier.operation(name = "Generate Key")
+    def generate_key_s(self, force = False):
+        self = self.reload(rules = False)
+        if self.key and not force: return
+        self.key = self.secret()
+        self.save()
+
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
         if unset: cls._unset_session(safes = safes)
