@@ -4,7 +4,7 @@
     <p>
         Hello {{ account.username }},<br/>
         Thank you for joining {{ owner.description }}, from now on you have
-        {{ owner.type }} like access the infra-structure.
+        {{ account.type }} like access the infra-structure.
     </p>
     {{ h2("Information") }}
     <p>
