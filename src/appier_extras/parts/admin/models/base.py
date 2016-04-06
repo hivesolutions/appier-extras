@@ -191,6 +191,7 @@ class Base(appier.Model):
         bulk = kwargs.pop("bulk", bulk)
         unsubscribe = kwargs.pop("unsubscribe", unsubscribe)
         logo = kwargs.pop("logo", logo)
+        kwargs["owner"] = owner
         settings = dict(
             bulk = bulk,
             unsubscribe = unsubscribe,

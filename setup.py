@@ -70,6 +70,7 @@ setuptools.setup(
             "static/images/*",
             "static/js/*",
             "templates/admin/*",
+            "templates/email/*",
             "templates/fluid/*.tpl",
             "templates/fluid/*/*",
             "templates/static/*.tpl",

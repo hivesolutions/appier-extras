@@ -118,6 +118,8 @@ class AdminPart(
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/operations/build_index", self.build_index),
+            (("GET",), "/admin/operations/test_email", self.test_email),
+            (("GET",), "/admin/operations/test_event", self.test_event),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
@@ -410,6 +412,40 @@ class AdminPart(
             self.url_for(
                 "admin.operations",
                 message = "Search index built with success"
+            )
+        )
+
+    @appier.ensure(token = "admin")
+    def test_email(self):
+        receiver = appier.conf("TEST_EMAIL", None)
+        if not receiver: raise appier.OperationalError(
+            message = "No test email defined"
+        )
+        owner = appier.get_app()
+        sender = "%s <no-reply@appier.hive.pt>" % owner.description
+        models.Base.send_email_g(
+            owner,
+            "email/test.html.tpl",
+            sender = sender,
+            receivers = [receiver],
+            subject = "Test email",
+            title = "Test email"
+        )
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Test email sent"
+            )
+        )
+
+    @appier.ensure(token = "admin")
+    def test_event(self):
+        name = appier.conf("TEST_EVENT", "test")
+        models.Event.notify_g(name)
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Test event triggered"
             )
         )
 
