@@ -1,9 +1,10 @@
 {% extends "email/layout.html.tpl" %}
 {% block title %}{{ title|default(subject, True)|default("New account", True) }}{% endblock %}
 {% block content %}
+    <p>Hello <strong>{{ account.username }}</strong>,</p>
     <p>
-        Hello {{ account.username }},<br/>
-        Thank you for joining {{ owner.description }}, you now have access with "{{ account.type_meta }}" privileges.<br/>
+        Thank you for joining {{ owner.description }}, you now have access with
+        <strong>"{{ account.type_meta }}"</strong> privileges.<br/>
         Feel free to login with your account and explore all the features {{ owner.description }} has to offer.
     </p>
     {{ h2("Information") }}
