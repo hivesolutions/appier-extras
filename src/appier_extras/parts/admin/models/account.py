@@ -448,12 +448,30 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
+    @property
+    def email_f(self):
+        if not self.email: return self.email
+        if not self.username: return self.email
+        return "%s <%s>" % (self.username, self.email)
+
     @appier.operation(name = "Generate Key")
     def generate_key_s(self, force = False):
         self = self.reload(rules = False)
         if self.key and not force: return
         self.key = self.secret()
         self.save()
+
+    @appier.operation(name = "Email New")
+    def email_new(self, owner = None):
+        owner = owner or appier.get_app()
+        base.Base.send_email_g(
+            owner,
+            "email/account/new.html.tpl",
+            receivers = [self.email_f],
+            subject = "New account",
+            title = "New account",
+            account = self
+        )
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
