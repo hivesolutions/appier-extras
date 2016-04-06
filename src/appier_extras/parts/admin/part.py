@@ -109,6 +109,8 @@ class AdminPart(
             (("GET", "POST"), "/admin/signout", self.logout),
             (("GET"), "/admin/recover", self.recover),
             (("POST"), "/admin/recover", self.recover_do),
+            (("GET"), "/admin/reset", self.reset),
+            (("POST"), "/admin/reset", self.reset_do),
             (("GET",), "/admin/options", self.options),
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
@@ -264,6 +266,42 @@ class AdminPart(
             )
 
         return self.template("done.html.tpl")
+
+    def reset(self):
+        next = self.field("next")
+        reset_token = self.field(
+            "reset_token",
+            mandatory = True,
+            not_empty = True
+        )
+        self.account_c.validate_token(reset_token)
+        return self.template(
+            "reset.html.tpl",
+            next = next,
+            reset_token = reset_token
+        )
+
+    def reset_do(self):
+        next = self.field("next")
+        reset_token = self.field(
+            "reset_token",
+            mandatory = True,
+            not_empty = True
+        )
+        password = self.field("password")
+        password_confirm = self.field("password_confirm")
+        try: self.account_c.reset(reset_token, password, password_confirm)
+        except appier.AppierException as error:
+            return self.template(
+                "reset.html.tpl",
+                next = next,
+                reset_token = reset_token,
+                password = password,
+                password_confirm = password_confirm,
+                error = error.message
+            )
+
+        return self.redirect(next or self.login_route_admin)
 
     def new_account(self):
         if not self.owner.admin_open: raise appier.SecurityError(

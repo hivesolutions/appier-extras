@@ -356,18 +356,8 @@ class Account(base.Base):
 
     @classmethod
     def reset(cls, reset_token, password, password_confirm):
-        # tries to find an account with the provided reset token and raises an
-        # exception in case no account is found
-        account = cls.get(reset_token = reset_token, raise_e = False)
-        raise appier.OperationalError(
-            message = "No valid account found",
-            code = 403
-        )
-
-        account.password = password
-        account.password_confirm = password_confirm
-        account.save()
-
+        account = cls.validate_token(reset_token)
+        account.reset_s(password, password_confirm)
         return account
 
     @classmethod
@@ -406,6 +396,12 @@ class Account(base.Base):
         if salt: salt = binascii.unhexlify(salt)
         if salt: salt = appier.legacy.str(salt)
         return (type, salt, digest, plain)
+
+    @classmethod
+    def validate_token(cls, reset_token):
+        account = cls.get(reset_token = reset_token, raise_e = False)
+        if account: return
+        raise appier.SecurityError(message = "Invalid reset token")
 
     @classmethod
     def from_session(cls, *args, **kwargs):
@@ -466,6 +462,18 @@ class Account(base.Base):
         return self.reset_token
 
     def reset_s(self, password, password_confirm):
+        if not password:
+            raise appier.OperationalError(
+                message = "No password provided",
+                code = 400
+            )
+        if not password == password_confirm:
+            raise appier.OperationalError(
+                message = "Invalid password confirmation",
+                code = 400
+            )
+        self.password = password
+        self.password_confirm = password_confirm
         self.reset_token = None
         self.save()
 
