@@ -3,12 +3,11 @@
 {% block content %}
     <p>
         Hello {{ account.username }},<br/>
-        Thank you for joining {{ owner.description }}, from now on you have
-        {{ account.type }} like access the infra-structure.
+        Thank you for joining {{ owner.description }}, you now have access with "{{ account.type }}" privileges.
     </p>
     {{ h2("Information") }}
     <p>
-        Complete account information may be consulted
+        You can view all the information about your account by clicking
         {{ link(url_for("admin.show_entity", model = account.__class__._name(), _id = account._id, absolute = True), "here", False) }}.
     </p>
     <p>
@@ -18,8 +17,8 @@
     {{ h2("Support") }}
     {% set support_email = config.conf("SUPPORT_EMAIL")|default("no-reply@appier.hive.pt", True) %}
     <p>
-        You have any problem? Our team is always ready to healp at any time.<br/>
-        Send us an email to {{ link("mailto:" + support_email, support_email, False) }}.
+        Are you having any trouble? We are here to help.<br/>
+        Feel free to send us an email to {{ link("mailto:" + support_email, support_email, False) }} and we'll get in touch.
     </p>
     <p>
         Thank you,<br/>
