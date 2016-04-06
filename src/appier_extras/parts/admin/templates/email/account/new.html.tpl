@@ -2,7 +2,7 @@
 {% block title %}{{ title|default(subject, True)|default("New account", True) }}{% endblock %}
 {% block content %}
     <p>
-        Hello {{ account.username }},<br/><br/>
+        Hello {{ account.username }},<br/>
         Thank you for joining {{ owner.description }}, from now on you have
         {{ owner.type }} like access the infra-structure.
     </p>

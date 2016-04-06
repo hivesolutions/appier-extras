@@ -86,6 +86,13 @@ class Account(base.Base):
     )
 
     key = appier.field(
+        safe = True,
+        private = True,
+        meta = "secret"
+    )
+
+    reset_token = appier.field(
+        safe = True,
         private = True,
         meta = "secret"
     )
@@ -343,6 +350,31 @@ class Account(base.Base):
                 code = 403
             )
 
+        # runs the recover instance method that should generate a new reset token
+        # for the account and send the proper notifications
+        return account.recover_i()
+
+    @classmethod
+    def reset(cls, reset_token, password, password_confirm):
+        # tries to find an account with the provided reset token and raises an
+        # exception in case no account is found
+        account = cls.get(reset_token = reset_token, raise_e = False)
+        raise appier.OperationalError(
+            message = "No valid account found",
+            code = 403
+        )
+
+        account.password = password
+        account.password_confirm = password_confirm
+        account.save()
+
+        return account
+
+    def recover_i(self):
+        self.reset_token = self.secret()
+        self.email_recover()
+        return self.reset_token
+
     @classmethod
     def verify(cls, encoded, decoded):
         type, salt, digest, plain = cls.unpack(encoded)
@@ -470,6 +502,18 @@ class Account(base.Base):
             receivers = [self.email_f],
             subject = "New account",
             title = "New account",
+            account = self
+        )
+
+    @appier.operation(name = "Email Recover")
+    def email_recover(self, owner = None):
+        owner = owner or appier.get_app()
+        base.Base.send_email_g(
+            owner,
+            "email/account/recover.html.tpl",
+            receivers = [self.email_f],
+            subject = "Recover account",
+            title = "Recover account",
             account = self
         )
 
