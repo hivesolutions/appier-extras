@@ -301,7 +301,9 @@ class AdminPart(
                 error = error.message
             )
 
-        return self.redirect(next or self.login_route_admin)
+        return self.redirect(
+            next or self.url_for(self.login_route_admin)
+        )
 
     def new_account(self):
         if not self.owner.admin_open: raise appier.SecurityError(

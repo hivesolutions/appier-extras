@@ -400,7 +400,7 @@ class Account(base.Base):
     @classmethod
     def validate_token(cls, reset_token):
         account = cls.get(reset_token = reset_token, raise_e = False)
-        if account: return
+        if account: return account
         raise appier.SecurityError(message = "Invalid reset token")
 
     @classmethod

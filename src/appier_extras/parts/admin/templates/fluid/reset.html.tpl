@@ -16,7 +16,7 @@
             </div>
             <div class="input">
                 <input type="password" class="text-field small" name="password_confirm"
-                       value="{{ password }}" placeholder="password_confirm" />
+                       value="{{ password_confirm }}" placeholder="password_confirm" />
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Reset</span>
