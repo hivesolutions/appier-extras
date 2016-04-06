@@ -1,13 +1,14 @@
 {% extends "email/layout.html.tpl" %}
 {% block title %}{{ title|default(subject, True)|default("Reset account", True) }}{% endblock %}
 {% block content %}
-    <p>Hello {{ account.username }},</p>
+    <p>Hello <strong>{{ account.username }}</strong>,</p>
     <p>
         You're receiving this email because someone requested a
         password reset for your user account at {{ owner.description }}.
     </p>
     <p>
-        To reset your password just {{ link(url_for("admin.reset", reset_token = account.reset_token, absolute = True), "click here", False) }}.
+        To reset your password just {{ link(url_for("admin.reset", reset_token = account.reset_token, absolute = True), "click here", False) }}
+        and follow the instructions.
     </p>
     {{ h2("Support") }}
     {% set support_email = config.conf("SUPPORT_EMAIL")|default("no-reply@appier.hive.pt", True) %}
