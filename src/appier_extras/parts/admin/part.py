@@ -421,12 +421,9 @@ class AdminPart(
         if not receiver: raise appier.OperationalError(
             message = "No test email defined"
         )
-        owner = appier.get_app()
-        sender = "%s <no-reply@appier.hive.pt>" % owner.description
         models.Base.send_email_g(
-            owner,
+            appier.get_app(),
             "email/test.html.tpl",
-            sender = sender,
             receivers = [receiver],
             subject = "Test email",
             title = "Test email"
