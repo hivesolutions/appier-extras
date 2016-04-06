@@ -509,25 +509,27 @@ class Account(base.Base):
     @appier.operation(name = "Email New")
     def email_new(self, owner = None):
         owner = owner or appier.get_app()
+        account = self.reload(meta = True)
         base.Base.send_email_g(
             owner,
             "email/account/new.html.tpl",
             receivers = [self.email_f],
             subject = "New account",
             title = "New account",
-            account = self
+            account = account
         )
 
     @appier.operation(name = "Email Recover")
     def email_recover(self, owner = None):
         owner = owner or appier.get_app()
+        account = self.reload(meta = True)
         base.Base.send_email_g(
             owner,
             "email/account/recover.html.tpl",
             receivers = [self.email_f],
             subject = "Recover account",
             title = "Recover account",
-            account = self
+            account = account
         )
 
     def _set_session(self, unset = True, safes = [], method = "set"):
