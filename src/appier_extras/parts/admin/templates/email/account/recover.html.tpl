@@ -3,7 +3,9 @@
 {% block content %}
     <p>
         Hello {{ account.username }},<br/>
-        Please clicl here to reset you password.<br/>
+        You're receiving this email because someone requested a 
+        password reset for your user account at {{ owner.description }}.<br/>
+        To reset your password just click here. 
     </p>
     <p>
         Thank you,<br/>
