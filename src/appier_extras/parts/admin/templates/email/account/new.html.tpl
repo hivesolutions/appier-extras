@@ -3,7 +3,8 @@
 {% block content %}
     <p>
         Hello {{ account.username }},<br/>
-        Thank you for joining {{ owner.description }}, you now have access with "{{ account.type }}" privileges.
+        Thank you for joining {{ owner.description }}, you now have access with "{{ account.type }}" privileges.<br/>
+        Feel free to login with your account and explore all the features {{ owner.description }} has to offer.
     </p>
     {{ h2("Information") }}
     <p>
