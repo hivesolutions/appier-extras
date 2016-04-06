@@ -7,7 +7,7 @@
     </p>
     {{ h2("Information") }}
     <p>
-        You can view all the information about your account by clicking 
+        You can view all the information about your account by clicking
         {{ link(url_for("admin.show_entity", model = account.__class__._name(), _id = account._id, absolute = True), "here", False) }}.
     </p>
     <p>
