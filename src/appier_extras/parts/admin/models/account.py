@@ -352,7 +352,7 @@ class Account(base.Base):
 
         # runs the recover instance method that should generate a new reset token
         # for the account and send the proper notifications
-        return account.recover_i()
+        return account.recover_s()
 
     @classmethod
     def reset(cls, reset_token, password, password_confirm):
@@ -369,11 +369,6 @@ class Account(base.Base):
         account.save()
 
         return account
-
-    def recover_i(self):
-        self.reset_token = self.secret()
-        self.email_recover()
-        return self.reset_token
 
     @classmethod
     def verify(cls, encoded, decoded):
@@ -462,6 +457,16 @@ class Account(base.Base):
         # updates the last login of the account with the current timestamp
         # and saves the account so that this value is persisted
         self.last_login = time.time()
+        self.save()
+
+    def recover_s(self):
+        self.reset_token = self.secret()
+        self.email_recover()
+        self.save()
+        return self.reset_token
+    
+    def reset_s(self, password, password_confirm):
+        self.reset_token = None
         self.save()
 
     def tokens(self):

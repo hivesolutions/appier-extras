@@ -5,7 +5,7 @@
     <div class="flow-content">
         <div class="quote">
             Please provide the file containing the database data to be imported
-            to the data source.<br />
+            to the data source.<br/>
             Remember this is a <strong>dangerous operation</strong>.
         </div>
         <div class="separator-horizontal"></div>
