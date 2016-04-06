@@ -461,10 +461,10 @@ class Account(base.Base):
 
     def recover_s(self):
         self.reset_token = self.secret()
-        self.email_recover()
         self.save()
+        self.email_recover()
         return self.reset_token
-    
+
     def reset_s(self, password, password_confirm):
         self.reset_token = None
         self.save()
