@@ -63,10 +63,8 @@
                       action="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '' if link.instance else '1') }}">
                     {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
-                        {% set data_type_s = data_type.__name__ %}
-                        {% set data_type_s = data_type_s or data_type %}
                         <label>{{ label }}</label>
-                        {{ tag_input_b("parameters", type = data_type_s) }}
+                        {{ tag_input_b("parameters", type = data_type) }}
                     {% endfor %}
                     <div class="window-buttons">
                         <span class="button button-cancel close-button">Cancel</span>
@@ -84,10 +82,8 @@
                       action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, is_global = '' if operation.instance else '1', next = location_f) }}">
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
-                        {% set data_type_s = data_type.__name__ %}
-                        {% set data_type_s = data_type_s or data_type %}
                         <label>{{ label }}</label>
-                        {{ tag_input_b("parameters", type = data_type_s) }}
+                        {{ tag_input_b("parameters", type = data_type) }}
                     {% endfor %}
                     <div class="window-buttons">
                         <span class="button button-cancel close-button">Cancel</span>

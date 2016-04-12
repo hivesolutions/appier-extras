@@ -1253,3 +1253,6 @@ class AdminPart(
             label = label,
             libs_label = libs_label
         )
+
+    def _to_meta(self, type):
+        return appier.Model._to_meta(type)

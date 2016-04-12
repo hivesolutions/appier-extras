@@ -176,17 +176,31 @@
 {%- endmacro %}
 
 {% macro tag_input_b(name, value = "", error = "", type = None, disabled = False) -%}
-    {% if type == "file" %}
+    {% set disabled_s = "\" data-disabled=\"1" if disabled else "" %}
+    {% set type_s = own.admin_part._to_meta(type) %}
+    {% if type_s == "reference" %}
+        {% set target = type._target() %}
+        {% set _name = type._name %}
+        {% set _default = target.default()|default('name') %}
+        {% set logic = value[_name]|default('') %}
+        {% set display = value[_default]|default('') %}
+        <div class="drop-field {{ disabled_s|safe }}" value="{{ display }}" data-error="{{ error }}"
+             data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
+            <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic|default('', True) }}" />
+            <div class="data-source" data-type="json"
+                 data-url="{{ url_for('admin.show_model_json', model = target._name() ) }}"></div>
+        </div>
+    {% elif type_s == "file" %}
         <a data-name="{{ name }}" class="uploader" data-error="{{ error }}">Select file</a>
-    {% elif type == "longtext" %}
+    {% elif type_s == "longtext" %}
         <textarea class="text-area" name="{{ name }}" data-error="{{ error }}"></textarea>
-    {% elif type == "country" %}
+    {% elif type_s == "country" %}
         <div class="drop-field drop-field-select {{ disabled_s|safe }}" data-error="{{ error }}"
              data-number_options="-1">
             <input name="{{ name }}" type="hidden" class="hidden-field" />
             <div class="data-source" data-type="isocountries" data-iso="iso2"></div>
         </div>
-    {% elif type == "bool" %}
+    {% elif type_s == "bool" %}
         <input type="checkbox" class="check-field" name="{{ name }}" data-error="{{ error }}" />
     {% else %}
         <input type="text" class="text-field" name="{{ name }}" data-error="{{ error }}" />
