@@ -417,6 +417,28 @@ class Account(base.Base):
         return password.count(":") > 0
 
     @classmethod
+    @appier.operation(
+        name = "Create",
+        parameters = (
+            ("Username", "username", str),
+            ("Email", "email", str),
+            ("Password", "password", str),
+            ("Send Email", "send_email", bool, False)
+        ),
+        factory = True
+    )
+    def create_s(cls, username, email, password, send_email):
+        account = cls(
+            username = username,
+            email = email,
+            password = password,
+            password_confirm = password
+        )
+        account.save()
+        if send_email: account.email_new(password = password)
+        return account
+
+    @classmethod
     def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
         prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
@@ -507,7 +529,7 @@ class Account(base.Base):
         self.save()
 
     @appier.operation(name = "Email New")
-    def email_new(self, owner = None):
+    def email_new(self, password = None, owner = None):
         owner = owner or appier.get_app()
         account = self.reload(meta = True)
         base.Base.send_email_g(
@@ -516,7 +538,8 @@ class Account(base.Base):
             receivers = [self.email_f],
             subject = "New account",
             title = "New account",
-            account = account
+            account = account,
+            account_password = password
         )
 
     @appier.operation(name = "Email Recover")

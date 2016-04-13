@@ -15,6 +15,9 @@
     <p>
         <strong>Username:</strong> <span>{{ account.username }}</span><br/>
         <strong>E-mail:</strong> <span>{{ link("mailto:" + account.email, account.email, False) }}</span>
+        {% if account_password %}
+        	<br/><strong>Password:</strong> <span>{{ account_password }}</span>
+        {% endif %}
     </p>
     {{ h2("Support") }}
     {% set support_email = config.conf("SUPPORT_EMAIL")|default("no-reply@appier.hive.pt", True) %}
