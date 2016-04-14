@@ -545,7 +545,7 @@ class Account(base.Base):
     @appier.operation(name = "Email Recover")
     def email_recover(self, owner = None):
         owner = owner or appier.get_app()
-        account = self.reload(meta = True)
+        account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
             owner,
             "email/account/recover.html.tpl",
