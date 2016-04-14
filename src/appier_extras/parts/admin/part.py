@@ -77,6 +77,11 @@ class AdminPart(
 
         self.logger.debug("Registering pre request handler ...")
         appier.App.add_custom("before_request", self.before_request)
+        appier.App.add_exception(
+            BaseException,
+            self.exception_handler,
+            token = AdminPart
+        )
 
         self.logger.debug("Updating pre-defined application routes ...")
         self.owner.login_route = "admin.login"
@@ -195,6 +200,16 @@ class AdminPart(
         try: account = models.Account.login_key(key)
         except appier.OperationalError: pass
         else: account._set_session(method = "set_t")
+
+    def exception_handler(self, error):
+        import traceback
+        lines = traceback.format_exc().splitlines()
+        lines = self._lines(lines)
+        return self.template(
+            "error.html.tpl",
+            error = error,
+            lines = lines
+        )
 
     def index(self):
         return self.list_models()
