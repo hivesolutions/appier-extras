@@ -1,5 +1,6 @@
 {% extends "admin/admin.simple.html.tpl" %}
 {% block title %}Error{% endblock %}
+{% block name %}Error{% endblock %}
 {% block content %}
     <div class="quote">
         There was an problem while executing an operation.<br />

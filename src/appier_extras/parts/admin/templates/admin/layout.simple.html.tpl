@@ -13,6 +13,7 @@
         <div id="header" class="header">
             {% block header %}
                 {% include "admin/header.html.tpl" %}
+                <h1>{% block name %}{% endblock %}</h1>
             {% endblock %}
         </div>
         <div id="content" class="content {% block style %}{% endblock %}">{% block content %}{% endblock %}</div>
