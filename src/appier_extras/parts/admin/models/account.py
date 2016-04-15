@@ -207,6 +207,10 @@ class Account(base.Base):
             appier.not_empty("email"),
             appier.is_email("email"),
 
+            appier.not_empty("password"),
+            appier.string_gt("password", 3),
+            appier.string_lt("password", 64),
+
             appier.not_null("type"),
 
             appier.equals("password_confirm", "password")
