@@ -7,24 +7,27 @@
         <div class="quote error">
             {{ error }}
         </div>
-        <form action="{{ url_for('base.login') }}" method="post" class="form">
+        <form action="{{ url_for('admin.login') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">
-                <input type="text" class="small focus" name="username" value="{{ username }}" placeholder="username" />
+                <input type="text" class="text-field small focus" name="username" value="{{ username }}"
+                       placeholder="username" />
             </div>
             <div class="input">
-                <input type="password" class="small" name="password" placeholder="password"  />
+                <input type="password" class="text-field small" name="password" placeholder="password" />
             </div>
             <div class="forgot">
-                <a href="#">Forgot your password?</a>
+                <a href="{{ url_for('admin.recover') }}">Forgot your password?</a>
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Login</span>
             </div>
-            <div class="new">
-                <span>or</span>
-                <a href="{{ url_for('account.new') }}">create new account</a>
-            </div>
+            {% if owner.admin_open %}
+                <div class="new">
+                    <span>or</span>
+                    <a href="{{ url_for('admin.new_account') }}">create new account</a>
+                </div>
+            {% endif %}
         </form>
     </div>
     {% if socials %}
