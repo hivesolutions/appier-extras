@@ -3,8 +3,10 @@
 {% block name %}Models{% endblock %}
 {% block content %}
     <ul>
-        {% for model in models %}
-            <li>{{ model._name() }}</li>
+        {% for section, models in models_d.items() %}
+            {% for model in models %}
+                <li>{{ model._name() }}</li>
+            {% endfor %}
         {% endfor %}
     </ul>
 {% endblock %}

@@ -181,7 +181,8 @@ class AdminPart(
     def models(self):
         return models
 
-    def template(self, template, layout = "fluid", *args, **kwargs):
+    def template(self, template, layout = None, *args, **kwargs):
+        layout = self.session.get("layout", self.layout)
         template = "%s/%s" % (layout, template)
         return appier.Part.template(
             self,
