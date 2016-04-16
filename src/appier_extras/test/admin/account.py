@@ -55,7 +55,7 @@ class SnapshotTest(unittest.TestCase):
         adapter = appier.get_adapter()
         adapter.drop_db()
 
-    def test_create(self):
+    def test_basic(self):
         account = appier_extras.admin.Account()
         account.username = "Username"
         account.email = "username@domain.com"
