@@ -44,7 +44,7 @@ import appier_extras
 
 from . import mock
 
-class SnapshotTest(unittest.TestCase):
+class AccountTest(unittest.TestCase):
 
     def setUp(self):
         self.app = appier.App()
