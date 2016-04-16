@@ -19,7 +19,7 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
-__version__ = "1.0.0"
+__version__ = "0.5.22"
 """ The version of the module """
 
 __revision__ = "$LastChangedRevision$"

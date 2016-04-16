@@ -95,6 +95,7 @@ class AdminPart(
         self.owner.admin_google_scope = ("email",)
         self.owner.admin_live_scope = ("wl.basic", "wl.emails")
 
+        self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
         self.owner.lib_loaders["netius"] = self._netius_loader
         self.owner.lib_loaders["PIL"] = self._pil_loader
         self.owner.lib_loaders["pymongo"] = self._pymongo_loader
@@ -1194,6 +1195,12 @@ class AdminPart(
         collection = adapter.collection("counters")
         return collection
 
+    def _appier_extras_loader(self, module):
+        versions = []
+        if hasattr(module, "__version__"):
+            versions.append(("Appier Extras", module.__version__))
+        return versions
+
     def _netius_loader(self, module):
         versions = []
         if hasattr(module, "VERSION"):
@@ -1218,7 +1225,7 @@ class AdminPart(
         versions = []
         if hasattr(module, "VERSION"):
             version = ".".join([str(item) for item in module.VERSION])
-            versions.append(("redis-py", version))
+            versions.append(("RedisPy", version))
         return versions
 
     def _jinja2_loader(self, module):
