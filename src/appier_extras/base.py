@@ -41,6 +41,6 @@ NAME = "appier_extras"
 """ The name to be used to describe the library while working
 on its own environment, this is just a descriptive value """
 
-VERSION = "0.5.23"
+VERSION = "0.5.24"
 """ The version of the library that is currently installed
 this value may be used for debugging/diagnostic purposes """
