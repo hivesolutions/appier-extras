@@ -80,7 +80,7 @@ class AdminPart(
         appier.App.add_exception(
             BaseException,
             self.exception_handler,
-            token = AdminPart
+            scope = AdminPart
         )
 
         self.logger.debug("Updating pre-defined application routes ...")

@@ -209,7 +209,7 @@ class Account(base.Base):
 
             appier.not_empty("password"),
             appier.string_gt("password", 3),
-            appier.string_lt("password", 64),
+            appier.string_lt("password", 256),
 
             appier.not_null("type"),
 
