@@ -213,6 +213,9 @@ class Account(base.Base):
 
             appier.not_null("type"),
 
+            appier.not_empty("password_confirm"),
+            appier.string_gt("password_confirm", 3),
+            appier.string_lt("password_confirm", 256),
             appier.equals("password_confirm", "password")
         ]
 
@@ -220,10 +223,8 @@ class Account(base.Base):
     def validate_new(cls):
         return super(Account, cls).validate_new() + [
             appier.not_null("password"),
-            appier.not_empty("password"),
 
-            appier.not_null("password_confirm"),
-            appier.not_empty("password_confirm")
+            appier.not_null("password_confirm")
         ]
 
     @classmethod
