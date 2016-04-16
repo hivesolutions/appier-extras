@@ -1197,8 +1197,8 @@ class AdminPart(
 
     def _appier_extras_loader(self, module):
         versions = []
-        if hasattr(module, "__version__"):
-            versions.append(("Appier Extras", module.__version__))
+        if hasattr(module, "VERSION"):
+            versions.append(("Appier Extras", module.VERSION))
         return versions
 
     def _netius_loader(self, module):
