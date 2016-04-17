@@ -15,8 +15,8 @@
                                     <a class="name" href="{{ url_for('admin.show_model', model = model._name()) }}">{{ model._name() }}</a>
                                 </div>
                                 <div class="right">
+                                    <span class="button list" data-link="{{ url_for('admin.show_model', model = model._name()) }}">list</span>
                                     <span class="button create" data-link="{{ url_for('admin.new_entity', model = model._name()) }}">create</span>
-                                    <span class="button update">update</span>
                                 </div>
                                 <div class="clear"></div>
                             </li>
