@@ -290,6 +290,7 @@ class MarkdownParser(object):
         is_global = is_global or value.startswith("[")
         value = value.lower()
         value = value.replace(" ", "-")
+        value = value.replace("?", "")
         value = "global" if is_global else value
         value = self._resolve_id(value)
         self.ids.append(value)
