@@ -192,6 +192,12 @@
         </div>
     {% elif type_s == "file" %}
         <a data-name="{{ name }}" class="uploader" data-error="{{ error }}">Select file</a>
+	{% elif type_s == "date" %}
+        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+               data-type="date" data-error="{{ error }}" />
+    {% elif type_s == "datetime" %}
+        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+               data-type="date" data-error="{{ error }}" />
     {% elif type_s == "longtext" %}
         <textarea class="text-area" name="{{ name }}" data-error="{{ error }}"></textarea>
     {% elif type_s == "country" %}
