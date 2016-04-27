@@ -207,6 +207,7 @@ class AdminPart(
         import traceback
         lines = traceback.format_exc().splitlines()
         lines = self._lines(lines)
+        lines = lines if self.owner.is_devel() else []
         return self.template(
             "error.html.tpl",
             error = error,
