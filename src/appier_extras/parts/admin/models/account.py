@@ -206,6 +206,7 @@ class Account(base.Base):
             appier.not_null("email"),
             appier.not_empty("email"),
             appier.is_email("email"),
+            appier.not_duplicate("email", cls._name()),
 
             appier.not_empty("password"),
             appier.string_gt("password", 3),
