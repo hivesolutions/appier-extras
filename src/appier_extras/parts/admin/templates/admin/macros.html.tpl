@@ -207,9 +207,15 @@
             <div class="data-source" data-type="isocountries" data-iso="iso2"></div>
         </div>
     {% elif type_s == "bool" %}
-        <input type="checkbox" class="check-field" name="{{ name }}" data-error="{{ error }}" />
+        {% if value %}
+            <input type="checkbox" class="check-field" name="{{ name }}" data-error="{{ error }}" />
+        {% else %}
+            <input type="checkbox" class="check-field" name="{{ name }}" checked="1"
+                   data-error="{{ error }}" />
+        {% endif %}
     {% else %}
-        <input type="text" class="text-field" name="{{ name }}" data-error="{{ error }}" />
+        <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
+               data-error="{{ error }}" />
     {% endif %}
 {%- endmacro %}
 
