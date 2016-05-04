@@ -211,6 +211,11 @@ class Base(appier.Model):
         )
 
     @classmethod
+    @appier.operation(name = "Empty All", level = 2)
+    def op_empty_s(cls):
+        cls.delete_c()
+
+    @classmethod
     def _build(cls, model, map):
         pass
 

@@ -27,9 +27,16 @@
                         <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
                     </li>
                 {% else %}
-                    <li>
-                        <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
-                    </li>
+                    {% if operation.level > 1 %}
+                        <li>
+                            <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}"
+                               class="link-confirm" data-message="Are you sure you want to [[{{ operation.name }}]] ?">{{ operation.name }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, is_global = '1', next = location_f) }}">{{ operation.name }}</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             {% endif %}
         {% endfor %}
