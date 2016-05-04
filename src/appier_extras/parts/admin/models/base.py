@@ -211,7 +211,7 @@ class Base(appier.Model):
         )
 
     @classmethod
-    @appier.operation(name = "Empty All", level = 2)
+    @appier.operation(name = "Empty All", level = 2, devel = True)
     def op_empty_s(cls):
         cls.delete_c()
 

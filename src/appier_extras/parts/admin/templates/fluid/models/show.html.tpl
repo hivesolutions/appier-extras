@@ -22,7 +22,8 @@
     </ul>
     <ul class="drop-down globals" data-name="Globals">
         {% for operation in model.operations() %}
-            {% if not operation.instance %}
+        	{% set operation_valid = not operation.devel or own.is_devel() %}
+            {% if not operation.instance and operation_valid %}
                 {% if operation.parameters %}
                     <li>
                         <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>

@@ -21,7 +21,8 @@
     </ul>
     <ul class="drop-down operations force" data-name="Operations">
         {% for operation in model.operations() %}
-            {% if operation.instance %}
+        	{% set operation_valid = not operation.devel or own.is_devel() %}
+            {% if operation.instance and operation_valid %}
                 {% if operation.parameters %}
                     <li>
                         <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
