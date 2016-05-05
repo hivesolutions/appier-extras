@@ -21,7 +21,7 @@
     </ul>
     <ul class="drop-down operations force" data-name="Operations">
         {% for operation in model.operations() %}
-        	{% set operation_valid = not operation.devel or own.is_devel() %}
+            {% set operation_valid = not operation.devel or own.is_devel() %}
             {% if operation.instance and operation_valid %}
                 {% if operation.parameters %}
                     <li>
@@ -35,7 +35,7 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, is_global = '1', next = location_f) }}">{{ operation.name }}</a>
+                            <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
                         </li>
                     {% endif %}
                 {% endif %}
