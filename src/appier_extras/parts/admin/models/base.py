@@ -287,6 +287,7 @@ class Base(appier.Model):
         # new search index entry with the information of the entity
         for name in names:
             value = self[name]
+            if not value: continue
             search.Search.create_index(
                 value,
                 self._id,
