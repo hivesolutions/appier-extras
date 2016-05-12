@@ -21,16 +21,18 @@
         <tbody class="filter-contents">
             {% for sid in sessions %}
                 {% set session = sessions[sid] %}
-                <tr class="table-row">
-                    <td class="text-left">
-                        <strong>
-                            <a href="{{ url_for('admin.show_session', sid = session.sid) }}">{{ session.sid }}</a>
-                        </strong>
-                    </td>
-                    <td class="text-left">{{ date_time(session.create, format = "%d %b %Y %H:%M:%S") }}</td>
-                    <td class="text-left">{{ date_time(session.expire, format = "%d %b %Y %H:%M:%S") }}</td>
-                    <td class="text-left">{{ session.address }}</td>
-                </tr>
+                {% if session.sid %}
+                    <tr class="table-row">
+                        <td class="text-left">
+                            <strong>
+                                <a href="{{ url_for('admin.show_session', sid = session.sid) }}">{{ session.sid }}</a>
+                            </strong>
+                        </td>
+                        <td class="text-left">{{ date_time(session.create, format = "%d %b %Y %H:%M:%S") }}</td>
+                        <td class="text-left">{{ date_time(session.expire, format = "%d %b %Y %H:%M:%S") }}</td>
+                        <td class="text-left">{{ session.address }}</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
