@@ -540,7 +540,7 @@ class Account(base.Base):
         account = self.reload(meta = True)
         base.Base.send_email_g(
             owner,
-            "email/account/new.html.tpl",
+            "admin/email/account/new.html.tpl",
             receivers = [self.email_f],
             subject = "New account",
             title = "New account",
@@ -554,7 +554,7 @@ class Account(base.Base):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
             owner,
-            "email/account/recover.html.tpl",
+            "admin/email/account/recover.html.tpl",
             receivers = [self.email_f],
             subject = "Recover account",
             title = "Recover account",

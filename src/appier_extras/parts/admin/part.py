@@ -481,7 +481,7 @@ class AdminPart(
         )
         models.Base.send_email_g(
             appier.get_app(),
-            "email/test.html.tpl",
+            "admin/email/test.html.tpl",
             receivers = [receiver],
             subject = "Test email",
             title = "Test email"

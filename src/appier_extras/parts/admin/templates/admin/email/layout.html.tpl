@@ -1,4 +1,4 @@
-{% extends "email/macros.html.tpl" %}
+{% extends "admin/email/macros.html.tpl" %}
 {% block html %}
     <!DOCTYPE html>
     <html lang="pt">

@@ -1,4 +1,4 @@
-{% extends "email/layout.html.tpl" %}
+{% extends "admin/email/layout.html.tpl" %}
 {% block title %}{{ title|default(subject, True)|default("New account", True) }}{% endblock %}
 {% block content %}
     <p>Hello <strong>{{ account.username }}</strong>,</p>
