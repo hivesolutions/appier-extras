@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import json
+
 import appier
 
 from appier_extras.parts.admin.models import base
@@ -87,6 +89,39 @@ class Event(base.Base):
         kwargs = dict(arguments = arguments_m)
         if delay: owner.delay(method, kwargs = kwargs)
         else: method(arguments, **kwargs)
+
+    @classmethod
+    @appier.operation(
+        name = "Import CSV",
+        parameters = (
+            ("CSV File", "file", "file"),
+            ("Empty source", "empty", bool, True)
+        )
+    )
+    def import_csv_s(cls, file, empty):
+
+        def callback(line):
+            name, handler, arguments = line
+            name = name or None
+            handler = handler or None
+            arguments = json.loads(arguments) if arguments else None
+            event = cls(
+                name = name,
+                handler = handler,
+                arguments = arguments
+            )
+            event.save()
+
+        if empty: cls.delete_c()
+        cls._csv_import(file, callback)
+
+    @classmethod
+    @appier.link(name = "Export CSV")
+    def list_csv_url(cls, absolute = False):
+        return appier.get_app().url_for(
+            "admin.list_events_csv",
+            absolute = absolute
+        )
 
     def notify_http(self, arguments = {}):
         url = arguments.get("url", None)

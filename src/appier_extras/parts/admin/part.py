@@ -38,6 +38,7 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import os
+import json
 import time
 import datetime
 import tempfile
@@ -133,6 +134,7 @@ class AdminPart(
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
             (("GET",), "/admin/sessions/<str:sid>/delete", self.delete_session),
             (("GET",), "/admin/counters", self.list_counters),
+            (("GET",), "/admin/events.csv", self.list_events_csv),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
             (("GET",), "/admin/database/import", self.database_import),
@@ -551,6 +553,32 @@ class AdminPart(
             section = "status",
             counters = counters
         )
+
+    @appier.ensure(token = "admin")
+    def list_events_csv(self):
+        object = appier.get_object(
+            alias = True,
+            find = True,
+            limit = 0
+        )
+        events = models.Event.find(**object)
+
+        events_s = [(
+            "name",
+            "handler",
+            "arguments"
+        )]
+        for event in events:
+            event_s = (
+                event.name,
+                event.handler,
+                json.dumps(event.arguments)
+            )
+            events_s.append(event_s)
+
+        result = appier.serialize_csv(events_s, delimiter = ",")
+        self.content_type("text/csv")
+        return result
 
     @appier.ensure(token = "admin")
     def database(self):
