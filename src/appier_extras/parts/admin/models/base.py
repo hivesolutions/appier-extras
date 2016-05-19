@@ -92,6 +92,10 @@ class Base(appier.Model):
         meta = "datetime"
     )
 
+    meta = appier.field(
+        type = dict
+    )
+
     def __str__(self):
         value = appier.Model.__str__(self)
         if not value: value = str(self.id)

@@ -142,10 +142,6 @@ class Account(base.Base):
         meta = "secret"
     )
 
-    meta = appier.field(
-        type = dict
-    )
-
     type = appier.field(
         type = int,
         initial = USER_TYPE,
