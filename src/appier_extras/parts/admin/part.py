@@ -572,7 +572,7 @@ class AdminPart(
             event_s = (
                 event.name,
                 event.handler,
-                json.dumps(event.arguments)
+                event.arguments and json.dumps(event.arguments)
             )
             events_s.append(event_s)
 
