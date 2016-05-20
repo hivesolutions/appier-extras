@@ -11,6 +11,7 @@
     <body style="font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:24px;color:#4d4d4d;text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;" bgcolor="#edece4">
         <div class="container" style="background-color:#edece4;margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="#edece4">
             <div style="background-color:#ffffff;width:520px;margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
+            	{% block logo %}{% endblock %}
                 <div class="content">
                     {{ h1(self.title()) }}
                     {% block content %}{% endblock %}
