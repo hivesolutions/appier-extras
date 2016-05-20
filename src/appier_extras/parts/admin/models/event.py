@@ -131,3 +131,14 @@ class Event(base.Base):
         import mailme
         api = mailme.Api()
         return api.send(arguments)
+
+    @appier.operation(name = "Duplicate Measurement", factory = True)
+    def duplicate_s(self):
+        cls = self.__class__
+        event = cls(
+            name = self.name,
+            handler = self.handler,
+            arguments = self.arguments
+        )
+        event.save()
+        return event
