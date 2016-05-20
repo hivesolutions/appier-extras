@@ -478,6 +478,8 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def test_email(self):
         receiver = appier.conf("TEST_EMAIL", None)
+        receiver = self.field("email", receiver)
+        receiver = self.field("receiver", receiver)
         if not receiver: raise appier.OperationalError(
             message = "No test email defined"
         )
