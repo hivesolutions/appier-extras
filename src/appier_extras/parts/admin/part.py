@@ -500,6 +500,8 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def test_event(self):
         name = appier.conf("TEST_EVENT", "test")
+        name = self.field("event", name)
+        name = self.field("name", name)
         models.Event.notify_g(name)
         return self.redirect(
             self.url_for(
