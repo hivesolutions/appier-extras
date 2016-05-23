@@ -1,9 +1,9 @@
-{% macro h1(contents) -%}
-    <h1 style="margin-top:38px;margin-bottom:26px;font-size:28px;font-weight:600;color:#2d2d2d;">{{ contents }}</h1>
+{% macro h1(contents, size = "28px", weight = "normal", color = "#2d2d2d") -%}
+    <h1 style="margin-top:38px;margin-bottom:26px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h1>
 {%- endmacro %}
 
-{% macro h2(contents) -%}
-    <h2 style="margin-top:38px;font-size:22px;font-weight:600;color:#2d2d2d;">{{ contents }}</h2>
+{% macro h2(contents, size = "22px", weight = "normal", color = "#2d2d2d") -%}
+    <h2 style="margin-top:38px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h2>
 {%- endmacro %}
 
 {% macro link(href, contents, base = True, simple = False) -%}
