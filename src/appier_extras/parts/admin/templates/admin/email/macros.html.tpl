@@ -1,4 +1,4 @@
-{% macro h1(contents, size = "28px", weight = "normal", color = "#2d2d2d") -%}
+{% macro h1(contents, size = "26px", weight = "normal", color = "#2d2d2d") -%}
     <h1 style="margin-top:38px;margin-bottom:26px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h1>
 {%- endmacro %}
 
