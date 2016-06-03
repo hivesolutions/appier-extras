@@ -26,6 +26,7 @@
                     <li>Default</li>
                     <li>Modern</li>
                     <li>Modern - Romantic</li>
+                    <li>Flat</li>
                     <li>Webook</li>
                 </ul>
             </div>

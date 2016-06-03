@@ -5,9 +5,9 @@
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
 {% if theme_r %}
     {% if theme_r == 'default' %}
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'libs/layout/css/layout.css') }}" />
+        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
     {% else %}
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'libs/layout/css/layout.' + theme_r + '.css') }}" />
+        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.{{ theme_r }}.css" />
     {% endif %}
 {% else %}
     <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
