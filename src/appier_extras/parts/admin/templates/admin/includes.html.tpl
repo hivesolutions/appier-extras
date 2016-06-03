@@ -5,11 +5,9 @@
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
 {% if theme_r %}
     {% if theme_r == 'default' %}
-        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
-    {% elif theme_r == 'modern' %}
-        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
-    {% elif theme_r == 'webook' %}
-        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.webook.css" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'libs/layout/css/layout.css') }}" />
+    {% else %}
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'libs/layout/css/layout.' + theme_r + '.css') }}" />
     {% endif %}
 {% else %}
     <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
@@ -31,6 +29,11 @@
 {% else %}
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 {% endif %}
-<script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux-min.js"></script>
-<script type="text/javascript" src="//libs.bemisc.com/layout/js/layout.js"></script>
+{% if own.is_devel() %}
+    <script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux.js"></script>
+    <script type="text/javascript" src="//libs.bemisc.com/layout/js/layout.js"></script>
+{% else %}
+    <script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux-min.js"></script>
+    <script type="text/javascript" src="//libs.bemisc.com/layout/js/layout-min.js"></script>
+{% endif %}
 <script type="text/javascript" src="{{ url_for('admin', filename = 'js/main.js') }}"></script>
