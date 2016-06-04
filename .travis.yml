@@ -12,8 +12,8 @@ python:
   - "pypy3"
 services: mongodb
 install:
-  - pip install --upgrade pip
   - pip install "pkginfo<1.3"
+  - pip install "appier==1.5.8"
   - pip install -r requirements.txt
   - pip install coveralls
   - pip install twine
