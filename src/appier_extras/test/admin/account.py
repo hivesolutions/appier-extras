@@ -48,6 +48,8 @@ class AccountTest(unittest.TestCase):
 
     def setUp(self):
         self.app = appier.App()
+        import sys
+        print(sys.path)
         self.app._register_models_m(mock, "Mocks")
 
     def tearDown(self):
