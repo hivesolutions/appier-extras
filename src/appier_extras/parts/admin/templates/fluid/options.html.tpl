@@ -24,7 +24,7 @@
                  data-error="{{ errors.theme }}">
                 <ul class="data-source" data-type="local">
                     <li>Default</li>
-                    <li>Modern</li>
+                    <li>Modern - Default</li>
                     <li>Modern - Romantic</li>
                     <li>Flat</li>
                     <li>Webook</li>
