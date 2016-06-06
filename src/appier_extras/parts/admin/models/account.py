@@ -96,6 +96,12 @@ class Account(base.Base):
         private = True,
         meta = "secret"
     )
+    
+    confirmation_token = appier.field(
+        safe = True,
+        private = True,
+        meta = "secret"
+    )
 
     facebook_id = appier.field(
         index = True
@@ -467,6 +473,7 @@ class Account(base.Base):
     def pre_create(self):
         base.Base.pre_create(self)
         self.key = self.secret()
+        self.confirmation_token = self.secret()
 
     def pre_save(self):
         base.Base.pre_save(self)
