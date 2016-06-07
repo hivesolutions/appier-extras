@@ -473,7 +473,7 @@ class Account(base.Base):
     def pre_create(self):
         base.Base.pre_create(self)
         self.key = self.secret()
-        self._generate_confirmation_token()
+        self.confirmation_token = self.secret()
 
     def pre_save(self):
         base.Base.pre_save(self)
@@ -573,12 +573,6 @@ class Account(base.Base):
         if not hasattr(self, "confirmation_token"): return True
         if not self.confirmation_token: return True
         return False
-
-    def _generate_confirmation_token(self):
-        facebook_id = self.facebook_id if hasattr(self, "facebook_id") else None
-        google_id = self.google_id if hasattr(self, "google_id") else None
-        if facebook_id or google_id: return
-        self.confirmation_token = self.secret()
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
