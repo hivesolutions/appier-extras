@@ -97,6 +97,12 @@ class Account(base.Base):
         meta = "secret"
     )
 
+    confirmation_token = appier.field(
+        safe = True,
+        private = True,
+        meta = "secret"
+    )
+
     facebook_id = appier.field(
         index = True
     )
@@ -467,6 +473,7 @@ class Account(base.Base):
     def pre_create(self):
         base.Base.pre_create(self)
         self.key = self.secret()
+        self.confirmation_token = self.secret()
 
     def pre_save(self):
         base.Base.pre_save(self)
@@ -477,6 +484,10 @@ class Account(base.Base):
         # updates the last login of the account with the current timestamp
         # and saves the account so that this value is persisted
         self.last_login = time.time()
+        self.save()
+
+    def confirm_s(self):
+        self.confirmation_token = None
         self.save()
 
     def recover_s(self):
@@ -556,6 +567,12 @@ class Account(base.Base):
             title = "Recover account",
             account = account
         )
+
+    @property
+    def confirmed(self):
+        if not hasattr(self, "confirmation_token"): return True
+        if not self.confirmation_token: return True
+        return False
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
