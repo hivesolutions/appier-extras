@@ -369,6 +369,12 @@ class Account(base.Base):
         return account
 
     @classmethod
+    def confirm(cls, confirmation_token):
+        account = cls.validate_confirmation_token(confirmation_token)
+        account.confirm_s()
+        return account
+
+    @classmethod
     def verify(cls, encoded, decoded):
         type, salt, digest, plain = cls.unpack(encoded)
         if plain: return encoded == decoded
@@ -410,6 +416,12 @@ class Account(base.Base):
         account = cls.get(reset_token = reset_token, raise_e = False)
         if account: return account
         raise appier.SecurityError(message = "Invalid reset token")
+
+    @classmethod
+    def validate_confirmation_token(cls, confirmation_token):
+        account = cls.get(confirmation_token = confirmation_token, raise_e = False)
+        if account: return account
+        raise appier.SecurityError(message = "Invalid confirmation token")
 
     @classmethod
     def from_session(cls, *args, **kwargs):
