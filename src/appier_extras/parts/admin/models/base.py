@@ -231,7 +231,7 @@ class Base(appier.Model):
         callback,
         strict = False,
         delimiter = ",",
-        escapechar = "\"",
+        quotechar = "\"",
         quoting = csv.QUOTE_MINIMAL
     ):
         _file_name, mime_type, data = file
@@ -245,7 +245,7 @@ class Base(appier.Model):
         csv_reader = csv.reader(
             buffer,
             delimiter = delimiter,
-            escapechar = escapechar,
+            quotechar = quotechar,
             quoting = quoting
         )
         _header = next(csv_reader)
