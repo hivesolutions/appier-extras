@@ -582,9 +582,7 @@ class Account(base.Base):
 
     @property
     def confirmed(self):
-        if not hasattr(self, "confirmation_token"): return True
-        if not self.confirmation_token: return True
-        return False
+        return self.enabled
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
