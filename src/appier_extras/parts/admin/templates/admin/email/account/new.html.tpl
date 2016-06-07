@@ -19,6 +19,13 @@
             <br/><strong>Password:</strong> <span>{{ account_password }}</span>
         {% endif %}
     </p>
+    {% if not account.enabled and account.confirmation_token %}
+        {{ h2("Confirmation") }}
+        <p>
+            Please visit this address to activate your account:
+            {{ link(url_for("admin.confirm", confirmation_token = account.confirmation_token, absolute = True), "Confirm Account", False) }}.
+        </p>
+    {% endif %}
     {{ h2("Support") }}
     {% set support_email = config.conf("SUPPORT_EMAIL")|default("no-reply@appier.hive.pt", True) %}
     <p>

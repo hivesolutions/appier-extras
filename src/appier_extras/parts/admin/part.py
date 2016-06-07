@@ -118,6 +118,7 @@ class AdminPart(
             (("POST"), "/admin/recover", self.recover_do),
             (("GET"), "/admin/reset", self.reset),
             (("POST"), "/admin/reset", self.reset_do),
+            (("GET"), "/admin/confirm", self.confirm),
             (("GET",), "/admin/options", self.options),
             (("POST",), "/admin/options", self.options_action),
             (("GET",), "/admin/status", self.status),
@@ -277,7 +278,8 @@ class AdminPart(
 
     def recover_do(self):
         identifier = self.field("identifier")
-        try: self.account_c.recover(identifier)
+        send_email = self.field("send_email", True, cast = bool)
+        try: self.account_c.recover(identifier, send_email = send_email)
         except appier.AppierException as error:
             return self.template(
                 "recover.html.tpl",
@@ -294,7 +296,7 @@ class AdminPart(
             mandatory = True,
             not_empty = True
         )
-        self.account_c.validate_token(reset_token)
+        self.account_c.validate_reset(reset_token)
         return self.template(
             "reset.html.tpl",
             next = next,
@@ -321,6 +323,19 @@ class AdminPart(
                 error = error.message
             )
 
+        return self.redirect(
+            next or self.url_for(self.login_route_admin)
+        )
+
+    def confirm(self):
+        next = self.field("next")
+        confirmation_token = self.field(
+            "confirmation_token",
+            mandatory = True,
+            not_empty = True
+        )
+        send_email = self.field("send_email", True, cast = bool)
+        self.account_c.confirm(confirmation_token, send_email = send_email)
         return self.redirect(
             next or self.url_for(self.login_route_admin)
         )

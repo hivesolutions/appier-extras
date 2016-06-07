@@ -326,7 +326,7 @@ class Account(base.Base):
         return account
 
     @classmethod
-    def recover(cls, identifier):
+    def recover(cls, identifier, send_email = False):
         # verifies if a valid identifier has been provided because that value
         # is required for the proper account recover process to be executed
         if not identifier:
@@ -360,7 +360,7 @@ class Account(base.Base):
 
         # runs the recover instance method that should generate a new reset token
         # for the account and send the proper notifications
-        return account.recover_s()
+        return account.recover_s(send_email = send_email)
 
     @classmethod
     def reset(cls, reset_token, password, password_confirm):
@@ -369,9 +369,9 @@ class Account(base.Base):
         return account
 
     @classmethod
-    def confirm(cls, confirmation_token):
+    def confirm(cls, confirmation_token, send_email = False):
         account = cls.validate_confirmation(confirmation_token)
-        account.confirm_s()
+        account.confirm_s(send_email = send_email)
         return account
 
     @classmethod
@@ -498,15 +498,16 @@ class Account(base.Base):
         self.last_login = time.time()
         self.save()
 
-    def confirm_s(self):
+    def confirm_s(self, send_email = False):
         self.confirmation_token = None
         self.enabled = True
+        if send_email: self.email_confirm()
         self.save()
 
-    def recover_s(self):
+    def recover_s(self, send_email = False):
         self.reset_token = self.secret()
         self.save()
-        self.email_recover()
+        if send_email: self.email_recover()
         return self.reset_token
 
     def reset_s(self, password, password_confirm):
@@ -554,10 +555,16 @@ class Account(base.Base):
         self.key = self.secret()
         self.save()
 
+    @appier.operation(name = "Mark Unconfirmed")
+    def mark_unconfirmed_s(self, owner = None):
+        self.enabled = False
+        self.confirmation_token = self.secret()
+        self.save()
+
     @appier.operation(name = "Email New")
     def email_new(self, password = None, owner = None):
         owner = owner or appier.get_app()
-        account = self.reload(meta = True)
+        account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
             owner,
             "admin/email/account/new.html.tpl",
@@ -566,6 +573,19 @@ class Account(base.Base):
             title = "New account",
             account = account,
             account_password = password
+        )
+
+    @appier.operation(name = "Email Confirm")
+    def email_confirm(self, owner = None):
+        owner = owner or appier.get_app()
+        account = self.reload(rules = False, meta = True)
+        base.Base.send_email_g(
+            owner,
+            "admin/email/account/confirm.html.tpl",
+            receivers = [self.email_f],
+            subject = "Confirm account",
+            title = "Confirm account",
+            account = account
         )
 
     @appier.operation(name = "Email Recover")
