@@ -97,6 +97,12 @@ class Account(base.Base):
         meta = "secret"
     )
 
+    confirmation_token = appier.field(
+        safe = True,
+        private = True,
+        meta = "secret"
+    )
+
     facebook_id = appier.field(
         index = True
     )
@@ -358,8 +364,14 @@ class Account(base.Base):
 
     @classmethod
     def reset(cls, reset_token, password, password_confirm):
-        account = cls.validate_token(reset_token)
+        account = cls.validate_reset(reset_token)
         account.reset_s(password, password_confirm)
+        return account
+
+    @classmethod
+    def confirm(cls, confirmation_token):
+        account = cls.validate_confirmation(confirmation_token)
+        account.confirm_s()
         return account
 
     @classmethod
@@ -400,10 +412,16 @@ class Account(base.Base):
         return (type, salt, digest, plain)
 
     @classmethod
-    def validate_token(cls, reset_token):
+    def validate_reset(cls, reset_token):
         account = cls.get(reset_token = reset_token, raise_e = False)
         if account: return account
         raise appier.SecurityError(message = "Invalid reset token")
+
+    @classmethod
+    def validate_confirmation(cls, confirmation_token):
+        account = cls.get(confirmation_token = confirmation_token, raise_e = False)
+        if account: return account
+        raise appier.SecurityError(message = "Invalid confirmation token")
 
     @classmethod
     def from_session(cls, *args, **kwargs):
@@ -467,6 +485,7 @@ class Account(base.Base):
     def pre_create(self):
         base.Base.pre_create(self)
         self.key = self.secret()
+        self.confirmation_token = self.secret()
 
     def pre_save(self):
         base.Base.pre_save(self)
@@ -477,6 +496,11 @@ class Account(base.Base):
         # updates the last login of the account with the current timestamp
         # and saves the account so that this value is persisted
         self.last_login = time.time()
+        self.save()
+
+    def confirm_s(self):
+        self.confirmation_token = None
+        self.enabled = True
         self.save()
 
     def recover_s(self):
@@ -556,6 +580,10 @@ class Account(base.Base):
             title = "Recover account",
             account = account
         )
+
+    @property
+    def confirmed(self):
+        return self.enabled
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
