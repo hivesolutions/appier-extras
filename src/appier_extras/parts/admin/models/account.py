@@ -104,23 +104,28 @@ class Account(base.Base):
     )
 
     facebook_id = appier.field(
-        index = True
+        index = True,
+        safe = True
     )
 
     twitter_username = appier.field(
-        index = True
+        index = True,
+        safe = True
     )
 
     google_id = appier.field(
-        index = True
+        index = True,
+        safe = True
     )
 
     live_id = appier.field(
-        index = True
+        index = True,
+        safe = True
     )
 
     github_login = appier.field(
-        index = True
+        index = True,
+        safe = True
     )
 
     facebook_token = appier.field(
