@@ -1,13 +1,34 @@
-{% macro h1(contents, size = "26px", weight = "normal", color = "#2d2d2d") -%}
-    <h1 style="margin-top:38px;margin-bottom:26px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h1>
+{% macro h1(
+    contents,
+    margin_top = "38px",
+    margin_bottom = "26px",
+    size = "26px",
+    weight = "normal",
+    color = "#2d2d2d"
+) -%}
+    <h1 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h1>
 {%- endmacro %}
 
-{% macro h2(contents, size = "22px", weight = "normal", color = "#2d2d2d") -%}
-    <h2 style="margin-top:30px;margin-bottom:14px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h2>
+{% macro h2(
+    contents,
+    margin_top = "30px",
+    margin_bottom = "14px",
+    size = "22px",
+    weight = "normal",
+    color = "#2d2d2d"
+) -%}
+    <h2 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h2>
 {%- endmacro %}
 
-{% macro h3(contents, size = "18px", weight = "normal", color = "#2d2d2d") -%}
-    <h3 style="margin-top:26px;margin-bottom:12px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
+{% macro h3(
+    contents,
+    margin_top = "26px",
+    margin_bottom = "12px",
+    size = "18px",
+    weight = "normal",
+    color = "#2d2d2d"
+) -%}
+    <h3 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
 {%- endmacro %}
 
 {% macro link(href, contents, base = True, simple = False) -%}
