@@ -6,6 +6,10 @@
     <h2 style="margin-top:30px;margin-bottom:14px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h2>
 {%- endmacro %}
 
+{% macro h3(contents, size = "18px", weight = "normal", color = "#2d2d2d") -%}
+    <h3 style="margin-top:26px;margin-bottom:12px;font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
+{%- endmacro %}
+
 {% macro link(href, contents, base = True, simple = False) -%}
     {% if base %}{% set href = base_url|default('', True) + href %}{% endif %}
     {% if simple %}
