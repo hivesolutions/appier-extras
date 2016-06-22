@@ -71,7 +71,7 @@ class AdminPart(
         self.layout = "fluid"
         self.theme = "modern"
         self.style = "romantic"
-        self.libs = "latest"
+        self.libs = "current"
 
     def load(self):
         appier.Part.load(self)
