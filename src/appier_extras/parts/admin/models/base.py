@@ -232,16 +232,21 @@ class Base(appier.Model):
         strict = False,
         delimiter = ",",
         quotechar = "\"",
-        quoting = csv.QUOTE_MINIMAL
+        quoting = csv.QUOTE_MINIMAL,
+        encoding = "utf-8"
     ):
+        is_unicode = appier.legacy.PYTHON_3
         _file_name, mime_type, data = file
         is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
         if not is_csv and strict:
             raise appier.OperationalError(
                 message = "Invalid mime type '%s'" % mime_type
             )
-        data = data.decode("utf-8")
-        buffer = appier.legacy.StringIO(data)
+        if is_unicode:
+            data = data.decode(encoding)
+            buffer = appier.legacy.StringIO(data)
+        else:
+            buffer = appier.legacy.BytesIO(data)
         csv_reader = csv.reader(
             buffer,
             delimiter = delimiter,
@@ -249,7 +254,9 @@ class Base(appier.Model):
             quoting = quoting
         )
         _header = next(csv_reader)
-        for line in csv_reader: callback(line)
+        for line in csv_reader:
+            if not is_unicode: line = [value.decode(encoding) for value in line]
+            callback(line)
 
     def pre_create(self):
         appier.Model.pre_create(self)
