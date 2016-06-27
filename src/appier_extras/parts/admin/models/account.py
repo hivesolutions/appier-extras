@@ -494,10 +494,10 @@ class Account(base.Base):
 
     def pre_validate(self):
         base.Base.pre_create(self)
-        if hasattr(self, "email") and self.email:
-            self.email = self.email.lower()
         if hasattr(self, "username") and self.username:
             self.username = self.username.lower()
+        if hasattr(self, "email") and self.email:
+            self.email = self.email.lower()
 
     def pre_create(self):
         base.Base.pre_create(self)
