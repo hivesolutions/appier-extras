@@ -246,7 +246,12 @@ class Account(base.Base):
         ]
 
     @classmethod
-    def login(cls, username, password):
+    def login(cls, username, password, insensitive = True):
+        # in case the (case) insensitive option is enabled and the username
+        # is defined the value is converted to lower case so that a proper
+        # comparison may be used (not case sensitive)
+        if insensitive and username: username = username.lower()
+
         # verifies that both the provided username and password are valid
         # and that are correctly and properly defined (required for validation)
         if not username or not password:
@@ -486,6 +491,11 @@ class Account(base.Base):
                 break
             if not is_removable: continue
             delete(key)
+
+    def pre_validate(self):
+        base.Base.pre_create(self)
+        if self.email: self.email = self.email.lower()
+        if self.username: self.username = self.username.lower()
 
     def pre_create(self):
         base.Base.pre_create(self)
