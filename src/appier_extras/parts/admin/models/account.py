@@ -509,12 +509,6 @@ class Account(base.Base):
         if hasattr(self, "password") and self.password:
             self.password = self.encrypt(self.password)
 
-    def touch_s(self):
-        # updates the last login of the account with the current timestamp
-        # and saves the account so that this value is persisted
-        self.last_login = time.time()
-        self.save()
-
     def confirm_s(self, send_email = False):
         self.confirmation_token = None
         self.enabled = True
@@ -564,6 +558,13 @@ class Account(base.Base):
         if not self.email: return self.email
         if not self.username: return self.email
         return "%s <%s>" % (self.username, self.email)
+
+    @appier.operation(name = "Touch")
+    def touch_s(self):
+        # updates the last login of the account with the current timestamp
+        # and saves the account so that this value is persisted
+        self.last_login = time.time()
+        self.save()
 
     @appier.operation(name = "Generate Key")
     def generate_key_s(self, force = False):
