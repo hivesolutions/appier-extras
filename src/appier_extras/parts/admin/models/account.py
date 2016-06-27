@@ -493,7 +493,7 @@ class Account(base.Base):
             delete(key)
 
     def pre_validate(self):
-        base.Base.pre_create(self)
+        base.Base.pre_validate(self)
         if hasattr(self, "username") and self.username:
             self.username = self.username.lower()
         if hasattr(self, "email") and self.email:
