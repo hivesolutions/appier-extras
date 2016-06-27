@@ -57,52 +57,79 @@ class AccountTest(unittest.TestCase):
 
     def test_basic(self):
         account = appier_extras.admin.Account()
-        account.username = "Username"
+        account.username = "username"
         account.email = "username@domain.com"
-        account.password = "Password"
-        account.password_confirm = "Password"
+        account.password = "password"
+        account.password_confirm = "password"
         account.save()
 
         self.assertNotEqual(account.id, None)
-        self.assertNotEqual(account.password, "Password")
-        self.assertEqual(account.username, "Username")
+        self.assertNotEqual(account.password, "password")
+        self.assertEqual(account.username, "username")
         self.assertEqual(account.email, "username@domain.com")
         self.assertEqual(len(account.password), 84)
 
-        account = appier_extras.admin.Account.login("Username", "Password")
+        account = appier_extras.admin.Account.login("username", "password")
 
         self.assertNotEqual(account, None)
-        self.assertEqual(account.username, "Username")
+        self.assertEqual(account.username, "username")
         self.assertEqual(account.email, "username@domain.com")
 
-        account.password = "PasswordChanged"
-        account.password_confirm = "Password"
+        account.password = "passwordchanged"
+        account.password_confirm = "password"
 
         self.assertRaises(appier.ValidationError, account.save)
 
-        account.password_confirm = "PasswordChanged"
+        account.password_confirm = "passwordchanged"
         account.save()
 
         self.assertRaises(
             appier.OperationalError,
-            lambda: appier_extras.admin.Account.login("Username", "Password")
+            lambda: appier_extras.admin.Account.login("username", "password")
         )
 
-        account = appier_extras.admin.Account.login("Username", "PasswordChanged")
+        account = appier_extras.admin.Account.login("username", "passwordchanged")
 
         self.assertNotEqual(account, None)
-        self.assertEqual(account.username, "Username")
+        self.assertEqual(account.username, "username")
         self.assertEqual(account.email, "username@domain.com")
 
         account.save()
 
-        account = appier_extras.admin.Account.login("Username", "PasswordChanged")
+        print(account.username)
+
+        account = appier_extras.admin.Account.login("username", "passwordchanged")
 
         self.assertNotEqual(account, None)
-        self.assertEqual(account.username, "Username")
+        self.assertEqual(account.username, "username")
         self.assertEqual(account.email, "username@domain.com")
 
         account.password = "P"
         account.password_confirm = "P"
 
         self.assertRaises(appier.ValidationError, account.save)
+
+    def test_insensitive(self):
+        account = appier_extras.admin.Account()
+        account.username = "Username"
+        account.email = "USERNAME@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        self.assertNotEqual(account.id, None)
+        self.assertNotEqual(account.password, "password")
+        self.assertEqual(account.username, "username")
+        self.assertEqual(account.email, "username@domain.com")
+        self.assertEqual(len(account.password), 84)
+
+        account = appier_extras.admin.Account.login("USERNAME", "password")
+
+        self.assertNotEqual(account, None)
+        self.assertEqual(account.username, "username")
+        self.assertEqual(account.email, "username@domain.com")
+
+        self.assertRaises(
+            appier.OperationalError,
+            lambda: appier_extras.admin.Account.login("username", "PASSWORD")
+        )
