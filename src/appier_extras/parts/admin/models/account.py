@@ -206,12 +206,14 @@ class Account(base.Base):
         return super(Account, cls).validate() + [
             appier.not_null("username"),
             appier.not_empty("username"),
+            appier.is_lower("username"),
             appier.string_gt("username", 3),
             appier.string_lt("username", 64),
             appier.not_duplicate("username", cls._name()),
 
             appier.not_null("email"),
             appier.not_empty("email"),
+            appier.is_lower("email"),
             appier.is_email("email"),
             appier.not_duplicate("email", cls._name()),
 
