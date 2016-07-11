@@ -140,7 +140,7 @@ class Event(base.Base):
     def notify_mailme(self, arguments = {}):
         import mailme
         logger = appier.get_logger()
-        logger.debug("Running MailMe notification ...")
+        logger.debug("Running Mailme notification ...")
         api = mailme.Api()
         return api.send(arguments)
 
