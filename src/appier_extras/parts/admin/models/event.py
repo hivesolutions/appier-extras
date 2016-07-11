@@ -133,10 +133,14 @@ class Event(base.Base):
 
     def notify_http(self, arguments = {}):
         url = arguments.get("url", None)
+        logger = appier.get_logger()
+        logger.debug("Running HTTP notification for '%s' ..." % url)
         return appier.post(url, data_j = arguments)
 
     def notify_mailme(self, arguments = {}):
         import mailme
+        logger = appier.get_logger()
+        logger.debug("Running MailMe notification ...")
         api = mailme.Api()
         return api.send(arguments)
 
