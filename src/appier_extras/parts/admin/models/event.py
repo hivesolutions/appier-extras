@@ -75,7 +75,7 @@ class Event(base.Base):
     @classmethod
     def notify_g(cls, name, handlers = None, arguments = {}):
         logger = appier.get_logger()
-        logger.debug("Triggered '%s' event ..." % name)
+        logger.debug("Triggering '%s' event ..." % name)
         kwargs = dict(name = name)
         if handlers: kwargs["handler"] = {"$in" : handlers}
         events = cls.find(**kwargs)
