@@ -85,7 +85,10 @@ class Event(base.Base):
     def notify(self, arguments = {}, delay = True, owner = None):
         delay_s = ("a delayed" if delay else "an immediate")
         logger = appier.get_logger()
-        logger.debug("Notifying '%s' in %s fashion ..." % (self.handler, delay_s))
+        logger.debug(
+            "Notifying handler '%s' for '%s' in %s fashion ..." %\
+            (self.handler, self.name, delay_s)
+        )
         owner = owner or appier.get_app()
         method = getattr(self, "notify_" + self.handler)
         arguments_m = dict(self.arguments)
