@@ -74,6 +74,8 @@ class Event(base.Base):
 
     @classmethod
     def notify_g(cls, name, handlers = None, arguments = {}):
+        logger = appier.get_logger()
+        logger.debug("Triggered '%s' event ..." % name)
         kwargs = dict(name = name)
         if handlers: kwargs["handler"] = {"$in" : handlers}
         events = cls.find(**kwargs)
@@ -81,9 +83,9 @@ class Event(base.Base):
 
     @appier.operation(name = "Notify")
     def notify(self, arguments = {}, delay = True, owner = None):
-        delay_s = ("delayed" if delay else "immediate")
+        delay_s = ("a delayed" if delay else "an immediate")
         logger = appier.get_logger()
-        logger.debug("Notifying '%s' in a %s fashion ..." % (self.handler, delay_s))
+        logger.debug("Notifying '%s' in %s fashion ..." % (self.handler, delay_s))
         owner = owner or appier.get_app()
         method = getattr(self, "notify_" + self.handler)
         arguments_m = dict(self.arguments)
