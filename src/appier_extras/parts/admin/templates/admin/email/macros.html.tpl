@@ -2,7 +2,7 @@
     contents,
     margin_top = "38px",
     margin_bottom = "26px",
-    size = "26px",
+    size = "22px",
     weight = "normal",
     color = "#2d2d2d"
 ) -%}
@@ -13,7 +13,7 @@
     contents,
     margin_top = "30px",
     margin_bottom = "14px",
-    size = "22px",
+    size = "20px",
     weight = "normal",
     color = "#2d2d2d"
 ) -%}
