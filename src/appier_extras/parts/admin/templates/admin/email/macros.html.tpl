@@ -36,7 +36,7 @@
     contents,
     base = True,
     display = "inline-block",
-    padding = "7px 14px 7px 14px",
+    padding = "6px 16px 6px 16px",
     border_radius = "4px 4px 4px 4px",
     color = "#ffffff",
     background_color = "#2d2d2d",
