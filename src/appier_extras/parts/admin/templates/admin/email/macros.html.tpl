@@ -31,12 +31,21 @@
     <h3 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
 {%- endmacro %}
 
-{% macro link(href, contents, base = True, simple = False) -%}
+{% macro button(
+    href,
+    contents,
+    base = True,
+    display = "inline-block",
+    padding = "7px 14px 7px 14px",
+    border_radius = "4px 4px 4px 4px",
+    color = "#ffffff",
+    background_color = "#2d2d2d",
+    text_decoration = "none"
+) -%}
     {% if base %}{% set href = base_url|default('', True) + href %}{% endif %}
-    {% if simple %}
-        <a href="{{ href }}">{{ contents }}</a>
-    {% else %}
-        <a href="{{ href }}" style="color:#1b75bb;text-decoration:none;padding-bottom:1px;">{{ contents }}</a>
-    {% endif %}
+    <a href="{{ href }}" style="display:{{ display }};padding:{{ padding }};border-radius:{{ border_radius }};color:{{ color }};background-color:{{ background_color }};text-decoration:{{ text_decoration }};">{{ contents }}</a>
 {%- endmacro %}
+
+{% macro link(href, contents, base = True, simple = False, color = "#4769cc") -%}{% if base %}{% set href = base_url|default('', True) + href %}{% endif %}{% if simple %}<a href="{{ href }}">{{ contents }}</a>{% else %}<a href="{{ href }}" style="color:{{ color }};text-decoration:none;padding-bottom:1px;">{{ contents }}</a>{% endif %}{%- endmacro %}
+
 {% block html %}{% endblock %}
