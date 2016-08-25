@@ -774,6 +774,7 @@ class AdminPart(
         # then casts the provided parameters according to metadata
         factory = definition.get("factory", False)
         parameters = definition.cast(parameters)
+        parameters_kw = definition.cast(parameters, keyword = True)
 
         # determines the filter information that is going to be passed
         # to the find operations and retrieves the associated entities
@@ -799,7 +800,8 @@ class AdminPart(
         # performs the requested operation for each of them
         for entity in entities:
             method = getattr(entity, operation)
-            result = method(*parameters)
+            method_kw = appier.legacy.getargspec(method)[2]
+            result = method(**parameters_kw) if method_kw else method(*parameters)
 
         # in case the factory mode is enabled, a new entity has been
         # created and proper redirection must be performed so that the
