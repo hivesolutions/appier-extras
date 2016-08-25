@@ -17,27 +17,27 @@
             <dl class="inline">
                 <div class="item">
                     <dt>Name</dt>
-                    <dd>{{ own.info().name }}</dd>
+                    <dd>{{ own.info_dict().name }}</dd>
                 </div>
                 <div class="item">
                     <dt>Instance</dt>
-                    <dd>{{ own.info().instance|default("global", True) }}</dd>
+                    <dd>{{ own.info_dict().instance|default("global", True) }}</dd>
                 </div>
                 <div class="item">
                     <dt>Uptime</dt>
-                    <dd>{{ own.info().uptime }}</dd>
+                    <dd>{{ own.info_dict().uptime }}</dd>
                 </div>
                 <div class="item">
                     <dt>Platform</dt>
-                    <dd>{{ own.info().platform }}</dd>
+                    <dd>{{ own.info_dict().platform }}</dd>
                 </div>
                 <div class="item">
                     <dt>Server</dt>
-                    <dd>{{ own.info().server }}</dd>
+                    <dd>{{ own.info_dict().server }}</dd>
                 </div>
                 <div class="item">
                     <dt>Appier</dt>
-                    <dd>{{ own.info().appier }}</dd>
+                    <dd>{{ own.info_dict().appier }}</dd>
                 </div>
                 <div class="item">
                     <dt>Models</dt>
@@ -46,19 +46,19 @@
                 <div class="item">
                     <dt>Routes</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_routes') }}">{{ own.info().routes }} routes</a>
+                        <a href="{{ url_for('admin.list_routes') }}">{{ own.info_dict().routes }} routes</a>
                     </dd>
                 </div>
                 <div class="item">
                     <dt>Configuration</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_configs') }}">{{ own.info().configs }} items</a>
+                        <a href="{{ url_for('admin.list_configs') }}">{{ own.info_dict().configs }} items</a>
                     </dd>
                 </div>
                 <div class="item">
                     <dt>Libraries</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_libraries') }}">{{ own.info().libraries|length }} libraries</a>
+                        <a href="{{ url_for('admin.list_libraries') }}">{{ own.info_dict().libraries|length }} libraries</a>
                     </dd>
                 </div>
                 <div class="separator"></div>
