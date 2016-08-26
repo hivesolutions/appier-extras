@@ -31,6 +31,18 @@
     <h3 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
 {%- endmacro %}
 
+{% macro highlight(
+    contents,
+    display = "block",
+    padding = "6px 16px 6px 16px",
+    font_weight = "500",
+    color = "#2d2d2d",
+    background_color = "#f4f4f4",
+    text_align = "center"
+) -%}
+	<p style="display:{{ display }};padding:{{ padding }};font-weight:{{ font_weight }};color:{{ color }};background-color:{{ background_color }};text-align:{{ text_align }};">{{ contents }}</p>
+{%- endmacro %}
+
 {% macro button(
     href,
     contents,
