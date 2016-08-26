@@ -300,6 +300,6 @@
 
 {% macro twitter_share(url, description = None, hashtags = None, prefix = "https://www.twitter.com/share") -%}{{ prefix }}?url={{ quote(url) }}&text={{ quote(description|default("", True)) }}&hashtags={{ quote(",".join(hashtags) if hashtags else "") }}{%- endmacro %}
 
-{% macro pinterest_share(url, image_url = None, description = None, hashtags = None, prefix = "https://pinterest.com/pin/create/button") -%}{% set description = (description or "") + " " + build_hashtags(hashtags) if hashtags else description %}{{ prefix }}?url={{ quote(url) }}&media={{ quote(image_url) }}&description={{ quote(unquote(quote(description|default("", True)))) }}{%- endmacro %}
+{% macro pinterest_share(url, image_url = None, description = None, hashtags = None, prefix = "https://pinterest.com/pin/create/button") -%}{% set description = (description or "") + " " + build_hashtags(hashtags) if hashtags else description %}{{ prefix }}?url={{ quote(url) }}&media={{ quote(image_url) }}&description={{ quote(description|default("", True)) }}{%- endmacro %}
 
 {% block html %}{% endblock %}
