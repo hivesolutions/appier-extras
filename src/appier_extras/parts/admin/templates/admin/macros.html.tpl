@@ -294,4 +294,10 @@
     </div>
 {%- endmacro %}
 
+{% macro facebook_share(url, app_id = None, prefix = "https://www.facebook.com/dialog/share") -%}{{ prefix }}?display=popup&app_id={{ app_id|default("", True) }}&href={{ quote(url) }}{%- endmacro %}
+
+{% macro twitter_share(url, description = None, prefix = "https://www.twitter.com/share") -%}{{ prefix }}?url={{ quote(url) }}&text={{ description|default("", True) }}{%- endmacro %}
+
+{% macro pinterest_share(url, image_url = None, description = None, prefix = "https://pinterest.com/pin/create/button") -%}{{ prefix }}?url={{ quote(url) }}&media={{ quote(image_url) }}&description={{ description|default("", True) }}{%- endmacro %}
+
 {% block html %}{% endblock %}

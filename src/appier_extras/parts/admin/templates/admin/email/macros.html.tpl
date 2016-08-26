@@ -40,7 +40,7 @@
     background_color = "#f4f4f4",
     text_align = "center"
 ) -%}
-	<p style="display:{{ display }};padding:{{ padding }};font-weight:{{ font_weight }};color:{{ color }};background-color:{{ background_color }};text-align:{{ text_align }};">{{ contents }}</p>
+    <p style="display:{{ display }};padding:{{ padding }};font-weight:{{ font_weight }};color:{{ color }};background-color:{{ background_color }};text-align:{{ text_align }};">{{ contents }}</p>
 {%- endmacro %}
 
 {% macro button(
