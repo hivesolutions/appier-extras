@@ -50,12 +50,13 @@
     display = "inline-block",
     padding = "6px 16px 6px 16px",
     border_radius = "4px 4px 4px 4px",
+    min_width = "0px",
     color = "#ffffff",
     background_color = "#2d2d2d",
     text_decoration = "none"
 ) -%}
     {% if base %}{% set href = base_url|default('', True) + href %}{% endif %}
-    <a href="{{ href }}" style="display:{{ display }};padding:{{ padding }};border-radius:{{ border_radius }};color:{{ color }};background-color:{{ background_color }};text-decoration:{{ text_decoration }};">{{ contents }}</a>
+    <a href="{{ href }}" style="display:{{ display }};padding:{{ padding }};border-radius:{{ border_radius }};min-width:{{ min_width }};color:{{ color }};background-color:{{ background_color }};text-decoration:{{ text_decoration }};">{{ contents }}</a>
 {%- endmacro %}
 
 {% macro link(href, contents, base = True, simple = False, color = "#4769cc") -%}{% if base %}{% set href = base_url|default('', True) + href %}{% endif %}{% if simple %}<a href="{{ href }}">{{ contents }}</a>{% else %}<a href="{{ href }}" style="color:{{ color }};text-decoration:none;padding-bottom:1px;">{{ contents }}</a>{% endif %}{%- endmacro %}
