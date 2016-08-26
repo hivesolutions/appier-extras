@@ -294,10 +294,12 @@
     </div>
 {%- endmacro %}
 
-{% macro facebook_share(url, app_id = None, prefix = "https://www.facebook.com/dialog/share") -%}{{ prefix }}?display=popup&app_id={{ app_id|default("", True) }}&href={{ quote(url) }}{%- endmacro %}
+{% macro build_hashtags(hashtags) -%}{% set hashtags_f = "" %}{% for hashtag in hashtags %}#{{ hashtag }}{% if not loop.last %} {% endif %}{% endfor %}{%- endmacro %}
 
-{% macro twitter_share(url, description = None, prefix = "https://www.twitter.com/share") -%}{{ prefix }}?url={{ quote(url) }}&text={{ description|default("", True) }}{%- endmacro %}
+{% macro facebook_share(url, app_id = None, prefix = "https://www.facebook.com/dialog/share") -%}{{ prefix }}?app_id={{ quote(app_id|default("", True)) }}&href={{ quote(url) }}{%- endmacro %}
 
-{% macro pinterest_share(url, image_url = None, description = None, prefix = "https://pinterest.com/pin/create/button") -%}{{ prefix }}?url={{ quote(url) }}&media={{ quote(image_url) }}&description={{ description|default("", True) }}{%- endmacro %}
+{% macro twitter_share(url, description = None, hashtags = None, prefix = "https://www.twitter.com/share") -%}{{ prefix }}?url={{ quote(url) }}&text={{ quote(description|default("", True)) }}&hashtags={{ quote(",".join(hashtags) if hashtags else "") }}{%- endmacro %}
+
+{% macro pinterest_share(url, image_url = None, description = None, hashtags = None, prefix = "https://pinterest.com/pin/create/button") -%}{% set description = (description or "") + " " + build_hashtags(hashtags) if hashtags else description %}{{ prefix }}?url={{ quote(url) }}&media={{ quote(image_url) }}&description={{ quote(unquote(quote(description|default("", True)))) }}{%- endmacro %}
 
 {% block html %}{% endblock %}
