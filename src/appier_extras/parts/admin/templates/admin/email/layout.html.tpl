@@ -12,6 +12,7 @@
         {% block head %}
             <title>{% block title %}{% endblock %}</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <style>{% include "admin/email/css.html.tpl" with context %}</style>
         {% endblock %}
     </head>
     <body style="font-family:{{ self.font_family() }};font-size:{{ self.font_size() }};line-height:{{ self.line_height() }};color:{{ self.font_color() }};text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;" bgcolor="{{ self.background_color() }}">
