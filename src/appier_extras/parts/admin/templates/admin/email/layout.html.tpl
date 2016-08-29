@@ -1,4 +1,5 @@
 {% extends "admin/email/macros.html.tpl" %}
+{% block language %}en{% endblock %}
 {% block background_color %}#edece4{% endblock %}
 {% block font_color %}#4d4d4d{% endblock %}
 {% block font_size %}14px{% endblock %}
@@ -7,12 +8,20 @@
 {% block content_width %}520px{% endblock %}
 {% block html %}
     <!DOCTYPE html>
-    <html lang="pt">
+    <html lang="{{ self.language() }}">
     <head>
         {% block head %}
             <title>{% block title %}{% endblock %}</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-            <style>{% include "admin/email/css.html.tpl" with context %}</style>
+            <style>
+                p {
+                    color:{{ self.font_color() }};
+                    font-family:{{ self.font_family() }};
+                    font-size: {{ self.font_size() }};
+                    line-height: {{ self.line_height() }};
+                    margin: 14px 0px 14px 0px;
+                }
+            </style>
         {% endblock %}
     </head>
     <body style="font-family:{{ self.font_family() }};font-size:{{ self.font_size() }};line-height:{{ self.line_height() }};color:{{ self.font_color() }};text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;" bgcolor="{{ self.background_color() }}">
