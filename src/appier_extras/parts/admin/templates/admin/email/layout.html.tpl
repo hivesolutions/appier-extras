@@ -15,8 +15,8 @@
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <style>
                 p {
-                    color:{{ self.font_color() }};
-                    font-family:{{ self.font_family() }};
+                    color: {{ self.font_color() }};
+                    font-family: {{ self.font_family() }};
                     font-size: {{ self.font_size() }};
                     line-height: {{ self.line_height() }};
                     margin: 14px 0px 14px 0px;
