@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,10 +37,16 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import admin
-from . import captcha
-from . import csfr
+import functools
 
-from .admin import AdminPart
-from .captcha import CaptchaPart
-from .csfr import CSFRPart
+def csfr_protect(token = None):
+
+    def decorator(function):
+
+        @functools.wraps(function)
+        def interceptor(self, *args, **kwargs):
+            return function(self, *args, **kwargs)
+
+        return interceptor
+
+    return decorator

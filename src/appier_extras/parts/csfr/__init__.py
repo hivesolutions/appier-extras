@@ -34,10 +34,8 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import admin
-from . import captcha
-from . import csfr
+from . import part
+from . import util
 
-from .admin import AdminPart
-from .captcha import CaptchaPart
-from .csfr import CSFRPart
+from .part import CSFRPart
+from .util import csfr_protect
