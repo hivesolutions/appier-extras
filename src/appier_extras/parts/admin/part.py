@@ -624,7 +624,7 @@ class AdminPart(
         self.content_type("application/octet-stream")
         self.request.set_header(
             "Content-Disposition",
-            "attachment; filename=%s" % file_name
+            "attachment; filename=\"%s\"" % file_name
         )
 
         return file.getvalue()
