@@ -62,4 +62,7 @@ class CSFRPart(appier.Part):
         tokens[token] = True
         csfr_m[scope] = tokens
         self.session["csfr"] = csfr_m
-        return "<input type=\"hidden\" name=\"%s\" value=\"%s\"/>" % (name, token)
+        return self.owner.escape_jinja(
+            "<input type=\"hidden\" name=\"%s\" value=\"%s\"/>" %\
+            (name, token)
+        )

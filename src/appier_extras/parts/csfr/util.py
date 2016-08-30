@@ -57,9 +57,9 @@ def csfr_protect(scope = None):
 def ensure_csfr(self, token, scope = None):
     csfr_m = self.session.get("csfr", {})
     tokens = csfr_m.get(scope, [])
-    token = tokens.get(token, None)
-    if token: del tokens[token]
-    if token: return
+    result = tokens.get(token, None)
+    if result: del tokens[token]
+    if result: return
     raise appier.AppierException(
         message = "Invalid CSFR protect token",
         code = 403
