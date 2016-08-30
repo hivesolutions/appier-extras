@@ -53,7 +53,13 @@ class CSFRPart(appier.Part):
     def load(self):
         appier.Part.load(self)
 
-        self.owner.bind("before_route", self.before_route)
+        self.owner.context["csfr"] = self.csfr
 
-    def before_route(self, method, args, kwargs):
-        print(method)
+    def csfr(self, scope = None, name = "csfr_token"):
+        csfr_m = self.session.get("csfr", {})
+        tokens = csfr_m.get(scope, {})
+        token = appier.gen_token()
+        tokens[token] = True
+        csfr_m[scope] = tokens
+        self.session["csfr"] = csfr_m
+        return "<input type=\"hidden\" name=\"%s\" value=\"%s\"/>" % (name, token)

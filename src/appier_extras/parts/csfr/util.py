@@ -39,14 +39,28 @@ __license__ = "Apache License, Version 2.0"
 
 import functools
 
-def csfr_protect(token = None):
+import appier
+
+def csfr_protect(scope = None):
 
     def decorator(function):
 
         @functools.wraps(function)
         def interceptor(self, *args, **kwargs):
+            token = self.field("csfr_token", None)
+            ensure_csfr(self, token, scope = scope)
             return function(self, *args, **kwargs)
-
         return interceptor
 
     return decorator
+
+def ensure_csfr(self, token, scope = None):
+    csfr_m = self.session.get("csfr", {})
+    tokens = csfr_m.get(scope, [])
+    token = tokens.get(token, None)
+    if token: del tokens[token]
+    if token: return
+    raise appier.AppierException(
+        message = "Invalid CSFR protect token",
+        code = 403
+    )

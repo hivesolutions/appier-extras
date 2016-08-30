@@ -40,4 +40,4 @@ from . import csfr
 
 from .admin import AdminPart
 from .captcha import CaptchaPart
-from .csfr import CSFRPart
+from .csfr import CSFRPart, csfr_protect
