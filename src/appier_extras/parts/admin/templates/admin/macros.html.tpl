@@ -302,4 +302,6 @@
 
 {% macro pinterest_share(url, image_url = None, description = None, hashtags = None, prefix = "https://pinterest.com/pin/create/button") -%}{% set description = (description or "") + " " + build_hashtags(hashtags) if hashtags else description %}{{ prefix }}?url={{ quote(url) }}&media={{ quote(image_url) }}&description={{ quote(description|default("", True)) }}{%- endmacro %}
 
+{% macro whatsapp_share(url, description = None, prefix = "whatsapp://send") -%}{% set text = (description + " " if description else "") + url %}{{ prefix }}?text={{ quote(text) }}{%- endmacro %}
+
 {% block html %}{% endblock %}
