@@ -37,29 +37,23 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-import functools
+import unittest
 
 import appier
+import appier_extras
 
-def csfr_protect(scope = None):
+class CSFRPartTest(unittest.TestCase):
 
-    def decorator(function):
+    def setUp(self):
+        self.app = appier.App(
+            parts = (appier_extras.CSFRPart,)
+        )
 
-        @functools.wraps(function)
-        def interceptor(self, *args, **kwargs):
-            token = self.field("csfr_token", None)
-            csfr_ensure(self, token, scope = scope)
-            return function(self, *args, **kwargs)
-        return interceptor
+    def tearDown(self):
+        self.app.unload()
 
-    return decorator
+    def test_csfr(self):
+        token = self.app.csfr_part._gen_token(scope = "test")
+        result = appier_extras.csfr_ensure(token, scope = "test")
 
-def csfr_ensure(self, token, scope = None):
-    csfr_m = self.session.get("csfr", {})
-    tokens = csfr_m.get(scope, [])
-    result = tokens.pop(token, None)
-    if result: return token
-    raise appier.AppierException(
-        message = "Invalid CSFR protect token",
-        code = 403
-    )
+        self.assertEqual(result, token)

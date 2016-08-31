@@ -56,13 +56,17 @@ class CSFRPart(appier.Part):
         self.owner.context["csfr"] = self.csfr
 
     def csfr(self, scope = None, name = "csfr_token"):
+        token = self._gen_token(scope = scope)
+        return self.owner.escape_jinja(
+            "<input type=\"hidden\" name=\"%s\" value=\"%s\"/>" %\
+            (name, token)
+        )
+
+    def _gen_token(self, scope = None):
         csfr_m = self.session.get("csfr", {})
         tokens = csfr_m.get(scope, {})
         token = appier.gen_token()
         tokens[token] = True
         csfr_m[scope] = tokens
         self.session["csfr"] = csfr_m
-        return self.owner.escape_jinja(
-            "<input type=\"hidden\" name=\"%s\" value=\"%s\"/>" %\
-            (name, token)
-        )
+        return token

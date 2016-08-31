@@ -38,4 +38,4 @@ from . import part
 from . import util
 
 from .part import CSFRPart
-from .util import csfr_protect
+from .util import csfr_protect, csfr_ensure

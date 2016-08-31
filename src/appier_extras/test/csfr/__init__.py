@@ -19,9 +19,6 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
-__author__ = "João Magalhães <joamag@hive.pt>"
-""" The author(s) of the module """
-
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -36,30 +33,3 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
-
-import functools
-
-import appier
-
-def csfr_protect(scope = None):
-
-    def decorator(function):
-
-        @functools.wraps(function)
-        def interceptor(self, *args, **kwargs):
-            token = self.field("csfr_token", None)
-            csfr_ensure(self, token, scope = scope)
-            return function(self, *args, **kwargs)
-        return interceptor
-
-    return decorator
-
-def csfr_ensure(self, token, scope = None):
-    csfr_m = self.session.get("csfr", {})
-    tokens = csfr_m.get(scope, [])
-    result = tokens.pop(token, None)
-    if result: return token
-    raise appier.AppierException(
-        message = "Invalid CSFR protect token",
-        code = 403
-    )
