@@ -54,6 +54,6 @@ class CSFRPartTest(unittest.TestCase):
 
     def test_csfr(self):
         token = self.app.csfr_part._gen_token(scope = "test")
-        result = appier_extras.csfr_ensure(token, scope = "test")
+        result = appier_extras.csfr_ensure(self.app, token, scope = "test")
 
         self.assertEqual(result, token)

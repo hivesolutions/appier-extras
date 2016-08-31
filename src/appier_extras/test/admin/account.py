@@ -96,8 +96,6 @@ class AccountTest(unittest.TestCase):
 
         account.save()
 
-        print(account.username)
-
         account = appier_extras.admin.Account.login("username", "passwordchanged")
 
         self.assertNotEqual(account, None)
