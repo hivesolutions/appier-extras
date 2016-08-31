@@ -48,6 +48,7 @@ class CSFRPartTest(unittest.TestCase):
         self.app = appier.App(
             parts = (appier_extras.CSFRPart,)
         )
+        self.app.csfr_limit = 0
 
     def tearDown(self):
         self.app.unload()
@@ -57,3 +58,15 @@ class CSFRPartTest(unittest.TestCase):
         result = appier_extras.csfr_ensure(self.app, token, scope = "test")
 
         self.assertEqual(result, token)
+
+        self.assertRaises(
+            appier.AppierException,
+            lambda: appier_extras.csfr_ensure(self.app, "hello world", scope = "test")
+        )
+
+        token = self.app.csfr_part._gen_token(scope = "test")
+        self.app.csfr_part._gen_token(scope = "test")
+        self.assertRaises(
+            appier.AppierException,
+            lambda: appier_extras.csfr_ensure(self.app, token, scope = "test")
+        )

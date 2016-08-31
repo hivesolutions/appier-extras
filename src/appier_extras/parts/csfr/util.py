@@ -56,7 +56,7 @@ def csfr_protect(scope = None):
 
 def csfr_ensure(self, token, scope = None):
     csfr_m = self.session.get("csfr", {})
-    tokens = csfr_m.get(scope, [])
+    tokens, _tokens_l = csfr_m.get(scope, ({}, []))
     result = tokens.pop(token, None)
     if result: return token
     raise appier.AppierException(

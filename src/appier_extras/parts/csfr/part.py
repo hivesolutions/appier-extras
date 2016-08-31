@@ -53,6 +53,7 @@ class CSFRPart(appier.Part):
     def load(self):
         appier.Part.load(self)
 
+        self.owner.csfr_limit = 100
         self.owner.context["csfr"] = self.csfr
 
     def csfr(self, scope = None, name = "csfr_token"):
@@ -64,9 +65,17 @@ class CSFRPart(appier.Part):
 
     def _gen_token(self, scope = None):
         csfr_m = self.session.get("csfr", {})
-        tokens = csfr_m.get(scope, {})
+        tokens, tokens_l = csfr_m.get(scope, ({}, []))
+        self._force_limit(tokens, tokens_l)
         token = appier.gen_token()
         tokens[token] = True
-        csfr_m[scope] = tokens
+        tokens_l.append(token)
+        csfr_m[scope] = (tokens, tokens_l)
         self.session["csfr"] = csfr_m
         return token
+
+    def _force_limit(self, tokens, tokens_l):
+        while len(tokens_l) > self.owner.csfr_limit:
+            token = tokens_l.pop(0)
+            if not token in tokens: continue
+            del tokens[token]
