@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import hashlib
+
 import appier
 
 class CSFRPart(appier.Part):
@@ -67,7 +69,7 @@ class CSFRPart(appier.Part):
         csfr_m = self.session.get("csfr", {})
         tokens, tokens_l = csfr_m.get(scope, ({}, []))
         self._force_limit(tokens, tokens_l)
-        token = appier.gen_token()
+        token = appier.gen_token(hash = hashlib.md5)
         tokens[token] = True
         tokens_l.append(token)
         csfr_m[scope] = (tokens, tokens_l)
