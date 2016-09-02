@@ -66,7 +66,7 @@ class OpbeatPart(appier.Part):
             kwargs = dict(is_soft = is_soft)
         )
 
-    def log_exception(self, exception, is_soft = False):
+    def log_exception(self, exception, is_soft = False, level = "error"):
         api = self._get_api()
 
         message = hasattr(exception, "message") and\
@@ -74,6 +74,12 @@ class OpbeatPart(appier.Part):
 
         payload = dict(
             message = message,
+            level = level,
+            exception = dict(
+                type = exception.__class__.__name__,
+                value = message,
+                module = str(exception.__class__.__module__)
+            ),
             http = dict(
                 url = self.url_for("location", absolute = True),
                 method = self.request.method,
