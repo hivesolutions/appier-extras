@@ -60,6 +60,8 @@ class OpbeatPart(appier.Part):
 
         self.owner.bind("exception", self.exception)
 
+        appier.ensure_pip("opbeat_api", package = "opbeat")
+
     def exception(self, exception, is_soft = False):
         log = appier.conf("OPBEAT_LOG", False, cast = bool)
         if not log: return
@@ -125,7 +127,7 @@ class OpbeatPart(appier.Part):
         api.error(payload)
 
     def _get_api(self):
-        opbeat = appier.import_pip("opbeat_api", package = "opbeat")
+        import opbeat
         if self._api: return self._api
         self._api = opbeat.Api()
         return self._api
