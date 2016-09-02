@@ -37,6 +37,9 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import sys
+import traceback
+
 import appier
 
 class OpbeatPart(appier.Part):
@@ -60,17 +63,31 @@ class OpbeatPart(appier.Part):
     def exception(self, exception, is_soft = False):
         log = appier.conf("OPBEAT_LOG", False, cast = bool)
         if not log: return
+        _exc_type, _exc_value, exc_traceback = sys.exc_info()
+        stacktrace = traceback.extract_tb(exc_traceback)
         self.delay(
             self.log_exception,
-            args = [exception],
+            args = [exception, stacktrace],
             kwargs = dict(is_soft = is_soft)
         )
 
-    def log_exception(self, exception, is_soft = False, level = "error"):
+    def log_exception(
+        self,
+        exception,
+        stacktrace,
+        level = "error",
+        is_soft = False,
+        strict = False
+    ):
+        if not strict and is_soft: return
+
         api = self._get_api()
 
         message = hasattr(exception, "message") and\
             exception.message or str(exception)
+
+        lines = traceback.format_exc().splitlines()
+        lines = self._lines(lines)
 
         payload = dict(
             message = message,
@@ -91,6 +108,17 @@ class OpbeatPart(appier.Part):
                 http_host = "absolute.uri",
                 user_agent = self.request.get_header("User-Agent"),
                 secure = self.request.scheme == "https"
+            ),
+            stacktrace = dict(
+                frames = [
+                    dict(
+                        abs_path = value[0],
+                        filename = value[0],
+                        lineno = value[1],
+                        function = value[2],
+                        context_line = value[3],
+                    ) for value in stacktrace
+                ]
             )
         )
 
