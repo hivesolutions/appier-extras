@@ -55,13 +55,23 @@ class OpbeatPart(appier.Part):
 
         self._api = None
 
-        self.owner.bind("before_request", self.before_request)
+        self.owner.bind("exception", self.exception)
 
-    def before_request(self):
+    def exception(self, exception, is_soft = False):
+        self.delay(
+            self.log_exception,
+            args = [exception],
+            kwargs = dict(is_soft = is_soft)
+        )
+
+    def log_exception(self, exception, is_soft = False):
         api = self._get_api()
 
+        message = hasattr(exception, "message") and\
+            exception.message or str(exception)
+
         payload = dict(
-            message = "There was an error",
+            message = message,
             http = dict(
                 url = self.url_for("location", absolute = True),
                 method = self.request.method,
