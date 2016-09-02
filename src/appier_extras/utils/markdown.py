@@ -57,7 +57,7 @@ class MarkdownParser(object):
     some of the features may not be completely implemented and the
     actual performance of the parser may be low.
 
-    @see: http://daringfireball.net/projects/markdown/syntax
+    :see: http://daringfireball.net/projects/markdown/syntax
     """
 
     def __init__(self):

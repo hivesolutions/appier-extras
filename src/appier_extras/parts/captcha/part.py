@@ -57,7 +57,7 @@ class CaptchaPart(appier.Part):
     Should be used with proper knowledge of the inner workings of
     the captcha mechanism to avoid any security problems.
 
-    @see: http://en.wikipedia.org/wiki/CAPTCHA
+    :see: http://en.wikipedia.org/wiki/CAPTCHA
     """
 
     def routes(self):

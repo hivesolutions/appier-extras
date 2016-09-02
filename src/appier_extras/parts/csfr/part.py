@@ -49,7 +49,7 @@ class CSFRPart(appier.Part):
     Should be used with proper knowledge of the inner workings of
     the captcha mechanism to avoid any security problems.
 
-    @see: http://en.wikipedia.org/wiki/Cross-site_request_forgery
+    :see: http://en.wikipedia.org/wiki/Cross-site_request_forgery
     """
 
     def load(self):
