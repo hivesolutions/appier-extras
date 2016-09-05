@@ -66,18 +66,11 @@ class OpbeatPart(appier.Part):
     def exception(self, exception, is_soft = False):
         log = appier.conf("OPBEAT_LOG", False, cast = bool)
         if not log: return
-        _exc_type, _exc_value, exc_traceback = sys.exc_info()
-        stacktrace = traceback.extract_tb(exc_traceback)
-        self.delay(
-            self.log_exception,
-            args = [exception, stacktrace],
-            kwargs = dict(is_soft = is_soft)
-        )
+        self.log_exception(exception, is_soft = is_soft)
 
     def log_exception(
         self,
         exception,
-        stacktrace,
         level = "error",
         is_soft = False,
         strict = False
@@ -86,6 +79,9 @@ class OpbeatPart(appier.Part):
 
         api = self._get_api()
         if not api: return
+
+        _exc_type, _exc_value, exc_traceback = sys.exc_info()
+        stacktrace = traceback.extract_tb(exc_traceback)
 
         message = hasattr(exception, "message") and\
             exception.message or str(exception)
@@ -126,7 +122,7 @@ class OpbeatPart(appier.Part):
             )
         )
 
-        api.error(payload)
+        self.delay(api.error, args = [payload])
 
     def _get_api(self):
         if self._api: return self._api
