@@ -242,6 +242,8 @@ class Base(appier.Model):
             raise appier.OperationalError(
                 message = "Invalid mime type '%s'" % mime_type
             )
+        args, _varargs, kwargs = appier.legacy.getargspec(callback)[:3]
+        has_header = True if "header" in args or kwargs else False
         if is_unicode:
             data = data.decode(encoding)
             buffer = appier.legacy.StringIO(data)
@@ -253,10 +255,11 @@ class Base(appier.Model):
             quotechar = quotechar,
             quoting = quoting
         )
-        _header = next(csv_reader)
+        header = next(csv_reader)
         for line in csv_reader:
             if not is_unicode: line = [value.decode(encoding) for value in line]
-            callback(line)
+            if has_header: callback(line, header = header)
+            else: callback(line)
 
     def pre_create(self):
         appier.Model.pre_create(self)
