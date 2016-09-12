@@ -127,6 +127,7 @@ class AdminPart(
             (("GET",), "/admin/operations", self.operations),
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/configs", self.list_configs),
+            (("GET",), "/admin/parts", self.list_parts),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/test_email", self.test_email),
@@ -466,6 +467,16 @@ class AdminPart(
             "configs.html.tpl",
             section = "status",
             configs = configs
+        )
+
+    @appier.ensure(token = "admin")
+    def list_parts(self):
+        app = appier.get_app()
+        parts = app.get_parts()
+        return self.template(
+            "parts.html.tpl",
+            section = "status",
+            parts = parts
         )
 
     @appier.ensure(token = "admin")

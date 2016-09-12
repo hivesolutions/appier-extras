@@ -56,6 +56,12 @@
                     </dd>
                 </div>
                 <div class="item">
+                    <dt>Parts</dt>
+                    <dd>
+                        <a href="{{ url_for('admin.list_parts') }}">{{ own.info_dict().parts|length }} parts</a>
+                    </dd>
+                </div>
+                <div class="item">
                     <dt>Libraries</dt>
                     <dd>
                         <a href="{{ url_for('admin.list_libraries') }}">{{ own.info_dict().libraries|length }} libraries</a>
