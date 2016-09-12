@@ -55,7 +55,8 @@ class Event(base.Base):
     )
 
     arguments = appier.field(
-        type = dict
+        type = dict,
+        meta = "longmap"
     )
 
     @classmethod
