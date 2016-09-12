@@ -7,7 +7,7 @@
         <thead>
             <tr class="table-row table-header">
                 <th class="text-left">Part</th>
-                <th class="text-left">Module</th>
+                <th class="text-left">Class</th>
             </tr>
         </thead>
         <tbody class="filter-contents">
