@@ -14,13 +14,9 @@
             {% for part in parts %}
                 <tr class="table-row">
                     <td class="text-left">
-                        <strong>{{ part.name() }}</strong>
+                        <strong>{{ part.name }}</strong>
                     </td>
-                    {% if part.__module__ %}
-                        <td class="text-left">{{ part.__module__ }}.{{ part.__class__.__name__ }}</td>
-                    {% else%}
-                        <td class="text-left">{{ part.__class__.__name__ }}</td>
-                    {% endif %}
+                    <td class="text-left">{{ part.class_name }}</td>
                 </tr>
             {% endfor %}
         </tbody>

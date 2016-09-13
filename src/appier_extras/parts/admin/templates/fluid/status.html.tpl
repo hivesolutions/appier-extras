@@ -3,6 +3,13 @@
 {% block name %}Status{% endblock %}
 {% block style %}no-header{% endblock %}
 {% block content %}
+    {% set models_c = own._attached(own.models_r)|length %}
+    {% set routes_c = own.info_dict().routes %}
+    {% set configs_c = own.info_dict().configs %}
+    {% set parts_c = own.info_dict().parts|length %}
+    {% set libaries_c = own.info_dict().libraries|length %}
+    {% set sessions_c = request.session_c.count() %}
+    {% set counters_c = own._counters().count() %}
     <div class="show-panel">
         <div class="panel-header">
             <img class="image square no-border" src="{{ url_for('admin', filename = 'images/logo_96.png') }}" />
@@ -41,30 +48,31 @@
                 </div>
                 <div class="item">
                     <dt>Models</dt>
-                    <dd>{{ own._attached(own.models_r)|length }} models</dd>
+                    <dd>{{ models_c }} {% if models_c == 1 %}model{% else %}models{% endif %}</dd>
                 </div>
                 <div class="item">
                     <dt>Routes</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_routes') }}">{{ own.info_dict().routes }} routes</a>
+                        <a href="{{ url_for('admin.list_routes') }}">{{ routes_c }} {% if routes_c == 1 %}route{% else %}routes{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">
                     <dt>Configuration</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_configs') }}">{{ own.info_dict().configs }} items</a>
+                        <a href="{{ url_for('admin.list_configs') }}">{{ configs_c }} {% if configs_c == 1 %}item{% else %}items{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">
+
                     <dt>Parts</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_parts') }}">{{ own.info_dict().parts|length }} parts</a>
+                        <a href="{{ url_for('admin.list_parts') }}">{{ parts_c }} {% if parts_c == 1 %}part{% else %}parts{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">
                     <dt>Libraries</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_libraries') }}">{{ own.info_dict().libraries|length }} libraries</a>
+                        <a href="{{ url_for('admin.list_libraries') }}">{{ libaries_c }} {% if libaries_c == 1 %}library{% else %}libraries{% endif %}</a>
                     </dd>
                 </div>
                 <div class="separator"></div>
@@ -75,13 +83,13 @@
                 <div class="item">
                     <dt>Session count</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_sessions') }}">{{ request.session_c.count() }} sessions</a>
+                        <a href="{{ url_for('admin.list_sessions') }}">{{ sessions_c }} {% if sessions_c == 1 %}session{% else %}sessions{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">
                     <dt>Counters</dt>
                     <dd>
-                        <a href="{{ url_for('admin.list_counters') }}">{{ own._counters().count() }} counters</a>
+                        <a href="{{ url_for('admin.list_counters') }}">{{ counters_c }} {% if counters_c == 1 %}counter{% else %}counters{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">
