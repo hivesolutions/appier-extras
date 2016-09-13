@@ -104,6 +104,8 @@ class AdminPart(
         self.owner.lib_loaders["jinja2"] = self._jinja2_loader
         self.owner.lib_loaders["ssl"] = self._ssl_loader
 
+        if self.owner.allow_headers: self.owner.allow_headers += ", X-Secret-Key"
+
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:
             if not model_c.is_attached(): continue
