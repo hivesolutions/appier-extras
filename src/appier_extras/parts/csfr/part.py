@@ -60,7 +60,7 @@ class CSFRPart(appier.Part):
 
     def csfr(self, scope = None, name = "csfr_token"):
         token = self._gen_token(scope = scope)
-        return self.owner.escape_jinja(
+        return self.owner.escape_template(
             "<input type=\"hidden\" name=\"%s\" value=\"%s\"/>" %\
             (name, token)
         )
