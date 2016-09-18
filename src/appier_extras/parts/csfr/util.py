@@ -49,7 +49,7 @@ def csfr_protect(scope = None):
         def interceptor(self, *args, **kwargs):
             token = self.field("csfr_token", None)
             csfr_ensure(self, token, scope = scope)
-            return function(self, *args, **kwargs)
+            return appier.call_safe(function, self, *args, **kwargs)
         return interceptor
 
     return decorator
