@@ -64,12 +64,14 @@ class SematextPart(appier.Part):
         if not log: return
         appier.ensure_pip("sematext", package = "sematext_api")
         api = self._get_api()
-        sematext_handler = handler.SematextHandler(
+        handler_sematext = handler.SematextHandler(
+            owner = self,
             api = api,
             buffer_size = buffer_size
         )
-        sematext_handler.setLevel(self.owner.level)
-        self.logger.addHandler(sematext_handler)
+        handler_sematext.setLevel(self.owner.level)
+        handler_sematext.setFormatter(self.owner.formatter)
+        self.logger.addHandler(handler_sematext)
 
     def _get_api(self):
         if self._api: return self._api

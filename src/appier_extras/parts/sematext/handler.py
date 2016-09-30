@@ -37,23 +37,28 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import os
+import socket
 import logging
 import datetime
+import threading
 
 class SematextHandler(logging.Handler):
 
-    def __init__(self, level = logging.NOTSET, api = None, buffer_size = 128):
+    def __init__(
+        self,
+        level = logging.NOTSET,
+        owner = None,
+        api = None,
+        buffer_size = 128
+    ):
         logging.Handler.__init__(self, level = level)
+        self.owner = owner
         self.api = api
         self.buffer_size = buffer_size
         self.buffer = []
 
     def emit(self, record):
-        # formats the current record according to the defined
-        # logging rules so that we can used the resulting message
-        # for any logging purposes
-        message = self.format(record)
-
         # retrieves the current date time value as an utc value
         # and then formats it according to the provided format string
         now = datetime.datetime.utcnow()
@@ -64,7 +69,14 @@ class SematextHandler(logging.Handler):
         # proper structure ready to be debugged
         log = {
             "@timestamp" : now_s,
-            "message" : message
+            "logger" : record.name,
+            "message" : record.msg,
+            "level" : record.levelname,
+            "path" : record.pathname,
+            "lineno" : record.lineno,
+            "host" : socket.gethostname(),
+            "tid" : threading.current_thread().ident,
+            "pid" : os.getpid() if hasattr(os, "getpid") else -1,
         }
 
         # adds the new log item to the buffer so that it's properly
@@ -77,5 +89,8 @@ class SematextHandler(logging.Handler):
 
     def flush(self):
         logging.Handler.flush(self)
-        self.api.log_bulk("default", self.buffer)
-        del self.buffer[:]
+        app = self.owner.owner
+        buffer = self.buffer
+        call_log = lambda: self.api.log_bulk("default", buffer)
+        app.delay(call_log)
+        self.buffer = []
