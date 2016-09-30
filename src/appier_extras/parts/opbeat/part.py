@@ -45,9 +45,9 @@ import appier
 class OpbeatPart(appier.Part):
     """
     Modular part class that provides the system to handle Opbeat
-    API request automatically on Appier.
+    API requests automatically on Appier.
 
-    This part used the Opbeat API client to run all the remote
+    This part uses the Opbeat API client to run all the remote
     calls accordingly.
 
     :see: http://opbeat.com
