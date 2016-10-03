@@ -57,6 +57,7 @@ class SematextHandler(logging.Handler):
         self.api = api
         self.buffer_size = buffer_size
         self.buffer = []
+        self._schedule()
 
     def emit(self, record):
         # retrieves the current date time value as an utc value
@@ -87,10 +88,18 @@ class SematextHandler(logging.Handler):
         should_flush = len(self.buffer) >= self.buffer_size
         if should_flush: self.flush()
 
-    def flush(self):
+    def flush(self, force = False):
         logging.Handler.flush(self)
         app = self.owner.owner
         buffer = self.buffer
+        if not buffer and not force: return
         call_log = lambda: self.api.log_bulk("default", buffer)
         app.delay(call_log)
         self.buffer = []
+
+    def _schedule(self, timeout = 30):
+        app = self.owner.owner
+        def tick():
+            self.flush()
+            app.schedule(tick, timeout = timeout)
+        app.schedule(tick, timeout = timeout)
