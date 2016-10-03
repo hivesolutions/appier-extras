@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2016 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import logging
+
 import appier
 
 from . import handler
@@ -58,7 +60,7 @@ class SematextPart(appier.Part):
         self._api = None
         self.add_handler()
 
-    def add_handler(self,):
+    def add_handler(self, set_default = True):
         log = appier.conf("SEMATEXT_LOG", False, cast = bool)
         buffer_size = appier.conf("SEMATEXT_BUFFER_SIZE", 128, cast = int)
         if not log: return
@@ -72,6 +74,9 @@ class SematextPart(appier.Part):
         handler_sematext.setLevel(self.owner.level)
         handler_sematext.setFormatter(self.owner.formatter)
         self.logger.addHandler(handler_sematext)
+        if not set_default: return
+        logger = logging.getLogger()
+        logger.addHandler(handler_sematext)
 
     def _get_api(self):
         if self._api: return self._api
