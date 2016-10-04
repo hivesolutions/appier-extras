@@ -76,7 +76,7 @@ class SematextHandler(logging.Handler):
         log = {
             "@timestamp" : now_s,
             "logger" : record.name,
-            "message" : record.msg,
+            "message" : record.message,
             "level" : record.levelname,
             "path" : record.pathname,
             "lineno" : record.lineno,
