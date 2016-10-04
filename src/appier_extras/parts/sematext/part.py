@@ -63,16 +63,19 @@ class SematextPart(appier.Part):
     def add_handler(self, set_default = True):
         log = appier.conf("SEMATEXT_LOG", False, cast = bool)
         buffer_size = appier.conf("SEMATEXT_BUFFER_SIZE", 128, cast = int)
+        timeout = appier.conf("SEMATEXT_TIMEOUT", 30, cast = int)
         if not log: return
         appier.ensure_pip("sematext", package = "sematext_api")
         api = self._get_api()
         handler_sematext = handler.SematextHandler(
             owner = self,
             api = api,
-            buffer_size = buffer_size
+            buffer_size = buffer_size,
+            timeout = timeout
         )
         handler_sematext.setLevel(self.owner.level)
         handler_sematext.setFormatter(self.owner.formatter)
+        self.owner.handlers.append(handler_sematext)
         self.logger.addHandler(handler_sematext)
         if not set_default: return
         logger = logging.getLogger()

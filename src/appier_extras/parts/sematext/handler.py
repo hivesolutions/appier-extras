@@ -50,14 +50,15 @@ class SematextHandler(logging.Handler):
         level = logging.NOTSET,
         owner = None,
         api = None,
-        buffer_size = 128
+        buffer_size = 128,
+        timeout = 30
     ):
         logging.Handler.__init__(self, level = level)
         self.owner = owner
         self.api = api
         self.buffer_size = buffer_size
         self.buffer = []
-        self._schedule()
+        self._schedule(timeout = timeout)
 
     def emit(self, record):
         # retrieves the current date time value as an utc value
@@ -99,7 +100,9 @@ class SematextHandler(logging.Handler):
 
     def _schedule(self, timeout = 30):
         app = self.owner.owner
+
         def tick():
             self.flush()
             app.schedule(tick, timeout = timeout)
+
         app.schedule(tick, timeout = timeout)
