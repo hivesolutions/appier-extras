@@ -61,6 +61,10 @@ class SematextHandler(logging.Handler):
         self._schedule(timeout = timeout)
 
     def emit(self, record):
+        # verifies if the api structure is defined and set and if
+        # that's not the case returns immediately
+        if not self.api: return
+
         # retrieves the current date time value as an utc value
         # and then formats it according to the provided format string
         now = datetime.datetime.utcnow()
@@ -91,10 +95,28 @@ class SematextHandler(logging.Handler):
 
     def flush(self, force = False):
         logging.Handler.flush(self)
+
+        # verifies if the api structure is defined and set and if
+        # that's not the case returns immediately
+        if not self.api: return
+
+        # retrieves some references from the current instance that
+        # are going to be used in the flush operation
         app = self.owner.owner
         buffer = self.buffer
+
+        # verifies if the buffer is empty and if that's the case and
+        # the force flag is not set, returns immediately
         if not buffer and not force: return
+
+        # creates the lambda function that is going to be used for the
+        # bulk flushing operation of the buffer, this is going to be
+        # called on a delayed (async fashion) so that no blocking occurs
+        # in the current logical flow
         call_log = lambda: self.api.log_bulk("default", buffer)
+
+        # schedules the call log operation and then empties the buffer
+        # so that it's no longer going to be used (flushed)
         app.delay(call_log)
         self.buffer = []
 
