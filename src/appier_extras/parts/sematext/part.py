@@ -65,7 +65,6 @@ class SematextPart(appier.Part):
         buffer_size = appier.conf("SEMATEXT_BUFFER_SIZE", 128, cast = int)
         timeout = appier.conf("SEMATEXT_TIMEOUT", 30, cast = int)
         if not log: return
-        appier.ensure_pip("sematext", package = "sematext_api")
         api = self._get_api()
         handler_sematext = handler.SematextHandler(
             owner = self,
@@ -83,7 +82,7 @@ class SematextPart(appier.Part):
 
     def _get_api(self):
         if self._api: return self._api
-        try: import sematext
+        try: sematext = appier.ensure_pip("sematext", package = "sematext_api")
         except: return None
         self._api = sematext.Api()
         return self._api
