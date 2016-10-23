@@ -5,6 +5,7 @@
         {% block head %}
             {% include "admin/content_type.html.tpl" %}
             {% include "admin/includes.html.tpl" %}
+            {% include "admin/meta.html.tpl" %}
             <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
