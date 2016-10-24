@@ -10,19 +10,19 @@
         <form action="{{ url_for('admin.create_account') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">
-                <input type="text" class="text-field small focus" name="username" value="{{ account.username }}"
+                <input type="text" class="text-field full focus" name="username" value="{{ account.username }}"
                        placeholder="username" data-error="{{ errors.username }}" />
             </div>
             <div class="input">
-                <input type="text" class="text-field small" name="email" value="{{ account.email }}"
+                <input type="text" class="text-field full" name="email" value="{{ account.email }}"
                        placeholder="email" data-error="{{ errors.email }}"/>
             </div>
             <div class="input">
-                <input type="password" class="text-field small" name="password" placeholder="password"
+                <input type="password" class="text-field full" name="password" placeholder="password"
                         data-error="{{ errors.password }}" />
             </div>
             <div class="input">
-                <input type="password" class="text-field small" name="password_confirm" placeholder="confirm password"
+                <input type="password" class="text-field full" name="password_confirm" placeholder="confirm password"
                        data-error="{{ errors.password_confirm }}" />
             </div>
             <div class="buttons">

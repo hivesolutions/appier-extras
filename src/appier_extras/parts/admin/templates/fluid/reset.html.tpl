@@ -11,11 +11,11 @@
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <input type="hidden" name="reset_token" value="{{ reset_token }}" />
             <div class="input">
-                <input type="password" class="text-field small focus" name="password"
+                <input type="password" class="text-field full focus" name="password"
                        value="{{ password }}" placeholder="password" />
             </div>
             <div class="input">
-                <input type="password" class="text-field small" name="password_confirm"
+                <input type="password" class="text-field full" name="password_confirm"
                        value="{{ password_confirm }}" placeholder="confirm password" />
             </div>
             <div class="buttons">

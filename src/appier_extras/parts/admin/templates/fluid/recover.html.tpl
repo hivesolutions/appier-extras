@@ -10,7 +10,7 @@
         <form action="{{ url_for('admin.recover_do') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">
-                <input type="text" class="text-field small focus" name="identifier"
+                <input type="text" class="text-field full focus" name="identifier"
                        value="{{ identifier }}" placeholder="username or email" />
             </div>
             <div class="buttons">
