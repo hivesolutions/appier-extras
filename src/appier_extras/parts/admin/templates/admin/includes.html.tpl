@@ -5,15 +5,15 @@
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
 {% if theme_r %}
     {% if theme_r == 'default' %}
-        <link rel="stylesheet" type="text/css" href="http://localhost:9090/css/layout.css" />
+        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
     {% else %}
-        <link rel="stylesheet" type="text/css" href="http://localhost:9090/css/layout.{{ theme_r }}.css" />
+        <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.{{ theme_r }}.css" />
     {% endif %}
 {% else %}
-    <link rel="stylesheet" type="text/css" href="http://localhost:9090/css/layout.modern.css" />
+    <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
 {% endif %}
-<link rel="stylesheet" type="text/css" href="http://localhost:9090/css/layout.extras.css" />
-<link rel="stylesheet" type="text/css" href="http://localhost:9090/css/layout.data.css" />
+<link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.extras.css" />
+<link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.data.css" />
 <link rel="stylesheet" type="text/css" href="{{ url_for('admin', filename = 'css/layout.css') }}" />
 
 <!-- favicon inclusion -->
@@ -31,9 +31,9 @@
 {% endif %}
 {% if own.is_devel() %}
     <script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux.js"></script>
-    <script type="text/javascript" src="http://localhost:9090/js/layout.js"></script>
+    <script type="text/javascript" src="//libs.bemisc.com/layout/js/layout.js"></script>
 {% else %}
     <script type="text/javascript" src="//libs.bemisc.com/uxf/js/ux-min.js"></script>
-    <script type="text/javascript" src="http://localhost:9090/js/layout-min.js"></script>
+    <script type="text/javascript" src="//libs.bemisc.com/layout/js/layout-min.js"></script>
 {% endif %}
 <script type="text/javascript" src="{{ url_for('admin', filename = 'js/main.js') }}"></script>
