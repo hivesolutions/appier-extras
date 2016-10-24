@@ -10,7 +10,7 @@
         </div>
         <div class="separator-horizontal"></div>
         <div class="quote error">
-            {{ error }}
+            {{ error|default("", True) }}
         </div>
         <form enctype="multipart/form-data" action="{{ url_for('admin.database_import_do') }}"
               method="post" class="form small">

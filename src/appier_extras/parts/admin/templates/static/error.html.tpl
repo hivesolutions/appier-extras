@@ -8,7 +8,7 @@
     </div>
     <div class="separator-horizontal"></div>
     <div class="quote error">
-        {{ error }}
+        {{ error|default("", True) }}
     </div>
     {% if lines %}
         <div class="quote">

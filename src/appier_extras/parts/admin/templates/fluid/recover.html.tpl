@@ -5,7 +5,7 @@
         <h1>Recover password</h1>
         <h3>Use your username or email</h3>
         <div class="quote error">
-            {{ error }}
+            {{ error|default("", True) }}
         </div>
         <form action="{{ url_for('admin.recover_do') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />

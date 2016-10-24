@@ -5,7 +5,7 @@
         <h1>Sign up</h1>
         <h3>Create you new account on <strong>{{ owner.description }}</strong></h3>
         <div class="quote error">
-            {{ error }}
+            {{ error|default("", True) }}
         </div>
         <form action="{{ url_for('admin.create_account') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />

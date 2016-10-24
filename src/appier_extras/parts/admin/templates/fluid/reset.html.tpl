@@ -5,7 +5,7 @@
         <h1>Reset password</h1>
         <h3>Define a new password for you account</h3>
         <div class="quote error">
-            {{ error }}
+            {{ error|default("", True) }}
         </div>
         <form action="{{ url_for('admin.reset_do') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
