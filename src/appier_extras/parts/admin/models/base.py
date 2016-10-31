@@ -267,8 +267,8 @@ class Base(appier.Model):
             else: callback(line)
 
     @classmethod
-    def _inlinify(cls, data):
-        engine = appier.conf("INLINER_ENGINE", None)
+    def _inlinify(cls, data, engine = None):
+        engine = engine or appier.conf("INLINER_ENGINE", None) 
         if not engine: return data
         method = getattr(cls, "_inlinify_" + engine)
         return method(data)
