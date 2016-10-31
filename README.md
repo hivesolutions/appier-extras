@@ -38,6 +38,7 @@ You can now go to [http://localhost:8080/admin](http://localhost:8080/admin) and
 ## Learn more
 
 * [Models](doc/models.md) - extra model features
+* [Configuration](doc/configuration.md) - how to configure Appier Extras
 
 ## License
 
