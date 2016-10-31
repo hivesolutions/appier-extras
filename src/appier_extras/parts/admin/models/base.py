@@ -191,11 +191,13 @@ class Base(appier.Model):
         bulk = appier.conf("BULK_EMAIL", False, cast = bool)
         unsubscribe = appier.conf("UNSUBSCRIBE_EMAIL", False, cast = bool)
         logo = appier.conf("LOGO_EMAIL", False, cast = bool)
+        inline = appier.conf("INLINE_EMAIL", False, cast = bool)
         sender = kwargs.pop("sender", sender)
         base_url = kwargs.pop("base_url", base_url)
         bulk = kwargs.pop("bulk", bulk)
         unsubscribe = kwargs.pop("unsubscribe", unsubscribe)
         logo = kwargs.pop("logo", logo)
+        inline = kwargs.pop("inline", inline)
         kwargs["owner"] = owner
         settings = dict(
             bulk = bulk,
@@ -206,11 +208,14 @@ class Base(appier.Model):
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
         if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
+        html_handler = lambda html: cls._inlinify(html)
+        html_handler = html_handler if inline else None
         owner.email(
             sender = sender,
             base_url = base_url,
             settings = settings,
             headers = headers,
+            html_handler = html_handler,
             *args,
             **kwargs
         )
@@ -260,6 +265,23 @@ class Base(appier.Model):
             if not is_unicode: line = [value.decode(encoding) for value in line]
             if has_header: callback(line, header = header)
             else: callback(line)
+
+    @classmethod
+    def _inlinify(cls, data):
+        engine = appier.conf("INLINER_ENGINE", None)
+        if not engine: return data
+        method = getattr(cls, "_inlinify_" + engine)
+        return method(data)
+
+    @classmethod
+    def _inlinify_premailer(cls, data):
+        premailer = appier.import_pip("premailer")
+        return premailer.transform(data)
+
+    @classmethod
+    def _inlinify_toronado(cls, data):
+        toronado = appier.import_pip("toronado")
+        return toronado.from_string(data)
 
     def pre_create(self):
         appier.Model.pre_create(self)
