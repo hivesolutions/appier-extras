@@ -134,6 +134,8 @@ class AdminPart(
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/test_email", self.test_email),
             (("GET",), "/admin/operations/test_event", self.test_event),
+            (("GET",), "/admin/sessions/me", self.show_session_me),
+            (("GET",), "/admin/sessions/me/delete", self.delete_session_me),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
@@ -569,6 +571,25 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def delete_session(self, sid):
         sid = str(sid)
+        self.request.session_c.expire(sid)
+        return self.redirect(
+            self.url_for(
+                "admin.list_sessions",
+                message = "Session deleted with success"
+            )
+        )
+
+    @appier.ensure(token = "admin")
+    def show_session_me(self):
+        sid = self.session.sid
+        return self.template(
+            "session.html.tpl",
+            section = "status",
+            session_s = self.request.session_c.get_s(sid)
+        )
+
+    def delete_session_me(self):
+        sid = self.session.sid
         self.request.session_c.expire(sid)
         return self.redirect(
             self.url_for(
