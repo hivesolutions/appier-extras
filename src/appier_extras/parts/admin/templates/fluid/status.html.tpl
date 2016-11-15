@@ -40,7 +40,7 @@
                 </div>
                 <div class="item">
                     <dt>Server</dt>
-                    <dd>{{ own.info_dict().server }}</dd>
+                    <dd>{{ own.info_dict().server }} {{ own.info_dict().server_version }}</dd>
                 </div>
                 <div class="item">
                     <dt>Appier</dt>
