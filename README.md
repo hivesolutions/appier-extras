@@ -1,4 +1,4 @@
-# [![Appier Framework Extras](res/logo.png)](http://appier_extras.hive.pt)
+# [![Appier Framework Extras](res/logo.png)](http://appier-extras.hive.pt)
 
 **Appier on Steroids**
 
