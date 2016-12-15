@@ -70,6 +70,8 @@
         {{ value[:60] + " ..." if value|length > 64 else value }}
     {% elif meta == "bool" %}
         <span class="tag {{ value.lower() }}">{{ value }}</span>
+    {% elif meta == "image_url" %}
+        <img class="image lightbox-animated" src="{{ value }}" data-lightbox_path="{{value}}">
     {% else %}
         <span>{{ value }}</span>
     {% endif %}
