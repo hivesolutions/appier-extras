@@ -182,10 +182,32 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(account.reset_token, reset_token)
         self.assertNotEqual(account.confirmation_token, None)
 
-        appier_extras.admin.Account.reset(reset_token, "passwordnew", "passwordnew")
+        appier_extras.admin.Account.reset(
+            reset_token,
+            "passwordnew",
+            "passwordnew"
+        )
         account = account.reload(rules = False)
 
         self.assertEqual(account.enabled, True)
+        self.assertEqual(account.reset_token, None)
+        self.assertEqual(account.confirmation_token, None)
+        self.assertEqual(account.password, account.encrypt("passwordnew"))
+
+        account.enabled = False
+        account.save()
+
+        reset_token = account.recover_s()
+        account = account.reload(rules = False)
+        appier_extras.admin.Account.reset(
+            reset_token,
+            "passwordnew",
+            "passwordnew",
+            confirm = False
+        )
+        account = account.reload(rules = False)
+
+        self.assertEqual(account.enabled, False)
         self.assertEqual(account.reset_token, None)
         self.assertEqual(account.confirmation_token, None)
         self.assertEqual(account.password, account.encrypt("passwordnew"))
