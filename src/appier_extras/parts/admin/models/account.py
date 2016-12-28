@@ -338,6 +338,15 @@ class Account(base.Base):
         return account
 
     @classmethod
+    def confirm(cls, confirmation_token, send_email = False):
+        # validates the current account and token for confirmation and
+        # if that's valid runs the confirm operation and returns the account
+        # associated to the caller method
+        account = cls.validate_confirmation(confirmation_token)
+        account.confirm_s(send_email = send_email)
+        return account
+
+    @classmethod
     def recover(cls, identifier, send_email = False):
         # verifies if a valid identifier has been provided because that value
         # is required for the proper account recover process to be executed
@@ -379,12 +388,6 @@ class Account(base.Base):
         account = cls.validate_reset(reset_token)
         if confirm: account.confirm_s()
         account.reset_s(password, password_confirm)
-        return account
-
-    @classmethod
-    def confirm(cls, confirmation_token, send_email = False):
-        account = cls.validate_confirmation(confirmation_token)
-        account.confirm_s(send_email = send_email)
         return account
 
     @classmethod
