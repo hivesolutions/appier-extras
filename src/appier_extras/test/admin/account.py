@@ -131,3 +131,61 @@ class AccountTest(unittest.TestCase):
             appier.OperationalError,
             lambda: appier_extras.admin.Account.login("username", "PASSWORD")
         )
+
+    def test_confirm(self):
+        account = appier_extras.admin.Account()
+        account.username = "username"
+        account.email = "username@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        self.assertEqual(account.enabled, True)
+        self.assertNotEqual(account.confirmation_token, None)
+
+        account = account.get(username = "username", rules = False)
+        account.enabled = False
+        account.save()
+
+        appier_extras.admin.Account.confirm(account.confirmation_token)
+        account = account.reload(rules = False)
+
+        self.assertEqual(account.enabled, True)
+        self.assertEqual(account.confirmation_token, None)
+        self.assertEqual(account.password, account.encrypt("password"))
+
+    def test_reset(self):
+        account = appier_extras.admin.Account()
+        account.username = "username"
+        account.email = "username@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        self.assertEqual(account.enabled, True)
+        self.assertEqual(account.reset_token, None)
+        self.assertNotEqual(account.confirmation_token, None)
+
+        account = account.get(username = "username", rules = False)
+        account.enabled = False
+        account.save()
+
+        self.assertEqual(account.enabled, False)
+        self.assertEqual(account.reset_token, None)
+        self.assertNotEqual(account.confirmation_token, None)
+
+        reset_token = account.recover_s()
+        account = account.reload(rules = False)
+
+        self.assertEqual(account.enabled, False)
+        self.assertNotEqual(account.reset_token, None)
+        self.assertEqual(account.reset_token, reset_token)
+        self.assertNotEqual(account.confirmation_token, None)
+
+        appier_extras.admin.Account.reset(reset_token, "passwordnew", "passwordnew")
+        account = account.reload(rules = False)
+
+        self.assertEqual(account.enabled, True)
+        self.assertEqual(account.reset_token, None)
+        self.assertEqual(account.confirmation_token, None)
+        self.assertEqual(account.password, account.encrypt("passwordnew"))

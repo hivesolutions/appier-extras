@@ -375,8 +375,9 @@ class Account(base.Base):
         return account.recover_s(send_email = send_email)
 
     @classmethod
-    def reset(cls, reset_token, password, password_confirm):
+    def reset(cls, reset_token, password, password_confirm, confirm = True):
         account = cls.validate_reset(reset_token)
+        if confirm: account.confirm_s()
         account.reset_s(password, password_confirm)
         return account
 
