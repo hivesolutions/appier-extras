@@ -204,8 +204,8 @@ class AdminPart(
         )
 
     def before_request(self):
-        key = self.get_field("skey", None)
-        key = self.get_field("secret_key", key)
+        key = self.field("skey", None)
+        key = self.field("secret_key", key)
         key = self.request.get_header("X-Secret-Key", key)
         if not key: return
         try: account = models.Account.login_key(key)
