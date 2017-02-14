@@ -759,7 +759,11 @@ class AdminPart(
         )
         page = model.paginate(**object)
         object = self._sort(object, model)
-        entities = model.find(meta = True, **object)
+        entities = model.find(
+            eager_l = False,
+            meta = True,
+            **object
+        )
         return self.template(
             "models/show.html.tpl",
             section = "models",
@@ -770,16 +774,28 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_model_json(self, model):
+        eager_l = self.field("eager_l", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
         object = appier.get_object(alias = True, find = True)
-        entities = model.find(meta = meta, map = True, **object)
+        entities = model.find(
+            eager_l = eager_l,
+            meta = meta,
+            map = True,
+            **object
+        )
         return entities
 
     @appier.ensure(token = "admin")
     def show_model_csv(self, model):
+        eager_l = self.field("eager_l", False, cast = bool)
+        meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
-        entities = model.find(map = True)
+        entities = model.find(
+            eager_l = eager_l,
+            meta = meta,
+            map = True
+        )
         result = appier.serialize_csv(entities)
         self.content_type("text/csv")
         return result
