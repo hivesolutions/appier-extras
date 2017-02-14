@@ -759,11 +759,7 @@ class AdminPart(
         )
         page = model.paginate(**object)
         object = self._sort(object, model)
-        entities = model.find(
-            eager_l = False,
-            meta = True,
-            **object
-        )
+        entities = model.find(meta = True, **object)
         return self.template(
             "models/show.html.tpl",
             section = "models",
