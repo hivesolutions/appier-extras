@@ -932,10 +932,12 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_entity_json(self, model, _id):
+        eager_l = self.field("eager_l", True, cast = bool)
         rules = self.field("rules", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
         entity = model.get(
+            eager_l = eager_l,
             rules = rules,
             meta = meta,
             map = True,
