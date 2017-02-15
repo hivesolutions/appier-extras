@@ -60,14 +60,14 @@ class Base(appier.Model):
 
     id = appier.field(
         type = int,
-        index = True,
+        index = "all",
         increment = True,
         safe = True
     )
 
     enabled = appier.field(
         type = bool,
-        index = True,
+        index = "all",
         initial = True,
         meta = "enum",
         enum = ENABLE_S
@@ -80,7 +80,7 @@ class Base(appier.Model):
 
     created = appier.field(
         type = int,
-        index = True,
+        index = "all",
         safe = True,
         immutable = True,
         meta = "datetime"
@@ -88,7 +88,7 @@ class Base(appier.Model):
 
     modified = appier.field(
         type = int,
-        index = True,
+        index = "all",
         safe = True,
         meta = "datetime"
     )

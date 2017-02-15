@@ -70,12 +70,12 @@ class Account(base.Base):
     ROOT_EMAIL = "root@root.com"
 
     username = appier.field(
-        index = True,
+        index = "all",
         default = True
     )
 
     email = appier.field(
-        index = True,
+        index = "all",
         immutable = True,
         meta = "email"
     )
@@ -104,27 +104,27 @@ class Account(base.Base):
     )
 
     facebook_id = appier.field(
-        index = True,
+        index = "hashed",
         safe = True
     )
 
     twitter_username = appier.field(
-        index = True,
+        index = "hashed",
         safe = True
     )
 
     google_id = appier.field(
-        index = True,
+        index = "hashed",
         safe = True
     )
 
     live_id = appier.field(
-        index = True,
+        index = "hashed",
         safe = True
     )
 
     github_login = appier.field(
-        index = True,
+        index = "hashed",
         safe = True
     )
 

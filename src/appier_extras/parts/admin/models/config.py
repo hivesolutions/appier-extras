@@ -44,12 +44,12 @@ from appier_extras.parts.admin.models import base
 class Config(base.Base):
 
     key = appier.field(
-        index = True,
+        index = "all",
         default = True
     )
 
     value = appier.field(
-        index = True
+        index = "all"
     )
 
     @classmethod

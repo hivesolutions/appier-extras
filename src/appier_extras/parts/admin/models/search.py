@@ -44,16 +44,16 @@ from appier_extras.parts.admin.models import base
 class Search(base.Base):
 
     token = appier.field(
-        index = True,
+        index = "all",
         default = True
     )
 
     target_id = appier.field(
-        index = True
+        index = "hashed"
     )
 
     target_cls = appier.field(
-        index = True
+        index = "hashed"
     )
 
     target_title = appier.field()

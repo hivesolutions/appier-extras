@@ -45,11 +45,11 @@ class Snapshot(base.Base):
 
     target_id = appier.field(
         type = int,
-        index = True
+        index = "all"
     )
 
     target_cls = appier.field(
-        index = True
+        index = "hashed"
     )
 
     model_data = appier.field(

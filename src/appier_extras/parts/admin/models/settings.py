@@ -44,45 +44,43 @@ from appier_extras.parts.admin.models import base
 class Settings(base.Base):
 
     facebook_token = appier.field(
-        index = True
+        index = "hashed"
     )
 
     github_token = appier.field(
-        index = True
+        index = "hashed"
     )
 
     google_token = appier.field(
-        index = True
+        index = "hashed"
     )
 
     google_refresh_token = appier.field(
-        index = True
+        index = "hashed"
     )
 
     google_email = appier.field(
-        index = True
+        index = "hashed"
     )
 
     google_scope = appier.field(
-        index = True,
         type = list
     )
 
     live_token = appier.field(
-        index = True
+        index = "hashed"
     )
 
     twitter_token = appier.field(
-        index = True
+        index = "hashed"
     )
 
     twitter_token_secret = appier.field(
-        index = True
+        index = "hashed"
     )
 
     extra = appier.field(
-        type = dict,
-        index = True
+        type = dict
     )
 
     @classmethod

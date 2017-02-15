@@ -46,12 +46,12 @@ from appier_extras.parts.admin.models import base
 class Event(base.Base):
 
     name = appier.field(
-        index = True,
+        index = "all",
         default = True
     )
 
     handler = appier.field(
-        index = True
+        index = "all"
     )
 
     arguments = appier.field(
