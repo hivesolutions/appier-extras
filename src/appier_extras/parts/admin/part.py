@@ -132,6 +132,7 @@ class AdminPart(
             (("GET",), "/admin/parts", self.list_parts),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/operations/build_index", self.build_index),
+            (("GET",), "/admin/operations/build_index_db", self.build_index_db),
             (("GET",), "/admin/operations/test_email", self.test_email),
             (("GET",), "/admin/operations/test_event", self.test_event),
             (("GET",), "/admin/sessions", self.list_sessions),
@@ -519,6 +520,18 @@ class AdminPart(
             self.url_for(
                 "admin.operations",
                 message = "Search index built with success"
+            )
+        )
+
+    @appier.ensure(token = "admin")
+    def build_index_db(self):
+        for model in self._attached(self.models_r):
+            model._destroy_indexes()
+            model._build_indexes()
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Database index built with success"
             )
         )
 
