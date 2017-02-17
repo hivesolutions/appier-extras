@@ -21,7 +21,7 @@
     {% set is_default = value == default %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
-        {% set type = info["type"] %}
+        {% set type = info.type %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
         {% if _value and _value._id %}
@@ -82,7 +82,7 @@
     {% set disabled_s = "\" data-disabled=\"1" if disabled else "" %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
-        {% set type = info["type"] %}
+        {% set type = info.type %}
         {% set target = type._target() %}
         {% set _name = type._name %}
         {% set _default = target.default()|default('name') %}
@@ -96,7 +96,7 @@
         </div>
     {% elif meta == "references" %}
         {% set info = cls[name] %}
-        {% set type = info["type"] %}
+        {% set type = info.type %}
         {% set target = type._target() %}
         {% set _name = type._name %}
         {% set _default = target.default()|default('name') %}
@@ -118,7 +118,7 @@
         </div>
     {% elif meta == "enum" %}
         {% set info = cls[name] %}
-        {% set enum = info["enum"] %}
+        {% set enum = info.enum %}
         <div class="drop-field drop-field-select {{ disabled_s|safe }}"
                data-error="{{ error }}" data-display_attribute="name"
                data-value_attribute="internal" data-number_options="-1">
