@@ -35,7 +35,7 @@
             {% set counter = [] %}
             {% for item in _value %}
                 {% set model = item.resolve() %}
-                {% if model != None %}
+                {% if not model == None %}
                     {% if counter|length > 0 %},{% endif %}
                     <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
                     {% do counter.append(1) %}
@@ -108,7 +108,7 @@
                     {% set model = item.resolve() %}
                     {% set logic = item[_name]|default('') %}
                     {% set display = item[_default]|default('') %}
-                    {% if model != None %}
+                    {% if not model == None %}
                         <li data-value="{{ logic }}">{{ display }}</li>
                     {% endif %}
                 {% endfor %}
