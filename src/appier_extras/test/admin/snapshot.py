@@ -47,7 +47,7 @@ from . import mock
 class SnapshotTest(unittest.TestCase):
 
     def setUp(self):
-        self.app = appier.App()
+        self.app = appier.App(session_c = appier.MemorySession)
         self.app._register_models_m(mock, "Mocks")
 
     def tearDown(self):
