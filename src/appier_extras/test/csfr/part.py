@@ -46,7 +46,8 @@ class CSFRPartTest(unittest.TestCase):
 
     def setUp(self):
         self.app = appier.App(
-            parts = (appier_extras.CSFRPart,)
+            parts = (appier_extras.CSFRPart,),
+            session_c = appier.MemorySession
         )
         self.app.csfr_limit = 0
 
