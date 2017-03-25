@@ -33,9 +33,9 @@
     {% endif %}
     <div class="separator"></div>
     {% for _section, models in models_d.items() %}
-        {% set attached = own._attached(models) %}
-        {% if attached|length > 0 %}
-            {% for _model in models %}
+        {% set concrete = own._concrete(models) %}
+        {% if concrete|length > 0 %}
+            {% for _model in concrete %}
                 {% if section == "models" and model and model._name() == _model._name() %}
                     <a class="selected"
                        href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>

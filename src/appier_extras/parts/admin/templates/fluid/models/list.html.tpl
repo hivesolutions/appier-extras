@@ -4,12 +4,12 @@
 {% block content %}
     <div>
         {% for section, models in models_d.items() %}
-            {% set attached = own._attached(models) %}
-            {% if attached|length > 0 %}
+            {% set concrete = own._concrete(models) %}
+            {% if concrete|length > 0 %}
                 <div class="panel-model">
                     <h3>{{ section }}</h3>
                     <ul>
-                        {% for model in attached %}
+                        {% for model in concrete %}
                             <li>
                                 <div class="left">
                                     <a class="name" href="{{ url_for('admin.show_model', model = model._name()) }}">{{ model._name() }}</a>

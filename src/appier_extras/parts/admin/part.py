@@ -109,6 +109,7 @@ class AdminPart(
         self.logger.debug("Generating admin interfaces ...")
         for model_c in self.models_r:
             if not model_c.is_attached(): continue
+            if not model_c.is_concrete(): continue
             self.logger.debug(model_c)
 
     def routes(self):
@@ -765,6 +766,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def show_model(self, model):
         model = self.get_model(model)
+        model.assert_is_concrete_g()
         object = appier.get_object(
             alias = True,
             page = True,
@@ -1370,6 +1372,10 @@ class AdminPart(
 
     def _attached(self, models):
         return [model for model in models if model.is_attached()]
+
+    def _concrete(self, models):
+        models = self._attached(models)
+        return [model for model in models if model.is_concrete()]
 
     def _sort(self, object, model):
         if "sort" in object: return object
