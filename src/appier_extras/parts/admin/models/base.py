@@ -403,6 +403,9 @@ class Base(appier.Model):
         # the provided model data should always represent the complete state
         snapshot.Snapshot.create_snapshot(self.id, cls, model_data = model)
 
+    def touch_s(self):
+        self.save()
+
     def enable_s(self):
         self.enabled = True
         self.save()
@@ -423,6 +426,11 @@ class Base(appier.Model):
         token_bytes = appier.legacy.bytes(token)
         url_sha1 = hashlib.sha1(token_bytes)
         return url_sha1.hexdigest()
+
+    @appier.operation(name = "Touch")
+    def op_touch_s(self):
+        self = self.reload(rules = False)
+        self.touch_s()
 
     @appier.operation(name = "Enable")
     def op_enable_s(self):

@@ -565,8 +565,8 @@ class Account(base.Base):
         if not self.username: return self.email
         return "%s <%s>" % (self.username, self.email)
 
-    @appier.operation(name = "Touch")
-    def touch_s(self):
+    @appier.operation(name = "Touch Login")
+    def touch_login_s(self):
         # updates the last login of the account with the current timestamp
         # and saves the account so that this value is persisted
         self.last_login = time.time()
