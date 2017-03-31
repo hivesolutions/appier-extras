@@ -43,6 +43,7 @@ import random
 import string
 import hashlib
 import datetime
+import collections
 
 import appier
 
@@ -235,6 +236,7 @@ class Base(appier.Model):
         file,
         callback,
         strict = False,
+        named = False,
         delimiter = ",",
         quotechar = "\"",
         quoting = csv.QUOTE_MINIMAL,
@@ -261,8 +263,10 @@ class Base(appier.Model):
             quoting = quoting
         )
         header = next(csv_reader)
+        if named: tuple_t = collections.namedtuple("csv_tuple", header)
         for line in csv_reader:
             if not is_unicode: line = [value.decode(encoding) for value in line]
+            if named: line = tuple_t(line)
             if has_header: callback(line, header = header)
             else: callback(line)
 

@@ -215,8 +215,8 @@
         </div>
     {% elif type_s == "bool" %}
         {% if value %}
-        	<input type="checkbox" class="check-field" name="{{ name }}"
-        		   data-checked="on" data-error="{{ error }}" />
+            <input type="checkbox" class="check-field" name="{{ name }}"
+                   data-checked="on" data-error="{{ error }}" />
         {% else %}
             <input type="checkbox" class="check-field" name="{{ name }}" data-error="{{ error }}" />
         {% endif %}
