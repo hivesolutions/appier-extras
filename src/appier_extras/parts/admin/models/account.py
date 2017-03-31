@@ -180,7 +180,7 @@ class Account(base.Base):
         # to be used (should be initialized) and then prints the initial
         # information about the account to be generated
         logger = appier.get_logger()
-        logger.info("Generating initial root account ...")
+        logger.info("Generating initial root account for %s model ..." % cls.__name__)
 
         # creates the structure to be used as the root account description
         # using the default value and then stores the account as it's going
