@@ -86,7 +86,7 @@ class Twitter(object):
             account.twitter_token = api.oauth_token
             account.save()
 
-        account.touch_s()
+        account.touch_login_s()
         account._set_session()
 
         return account

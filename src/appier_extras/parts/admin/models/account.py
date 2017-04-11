@@ -296,7 +296,7 @@ class Account(base.Base):
         # "touches" the current account meaning that the last login value will be
         # updated to reflect the current time and then returns the current logged
         # in account to the caller method so that it may used (valid account)
-        account.touch_s()
+        account.touch_login_s()
         return account
 
     @classmethod
@@ -334,7 +334,7 @@ class Account(base.Base):
         # "touches" the current account meaning that the last login value will be
         # updated to reflect the current time and then returns the current logged
         # in account to the caller method so that it may used (valid account)
-        account.touch_s()
+        account.touch_login_s()
         return account
 
     @classmethod

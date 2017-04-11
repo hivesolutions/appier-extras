@@ -86,7 +86,7 @@ class Google(object):
             account.google_token = api.access_token
             account.save()
 
-        account.touch_s()
+        account.touch_login_s()
         account._set_session()
 
         return account
