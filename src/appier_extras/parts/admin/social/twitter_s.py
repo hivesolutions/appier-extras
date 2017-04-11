@@ -39,8 +39,6 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-from appier_extras.parts.admin import models
-
 class Twitter(object):
 
     def has_twitter(self):
@@ -51,11 +49,12 @@ class Twitter(object):
         if not appier.conf("TWITTER_SECRET"): return False
         return True
 
-    def ensure_twitter_account(self, create = True):
+    def ensure_twitter_account(self, create = True, owner = None):
+        owner = owner or appier.get_app()
         api = self.get_twitter_api()
         user = api.verify_account()
         email = "%s@twitter.com" % user["screen_name"]
-        account = models.Account.get(
+        account = owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
@@ -66,14 +65,14 @@ class Twitter(object):
                 message = "no account found for twitter account"
             )
 
-            account = models.Account(
+            account = owner.admin_account(
                 username = user["screen_name"],
                 email = email,
                 password = api.oauth_token,
                 password_confirm = api.oauth_token,
                 twitter_username = user["screen_name"],
                 twitter_token = api.oauth_token,
-                type = models.Account.USER_TYPE
+                type = owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)

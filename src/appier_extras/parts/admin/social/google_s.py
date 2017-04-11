@@ -39,8 +39,6 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-from appier_extras.parts.admin import models
-
 class Google(object):
 
     def has_google(self):
@@ -51,11 +49,12 @@ class Google(object):
         if not appier.conf("GOOGLE_SECRET"): return False
         return True
 
-    def ensure_google_account(self, create = True):
+    def ensure_google_account(self, create = True, owner = None):
+        owner = owner or appier.get_app()
         api = self.get_google_api()
         user = api.self_user()
         email = user["emails"][0]["value"]
-        account = models.Account.get(
+        account = owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
@@ -66,14 +65,14 @@ class Google(object):
                 message = "no account found for google account"
             )
 
-            account = models.Account(
+            account = owner.admin_account(
                 username = email,
                 email = email,
                 password = api.access_token,
                 password_confirm = api.access_token,
                 google_id = user["id"],
                 google_token = api.access_token,
-                type = models.Account.USER_TYPE
+                type = owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)

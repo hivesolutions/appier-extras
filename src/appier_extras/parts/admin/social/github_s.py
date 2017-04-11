@@ -39,8 +39,6 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-from appier_extras.parts.admin import models
-
 class Github(object):
 
     def has_github(self):
@@ -51,7 +49,8 @@ class Github(object):
         if not appier.conf("GITHUB_SECRET"): return False
         return True
 
-    def ensure_github_account(self, create = True):
+    def ensure_github_account(self, create = True, owner = None):
+        owner = owner or appier.get_app()
         api = self.get_github_api()
         user = api.self_user()
         account = models.Account.get(
@@ -65,14 +64,14 @@ class Github(object):
                 message = "no account found for github account"
             )
 
-            account = models.Account(
+            account = owner.admin_account(
                 username = user["email"],
                 email = user["email"],
                 password = api.access_token,
                 password_confirm = api.access_token,
                 github_login = user["login"],
                 github_token = api.access_token,
-                type = models.Account.USER_TYPE
+                type = owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)

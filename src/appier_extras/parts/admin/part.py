@@ -88,6 +88,7 @@ class AdminPart(
         self.owner.login_route = "admin.login"
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
+        self.owner.admin_account = self.account_c
         self.owner.admin_open = True
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
@@ -210,7 +211,7 @@ class AdminPart(
         key = self.field("secret_key", key)
         key = self.request.get_header("X-Secret-Key", key)
         if not key: return
-        try: account = models.Account.login_key(key)
+        try: account = self.account_c.login_key(key)
         except appier.OperationalError: pass
         else: account._set_session(method = "set_t")
 
@@ -281,7 +282,7 @@ class AdminPart(
         # verifies the existence of the various account related session
         # attributes and in case they exist removes them from session as
         # the user is currently logging out from session
-        models.Account._unset_session()
+        self.account_c._unset_session()
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
