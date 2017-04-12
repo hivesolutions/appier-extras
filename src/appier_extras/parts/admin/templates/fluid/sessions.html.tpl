@@ -25,7 +25,7 @@
                     <tr class="table-row">
                         <td class="text-left">
                             <strong>
-                                <a href="{{ url_for('admin.show_session', sid = session.sid) }}">{{ _session.sid }}</a>
+                                <a href="{{ url_for('admin.show_session', sid = _session.sid) }}">{{ _session.sid }}</a>
                             </strong>
                             {% if _session.sid == session.sid %}
                                 <strong>(current)</strong>
