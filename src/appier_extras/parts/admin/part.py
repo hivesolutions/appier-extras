@@ -1412,6 +1412,11 @@ class AdminPart(
         models = self._attached(models)
         return [model for model in models if model.is_concrete()]
 
+    def _available(self, models):
+        models = self._concrete(models)
+        return [model for model in models if\
+             appier.check_login(self, "admin.models." + model._name())]
+
     def _sort(self, object, model):
         if "sort" in object: return object
         order = model.order_name()

@@ -33,14 +33,16 @@
     {% endif %}
     <div class="separator"></div>
     {% for _section, models in models_d.items() %}
-        {% set concrete = own._concrete(models) %}
-        {% if concrete|length > 0 %}
-            {% for _model in concrete %}
-                {% if section == "models" and model and model._name() == _model._name() %}
-                    <a class="selected"
-                       href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
-                {% else %}
-                    <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+        {% set available = own._available(models) %}
+        {% if available|length > 0 %}
+            {% for _model in available %}
+                {% if acl("admin.models." + _model._name()) %}
+                    {% if section == "models" and model and model._name() == _model._name() %}
+                        <a class="selected"
+                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                    {% else %}
+                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             <div class="separator"></div>
