@@ -65,6 +65,9 @@ class Base(appier.Model):
         increment = True,
         safe = True
     )
+    """ The global incremental identifier of the base model
+    this should always be considered a unique way of addressing
+    a certain model inhering from this base class """
 
     enabled = appier.field(
         type = bool,
@@ -73,11 +76,17 @@ class Base(appier.Model):
         meta = "enum",
         enum = ENABLE_S
     )
+    """ Boolean field that defines if a certain entity is considered
+    to be enabled or disabled, the meaning of disable should depend
+    on the usage context, but typically should be used instead of a
+    concrete removal operation """
 
     description = appier.field(
         meta = "text",
         default = True
     )
+    """ Global description value for which the meaning should be defined
+    by the context of usage (eg: name, observations, etc.) """
 
     created = appier.field(
         type = int,
@@ -86,6 +95,8 @@ class Base(appier.Model):
         immutable = True,
         meta = "datetime"
     )
+    """ The original date and time of the entity creation, this should
+    be an immutalbe timestamp and never changed """
 
     modified = appier.field(
         type = int,
@@ -93,10 +104,15 @@ class Base(appier.Model):
         safe = True,
         meta = "datetime"
     )
+    """ The date and time of the latest save operation for the current
+    entity, note that the create operation changes this value """
 
     meta = appier.field(
         type = dict
     )
+    """ Additional (unstructured) information to be stored together with
+    the entity for unpredicted purposes, note that these values should not
+    be used for search operation as they are not indexed """
 
     def __str__(self):
         value = appier.Model.__str__(self)
