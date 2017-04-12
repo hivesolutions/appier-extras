@@ -779,11 +779,7 @@ class AdminPart(
             page = True,
             find = True
         )
-
-        #@todo this must be properly structured
-        if "view" in self.session:
-            object.update(self.session["view"])
-
+        models.Base.apply_view(object, target = model)
         page = model.paginate(**object)
         object = self._sort(object, model)
         entities = model.find(meta = True, **object)

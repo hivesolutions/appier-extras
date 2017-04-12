@@ -238,6 +238,31 @@ class Base(appier.Model):
         )
 
     @classmethod
+    def apply_view(cls, object, target = None, owner = None):
+        # tries to retrieve the reference to the owner of the current
+        # context or uses the global one otherwise (fallback)
+        owner = owner or appier.get_app()
+
+        # verifies if there are any view defined under the current
+        # session if that's not the case returns immediately as there's
+        # nothing left to be filtered, otherwise retrieves the views to
+        # be used to filter the current object context
+        if not "views" in owner.session: return object
+        views = owner.session["views"]
+
+        # iterates over the complete set of views defined under the current
+        # session to be able to update the object accordingly, constraining
+        # the context of resolution of that object (less results)
+        for view in views:
+            is_str = appier.legacy.is_str(view)
+            if is_str:
+                view_cls = owner.get_model(view)
+                view = view_cls.resolve_view
+            is_callable = hasattr(view, "__call__")
+            if is_callable: view = view(target = target, owner = owner)
+            object.update(view)
+
+    @classmethod
     @appier.operation(name = "Empty All", level = 2, devel = True)
     def op_empty_s(cls):
         cls.delete_c()
