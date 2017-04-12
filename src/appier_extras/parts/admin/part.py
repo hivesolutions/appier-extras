@@ -65,9 +65,16 @@ class AdminPart(
     "annotations" in the data model attributes.
     """
 
-    def __init__(self, account_c = models.Account, *args, **kwargs):
+    def __init__(
+        self,
+        account_c = models.Account,
+        role_s = models.Role,
+        *args,
+        **kwargs
+    ):
         appier.Part.__init__(self, *args, **kwargs)
         self.account_c = account_c
+        self.role_c = role_s
         self.layout = "fluid"
         self.theme = "modern"
         self.style = "romantic"
@@ -89,6 +96,7 @@ class AdminPart(
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
         self.owner.admin_account = self.account_c
+        self.owner.admin_role = self.role_c
         self.owner.admin_open = True
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"

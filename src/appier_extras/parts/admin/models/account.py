@@ -43,15 +43,18 @@ import hashlib
 import binascii
 
 from appier_extras.parts.admin.models import base
+from appier_extras.parts.admin.models import role
 
 class Account(base.Base):
 
     ADMIN_TYPE = 1
     USER_TYPE = 2
+    ROLE_TYPE = 3
 
     ACCOUNT_S = {
         ADMIN_TYPE : "admin",
-        USER_TYPE : "user"
+        USER_TYPE : "user",
+        ROLE_TYPE : "role"
     }
 
     PREFIXES = [
@@ -165,6 +168,13 @@ class Account(base.Base):
         type = int,
         safe = True,
         meta = "datetime"
+    )
+
+    roles = appier.field(
+        type = appier.references(
+            "Role",
+            name = "id"
+        )
     )
 
     @classmethod
@@ -504,16 +514,18 @@ class Account(base.Base):
             self.username = self.username.lower()
         if hasattr(self, "email") and self.email:
             self.email = self.email.lower()
-
-    def pre_create(self):
-        base.Base.pre_create(self)
-        self.key = self.secret()
-        self.confirmation_token = self.secret()
+        if hasattr(self, "roles") and len(self.roles) > 0:
+            self.type = Account.ROLE_TYPE
 
     def pre_save(self):
         base.Base.pre_save(self)
         if hasattr(self, "password") and self.password:
             self.password = self.encrypt(self.password)
+
+    def pre_create(self):
+        base.Base.pre_create(self)
+        self.key = self.secret()
+        self.confirmation_token = self.secret()
 
     def confirm_s(self, send_email = False):
         self.confirmation_token = None
@@ -543,12 +555,36 @@ class Account(base.Base):
         self.reset_token = None
         self.save()
 
-    def tokens(self):
+    def add_role_s(self, name, owner = None):
+        role_cls = self._role_cls(owner = owner)
+        role = role_cls.get(name = name)
+        if role in self.roles: return
+        self.roles.append(role)
+        self.save()
+
+    def remove_role_s(self, name, owner = None):
+        role_cls = self._role_cls(owner = owner)
+        role = role_cls.get(name = name)
+        if not role in self.roles: return
+        self.roles.remove(role)
+        self.save()
+
+    def tokens(self, resolve = True):
+        tokens = set()
+
         if self.type == Account.ADMIN_TYPE:
-            return ["*"]
+            tokens.update(["*"])
 
         if self.type == Account.USER_TYPE:
-            return ["base", "user"]
+            tokens.update(["base", "user"])
+
+        if not resolve: return sorted(list(tokens))
+
+        for role in self.roles:
+            tokens.update(role.tokens)
+
+        if "*" in tokens: tokens = ["*"]
+        return sorted(list(tokens))
 
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)

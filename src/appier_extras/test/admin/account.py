@@ -48,6 +48,7 @@ class AccountTest(unittest.TestCase):
 
     def setUp(self):
         self.app = appier.App(session_c = appier.MemorySession)
+        self.app._register_models_m(appier_extras.admin.models)
         self.app._register_models_m(mock, "Mocks")
 
     def tearDown(self):
@@ -211,3 +212,62 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(account.reset_token, None)
         self.assertEqual(account.confirmation_token, None)
         self.assertEqual(account.password, account.encrypt("passwordnew"))
+
+    def test_role(self):
+        account = appier_extras.admin.Account()
+        account.username = "username"
+        account.email = "username@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        tokens = account.tokens()
+
+        self.assertEqual(account.type, appier_extras.admin.Account.USER_TYPE)
+        self.assertEqual(tokens, ["base", "user"])
+
+        role = appier_extras.admin.Role()
+        role.name = "admin"
+        role.tokens = ["*"]
+        role.save()
+
+        self.assertEqual(role.name, "admin")
+        self.assertEqual(role.tokens, ["*"])
+
+        account = account.reload()
+        account.add_role_s("admin")
+        tokens = account.tokens()
+
+        self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
+        self.assertEqual(len(account.roles), 1)
+        self.assertEqual(tokens, ["*"])
+
+        account.add_role_s("admin")
+        tokens = account.tokens()
+
+        self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
+        self.assertEqual(len(account.roles), 1)
+        self.assertEqual(tokens, ["*"])
+
+        role = appier_extras.admin.Role()
+        role.name = "user"
+        role.tokens = ["base", "user"]
+        role.save()
+
+        self.assertEqual(role.name, "user")
+        self.assertEqual(role.tokens, ["base", "user"])
+
+        account = account.reload()
+        account.add_role_s("user")
+        tokens = account.tokens()
+
+        self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
+        self.assertEqual(len(account.roles), 2)
+        self.assertEqual(tokens, ["*"])
+
+        account.remove_role_s("admin")
+        tokens = account.tokens()
+
+        self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
+        self.assertEqual(len(account.roles), 1)
+        self.assertEqual(tokens, ["base", "user"])

@@ -287,6 +287,20 @@ class Base(appier.Model):
         toronado = appier.import_pip("toronado")
         return toronado.from_string(data)
 
+    @classmethod
+    def _account_cls(cls, owner = None):
+        from . import account
+        owner = owner or appier.get_app()
+        if hasattr(owner, "admin_account"): return owner.admin_account
+        return account.Account
+
+    @classmethod
+    def _role_cls(cls, owner = None):
+        from . import role
+        owner = owner or appier.get_app()
+        if hasattr(owner, "admin_role"): return owner.admin_role
+        return role.Role
+
     def pre_create(self):
         appier.Model.pre_create(self)
 
