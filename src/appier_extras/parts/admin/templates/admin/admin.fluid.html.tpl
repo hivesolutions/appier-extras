@@ -1,35 +1,47 @@
 {% extends "admin/layout.fluid.html.tpl" %}
 {% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
-    {% if section == "admin" %}
-        <a class="selected" href="{{ url_for('admin.index') }}">home</a>
-    {% else %}
-        <a href="{{ url_for('admin.index') }}">home</a>
+    {% if acl("admin") %}
+        {% if section == "admin" %}
+            <a class="selected" href="{{ url_for('admin.index') }}">home</a>
+        {% else %}
+            <a href="{{ url_for('admin.index') }}">home</a>
+        {% endif %}
     {% endif %}
-    {% if section == "options" %}
-        <a class="selected" href="{{ url_for('admin.options') }}">options</a>
-    {% else %}
-        <a href="{{ url_for('admin.options') }}">options</a>
+    {% if acl("admin.options") %}
+        {% if section == "options" %}
+            <a class="selected" href="{{ url_for('admin.options') }}">options</a>
+        {% else %}
+            <a href="{{ url_for('admin.options') }}">options</a>
+        {% endif %}
     {% endif %}
-    {% if section == "database" %}
-        <a class="selected" href="{{ url_for('admin.database') }}">database</a>
-    {% else %}
-        <a href="{{ url_for('admin.database') }}">database</a>
+    {% if acl("admin.database") %}
+        {% if section == "database" %}
+            <a class="selected" href="{{ url_for('admin.database') }}">database</a>
+        {% else %}
+            <a href="{{ url_for('admin.database') }}">database</a>
+        {% endif %}
     {% endif %}
-    {% if section == "social" %}
-        <a class="selected" href="{{ url_for('admin.social') }}">social</a>
-    {% else %}
-        <a href="{{ url_for('admin.social') }}">social</a>
+    {% if acl("admin.social") %}
+        {% if section == "social" %}
+            <a class="selected" href="{{ url_for('admin.social') }}">social</a>
+        {% else %}
+            <a href="{{ url_for('admin.social') }}">social</a>
+        {% endif %}
     {% endif %}
-    {% if section == "operations" %}
-        <a class="selected" href="{{ url_for('admin.operations') }}">operations</a>
-    {% else %}
-        <a href="{{ url_for('admin.operations') }}">operations</a>
+    {% if acl("admin.operations") %}
+        {% if section == "operations" %}
+            <a class="selected" href="{{ url_for('admin.operations') }}">operations</a>
+        {% else %}
+            <a href="{{ url_for('admin.operations') }}">operations</a>
+        {% endif %}
     {% endif %}
-    {% if section == "status" %}
-        <a class="selected" href="{{ url_for('admin.status') }}">status</a>
-    {% else %}
-        <a href="{{ url_for('admin.status') }}">status</a>
+    {% if acl("admin.status") %}
+        {% if section == "status" %}
+            <a class="selected" href="{{ url_for('admin.status') }}">status</a>
+        {% else %}
+            <a href="{{ url_for('admin.status') }}">status</a>
+        {% endif %}
     {% endif %}
     <div class="separator"></div>
     {% for _section, models in models_d.items() %}

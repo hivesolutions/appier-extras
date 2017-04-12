@@ -148,9 +148,9 @@ class AdminPart(
             (("POST"), "/admin/reset", self.reset_do),
             (("GET",), "/admin/options", self.options),
             (("POST",), "/admin/options", self.options_action),
-            (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/social", self.social),
             (("GET",), "/admin/operations", self.operations),
+            (("GET",), "/admin/status", self.status),
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/parts", self.list_parts),
@@ -427,7 +427,7 @@ class AdminPart(
     def mail_account(self, username):
         raise appier.NotImplementedError()
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.options")
     def options(self):
         return self.template(
             "options.html.tpl",
@@ -436,7 +436,7 @@ class AdminPart(
             errors = dict()
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.options")
     def options_action(self):
         layout = self.field("layout")
         theme = self.field("theme")
@@ -472,14 +472,7 @@ class AdminPart(
             errors = dict()
         )
 
-    @appier.ensure(token = "admin")
-    def status(self):
-        return self.template(
-            "status.html.tpl",
-            section = "status"
-        )
-
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.social")
     def social(self):
         socials = self.socials()
         linked = self.linked()
@@ -490,14 +483,21 @@ class AdminPart(
             linked = linked
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.operations")
     def operations(self):
         return self.template(
             "operations.html.tpl",
             section = "operations"
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
+    def status(self):
+        return self.template(
+            "status.html.tpl",
+            section = "status"
+        )
+
+    @appier.ensure(token = "admin.status")
     def list_routes(self):
         return self.template(
             "routes.html.tpl",
@@ -505,7 +505,7 @@ class AdminPart(
             routes = self._routes()
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def list_configs(self):
         configs = appier.config.CONFIGS
         configs = appier.legacy.items(configs)
@@ -516,7 +516,7 @@ class AdminPart(
             configs = configs
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def list_parts(self):
         app = appier.get_app()
         parts = app.get_parts()
@@ -526,7 +526,7 @@ class AdminPart(
             parts = parts
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def list_libraries(self):
         app = appier.get_app()
         libraries = app.get_libraries()
@@ -596,7 +596,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def list_sessions(self):
         return self.template(
             "sessions.html.tpl",
@@ -604,7 +604,7 @@ class AdminPart(
             sessions = self.request.session_c.all()
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def empty_sessions(self):
         self.request.session_c.empty()
         return self.redirect(
@@ -614,7 +614,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def show_session_me(self):
         sid = self.session.sid
         return self.template(
@@ -633,7 +633,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def show_session(self, sid):
         sid = str(sid)
         return self.template(
@@ -642,7 +642,7 @@ class AdminPart(
             session_s = self.request.session_c.get_s(sid)
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def delete_session(self, sid):
         sid = str(sid)
         self.request.session_c.expire(sid)
@@ -653,7 +653,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.status")
     def list_counters(self):
         collection = self._counters()
         counters = collection.find()
@@ -689,14 +689,14 @@ class AdminPart(
         self.content_type("text/csv")
         return result
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.database")
     def database(self):
         return self.template(
             "database.html.tpl",
             section = "database"
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.database")
     def database_export(self):
         adapter = self.get_adapter()
         file = appier.legacy.BytesIO()
@@ -718,14 +718,14 @@ class AdminPart(
 
         return file.getvalue()
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.database")
     def database_import(self):
         return self.template(
             "database/import.html.tpl",
             section = "database"
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin.database")
     def database_import_do(self):
         # tries to retrieve the reference to the import file tuple
         # and in case it's not found raises an error to the template
@@ -759,6 +759,17 @@ class AdminPart(
             )
         )
 
+    @appier.ensure(token = "admin.database")
+    def database_reset(self):
+        adapter = self.get_adapter()
+        adapter.drop_db()
+        return self.redirect(
+            self.url_for(
+                "admin.database",
+                message = "Database dropped/reset with success"
+            )
+        )
+
     @appier.ensure(token = "admin")
     def search(self):
         object = appier.get_object(
@@ -769,17 +780,6 @@ class AdminPart(
         )
         indexes = models.Search.find(map = True, **object)
         return indexes
-
-    @appier.ensure(token = "admin")
-    def database_reset(self):
-        adapter = self.get_adapter()
-        adapter.drop_db()
-        return self.redirect(
-            self.url_for(
-                "admin.database",
-                message = "Database dropped/reset with success"
-            )
-        )
 
     @appier.ensure(token = "admin")
     def list_models(self):
