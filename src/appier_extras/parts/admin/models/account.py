@@ -589,7 +589,11 @@ class Account(base.Base):
         return tokens
 
     def view(self):
-        pass
+        view_s = dict()
+        for role in self.roles:
+            if not role.view: continue
+            view_s.update(role.view_s)
+        return view_s
 
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
