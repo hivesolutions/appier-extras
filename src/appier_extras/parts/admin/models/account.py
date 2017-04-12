@@ -494,6 +494,7 @@ class Account(base.Base):
         if "email" in session: delete("email")
         if "type" in session: delete("type")
         if "tokens" in session: delete("tokens")
+        if "views" in session: delete("views")
         if "meta" in session: delete("meta")
         if "params" in session: delete("params")
         for key in appier.legacy.keys(session):
@@ -586,13 +587,13 @@ class Account(base.Base):
 
         return tokens
 
-    def view(self):
-        view = dict()
+    def views(self):
+        views = []
         for role in self.roles_l:
             view_m = role.view_m(context = self)
             if not view_m: continue
-            view.update(view_m)
-        return view
+            views.append(view_m)
+        return views
 
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
@@ -687,6 +688,6 @@ class Account(base.Base):
         set("email", self.email)
         set("type", self.type_s())
         set("tokens", self.tokens())
-        set("view", self.view())
+        set("views", self.views())
         set("meta", self.meta)
         set("params", dict())
