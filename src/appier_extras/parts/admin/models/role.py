@@ -56,7 +56,9 @@ class Role(base.Base):
     """ The set of ACL token that are going to be used to
     control the permission of accounts that use this role """
 
-    view = appier.field()
+    view = appier.field(
+        type = dict
+    )
     """ The filtered view that is going to be applied for
     every filtered operation (data source access) """
 
@@ -100,3 +102,7 @@ class Role(base.Base):
     @classmethod
     def list_names(cls):
         return ["name", "description"]
+
+    @property
+    def view_s(self):
+        return self.view
