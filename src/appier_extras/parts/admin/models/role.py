@@ -53,6 +53,29 @@ class Role(base.Base):
     )
 
     @classmethod
+    def setup(cls):
+        super(Role, cls).setup()
+
+        # tries to find the owner role (default) in case it's not
+        # found returns immediately nothing to be done
+        owner = cls.find(name = "owner")
+        if owner: return
+
+        # retrieves the reference to the global logger that is going
+        # to be used (should be initialized) and then prints the initial
+        # information about the role to be generated
+        logger = appier.get_logger()
+        logger.info("Generating initial owner role for %s model ..." % cls.__name__)
+
+        # creates the structure to be used as the owner role description
+        # using the default value and then stores the role
+        role = cls(
+            name = "owner",
+            description = "The super administrator (owner) role",
+        )
+        role.save(validate = False)
+
+    @classmethod
     def validate(cls):
         return super(Role, cls).validate() + [
             appier.not_null("name"),
