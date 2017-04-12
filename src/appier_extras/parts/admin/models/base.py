@@ -238,7 +238,7 @@ class Base(appier.Model):
         )
 
     @classmethod
-    def apply_view(cls, object, target = None, owner = None):
+    def apply_views(cls, object, target = None, owner = None):
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
@@ -257,7 +257,7 @@ class Base(appier.Model):
             is_str = appier.legacy.is_str(view)
             if is_str:
                 view_cls = owner.get_model(view)
-                view = view_cls.resolve_view
+                view = view_cls.view_r
             is_callable = hasattr(view, "__call__")
             if is_callable: view = view(target = target, owner = owner)
             object.update(view)
