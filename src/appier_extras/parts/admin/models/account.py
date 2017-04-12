@@ -514,7 +514,7 @@ class Account(base.Base):
             self.username = self.username.lower()
         if hasattr(self, "email") and self.email:
             self.email = self.email.lower()
-        if hasattr(self, "roles") and len(self.roles) > 0:
+        if hasattr(self, "roles") and len(self.roles_l) > 0:
             self.type = Account.ROLE_TYPE
 
     def pre_save(self):
@@ -555,18 +555,16 @@ class Account(base.Base):
         self.reset_token = None
         self.save()
 
-    def add_role_s(self, name, owner = None):
-        role_cls = self._role_cls(owner = owner)
-        role = role_cls.get(name = name)
-        if role in self.roles: return
-        self.roles.append(role)
+    def add_role_s(self, name):
+        _role = role.Role.get(name = name)
+        if _role in self.roles_l: return
+        self.roles_l.append(_role)
         self.save()
 
-    def remove_role_s(self, name, owner = None):
-        role_cls = self._role_cls(owner = owner)
-        role = role_cls.get(name = name)
-        if not role in self.roles: return
-        self.roles.remove(role)
+    def remove_role_s(self, name):
+        _role = role.Role.get(name = name)
+        if not _role in self.roles_l: return
+        self.roles_l.remove(_role)
         self.save()
 
     def tokens(self):
@@ -578,7 +576,7 @@ class Account(base.Base):
         if self.type == Account.USER_TYPE:
             tokens.update(["base", "user"])
 
-        for role in self.roles:
+        for role in self.roles_l:
             tokens.update(role.tokens)
 
         if "*" in tokens: tokens = ["*"]
@@ -589,11 +587,12 @@ class Account(base.Base):
         return tokens
 
     def view(self):
-        view_s = dict()
-        for role in self.roles:
-            if not role.view: continue
-            view_s.update(role.view_s)
-        return view_s
+        view = dict()
+        for role in self.roles_l:
+            view_m = role.view_m(context = self)
+            if not view_m: continue
+            view.update(view_m)
+        return view
 
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
@@ -673,6 +672,10 @@ class Account(base.Base):
     @property
     def confirmed(self):
         return self.enabled
+
+    @property
+    def roles_l(self):
+        return self.roles
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__

@@ -68,13 +68,12 @@ class AdminPart(
     def __init__(
         self,
         account_c = models.Account,
-        role_s = models.Role,
+        role_c = models.Role,
         *args,
         **kwargs
     ):
         appier.Part.__init__(self, *args, **kwargs)
         self.account_c = account_c
-        self.role_c = role_s
         self.layout = "fluid"
         self.theme = "modern"
         self.style = "romantic"
@@ -96,7 +95,6 @@ class AdminPart(
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
         self.owner.admin_account = self.account_c
-        self.owner.admin_role = self.role_c
         self.owner.admin_open = True
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
@@ -781,6 +779,11 @@ class AdminPart(
             page = True,
             find = True
         )
+
+        #@todo this must be properly structured
+        if "view" in self.session:
+            object.update(self.session["view"])
+
         page = model.paginate(**object)
         object = self._sort(object, model)
         entities = model.find(meta = True, **object)

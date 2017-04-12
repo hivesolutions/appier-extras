@@ -103,6 +103,5 @@ class Role(base.Base):
     def list_names(cls):
         return ["name", "description"]
 
-    @property
-    def view_s(self):
+    def view_m(self, context = None):
         return self.view
