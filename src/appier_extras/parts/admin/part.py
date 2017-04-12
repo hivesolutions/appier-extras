@@ -113,6 +113,7 @@ class AdminPart(
         self.owner.admin_open = True
         self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
+        self.owner.admin_logout_redirect = "admin.login"
         self.owner.admin_facebook_scope = ("email",)
         self.owner.admin_github_scope = ("user:email",)
         self.owner.admin_google_scope = ("email",)
@@ -252,10 +253,12 @@ class AdminPart(
 
     def signin(self):
         next = self.field("next")
+        error = self.field("error")
         socials = self.socials()
         return self.template(
             "signin.html.tpl",
             next = next,
+            error = error,
             socials = socials
         )
 
@@ -308,7 +311,7 @@ class AdminPart(
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
         return self.redirect(
-            next or self.url_for(self.owner.admin_login_redirect)
+            next or self.url_for(self.owner.admin_logout_redirect)
         )
 
     def recover(self):
@@ -787,6 +790,8 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_model(self, model):
+        token = "admin.models." + model
+        appier.ensure_login(self, token = token)
         model = self.get_model(model)
         model.assert_is_concrete_g()
         object = appier.get_object(
