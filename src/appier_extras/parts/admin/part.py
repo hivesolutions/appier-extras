@@ -109,9 +109,9 @@ class AdminPart(
         self.owner.login_route = "admin.login"
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
+        self.owner.logout_redirect = "admin.login"
         self.owner.admin_account = self.account_c
         self.owner.admin_open = True
-        self.owner.admin_login_route = "admin.login"
         self.owner.admin_login_redirect = "admin.index"
         self.owner.admin_logout_redirect = "admin.login"
         self.owner.admin_facebook_scope = ("email",)
