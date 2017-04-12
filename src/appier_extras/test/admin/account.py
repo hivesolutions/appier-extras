@@ -271,3 +271,15 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
         self.assertEqual(len(account.roles), 1)
         self.assertEqual(tokens, ["base", "user"])
+
+        role = appier_extras.admin.Role()
+        role.name = "advanced"
+        role.tokens = ["base", "advanced"]
+        role.save()
+
+        account.add_role_s("advanced")
+        tokens = account.tokens()
+
+        self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
+        self.assertEqual(len(account.roles), 2)
+        self.assertEqual(tokens, ["advanced", "base", "user"])
