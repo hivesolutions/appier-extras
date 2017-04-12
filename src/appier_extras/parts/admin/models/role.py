@@ -47,10 +47,18 @@ class Role(base.Base):
         index = "all",
         default = True
     )
+    """ The common name to be used to identify this role,
+    this is going to be the primary way of identifying it """
 
     tokens = appier.field(
         type = list
     )
+    """ The set of ACL token that are going to be used to
+    control the permission of accounts that use this role """
+
+    view = appier.field()
+    """ The filtered view that is going to be applied for
+    every filtered operation (data source access) """
 
     @classmethod
     def setup(cls):
