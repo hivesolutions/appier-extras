@@ -588,6 +588,9 @@ class Account(base.Base):
 
         return tokens
 
+    def view(self):
+        pass
+
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
         type_s = type_s.capitalize() if capitalize else type_s
@@ -677,5 +680,6 @@ class Account(base.Base):
         set("email", self.email)
         set("type", self.type_s())
         set("tokens", self.tokens())
+        set("view", self.view())
         set("meta", self.meta)
         set("params", dict())
