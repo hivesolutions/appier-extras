@@ -148,6 +148,34 @@ class Base(appier.Model):
         return cls.find(enabled = True, *args, **kwargs)
 
     @classmethod
+    def count_e(cls, *args, **kwargs):
+        return cls.count(enabled = True, *args, **kwargs)
+
+    @classmethod
+    def paginate_e(cls, *args, **kwargs):
+        return cls.paginate(enabled = True, *args, **kwargs)
+
+    @classmethod
+    def get_v(cls, *args, **kwargs):
+        kwargs = cls.apply_views(kwargs)
+        return cls.get(*args, **kwargs)
+
+    @classmethod
+    def find_v(cls, *args, **kwargs):
+        kwargs = cls.apply_views(kwargs)
+        return cls.find(*args, **kwargs)
+
+    @classmethod
+    def count_v(cls, *args, **kwargs):
+        kwargs = cls.apply_views(kwargs)
+        return cls.count(*args, **kwargs)
+
+    @classmethod
+    def paginate_v(cls, *args, **kwargs):
+        kwargs = cls.apply_views(kwargs)
+        return cls.paginate(*args, **kwargs)
+
+    @classmethod
     def create_names(cls):
         names = super(Base, cls).create_names()
         names.remove("id")
@@ -238,7 +266,7 @@ class Base(appier.Model):
         )
 
     @classmethod
-    def apply_views(cls, object, target = None, owner = None):
+    def apply_views(cls, object, owner = None):
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
@@ -250,17 +278,24 @@ class Base(appier.Model):
         if not "views" in owner.session: return object
         views = owner.session["views"]
 
+        # creates a copy of the object so that it does not get modified
+        # by the operation to be applied to it (avoids possible issues)
+        object = dict(object)
+
         # iterates over the complete set of views defined under the current
         # session to be able to update the object accordingly, constraining
         # the context of resolution of that object (less results)
         for view in views:
-            is_str = appier.legacy.is_str(view)
-            if is_str:
+            if appier.legacy.is_str(view):
                 view_cls = owner.get_model(view)
                 view = view_cls.view_r
             is_callable = hasattr(view, "__call__")
-            if is_callable: view = view(target = target, owner = owner)
+            if is_callable: view = view(target = cls, owner = owner)
             object.update(view)
+
+        # returns the final object to the caller method so that it can be
+        # used to constrain contexts according to the current session views
+        return object
 
     @classmethod
     @appier.operation(name = "Empty All", level = 2, devel = True)

@@ -79,21 +79,6 @@ class AdminPart(
         self.style = "romantic"
         self.libs = "current"
 
-    @classmethod
-    def _get_g(cls, model, *args, **kwargs):
-        models.Base.apply_views(kwargs, target = model)
-        return model.get(*args, **kwargs)
-
-    @classmethod
-    def _find_g(cls, model, *args, **kwargs):
-        models.Base.apply_views(kwargs, target = model)
-        return model.find(*args, **kwargs)
-
-    @classmethod
-    def _paginate_g(cls, model, *args, **kwargs):
-        models.Base.apply_views(kwargs, target = model)
-        return model.paginate(*args, **kwargs)
-
     def load(self):
         appier.Part.load(self)
 
@@ -799,9 +784,9 @@ class AdminPart(
             page = True,
             find = True
         )
-        page = self._paginate(model, **object)
+        page = model.paginate_v(**object)
         object = self._sort(object, model)
-        entities = self._find(model, meta = True, **object)
+        entities = model.find_v(meta = True, **object)
         return self.template(
             "models/show.html.tpl",
             section = "models",
@@ -816,8 +801,7 @@ class AdminPart(
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
         object = appier.get_object(alias = True, find = True)
-        entities = self._find(
-            model,
+        entities = model.find_v(
             eager_l = eager_l,
             meta = meta,
             map = True,
@@ -831,8 +815,7 @@ class AdminPart(
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
         object = appier.get_object(alias = True, find = True)
-        entities = self._find(
-            model,
+        entities = model.find_v(
             eager_l = eager_l,
             meta = meta,
             map = True,
@@ -853,7 +836,7 @@ class AdminPart(
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
         if is_global: entities = (model,)
-        else: entities = self._find(model, **kwargs)
+        else: entities = model.find_v(**kwargs)
         result = None
         for entity in entities:
             method = getattr(entity, link)
@@ -891,7 +874,7 @@ class AdminPart(
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
         if is_global: entities = (model,)
-        else: entities = self._find(model, **kwargs)
+        else: entities = model.find_v(**kwargs)
 
         # determines if this is going to be a single entity target
         # operation or if otherwise it's a multiple target one, taking
@@ -964,8 +947,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def show_entity(self, model, _id):
         model = self.get_model(model)
-        entity = self._get(
-            model,
+        entity = model.get_v(
             rules = False,
             meta = True,
             _id = self.get_adapter().object_id(_id)
@@ -983,8 +965,7 @@ class AdminPart(
         rules = self.field("rules", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
-        entity = self._get(
-            model,
+        entity = model.get_v(
             eager_l = eager_l,
             rules = rules,
             meta = meta,
@@ -996,8 +977,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def edit_entity(self, model, _id):
         model = self.get_model(model)
-        entity = self._get(
-            model,
+        entity = model.get_v(
             rules = False,
             meta = True,
             _id = self.get_adapter().object_id(_id)
@@ -1013,8 +993,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def update_entity(self, model, _id):
         model = self.get_model(model)
-        entity = self._get(
-            model,
+        entity = model.get_v(
             rules = False,
             meta = True,
             _id = self.get_adapter().object_id(_id)
@@ -1041,7 +1020,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def delete_entity(self, model, _id):
         model = self.get_model(model)
-        entity = self._get(model, _id = self.get_adapter().object_id(_id))
+        entity = model.get_v(_id = self.get_adapter().object_id(_id))
         entity.delete()
         return self.redirect(
             self.url_for(
@@ -1459,15 +1438,3 @@ class AdminPart(
 
     def _to_meta(self, type):
         return appier.Model._to_meta(type)
-
-    def _get(self, model, *args, **kwargs):
-        cls = self.__class__
-        return cls._get_g(model, *args, **kwargs)
-
-    def _find(self, model, *args, **kwargs):
-        cls = self.__class__
-        return cls._find_g(model, *args, **kwargs)
-
-    def _paginate(self, model, *args, **kwargs):
-        cls = self.__class__
-        return cls._paginate_g(model, *args, **kwargs)
