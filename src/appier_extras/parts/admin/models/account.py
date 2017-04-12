@@ -569,7 +569,7 @@ class Account(base.Base):
         self.roles.remove(role)
         self.save()
 
-    def tokens(self, resolve = True):
+    def tokens(self):
         tokens = set()
 
         if self.type == Account.ADMIN_TYPE:
@@ -578,13 +578,15 @@ class Account(base.Base):
         if self.type == Account.USER_TYPE:
             tokens.update(["base", "user"])
 
-        if not resolve: return sorted(list(tokens))
-
         for role in self.roles:
             tokens.update(role.tokens)
 
         if "*" in tokens: tokens = ["*"]
-        return sorted(list(tokens))
+
+        tokens = list(tokens)
+        tokens.sort()
+
+        return tokens
 
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
