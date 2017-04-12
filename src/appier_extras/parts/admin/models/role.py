@@ -43,7 +43,7 @@ from appier_extras.parts.admin.models import base
 
 class Role(base.Base):
 
-    username = appier.field(
+    name = appier.field(
         index = "all",
         default = True
     )
@@ -65,3 +65,7 @@ class Role(base.Base):
             appier.not_null("tokens"),
             appier.not_empty("tokens")
         ]
+
+    @classmethod
+    def list_names(cls):
+        return ["name", "description"]
