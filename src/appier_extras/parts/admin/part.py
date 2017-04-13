@@ -979,6 +979,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def edit_entity(self, model, _id):
+        appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model)
         entity = model.get_v(
             rules = False,
@@ -995,6 +996,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def update_entity(self, model, _id):
+        appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model)
         entity = model.get_v(
             rules = False,
@@ -1022,6 +1024,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def delete_entity(self, model, _id):
+        appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model)
         entity = model.get_v(_id = self.get_adapter().object_id(_id))
         entity.delete()
