@@ -81,7 +81,7 @@ class Role(base.Base):
         # using the default value and then stores the role
         role = cls(
             name = "owner",
-            description = "The super administrator (owner) role",
+            description = "Super administrator role",
         )
         role.save(validate = False)
 
