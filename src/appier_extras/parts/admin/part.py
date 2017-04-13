@@ -774,9 +774,8 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin")
-    def show_model(self, model):
-        token = "admin.models." + model
-        appier.ensure_login(self, token = token)
+    def show_model(self, model): 
+        appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model)
         model.assert_is_concrete_g()
         object = appier.get_object(
@@ -797,6 +796,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_model_json(self, model):
+        appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
@@ -811,6 +811,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_model_csv(self, model):
+        appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
         model = self.get_model(model)
@@ -946,6 +947,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_entity(self, model, _id):
+        appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model)
         entity = model.get_v(
             rules = False,
@@ -961,6 +963,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def show_entity_json(self, model, _id):
+        appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", True, cast = bool)
         rules = self.field("rules", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
