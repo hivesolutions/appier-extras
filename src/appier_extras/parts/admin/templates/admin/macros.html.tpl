@@ -56,7 +56,7 @@
         {% if is_default %}
             <span>{{ value }}</span>
         {% else %}
-            <a href="{{ value }}">{{ value }}</a>
+            <a href="{{ value }}" target="_blank">{{ value }}</a>
         {% endif %}
     {% elif meta == "email" %}
         {% if is_default %}
@@ -71,7 +71,11 @@
     {% elif meta == "bool" %}
         <span class="tag {{ value.lower() }}">{{ value }}</span>
     {% elif meta == "image_url" %}
-        <img class="image lightbox-animated" src="{{ value }}" data-lightbox_path="{{ value }}">
+        {% if value %}
+            <img class="image lightbox-animated" src="{{ value }}" data-lightbox_path="{{ value }}" />
+        {% else %}
+            <img class="image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" />
+        {% endif %}
     {% else %}
         <span>{{ value }}</span>
     {% endif %}
