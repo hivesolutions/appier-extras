@@ -82,6 +82,7 @@ class Role(base.Base):
         role = cls(
             name = "owner",
             description = "Super administrator role",
+            tokens = ["*"]
         )
         role.save(validate = False)
 
