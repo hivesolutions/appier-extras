@@ -774,7 +774,7 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin")
-    def show_model(self, model): 
+    def show_model(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model)
         model.assert_is_concrete_g()
