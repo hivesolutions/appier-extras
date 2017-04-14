@@ -251,16 +251,8 @@ class AdminPart(
         # retrieves the various fields that are going to be
         # used for the validation of the user under the current
         # authentication/authorization process
-        username = self.field(
-            "username",
-            mandatory = True,
-            not_empty = True
-        )
-        password = self.field(
-            "password",
-            mandatory = True,
-            not_empty = True
-        )
+        username = self.field("username", mandatory = True)
+        password = self.field("password", mandatory = True)
         next = self.field("next")
         socials = self.socials()
         try: account = self.account_c.login(username, password)
@@ -338,13 +330,11 @@ class AdminPart(
         )
         password = self.field(
             "password",
-            mandatory = True,
-            not_empty = True
+            mandatory = True
         )
         password_confirm = self.field(
             "password_confirm",
-            mandatory = True,
-            not_empty = True
+            mandatory = True
         )
         try: self.account_c.reset(reset_token, password, password_confirm)
         except appier.AppierException as error:
