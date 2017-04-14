@@ -9,7 +9,7 @@
             <title>{% block htitle %}{% endblock %}</title>
         {% endblock %}
     </head>
-    <body class="ux wait-load simple {{ sub_layout_r }} {{ style_r }} {{ style_flags }} {% block body_class %}{% endblock %}" data-id="admin">
+    <body class="ux wait-load simple {{ sub_layout_r }} {{ theme_r }} {{ style_r }} {{ style_flags }} {% block body_class %}{% endblock %}" data-id="admin">
         <div id="overlay" class="overlay"></div>
         <div id="header" class="header">
             {% block header %}

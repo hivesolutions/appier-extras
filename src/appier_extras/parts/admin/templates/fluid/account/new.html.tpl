@@ -1,7 +1,7 @@
 {% extends "admin/admin.simple.html.tpl" %}
 {% block title %}Sign Up{% endblock %}
 {% block content %}
-    <div class="login-panel">
+    <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Sign up</h1>
         <h3>Create you new account on <strong>{{ owner.description }}</strong></h3>
         <div class="quote error">
