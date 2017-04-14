@@ -8,7 +8,7 @@ The following are reserved configuration variables that modify Appier Extras beh
 
 * `ADMIN_LAYOUT` (`str`) - The base layout kind to be used (eg: `fluid`, `fixed`) (defaults to `fluid`)
 * `ADMIN_THEME` (`str`) - The fonts and colors theme to be used (eg: `default`, `modern`, `flat`, `webook`) (defaults to `modern`)
-* `ADMIN_STYLE` (`str`) - The sub-style to be used (think it as a sub-theme) (defaults to `romantic`)
+* `ADMIN_STYLE` (`str`) - The sub-style to be used, think of it as a sub-theme (defaults to `romantic`)
 * `ADMIN_LIBS` (`str`) - The version of the base javascript libraries to be used (eg: `current`, `legacy`, `next`, `edge`),
 should be changed carefully to avoid unwanted changes (defaults to `current`)
 
