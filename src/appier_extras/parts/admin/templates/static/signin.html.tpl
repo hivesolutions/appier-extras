@@ -1,7 +1,7 @@
 {% extends "admin/admin.simple.html.tpl" %}
 {% block title %}Login{% endblock %}
 {% block content %}
-    <div class="login-panel">
+    <div class="login-panel {% if error %}login-panel-error{% endif %}">
         <h1>Login</h1>
         <h3>Sign in to continue to <strong>{{ owner.description }}</strong></h3>
         <div class="quote error">
@@ -34,7 +34,7 @@
         <div class="login-footer">
             Sign in with
             {% if socials|length == 1 %}
-                <a href="{{ url_for('admin.' + socials[0], next = next|default('', True)) }}">{{ socials[0] }}</a>
+                <a href="{{ url_for('admin.' + socials[0], next = next|default('', True)) }}">{{ socials[0]|capitalize }}</a>
             {% else %}
                 {% for social in socials %}{% if loop.first%}{% elif loop.last %} or {% else %}, {%endif%}<a href="{{ url_for('admin.' + social, next = next|default('', True)) }}">{{ social|capitalize }}</a>{% endfor %}
             {% endif %}
