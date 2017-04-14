@@ -1,7 +1,7 @@
 {% extends "admin/admin.simple.html.tpl" %}
 {% block title %}Recover{% endblock %}
 {% block content %}
-    <div class="login-panel">
+    <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Recover password</h1>
         <h3>Use your username or email</h3>
         <div class="quote error">
