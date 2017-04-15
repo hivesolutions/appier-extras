@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}{{ entity }}{% endblock %}
-{% block name %}{{ entity }}{% endblock %}
+{% block title %}{{ model._readable() }}{% endblock %}
+{% block name %}{{ model._readable() }}{% endblock %}
 {% block buttons %}
     {{ super() }}
     <ul class="drop-down links force" data-name="Links">
