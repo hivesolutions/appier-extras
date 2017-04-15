@@ -11,7 +11,7 @@
           enctype="multipart/form-data" method="post" class="form inline">
         <div class="section">
             {% for name in model.update_names() %}
-            	{% set description = model.to_description(name) %}
+                {% set description = model.to_description(name) %}
                 <div class="item">
                     <div class="label">
                         <label>{{ description }}</label>

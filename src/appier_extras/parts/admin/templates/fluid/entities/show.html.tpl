@@ -93,7 +93,7 @@
         <div class="panel-contents simple">
             <dl class="inline">
                 {% for name in model.show_names() %}
-                	{% set description = model.to_description(name) %}
+                    {% set description = model.to_description(name) %}
                     <div class="item">
                         <dt>{{ description }}</dt>
                         <dd>{{ out(entity, name) }}</dd>
