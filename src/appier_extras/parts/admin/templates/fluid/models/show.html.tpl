@@ -113,13 +113,14 @@
                     <input type="checkbox" class="square small" />
                 </th>
                 {% for name in model.list_names() %}
+                	{% set description = model.to_description(name) %}
                     {% if name == page.sorter %}
                         <th class="text-left direction {{ page.direction }}">
-                            <a href="{{ page.query(sorter = name) }}">{{ name }}</a>
+                            <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
                         </th>
                     {% else %}
                         <th class="text-left">
-                            <a href="{{ page.query(sorter = name) }}">{{ name }}</a>
+                            <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
                         </th>
                     {% endif %}
                 {% endfor %}
