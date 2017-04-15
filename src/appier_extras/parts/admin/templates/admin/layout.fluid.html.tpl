@@ -21,9 +21,7 @@
             {% block header %}
                 {% include "admin/header.html.tpl" %}
                 <div class="side-links">
-                    <div class="side-links-container">
-                        {% block links %}{% endblock %}
-                    </div>
+                    {% block links %}{% endblock %}
                 </div>
             {% endblock %}
         </div>
