@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}{{ model._name() }}{% endblock %}
-{% block name %}{{ model._name() }}{% endblock %}
+{% block title %}{{ model._readable() }}{% endblock %}
+{% block name %}{{ model._readable() }}{% endblock %}
 {% block content %}
     <form action="{{ url_for('admin.create_entity', model = model._name()) }}"
           enctype="multipart/form-data" method="post" class="form inline">

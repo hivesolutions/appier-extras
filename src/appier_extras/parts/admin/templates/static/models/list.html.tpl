@@ -5,7 +5,7 @@
     <ul>
         {% for section, models in models_d.items() %}
             {% for model in models %}
-                <li>{{ model._name() }}</li>
+                <li>{{ model._readable() }}</li>
             {% endfor %}
         {% endfor %}
     </ul>

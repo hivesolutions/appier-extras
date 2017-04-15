@@ -13,7 +13,7 @@
                             {% if acl("admin.models." + model._name()) %}
                                 <li>
                                     <div class="left">
-                                        <a class="name" href="{{ url_for('admin.show_model', model = model._name()) }}">{{ model._name() }}</a>
+                                        <a class="name" href="{{ url_for('admin.show_model', model = model._name()) }}">{{ model._readable() }}</a>
                                     </div>
                                     <div class="right">
                                         <span class="button create" data-link="{{ url_for('admin.new_entity', model = model._name()) }}">create</span>

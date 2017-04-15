@@ -3,44 +3,44 @@
 {% block links %}
     {% if acl("admin") %}
         {% if section == "admin" %}
-            <a class="selected" href="{{ url_for('admin.index') }}">home</a>
+            <a class="selected" href="{{ url_for('admin.index') }}">Home</a>
         {% else %}
-            <a href="{{ url_for('admin.index') }}">home</a>
+            <a href="{{ url_for('admin.index') }}">Home</a>
         {% endif %}
     {% endif %}
     {% if acl("admin.options") %}
         {% if section == "options" %}
-            <a class="selected" href="{{ url_for('admin.options') }}">options</a>
+            <a class="selected" href="{{ url_for('admin.options') }}">Options</a>
         {% else %}
-            <a href="{{ url_for('admin.options') }}">options</a>
+            <a href="{{ url_for('admin.options') }}">Options</a>
         {% endif %}
     {% endif %}
     {% if acl("admin.database") %}
         {% if section == "database" %}
-            <a class="selected" href="{{ url_for('admin.database') }}">database</a>
+            <a class="selected" href="{{ url_for('admin.database') }}">Database</a>
         {% else %}
-            <a href="{{ url_for('admin.database') }}">database</a>
+            <a href="{{ url_for('admin.database') }}">Database</a>
         {% endif %}
     {% endif %}
     {% if acl("admin.social") %}
         {% if section == "social" %}
-            <a class="selected" href="{{ url_for('admin.social') }}">social</a>
+            <a class="selected" href="{{ url_for('admin.social') }}">Social</a>
         {% else %}
-            <a href="{{ url_for('admin.social') }}">social</a>
+            <a href="{{ url_for('admin.social') }}">Social</a>
         {% endif %}
     {% endif %}
     {% if acl("admin.operations") %}
         {% if section == "operations" %}
-            <a class="selected" href="{{ url_for('admin.operations') }}">operations</a>
+            <a class="selected" href="{{ url_for('admin.operations') }}">Operations</a>
         {% else %}
-            <a href="{{ url_for('admin.operations') }}">operations</a>
+            <a href="{{ url_for('admin.operations') }}">Operations</a>
         {% endif %}
     {% endif %}
     {% if acl("admin.status") %}
         {% if section == "status" %}
-            <a class="selected" href="{{ url_for('admin.status') }}">status</a>
+            <a class="selected" href="{{ url_for('admin.status') }}">Status</a>
         {% else %}
-            <a href="{{ url_for('admin.status') }}">status</a>
+            <a href="{{ url_for('admin.status') }}">Status</a>
         {% endif %}
     {% endif %}
     <div class="separator"></div>
@@ -51,9 +51,9 @@
                 {% if acl("admin.models." + _model._name()) %}
                     {% if section == "models" and model and model._name() == _model._name() %}
                         <a class="selected"
-                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._readable() }}</a>
                     {% else %}
-                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._name() }}</a>
+                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._readable() }}</a>
                     {% endif %}
                 {% endif %}
             {% endfor %}
