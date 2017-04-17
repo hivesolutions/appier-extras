@@ -75,8 +75,8 @@ class AdminPart(
         appier.Part.__init__(self, *args, **kwargs)
         self.account_c = account_c
         self.layout = appier.conf("ADMIN_LAYOUT", "fluid")
-        self.theme = appier.conf("ADMIN_THEME", "modern")
-        self.style = appier.conf("ADMIN_STYLE", "romantic")
+        self.theme = appier.conf("ADMIN_THEME", "flat")
+        self.style = appier.conf("ADMIN_STYLE", "")
         self.libs = appier.conf("ADMIN_LIBS", "current")
 
     def load(self):
