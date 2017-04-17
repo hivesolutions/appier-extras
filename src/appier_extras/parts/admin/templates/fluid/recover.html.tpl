@@ -1,5 +1,6 @@
 {% extends "admin/admin.simple.html.tpl" %}
 {% block title %}Recover{% endblock %}
+{% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Recover password</h1>
