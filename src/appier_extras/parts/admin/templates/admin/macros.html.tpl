@@ -1,8 +1,11 @@
 {% macro out(entity, name, boolean = True, default = "-") -%}
     {% set cls = entity.__class__ %}
-    {% set value = entity[name + "_meta"]|default(default) %}
-    {% if value in (None, "") and boolean %}{% set value = default %}{% endif %}
-    {{ tag_out(cls, name, value, entity, default) }}
+    {% set meta_name = name + "_meta" %}
+    {% set value = entity[meta_name]|default(default) %}
+    {% set is_default = not meta_name in entity %}
+    {% set is_default = is_default or (boolean and value in (None, "")) %}
+    {% if is_default %}{% set value = default %}{% endif %}
+    {{ tag_out(cls, name, value, entity, default, is_default = is_default) }}
 {%- endmacro %}
 
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
@@ -16,9 +19,8 @@
     {{ tag_input(cls, name, value, entity, error, disabled = disabled) }}
 {%- endmacro %}
 
-{% macro tag_out(cls, name, value, entity, default) -%}
+{% macro tag_out(cls, name, value, entity, default, is_default = False) -%}
     {% set meta = cls._solve(name) %}
-    {% set is_default = value == default %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
         {% set type = info.type %}
