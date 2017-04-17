@@ -11,6 +11,7 @@ The following are reserved configuration variables that modify Appier Extras beh
 * `ADMIN_STYLE` (`str`) - The sub-style to be used, think of it as a sub-theme (eg: `romantic`) (defaults to ``)
 * `ADMIN_LIBS` (`str`) - The version of the base javascript libraries to be used (eg: `current`, `legacy`, `next`, `edge`),
 should be changed carefully to avoid unwanted changes (defaults to `current`)
+* `ADMIN_BACKGROUND` (`str`) - The URL of the image to be used as background for simple pages (defaults to `None`)
 
 ### Email
 

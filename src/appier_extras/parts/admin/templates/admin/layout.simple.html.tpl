@@ -1,6 +1,6 @@
 {% extends "admin/layout.base.html.tpl" %}
 {% block html %}
-	{% set background = config.conf("ADMIN_BACKGROUND", None) %}
+    {% set background = config.conf("ADMIN_BACKGROUND", None) %}
     {% include "admin/doctype.html.tpl" %}
     <head>
         {% block head %}
