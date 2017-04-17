@@ -1,6 +1,5 @@
 {% extends "admin/admin.simple.html.tpl" %}
 {% block title %}Login{% endblock %}
-{% block body_class %}{{ super() }} wide{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
