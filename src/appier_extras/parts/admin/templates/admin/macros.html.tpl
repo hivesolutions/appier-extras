@@ -1,18 +1,18 @@
-{% macro out(entity, name, boolean = True, default = 'N/A') -%}
+{% macro out(entity, name, boolean = True, default = "-") -%}
     {% set cls = entity.__class__ %}
-    {% set value = entity[name + '_meta']|default(default) %}
-    {% if value in (None, '') and boolean %}{% set value = default %}{% endif %}
+    {% set value = entity[name + "_meta"]|default(default) %}
+    {% if value in (None, "") and boolean %}{% set value = default %}{% endif %}
     {{ tag_out(cls, name, value, entity, default) }}
 {%- endmacro %}
 
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
     {% set cls = entity.__class__ %}
     {% set info = cls[name]|default({}, True) %}
-    {% set default = info.get('initial', '') if create else '' %}
-    {% set disabled = info.get('immutable', False) and not create %}
+    {% set default = info.get("initial", "") if create else "" %}
+    {% set disabled = info.get("immutable", False) and not create %}
     {% set value = entity[name]|default(default) %}
     {% set error = errors[name] %}
-    {% if value in (None, '') and boolean %}{% set value = '' %}{% endif %}
+    {% if value in (None, "") and boolean %}{% set value = "" %}{% endif %}
     {{ tag_input(cls, name, value, entity, error, disabled = disabled) }}
 {%- endmacro %}
 
@@ -89,9 +89,9 @@
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _name = type._name %}
-        {% set _default = target.default()|default('name') %}
-        {% set logic = value[_name]|default('') %}
-        {% set display = value[_default]|default('') %}
+        {% set _default = target.default()|default("name") %}
+        {% set logic = value[_name]|default("") %}
+        {% set display = value[_default]|default("") %}
         <div class="drop-field {{ disabled_s|safe }}" value="{{ display }}" data-error="{{ error }}"
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic|default('', True) }}" />
@@ -103,15 +103,15 @@
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _name = type._name %}
-        {% set _default = target.default()|default('name') %}
+        {% set _default = target.default()|default("name") %}
         <div name="{{ name }}" class="tag-field {{ disabled_s|safe }}" data-error="{{ error }}"
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1"
              data-auto_width="1">
             <ul class="tags">
                 {% for item in value %}
                     {% set model = item.resolve() %}
-                    {% set logic = item[_name]|default('') %}
-                    {% set display = item[_default]|default('') %}
+                    {% set logic = item[_name]|default("") %}
+                    {% set display = item[_default]|default("") %}
                     {% if not model == None %}
                         <li data-value="{{ logic }}">{{ display }}</li>
                     {% endif %}
@@ -192,9 +192,9 @@
     {% if type_s == "reference" %}
         {% set target = type._target() %}
         {% set _name = type._name %}
-        {% set _default = target.default()|default('name') %}
-        {% set logic = value[_name]|default('') %}
-        {% set display = value[_default]|default('') %}
+        {% set _default = target.default()|default("name") %}
+        {% set logic = value[_name]|default("") %}
+        {% set display = value[_default]|default("") %}
         <div class="drop-field {{ disabled_s|safe }}" value="{{ display }}" data-error="{{ error }}"
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic|default('', True) }}" />
