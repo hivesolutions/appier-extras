@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.{{ theme_r }}.css" />
     {% endif %}
 {% else %}
-    <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.modern.css" />
+    <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.flat.css" />
 {% endif %}
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.extras.css" />
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.data.css" />
