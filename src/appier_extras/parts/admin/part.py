@@ -385,6 +385,7 @@ class AdminPart(
         except appier.ValidationError as error:
             return self.template(
                 "account/new.html.tpl",
+                error = "Problems occurred creating account",
                 account = error.model,
                 errors = error.errors
             )
