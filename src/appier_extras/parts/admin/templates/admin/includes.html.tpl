@@ -1,10 +1,10 @@
-{% set theme_r = theme|default(own.admin_part._hybrid('theme')) %}
-{% set libs_r = libs|default(own.admin_part._hybrid('libs')) %}
+{% set theme_r = theme|default(own.admin_part._hybrid("theme")) %}
+{% set libs_r = libs|default(own.admin_part._hybrid("libs")) %}
 
 <!-- css inclusion -->
 <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
 {% if theme_r %}
-    {% if theme_r == 'default' %}
+    {% if theme_r == "default" %}
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
     {% else %}
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.{{ theme_r }}.css" />
