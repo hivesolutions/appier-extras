@@ -63,7 +63,8 @@ class Base(appier.Model):
         type = int,
         index = "all",
         increment = True,
-        safe = True
+        safe = True,
+        description = "ID"
     )
     """ The global incremental identifier of the base model
     this should always be considered a unique way of addressing
@@ -96,7 +97,7 @@ class Base(appier.Model):
         meta = "datetime"
     )
     """ The original date and time of the entity creation, this should
-    be an immutalbe timestamp and never changed """
+    be an immutable timestamp and never changed """
 
     modified = appier.field(
         type = int,
@@ -108,7 +109,8 @@ class Base(appier.Model):
     entity, note that the create operation changes this value """
 
     meta = appier.field(
-        type = dict
+        type = dict,
+        description = "Metadata"
     )
     """ Additional (unstructured) information to be stored together with
     the entity for unpredicted purposes, note that these values should not
