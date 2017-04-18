@@ -718,7 +718,7 @@ class Account(base.Base):
             account = account
         )
 
-    @appier.link(name = "View Avatar")
+    @appier.link(name = "View Avatar", devel = True)
     def view_avatar_url(self, absolute = False):
         return appier.get_app().url_for(
             "admin.avatar_account",
