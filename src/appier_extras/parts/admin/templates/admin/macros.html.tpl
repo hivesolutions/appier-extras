@@ -29,7 +29,7 @@
         {% if _value and _value._id and acl(acl_prefix + "." + target._name()) %}
             <a href="{{ url_for('admin.show_entity', model = target._name(), _id = _value._id) }}">{{ value }}</a>
         {% else %}
-            <span>{{ default }}</span>
+            <span>{{ value }}</span>
         {% endif %}
     {% elif meta == "references" %}
         {% set _value = entity[name] %}
@@ -42,7 +42,7 @@
                     {% if acl(acl_prefix + "." + model._name()) %}
                         <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
                     {% else %}
-                        <span>{{ default }}</span>
+                        <span>{{ item }}</span>
                     {% endif %}
                     {% do counter.append(1) %}
                 {% endif %}
