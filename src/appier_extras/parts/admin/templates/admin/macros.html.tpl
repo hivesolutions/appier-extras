@@ -26,7 +26,7 @@
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
-        {% if _value and _value._id %}
+        {% if _value and _value._id and acl("admin.models." + target._name()) %}
             <a href="{{ url_for('admin.show_entity', model = target._name(), _id = _value._id) }}">{{ value }}</a>
         {% else %}
             <span>{{ default }}</span>
@@ -39,7 +39,11 @@
                 {% set model = item.resolve() %}
                 {% if not model == None %}
                     {% if counter|length > 0 %},{% endif %}
-                    <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
+                    {% if acl("admin.models." + model._name()) %}
+                    	<a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
+                    {% else %}
+                    	<span>{{ default }}</span>
+                    {% endif %}
                     {% do counter.append(1) %}
                 {% endif %}
             {% endfor %}
