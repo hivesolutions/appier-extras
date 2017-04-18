@@ -81,7 +81,7 @@
         {% if value and not is_default %}
             <img class="image lightbox-animated" src="{{ value }}" data-lightbox_path="{{ value }}" />
         {% else %}
-            <img class="image" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABJUlEQVR4Ae2VsU1CUQBFT0goqKi001JrrXEBFsABYAEYABeAAWABHAAGgFprLbXTioqChFwtXiG+CP/+/15hwjkD3OIWh3/Hifa3Ganzygt1sjFAiD6ZOGeNEGvOyMIUBSdk4JYdCu64ITkr9MMliblHv+yQkAbv0cAbDZLxgIgdkohLNiiWDRck4RH94YwE3KEDtqhIjWd0wCdqVKKHjtilAk0+0RE/aFKaMdozgPYcUZJrtoUGtlxRigUqNCDm5eKowgOijR9HZ8AP6QBZA6JvxtEZ8EM6RfaAmFhxNLRDukIlXbpx9O0YcbQNITXi6J0cHBpxtAdCSJ04+gNi5sXRHxAtP46Rfkh7KKFdL46+UUjHKLGjOI7pjEK6QBmck4QTJ74ABKMRJK8Q8GYAAAAASUVORK5CYII=" />
+        	<span>{{ value }}</span>
         {% endif %}
     {% else %}
         <span>{{ value }}</span>
