@@ -96,14 +96,23 @@ class AdminPart(
         self.owner.login_redirect = "admin.index"
         self.owner.logout_redirect = "admin.login"
         self.owner.admin_account = self.account_c
-        self.owner.admin_open = True
-        self.owner.admin_avatar_default = False
         self.owner.admin_login_redirect = "admin.index"
         self.owner.admin_logout_redirect = "admin.login"
         self.owner.admin_facebook_scope = ("email",)
         self.owner.admin_github_scope = ("user:email",)
         self.owner.admin_google_scope = ("email",)
         self.owner.admin_live_scope = ("wl.basic", "wl.emails")
+
+        self.owner.admin_open = appier.conf(
+            "ADMIN_OPEN",
+            False,
+            cast = bool
+        )
+        self.owner.admin_avatar_default = appier.conf(
+            "ADMIN_AVATAR_DEFAULT",
+            False,
+            cast = bool
+        )
 
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
         self.owner.lib_loaders["netius"] = self._netius_loader
