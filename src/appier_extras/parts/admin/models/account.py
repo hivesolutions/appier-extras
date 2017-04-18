@@ -182,11 +182,6 @@ class Account(base.Base):
         private = True
     )
 
-    avatar_url = appier.field(
-        meta = "image_url",
-        description = "Avatar URL"
-    )
-
     roles = appier.field(
         type = appier.references(
             "Role",
@@ -502,6 +497,11 @@ class Account(base.Base):
         return account
 
     @classmethod
+    def _build(cls, model, map):
+        username = model["username"]
+        model["avatar_url"] = cls._get_avatar_url_g(username)
+
+    @classmethod
     def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
         prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
@@ -526,6 +526,15 @@ class Account(base.Base):
             if not is_removable: continue
             delete(key)
 
+    @classmethod
+    def _get_avatar_url_g(cls, username, absolute = True, owner = None):
+        owner = owner or appier.get_app()
+        return owner.url_for(
+            "admin.avatar_account",
+            username = username,
+            absolute = absolute
+        )
+
     def pre_validate(self):
         base.Base.pre_validate(self)
         if hasattr(self, "username") and self.username:
@@ -537,7 +546,6 @@ class Account(base.Base):
 
     def pre_save(self):
         base.Base.pre_save(self)
-        self.avatar_url = self._get_avatar_url()
         if hasattr(self, "password") and self.password:
             self.password = self.encrypt(self.password)
 
@@ -632,12 +640,12 @@ class Account(base.Base):
         file_t = (image, mime, data)
         self.avatar = appier.File(file_t)
 
-    def _get_avatar_url(self, absolute = True, owner = None):
-        owner = owner or appier.get_app()
-        return owner.url_for(
-            "admin.avatar_account",
-            username = self.username,
-            absolute = absolute
+    def _get_avatar_url(self, username, absolute = True, owner = None):
+        cls = self.__class__
+        return cls._get_avatar_url_g(
+            self.username,
+            absolute = absolute,
+            owner = owner
         )
 
     @property
