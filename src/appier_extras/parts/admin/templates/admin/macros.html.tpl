@@ -53,7 +53,8 @@
         {% set info = cls[name] %}
         {% set colors = info.get("colors", {}) %}
         {% set color = colors.get(value, "") %}
-        <span class="tag {{ value }} {{ color }}">{{ value }}</span>
+        {% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
+        <span class="tag {{ value }} {{ color }}">{{ value_r }}</span>
     {% elif meta == "url" %}
         {% if is_default %}
             <span>{{ value }}</span>
@@ -132,8 +133,9 @@
                    value="{{ value|default('', True) }}" />
             <ul class="data-source" data-type="local">
                 {% for key, value in enum.items() %}
+                	{% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
                     <li>
-                        <span name="name">{{ value }}</span>
+                        <span name="name">{{ value_r }}</span>
                         <span name="internal">{{ key }}</span>
                     </li>
                 {% endfor %}
