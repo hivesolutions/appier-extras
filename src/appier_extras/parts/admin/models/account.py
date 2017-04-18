@@ -183,7 +183,8 @@ class Account(base.Base):
     )
 
     avatar_url = appier.field(
-        meta = "image_url"
+        meta = "image_url",
+        description = "Avatar URL"
     )
 
     roles = appier.field(
@@ -632,8 +633,6 @@ class Account(base.Base):
         self.avatar = appier.File(file_t)
 
     def _get_avatar_url(self, absolute = True, owner = None):
-        if not hasattr(self, "avatar"): return self.avatar_url
-        if not self.avatar: return None
         owner = owner or appier.get_app()
         return owner.url_for(
             "admin.avatar_account",
