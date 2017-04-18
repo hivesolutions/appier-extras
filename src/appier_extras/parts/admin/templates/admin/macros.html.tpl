@@ -81,7 +81,7 @@
         {% if value and not is_default %}
             <img class="image lightbox-animated" src="{{ value }}" data-lightbox_path="{{ value }}" />
         {% else %}
-        	<span>{{ value }}</span>
+            <span>{{ value }}</span>
         {% endif %}
     {% else %}
         <span>{{ value }}</span>

@@ -49,11 +49,13 @@ class Search(base.Base):
     )
 
     target_id = appier.field(
-        index = "hashed"
+        index = "hashed",
+        description = "Target ID"
     )
 
     target_cls = appier.field(
-        index = "hashed"
+        index = "hashed",
+        description = "Target Class"
     )
 
     target_title = appier.field()

@@ -108,7 +108,8 @@ class Account(base.Base):
 
     facebook_id = appier.field(
         index = "hashed",
-        safe = True
+        safe = True,
+        description = "Facebook ID"
     )
 
     twitter_username = appier.field(
@@ -118,12 +119,14 @@ class Account(base.Base):
 
     google_id = appier.field(
         index = "hashed",
-        safe = True
+        safe = True,
+        description = "Google ID"
     )
 
     live_id = appier.field(
         index = "hashed",
-        safe = True
+        safe = True,
+        description = "Live ID"
     )
 
     github_login = appier.field(
