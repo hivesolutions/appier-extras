@@ -633,19 +633,21 @@ class Account(base.Base):
         return cls.generate(value)
 
     def _set_avatar_d(self, image = "avatar.png", mime = "image/png"):
-        file = open(self.static_path + "/images/" + image, "rb")
+        admin_part = self.owner.admin_part
+
+        file = open(admin_part.static_path + "/images/" + image, "rb")
         try: data = file.read()
         finally: file.close()
 
         file_t = (image, mime, data)
         self.avatar = appier.File(file_t)
 
-    def _get_avatar_url(self, username, absolute = True, owner = None):
+    def _get_avatar_url(self, absolute = True, owner = None):
         cls = self.__class__
         return cls._get_avatar_url_g(
             self.username,
             absolute = absolute,
-            owner = owner
+            owner = self.owner
         )
 
     @property
@@ -675,11 +677,10 @@ class Account(base.Base):
         self.save()
 
     @appier.operation(name = "Email New")
-    def email_new(self, password = None, owner = None):
-        owner = owner or appier.get_app()
+    def email_new(self, password = None):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
-            owner,
+            self.owner,
             "admin/email/account/new.html.tpl",
             receivers = [self.email_f],
             subject = "New account",
@@ -689,11 +690,10 @@ class Account(base.Base):
         )
 
     @appier.operation(name = "Email Confirm")
-    def email_confirm(self, owner = None):
-        owner = owner or appier.get_app()
+    def email_confirm(self):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
-            owner,
+            self.owner,
             "admin/email/account/confirm.html.tpl",
             receivers = [self.email_f],
             subject = "Confirm account",
@@ -702,11 +702,10 @@ class Account(base.Base):
         )
 
     @appier.operation(name = "Email Recover")
-    def email_recover(self, owner = None):
-        owner = owner or appier.get_app()
+    def email_recover(self):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
-            owner,
+            self.owner,
             "admin/email/account/recover.html.tpl",
             receivers = [self.email_f],
             subject = "Recover account",
