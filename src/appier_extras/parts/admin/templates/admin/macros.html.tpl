@@ -133,7 +133,7 @@
                    value="{{ value|default('', True) }}" />
             <ul class="data-source" data-type="local">
                 {% for key, value in enum.items() %}
-                	{% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
+                    {% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
                     <li>
                         <span name="name">{{ value_r }}</span>
                         <span name="internal">{{ key }}</span>
