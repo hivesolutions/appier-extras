@@ -92,6 +92,10 @@ body.flat .pages {
     padding: 4px 10px 4px 10px;
 }
 
+body.flat .pages > .page {
+	font-size: 13px;
+}
+
 .pages > .page:first-child {
     border-radius: 4px 0px 0px 4px;
     -moz-border-radius: 4px 0px 0px 4px;
