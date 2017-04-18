@@ -634,6 +634,8 @@ class Account(base.Base):
         return cls.generate(value)
 
     def _set_avatar_d(self, image = "avatar.png", mime = "image/png"):
+        if not hasattr(self.owner, "admin_part"): return
+        if not self.owner.admin_part: return
         admin_part = self.owner.admin_part
 
         file = open(admin_part.static_path + "/images/" + image, "rb")
