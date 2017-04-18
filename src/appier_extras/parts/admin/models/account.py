@@ -529,6 +529,7 @@ class Account(base.Base):
     @classmethod
     def _get_avatar_url_g(cls, username, absolute = True, owner = None):
         owner = owner or appier.get_app()
+        if not hasattr(owner, "admin_part"): return None
         return owner.url_for(
             "admin.avatar_account",
             username = username,
@@ -711,6 +712,14 @@ class Account(base.Base):
             subject = "Recover account",
             title = "Recover account",
             account = account
+        )
+
+    @appier.link(name = "View Avatar")
+    def view_avatar_url(self, absolute = False):
+        return appier.get_app().url_for(
+            "admin.avatar_account",
+            username = self.username,
+            absolute = absolute
         )
 
     @property
