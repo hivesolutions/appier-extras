@@ -411,12 +411,12 @@ class AdminPart(
         )
         avatar = account.avatar
         if not avatar: raise appier.NotFoundError(
-            message = "Avaar not found for user '%s'" % username,
+            message = "Avatar not found for user '%s'" % username,
             code = 404
         )
         return self.send_file(
-            file.data,
-            content_type = file.mime,
+            avatar.data,
+            content_type = avatar.mime,
             etag = avatar.etag,
             cache = True
         )
