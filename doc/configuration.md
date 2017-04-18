@@ -12,6 +12,7 @@ The following are reserved configuration variables that modify Appier Extras beh
 * `ADMIN_LIBS` (`str`) - The version of the base javascript libraries to be used (eg: `current`, `legacy`, `next`, `edge`),
 should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `ADMIN_BACKGROUND` (`str`) - The URL of the image to be used as background for simple pages (defaults to `None`)
+* `ADMIN_AVATAR_DEFAULT` (`bool`) - If a new default image should be set for an account's avatar if none is set (defaults to `False`)
 
 ### Email
 

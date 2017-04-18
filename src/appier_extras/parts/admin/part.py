@@ -97,6 +97,7 @@ class AdminPart(
         self.owner.logout_redirect = "admin.login"
         self.owner.admin_account = self.account_c
         self.owner.admin_open = True
+        self.owner.admin_avatar_default = False
         self.owner.admin_login_redirect = "admin.index"
         self.owner.admin_logout_redirect = "admin.login"
         self.owner.admin_facebook_scope = ("email",)
@@ -405,16 +406,22 @@ class AdminPart(
         raise appier.NotImplementedError()
 
     def avatar_account(self, username):
-        cache = self.field("cache", False)
+        strict = self.field("strict", False, cast = bool)
+        cache = self.field("cache", False, cast = bool)
         account = self.account_c.get(
             username = username,
             rules = False
         )
-        avatar = account.avatar
-        if not avatar: raise appier.NotFoundError(
-            message = "Avatar not found for user '%s'" % username,
-            code = 404
-        )
+        avatar = account.avatar if hasattr(account, "avatar") else None
+        if not avatar:
+            if strict: raise appier.NotFoundError(
+                message = "Avatar not found for user '%s'" % username,
+                code = 404
+            )
+            return self.send_static(
+                "images/avatar.png",
+                static_path = self.static_path
+            )
         return self.send_file(
             avatar.data,
             content_type = avatar.mime,
