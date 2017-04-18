@@ -40,9 +40,9 @@
                 {% if not model == None %}
                     {% if counter|length > 0 %},{% endif %}
                     {% if acl("admin.models." + model._name()) %}
-                    	<a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
+                        <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
                     {% else %}
-                    	<span>{{ default }}</span>
+                        <span>{{ default }}</span>
                     {% endif %}
                     {% do counter.append(1) %}
                 {% endif %}
