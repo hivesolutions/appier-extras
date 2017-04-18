@@ -162,6 +162,7 @@ class AdminPart(
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
+            (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
@@ -402,6 +403,23 @@ class AdminPart(
 
     def mail_account(self, username):
         raise appier.NotImplementedError()
+
+    def avatar_account(self, username):
+        account = self.account_c.get(
+            username = username,
+            rules = False
+        )
+        avatar = account.avatar
+        if not avatar: raise appier.NotFoundError(
+            message = "Avaar not found for user '%s'" % username,
+            code = 404
+        )
+        return self.send_file(
+            file.data,
+            content_type = file.mime,
+            etag = avatar.etag,
+            cache = True
+        )
 
     @appier.ensure(token = "admin.options")
     def options(self):

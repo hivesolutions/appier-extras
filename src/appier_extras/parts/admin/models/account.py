@@ -624,9 +624,7 @@ class Account(base.Base):
         return cls.generate(value)
 
     def _set_avatar_d(self, image = "avatar.png", mime = "image/png"):
-        app = appier.get_app()
-
-        file = open(app.static_path + "/images/" + image, "rb")
+        file = open(self.static_path + "/images/" + image, "rb")
         try: data = file.read()
         finally: file.close()
 
@@ -637,7 +635,11 @@ class Account(base.Base):
         if not hasattr(self, "avatar"): return self.avatar_url
         if not self.avatar: return None
         owner = owner or appier.get_app()
-        return owner.url_for("media_api.data", id = id, absolute = absolute)
+        return owner.url_for(
+            "admin.avatar_account",
+            username = self.username,
+            absolute = absolute
+        )
 
     @property
     def email_f(self):
