@@ -19,14 +19,14 @@
     {{ tag_input(cls, name, value, entity, error, disabled = disabled) }}
 {%- endmacro %}
 
-{% macro tag_out(cls, name, value, entity, default, is_default = False) -%}
+{% macro tag_out(cls, name, value, entity, default, is_default = False, acl_prefix = "admin.models" ) -%}
     {% set meta = cls._solve(name) %}
     {% if meta == "reference" %}
         {% set info = cls[name] %}
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
-        {% if _value and _value._id and acl("admin.models." + target._name()) %}
+        {% if _value and _value._id and acl(acl_prefix + "." + target._name()) %}
             <a href="{{ url_for('admin.show_entity', model = target._name(), _id = _value._id) }}">{{ value }}</a>
         {% else %}
             <span>{{ default }}</span>
@@ -39,7 +39,7 @@
                 {% set model = item.resolve() %}
                 {% if not model == None %}
                     {% if counter|length > 0 %},{% endif %}
-                    {% if acl("admin.models." + model._name()) %}
+                    {% if acl(acl_prefix + "." + model._name()) %}
                         <a href="{{ url_for('admin.show_entity', model = model.__class__._name(), _id = item._id) }}">{{ item }}</a>
                     {% else %}
                         <span>{{ default }}</span>
