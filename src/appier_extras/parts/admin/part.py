@@ -405,6 +405,7 @@ class AdminPart(
         raise appier.NotImplementedError()
 
     def avatar_account(self, username):
+        cache = self.field("cache", False)
         account = self.account_c.get(
             username = username,
             rules = False
@@ -418,7 +419,7 @@ class AdminPart(
             avatar.data,
             content_type = avatar.mime,
             etag = avatar.etag,
-            cache = True
+            cache = cache
         )
 
     @appier.ensure(token = "admin.options")
