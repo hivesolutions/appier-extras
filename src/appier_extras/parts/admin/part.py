@@ -366,7 +366,7 @@ class AdminPart(
 
     def new_account(self):
         if not self.owner.admin_open: raise appier.SecurityError(
-            message = "signup not allowed"
+            message = "Signup not allowed"
         )
         return self.template(
             "account/new.html.tpl",
@@ -376,7 +376,7 @@ class AdminPart(
 
     def create_account(self):
         if not self.owner.admin_open: raise appier.SecurityError(
-            message = "signup not allowed"
+            message = "Signup not allowed"
         )
         account = self.account_c.new()
         account.type = self.account_c.USER_TYPE
