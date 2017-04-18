@@ -5,9 +5,9 @@
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Sign up</h1>
         <h3>Create you new account on <strong>{{ owner.description }}</strong></h3>
-        <div class="quote error">
-            {{ error|default("", True) }}
-        </div>
+        {% if error %}
+            <div class="quote error">{{ error }}</div>
+        {% endif %}
         <form action="{{ url_for('admin.create_account') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">

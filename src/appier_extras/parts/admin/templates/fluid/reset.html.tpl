@@ -5,9 +5,9 @@
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Reset password</h1>
         <h3>Define a new password for you account</h3>
-        <div class="quote error">
-            {{ error|default("", True) }}
-        </div>
+        {% if error %}
+            <div class="quote error">{{ error }}</div>
+        {% endif %}
         <form action="{{ url_for('admin.reset_do') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <input type="hidden" name="reset_token" value="{{ reset_token }}" />

@@ -5,9 +5,9 @@
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Recover password</h1>
         <h3>Use your username or email</h3>
-        <div class="quote error">
-            {{ error|default("", True) }}
-        </div>
+        {% if error %}
+            <div class="quote error">{{ error }}</div>
+        {% endif %}
         <form action="{{ url_for('admin.recover_do') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
             <div class="input">

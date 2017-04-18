@@ -7,9 +7,9 @@
         Please contact the <strong>system administrator</strong> for more information.
     </div>
     <div class="separator-horizontal"></div>
-    <div class="quote error">
-        {{ error|default("", True) }}
-    </div>
+    {% if error %}
+        <div class="quote error">{{ error }}</div>
+    {% endif %}
     {% if lines %}
         <div class="quote">
             <a class="link replacer" data-target=".traceback" data-no_auto="1">show traceback</a>
