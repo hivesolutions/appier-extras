@@ -93,7 +93,7 @@ body.flat .pages {
 }
 
 body.flat .pages > .page {
-	font-size: 13px;
+    font-size: 13px;
 }
 
 .pages > .page:first-child {

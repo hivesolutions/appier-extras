@@ -14,7 +14,7 @@
         </div>
         <form enctype="multipart/form-data" action="{{ url_for('admin.database_import_do') }}"
               method="post" class="form small">
-            <div class="input">
+            <div class="input single">
                  <a data-name="import_file" class="uploader">Select & Upload the import file</a>
             </div>
             <div class="buttons">

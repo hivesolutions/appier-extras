@@ -173,6 +173,19 @@ class Account(base.Base):
         meta = "datetime"
     )
 
+    avatar = appier.field(
+        type = appier.image(
+            width = 400,
+            height = 400,
+            format = "png"
+        ),
+        private = True
+    )
+
+    avatar_url = appier.field(
+        meta = "image_url"
+    )
+
     roles = appier.field(
         type = appier.references(
             "Role",
@@ -523,6 +536,7 @@ class Account(base.Base):
 
     def pre_save(self):
         base.Base.pre_save(self)
+        self.avatar_url = self._get_avatar_url()
         if hasattr(self, "password") and self.password:
             self.password = self.encrypt(self.password)
 
@@ -530,6 +544,8 @@ class Account(base.Base):
         base.Base.pre_create(self)
         self.key = self.secret()
         self.confirmation_token = self.secret()
+        if not hasattr(self, "avatar") or not self.avatar:
+            self._set_avatar_d()
 
     def confirm_s(self, send_email = False):
         self.confirmation_token = None
@@ -607,6 +623,22 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
+    def _set_avatar_d(self, image = "avatar.png", mime = "image/png"):
+        app = appier.get_app()
+
+        file = open(app.static_path + "/images/" + image, "rb")
+        try: data = file.read()
+        finally: file.close()
+
+        file_t = (image, mime, data)
+        self.avatar = appier.File(file_t)
+
+    def _get_avatar_url(self, absolute = True, owner = None):
+        if not hasattr(self, "avatar"): return self.avatar_url
+        if not self.avatar: return None
+        owner = owner or appier.get_app()
+        return owner.url_for("media_api.data", id = id, absolute = absolute)
+
     @property
     def email_f(self):
         if not self.email: return self.email
@@ -628,7 +660,7 @@ class Account(base.Base):
         self.save()
 
     @appier.operation(name = "Mark Unconfirmed")
-    def mark_unconfirmed_s(self, owner = None):
+    def mark_unconfirmed_s(self):
         self.enabled = False
         self.confirmation_token = self.secret()
         self.save()
