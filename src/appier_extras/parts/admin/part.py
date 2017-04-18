@@ -104,14 +104,10 @@ class AdminPart(
         self.owner.admin_live_scope = ("wl.basic", "wl.emails")
 
         self.owner.admin_open = appier.conf(
-            "ADMIN_OPEN",
-            False,
-            cast = bool
+            "ADMIN_OPEN", False, cast = bool
         )
         self.owner.admin_avatar_default = appier.conf(
-            "ADMIN_AVATAR_DEFAULT",
-            False,
-            cast = bool
+            "ADMIN_AVATAR_DEFAULT", False, cast = bool
         )
 
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
