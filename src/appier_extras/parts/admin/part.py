@@ -962,20 +962,26 @@ class AdminPart(
         )
         object = self._sort(object, model)
 
+        definition = model.view(view)
         method = getattr(entity, view)
         result = method(
             rules = False,
             meta = True,
             **object
         )
-        model = result["model"]
+        target = result["model"]
         entities = result["entities"]
+        names = result.get("names", None)
 
         return self.template(
             "views/show.html.tpl",
             section = "models",
             model = model,
-            entities = entities
+            target = target,
+            entity = entity,
+            entities = entities,
+            definition = definition,
+            names = names
         )
 
     @appier.ensure(token = "admin")
