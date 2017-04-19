@@ -964,6 +964,7 @@ class AdminPart(
 
         method = getattr(entity, view)
         result = method(**object)
+        model = result["model"]
         entities = result["entities"]
 
         return self.template(

@@ -598,6 +598,19 @@ class Account(base.Base):
         self.save()
 
     def tokens(self):
+        """
+        Retrieves the complete set of ACL tokens for the current use
+        respecting the wild card based selection if there's such use.
+
+        These should consider both dynamic and static role users.
+
+        This method has a critical impact on overall system security.
+
+        :rtype: List
+        :return: The ACL tokens list taking into consideration the complete
+        aggregated set of roles of the user.
+        """
+
         tokens = set()
 
         if self.type == Account.ADMIN_TYPE:
@@ -616,7 +629,19 @@ class Account(base.Base):
 
         return tokens
 
-    def views(self):
+    def views_l(self):
+        """
+        Retrieves the complete set of views for the current account,
+        these should take into consideration the account's roles.
+
+        Aggregation of the multiple views should be done in a linear
+        fashion with the first being the most relevant one.
+
+        :rtype: List
+        :return: The list of view maps that should be applied for proper
+        context filtering of the user (result set constrain).
+        """
+
         views = []
         for role in self.roles_l:
             view_m = role.view_m(context = self)
@@ -744,6 +769,6 @@ class Account(base.Base):
         set("email", self.email)
         set("type", self.type_s())
         set("tokens", self.tokens())
-        set("views", self.views())
+        set("views", self.views_l())
         set("meta", self.meta)
         set("params", dict())
