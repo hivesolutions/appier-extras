@@ -963,7 +963,11 @@ class AdminPart(
         object = self._sort(object, model)
 
         method = getattr(entity, view)
-        result = method(**object)
+        result = method(
+            rules = False,
+            meta = True,
+            **object
+        )
         model = result["model"]
         entities = result["entities"]
 
