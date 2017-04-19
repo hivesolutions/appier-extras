@@ -53,8 +53,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a class="no-async"
-                           href="{{ url_for('admin.view_model', model = model._name(), view = view.method, id = entity._id) }}" >{{ view.name }}</a>
+                        <a href="{{ url_for('admin.view_model', model = model._name(), view = view.method, id = entity._id) }}" >{{ view.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
