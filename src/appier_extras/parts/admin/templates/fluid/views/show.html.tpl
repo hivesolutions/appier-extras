@@ -1,6 +1,11 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}{{ entity }} :: {{ definition.name }}{% endblock %}
-{% block name %}{{ entity }} :: {{ definition.name }}{% endblock %}
+{% block title %}{{ entity }} / {{ definition.name }}{% endblock %}
+{% block name %}
+	<a href="{{ url_for('admin.show_entity', model = model._name(), _id = entity._id) }}">
+		{{ entity }}
+	</a>/
+	<span>{{ definition.name }}</span>
+{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block content %}
     <table class="filter bulk" data-no_input="1">
