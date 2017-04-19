@@ -61,7 +61,11 @@ class OpbeatPart(appier.Part):
         self.owner.bind("exception", self.exception)
 
         log = appier.conf("OPBEAT_LOG", False, cast = bool)
-        if log: appier.ensure_pip("opbeat", package = "opbeat_api")
+        if log: appier.ensure_pip(
+            "opbeat",
+            package = "opbeat_api",
+            delayed = True
+        )
 
     def exception(self, exception, is_soft = False):
         log = appier.conf("OPBEAT_LOG", False, cast = bool)
