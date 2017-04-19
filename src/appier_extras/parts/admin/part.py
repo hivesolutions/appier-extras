@@ -971,6 +971,7 @@ class AdminPart(
         )
         target = result["model"]
         entities = result["entities"]
+        page = result["page"]
         names = result.get("names", None)
 
         return self.template(
@@ -980,6 +981,7 @@ class AdminPart(
             target = target,
             entity = entity,
             entities = entities,
+            page = page,
             definition = definition,
             names = names
         )
