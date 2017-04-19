@@ -173,8 +173,9 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
-            (("GET", "POST"), "/admin/models/<str:model>/links/<str:link>", self.link_model),
+            (("GET",), "/admin/models/<str:model>/links/<str:link>", self.link_model),
             (("GET", "POST"), "/admin/models/<str:model>/operations/<str:operation>", self.operation_model),
+            (("GET",), "/admin/models/<str:model>/view/<str:view>", self.view_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, True),
@@ -805,8 +806,8 @@ class AdminPart(
             page = True,
             find = True
         )
-        page = model.paginate_v(**object)
         object = self._sort(object, model)
+        page = model.paginate_v(**object)
         entities = model.find_v(meta = True, **object)
         return self.template(
             "models/show.html.tpl",
@@ -850,6 +851,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def link_model(self, model, link):
+        appier.ensure_login(self, token = "admin.models." + model)
         parameters = self.get_fields("parameters", [])
         ids = self.field("ids", "")
         ids = ids.split(",")
@@ -868,6 +870,10 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def operation_model(self, model, operation):
+        # ensures that the proper token is available so that the
+        # operation may be executed under the current context
+        appier.ensure_login(self, token = "admin.models." + model)
+
         # retrieves the complete set of fields that are going to
         # be used while performing the operation and runs the
         # complete set of casting operations for each of them
@@ -936,6 +942,35 @@ class AdminPart(
         # page for the model used as target for the operation
         return self.redirect(
             next or self.url_for("admin.show_model", model = model._name())
+        )
+
+    @appier.ensure(token = "admin")
+    def view_model(self, model, view):
+        appier.ensure_login(self, token = "admin.models." + model)
+
+        _id = self.field("id", mandatory = True)
+
+        model = self.get_model(model)
+        model.assert_is_concrete_g()
+
+        entity = model.get_v(_id = self.get_adapter().object_id(_id))
+
+        object = appier.get_object(
+            alias = True,
+            page = True,
+            find = True
+        )
+        object = self._sort(object, model)
+
+        method = getattr(entity, view)
+        result = method(**object)
+        entities = result["entities"]
+
+        return self.template(
+            "views/show.html.tpl",
+            section = "models",
+            model = model,
+            entities = entities
         )
 
     @appier.ensure(token = "admin")
