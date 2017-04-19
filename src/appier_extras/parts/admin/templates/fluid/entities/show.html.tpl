@@ -6,18 +6,16 @@
     <ul class="drop-down links force" data-name="Links">
         {% for link in model.links() %}
             {% set link_valid = not link.devel or own.is_devel() %}
-            {% if link_valid %}
-                {% if link.instance %}
-                    {% if link.parameters %}
-                        <li>
-                            <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a class="no-async" target="_blank"
-                               href="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
-                        </li>
-                    {% endif %}
+            {% if link.instance and link_valid %}
+                {% if link.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="no-async" target="_blank"
+                           href="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
+                    </li>
                 {% endif %}
             {% endif %}
         {% endfor %}
@@ -41,6 +39,23 @@
                             <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
                         </li>
                     {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <ul class="drop-down views force" data-name="Views">
+        {% for view in model.views() %}
+            {% set view_valid = not view.devel or own.is_devel() %}
+            {% if view.instance and view_valid %}
+                {% if view.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ view.method }}">{{ view.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="no-async"
+                           href="{{ url_for('admin.view_model', model = model._name(), view = view.method, id = entity._id) }}" >{{ view.name }}</a>
+                    </li>
                 {% endif %}
             {% endif %}
         {% endfor %}

@@ -7,18 +7,16 @@
     <ul class="drop-down links force" data-name="Links">
         {% for link in model.links() %}
             {% set link_valid = not link.devel or own.is_devel() %}
-            {% if link_valid %}
-                {% if not link.instance %}
-                    {% if link.parameters %}
-                        <li>
-                            <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a class="no-async" target="_blank"
-                               href="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '1') }}" >{{ link.name }}</a>
-                        </li>
-                    {% endif %}
+            {% if not link.instance and link_valid %}
+                {% if link.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="no-async" target="_blank"
+                           href="{{ url_for('admin.link_model', model = model._name(), link = link.method, is_global = '1') }}" >{{ link.name }}</a>
+                    </li>
                 {% endif %}
             {% endif %}
         {% endfor %}
