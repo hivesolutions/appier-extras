@@ -101,6 +101,10 @@ class Snapshot(base.Base):
         )
         snapshot.save()
 
+    def pre_save(self):
+        base.Base.pre_save(self)
+        self.model_data = self.model_data_b
+
     @appier.operation(name = "Restore")
     def restore_s(self, save = True, validate = False):
         model_data = dict(self.model_data_s)
@@ -134,4 +138,24 @@ class Snapshot(base.Base):
         adapter = cls._adapter()
         model_data = dict(self.model_data)
         model_data["_id"] = adapter.object_id(model_data["_id"])
+        return model_data
+
+    @property
+    def model_data_b(self):
+        """
+        Bulk version of the model data that should be ready for
+        safe data source storing.
+
+        The primary goal is to properly encode the object id of
+        the model in a safe "dictionary way".
+
+        :rtype: Dictionary
+        :return: The bulk version of the model data, with proper
+        object identifiers encoded in "dictionary way".
+        """
+
+        cls = self.__class__
+        if not "_id" in self.model_data: return self.model_data
+        model_data = dict(self.model_data)
+        model_data["_id"] = str(model_data["_id"])
         return model_data
