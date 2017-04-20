@@ -103,9 +103,10 @@ class Snapshot(base.Base):
 
     @appier.operation(name = "Restore")
     def restore_s(self, save = True, validate = False):
+        model_data = dict(self.model_data_s)
         target_cls = appier.get_model(self.target_cls)
-        target_cls.types(self.model_data)
-        model = target_cls.old(model = self.model_data, safe = False)
+        target_cls.types(model_data)
+        model = target_cls.old(model = model_data, safe = False)
         if not save: return model
         exists = not target_cls.get(id = self.target_id, raise_e = False) == None
         if save: model.save(
@@ -115,3 +116,22 @@ class Snapshot(base.Base):
             immutables_a = False
         )
         return model
+
+    @property
+    def model_data_s(self):
+        """
+        Safe version of the model data that should ensure that the
+        primary object identifier of the model is properly encoded
+        as an object identifier.
+
+        :rtype: Dictionary
+        :return: The safe version of the model data, with proper
+        object identifiers set.
+        """
+
+        cls = self.__class__
+        if not "_id" in self.model_data: return self.model_data
+        adapter = cls._adapter()
+        model_data = dict(self.model_data)
+        model_data["_id"] = adapter.object_id(model_data["_id"])
+        return model_data
