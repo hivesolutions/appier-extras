@@ -48,15 +48,21 @@ class Snapshot(base.Base):
         index = "all",
         description = "Target ID"
     )
+    """ The unique identifier of the entity to be used
+    to identify the entity globally (should be unique) """
 
     target_cls = appier.field(
         index = "hashed",
         description = "Target Class"
     )
+    """ The name of the class for the entity (as a string) """
 
     model_data = appier.field(
         type = dict
     )
+    """ The payload information on the entity/model
+    data that is going to be used to restore the
+    entity back to the original state (if requested) """
 
     @classmethod
     def validate(cls):
