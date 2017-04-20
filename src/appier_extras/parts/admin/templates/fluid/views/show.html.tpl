@@ -37,15 +37,15 @@
                     </td>
                     {% for name in names or target.list_names() %}
                         {% if loop.first %}
-                            <td class="text-left">
-                                {% if acl("admin.models." + target._name()) %}
+                            {% if acl("admin.models." + target._name()) %}
+                                <td class="text-left">
                                     <a href="{{ url_for('admin.show_entity', model = target._name(), _id = entity._id) }}">
                                         {{ out(entity, name) }}
                                     </a>
-                                {% else %}
-                                    <span>out(entity, name)</span>
-                                {% endif %}
-                            </td>
+                                </td>
+                            {% else %}
+                                <td class="text-left">{{ out(entity, name) }}</td>
+                            {% endif %}
                         {% else %}
                             <td class="text-left">{{ out(entity, name) }}</td>
                         {% endif %}
