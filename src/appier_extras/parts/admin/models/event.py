@@ -139,6 +139,7 @@ class Event(base.Base):
         return appier.post(url, data_j = arguments)
 
     def notify_mailme(self, arguments = {}):
+        appier.ensure_pip("mailme", package = "mailme_api")
         import mailme
         logger = appier.get_logger()
         logger.debug("Running Mailme notification ...")
