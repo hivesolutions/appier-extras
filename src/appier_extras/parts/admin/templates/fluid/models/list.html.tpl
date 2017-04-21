@@ -7,7 +7,7 @@
             {% set available = own._available(models) %}
             {% if available|length > 0 %}
                 <div class="panel-model">
-                    <h3>{{ section }}</h3>
+                    <h3>{{ appier.underscore_to_readable(section, capitalize = True) }}</h3>
                     <ul>
                         {% for model in available %}
                             {% if acl("admin.models." + model._name()) %}
