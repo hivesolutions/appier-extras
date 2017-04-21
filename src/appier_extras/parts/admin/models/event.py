@@ -74,6 +74,16 @@ class Event(base.Base):
         return ["name", "handler"]
 
     @classmethod
+    def transform(cls, arguments, prefix):
+        arguments = dict(arguments)
+        prefix_l = len(prefix)
+        for key, value in appier.legacy.items(arguments):
+            if not key.startswith(prefix): continue
+            key_prefix = key[prefix_l:]
+            arguments[key_prefix] = value
+        return arguments
+
+    @classmethod
     def notify_g(cls, name, handlers = None, arguments = {}):
         logger = appier.get_logger()
         logger.debug("Triggering '%s' event ..." % name)
@@ -84,6 +94,7 @@ class Event(base.Base):
 
     @appier.operation(name = "Notify")
     def notify(self, arguments = {}, delay = True, owner = None):
+        cls = self.__class__
         delay_s = ("a delayed" if delay else "an immediate")
         logger = appier.get_logger()
         logger.debug(
@@ -95,6 +106,7 @@ class Event(base.Base):
         arguments_m = dict(self.arguments)
         arguments_m.update(arguments)
         arguments_m.update(event = self.name, handler = self.handler)
+        arguments_m = cls.transform(arguments_m, self.handler + "_")
         kwargs = dict(arguments = arguments_m)
         if delay: owner.delay(method, kwargs = kwargs)
         else: method(arguments, **kwargs)
