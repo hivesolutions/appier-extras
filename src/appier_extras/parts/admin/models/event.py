@@ -149,12 +149,12 @@ class Event(base.Base):
     def notify_nexmo(self, arguments = {}):
         appier.ensure_pip("nexmo", package = "nexmo_api")
         import nexmo
-        logger = appier.get_logger()
-        logger.debug("Running Nexmo notification ...")
-        api = nexmo.Api()
         sender = arguments["sender"]
         receiver = arguments["receiver"]
         text = arguments["text"]
+        logger = appier.get_logger()
+        logger.debug("Running Nexmo notification for '%s' ..." % receiver)
+        api = nexmo.Api()
         return api.send_sms(sender, receiver, text)
 
     @appier.operation(name = "Duplicate", factory = True)
