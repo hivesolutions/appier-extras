@@ -29,6 +29,71 @@ __copyright__ = Copyright (c) 2008-2017 Hive Solutions Lda.
 __license__   = Apache License, Version 2.0
 */
 
+.balloon {
+    display: inline-block;
+}
+
+.balloon > .baloon-icon {
+    cursor: pointer;
+    transition: color 0.10s ease-in;
+    -o-transition: color 0.10s ease-in;
+    -ms-transition: color 0.10s ease-in;
+    -moz-transition: color 0.10s ease-in;
+    -webkit-transition: color 0.10s ease-in;
+}
+
+.balloon > .baloon-icon:hover {
+    color: #3668c6;
+    cursor: pointer;
+}
+
+body.flat .balloon > .baloon-icon:hover {
+    color: #257f96;
+}
+
+.balloon > .balloon-contents {
+    animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -o-animation: fade-in0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -ms-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -moz-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -webkit-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    animation-delay: 1s;
+    background-color: #fafafa;
+    border: 1px solid #cccccc;
+    box-shadow: 0px 1px 4px #dddddd;
+    -moz-box-shadow: 0px 1px 4px #dddddd;
+    -webkit-box-shadow: 0px 1px 4px #dddddd;
+    display: none;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 20px;
+    margin-top: 6px;
+    max-width: 300px;
+    padding: 10px 12px 10px 12px;
+    position: absolute;
+    text-transform: none;
+}
+
+body.flat .balloon > .balloon-contents {
+    animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -o-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -ms-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -moz-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -webkit-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    font-weight: 600;
+    opacity: 0.0;
+}
+
+.balloon:hover > .balloon-contents {
+    display: block;
+}
+
 .panel-model {
     border: 1px solid #e0e0e0;
     margin: 24px 0px 24px 0px;

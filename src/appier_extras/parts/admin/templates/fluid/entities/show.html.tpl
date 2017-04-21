@@ -111,8 +111,18 @@
             <dl class="inline">
                 {% for name in model.show_names() %}
                     {% set description = model.to_description(name) %}
+                    {% set observations = model.to_observations(name) %}
                     <div class="item">
-                        <dt>{{ description }}</dt>
+                        <dt>
+                            {% if observations %}
+                                <div class="balloon balloon-observations">
+                                    <span class="baloon-icon">{{ description }}</span>
+                                    <div class="balloon-contents">{{ observations }}</div>
+                                </div>
+                            {% else%}
+                                <span>{{ description }}</span>
+                            {% endif %}
+                        </dt>
                         <dd>{{ out(entity, name) }}</dd>
                     </div>
                 {% endfor %}
