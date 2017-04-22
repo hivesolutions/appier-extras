@@ -418,20 +418,8 @@ class AdminPart(
             username = username,
             rules = False
         )
-        avatar = account.avatar if hasattr(account, "avatar") else None
-        if not avatar:
-            if strict: raise appier.NotFoundError(
-                message = "Avatar not found for user '%s'" % username,
-                code = 404
-            )
-            return self.send_static(
-                "images/avatar.png",
-                static_path = self.static_path
-            )
-        return self.send_file(
-            avatar.data,
-            content_type = avatar.mime,
-            etag = avatar.etag,
+        return account._send_avatar(
+            strict = strict,
             cache = cache
         )
 
@@ -1511,6 +1499,3 @@ class AdminPart(
             label = label,
             libs_label = libs_label
         )
-
-    def _to_meta(self, type):
-        return appier.Model._to_meta(type)

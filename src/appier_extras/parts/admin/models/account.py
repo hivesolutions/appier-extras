@@ -658,6 +658,25 @@ class Account(base.Base):
         cls = self.__class__
         return cls.generate(value)
 
+    def _send_avatar(self, image = "avatar.png", strict = False, cache = False):
+        admin_part = self.owner.admin_part
+        avatar = self.avatar if hasattr(self, "avatar") else None
+        if not avatar:
+            if strict: raise appier.NotFoundError(
+                message = "Avatar not found for user '%s'" % self.username,
+                code = 404
+            )
+            return self.owner.send_static(
+                "images/" + image,
+                static_path = admin_part.static_path
+            )
+        return self.owner.send_file(
+            avatar.data,
+            content_type = avatar.mime,
+            etag = avatar.etag,
+            cache = cache
+        )
+
     def _set_avatar_d(self, image = "avatar.png", mime = "image/png"):
         if not hasattr(self.owner, "admin_part"): return
         if not self.owner.admin_part: return
