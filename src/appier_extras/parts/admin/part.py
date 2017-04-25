@@ -948,7 +948,6 @@ class AdminPart(
             page = True,
             find = True
         )
-        object = self._sort(object, model)
 
         definition = model.view(view)
         method = getattr(entity, view)
