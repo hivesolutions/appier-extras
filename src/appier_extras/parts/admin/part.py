@@ -936,12 +936,14 @@ class AdminPart(
     def view_model(self, model, view):
         appier.ensure_login(self, token = "admin.models." + model)
 
-        _id = self.field("id", mandatory = True)
+        _id = self.field("id", None)
+        is_global = False if _id else True
 
         model = self.get_model(model)
         model.assert_is_concrete_g()
 
-        entity = model.get_v(_id = self.get_adapter().object_id(_id))
+        if _id: entity = model.get_v(_id = self.get_adapter().object_id(_id))
+        else: entity = model
 
         object = appier.get_object(
             alias = True,
@@ -970,7 +972,8 @@ class AdminPart(
             entities = entities,
             page = page,
             definition = definition,
-            names = names
+            names = names,
+            is_global = is_global
         )
 
     @appier.ensure(token = "admin")
