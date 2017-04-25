@@ -76,7 +76,7 @@
     {% elif meta == "longtext" %}
         {{ value[:60] + " ..." if value|length > 64 else value }}
     {% elif meta == "distance_km" %}
-        <span>{{ "%.02f" % (value|float / 1000.0) }} KM</span>
+        <span>{{ "%.02f" % (value|float / 1000.0) }} Km</span>
     {% elif meta == "distance_m" %}
         <span>{{ "%.02f" % value|float }} M</span>
     {% elif meta == "time_h" %}
