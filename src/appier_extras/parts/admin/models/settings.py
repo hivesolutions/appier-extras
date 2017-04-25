@@ -108,6 +108,10 @@ class Settings(base.Base):
         if settings.twitter_token: linked["twitter"] = settings.twitter_token
         return linked
 
+    @classmethod
+    def _plural(self):
+        return "Settings"
+
     def get_facebook_api(self):
         try: import facebook
         except: return None
