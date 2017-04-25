@@ -485,15 +485,15 @@ class Base(appier.Model):
         # the provided model data should always represent the complete state
         snapshot.Snapshot.create_snapshot(self.id, cls, model_data = model)
 
-    def touch_s(self):
-        self.save()
-
     def enable_s(self):
         self.enabled = True
         self.save()
 
     def disable_s(self):
         self.enabled = False
+        self.save()
+
+    def touch_s(self):
         self.save()
 
     def to_locale(self, *args, **kwargs):
@@ -509,11 +509,6 @@ class Base(appier.Model):
         url_sha1 = hashlib.sha1(token_bytes)
         return url_sha1.hexdigest()
 
-    @appier.operation(name = "Touch")
-    def op_touch_s(self):
-        self = self.reload(rules = False)
-        self.touch_s()
-
     @appier.operation(name = "Enable")
     def op_enable_s(self):
         self = self.reload(rules = False)
@@ -523,6 +518,11 @@ class Base(appier.Model):
     def op_disable_s(self):
         self = self.reload(rules = False)
         self.disable_s()
+
+    @appier.operation(name = "Touch", devel = True)
+    def op_touch_s(self):
+        self = self.reload(rules = False)
+        self.touch_s()
 
     @property
     def created_d(self):
