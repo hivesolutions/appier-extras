@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}Admin{% endblock %}
-{% block name %}Site administration{% endblock %}
+{% block name %}Site Administration{% endblock %}
 {% block content %}
     <div>
         {% for section, models in models_d.items() %}
