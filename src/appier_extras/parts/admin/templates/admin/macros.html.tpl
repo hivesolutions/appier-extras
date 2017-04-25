@@ -75,6 +75,14 @@
         <span class="secret">{{ value|length * "*" }}</span>
     {% elif meta == "longtext" %}
         {{ value[:60] + " ..." if value|length > 64 else value }}
+    {% elif meta == "distance_km" %}
+        <span>{{ "%.02f" % (value|float / 1000.0) }} KM</span>
+    {% elif meta == "distance_m" %}
+        <span>{{ "%.02f" % value|float }} M</span>
+    {% elif meta == "time_h" %}
+        <span>{{ "%.02f" % (value|float / 3600.0) }} H</span>
+    {% elif meta == "time_m" %}
+        <span>{{ "%.02f" % (value|float / 60.0) }} M</span>
     {% elif meta == "bool" %}
         <span class="tag {{ value.lower() }}">{{ value }}</span>
     {% elif meta == "image_url" %}
