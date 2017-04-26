@@ -89,7 +89,7 @@ class Event(base.Base):
         logger.debug("Triggering '%s' event ..." % name)
         kwargs = dict(name = name)
         if handlers: kwargs["handler"] = {"$in" : handlers}
-        events = cls.find(**kwargs)
+        events = cls.find_e(**kwargs)
         for event in events: event.notify(arguments = arguments)
 
     @appier.operation(name = "Notify")
