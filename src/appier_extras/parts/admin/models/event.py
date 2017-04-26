@@ -71,7 +71,7 @@ class Event(base.Base):
 
     @classmethod
     def list_names(cls):
-        return ["name", "handler"]
+        return ["name", "handler", "enabled"]
 
     @classmethod
     def transform(cls, arguments, prefix):
