@@ -3,7 +3,7 @@
 {% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <ul class="drop-down links" data-name="Links">
+    <ul class="drop-down links force" data-name="Links">
         {% for link in model.links() %}
             {% set link_valid = not link.devel or own.is_devel() %}
             {% if link.instance and link_valid %}
@@ -20,7 +20,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <ul class="drop-down operations" data-name="Operations">
+    <ul class="drop-down operations force" data-name="Operations">
         {% for operation in model.operations() %}
             {% set operation_valid = not operation.devel or own.is_devel() %}
             {% if operation.instance and operation_valid %}
