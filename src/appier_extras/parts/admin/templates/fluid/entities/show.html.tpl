@@ -3,7 +3,7 @@
 {% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <ul class="drop-down views" data-name="Views">
+    <ul class="drop-down views force" data-name="Views">
         {% for view in model.views() %}
             {% set view_valid = not view.devel or own.is_devel() %}
             {% if view.instance and view_valid %}
