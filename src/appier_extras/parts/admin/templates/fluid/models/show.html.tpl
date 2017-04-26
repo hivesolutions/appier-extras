@@ -4,6 +4,22 @@
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}
+    <ul class="drop-down views" data-name="Views">
+        {% for view in model.views() %}
+            {% set view_valid = not view.devel or own.is_devel() %}
+            {% if not view.instance and view_valid %}
+                {% if view.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ view.method }}">{{ view.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ url_for('admin.view_model', model = model._name(), view = view.method) }}" >{{ view.name }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
     <ul class="drop-down links" data-name="Links">
         {% for link in model.links() %}
             {% set link_valid = not link.devel or own.is_devel() %}
@@ -55,22 +71,6 @@
                 {% else %}
                     <li>
                         <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, next = location_f) }}">{{ operation.name }}</a>
-                    </li>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    </ul>
-    <ul class="drop-down globals" data-name="Views">
-        {% for view in model.views() %}
-            {% set view_valid = not view.devel or own.is_devel() %}
-            {% if not view.instance and view_valid %}
-                {% if view.parameters %}
-                    <li>
-                        <a class="button" data-window_open="#window-{{ view.method }}">{{ view.name }}</a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a href="{{ url_for('admin.view_model', model = model._name(), view = view.method) }}" >{{ view.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
