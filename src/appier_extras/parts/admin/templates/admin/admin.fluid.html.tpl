@@ -48,12 +48,12 @@
         {% set available = own._available(models) %}
         {% if available|length > 0 %}
             {% for _model in available %}
-                {% if acl("admin.models." + _model._name()) %}
-                    {% if section == "models" and model and model._name() == _model._name() %}
+                {% if acl("admin.models." + _model._underscore()) %}
+                    {% if section == "models" and model and model._underscore() == _model._underscore() %}
                         <a class="selected"
-                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._readable(plural = True) }}</a>
+                           href="{{ url_for('admin.show_model', model = _model._underscore()) }}">{{ _model._readable(plural = True) }}</a>
                     {% else %}
-                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._readable(plural = True) }}</a>
+                        <a href="{{ url_for('admin.show_model', model = _model._underscore()) }}">{{ _model._readable(plural = True) }}</a>
                     {% endif %}
                 {% endif %}
             {% endfor %}

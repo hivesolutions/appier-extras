@@ -2,7 +2,7 @@
 {% block title %}{{ model._readable() }}{% endblock %}
 {% block name %}{{ model._readable() }}{% endblock %}
 {% block content %}
-    <form action="{{ url_for('admin.create_entity', model = model._name()) }}"
+    <form action="{{ url_for('admin.create_entity', model = model._underscore()) }}"
           enctype="multipart/form-data" method="post" class="form inline">
         <div class="section">
             {% for name in model.create_names() %}
@@ -22,7 +22,7 @@
             <span class="button button-color button-green" data-submit="true">Create</span>
             <span class="or">or</span>
             <span class="button button-color button-grey"
-                  data-link="{{ url_for('admin.show_model', model = model._name()) }}">Cancel</span>
+                  data-link="{{ url_for('admin.show_model', model = model._underscore()) }}">Cancel</span>
         </div>
     </form>
 {% endblock %}

@@ -13,7 +13,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{{ url_for('admin.view_model', model = model._name(), view = view.method, id = entity._id) }}" >{{ view.name }}</a>
+                        <a href="{{ url_for('admin.view_model', model = model._underscore(), view = view.method, id = entity._id) }}" >{{ view.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -30,7 +30,7 @@
                 {% else %}
                     <li>
                         <a class="no-async" target="_blank"
-                           href="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
+                           href="{{ url_for('admin.link_model', model = model._underscore(), link = link.method, ids = entity._id) }}" >{{ link.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -47,12 +47,12 @@
                 {% else %}
                     {% if operation.level > 1 %}
                         <li>
-                            <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}"
+                            <a href="{{ url_for('admin.operation_model', model = model._underscore(), operation = operation.method, ids = entity._id, next = location_f) }}"
                                class="link-confirm" data-message="Are you sure you want to [[{{ operation.name }}]] ?">{{ operation.name }}</a>
                         </li>
                     {% else %}
                         <li>
-                            <a href="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
+                            <a href="{{ url_for('admin.operation_model', model = model._underscore(), operation = operation.method, ids = entity._id, next = location_f) }}">{{ operation.name }}</a>
                         </li>
                     {% endif %}
                 {% endif %}
@@ -60,7 +60,7 @@
         {% endfor %}
     </ul>
     <div class="button button-color button-grey"
-         data-link="{{ url_for('admin.edit_entity', model = model._name(), _id = entity._id) }}">Edit</div>
+         data-link="{{ url_for('admin.edit_entity', model = model._underscore(), _id = entity._id) }}">Edit</div>
 {% endblock %}
 {% block windows %}
     {{ super() }}
@@ -69,7 +69,7 @@
             <div id="window-{{ link.method }}" class="window window-link">
                 <h1>{{ link.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
-                      action="{{ url_for('admin.link_model', model = model._name(), link = link.method, ids = entity._id) }}" >
+                      action="{{ url_for('admin.link_model', model = model._underscore(), link = link.method, ids = entity._id) }}" >
                     {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
@@ -89,7 +89,7 @@
             <div id="window-{{ operation.method }}" class="window window-operation">
                 <h1>{{ operation.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
-                      action="{{ url_for('admin.operation_model', model = model._name(), operation = operation.method, ids = entity._id, next = location_f) }}" >
+                      action="{{ url_for('admin.operation_model', model = model._underscore(), operation = operation.method, ids = entity._id, next = location_f) }}" >
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
