@@ -26,8 +26,8 @@
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
-        {% if _value and _value._id and acl(acl_prefix + "." + target._underscore()) %}
-            <a href="{{ url_for('admin.show_entity', model = target._underscore(), _id = _value._id) }}">{{ value }}</a>
+        {% if _value and _value._id and acl(acl_prefix + "." + target._under()) %}
+            <a href="{{ url_for('admin.show_entity', model = target._under(), _id = _value._id) }}">{{ value }}</a>
         {% else %}
             <span>{{ value }}</span>
         {% endif %}
@@ -39,8 +39,8 @@
                 {% set model = item.resolve() %}
                 {% if not model == None %}
                     {% if counter|length > 0 %},{% endif %}
-                    {% if acl(acl_prefix + "." + model._underscore()) %}
-                        <a href="{{ url_for('admin.show_entity', model = model.__class__._underscore(), _id = item._id) }}">{{ item }}</a>
+                    {% if acl(acl_prefix + "." + model._under()) %}
+                        <a href="{{ url_for('admin.show_entity', model = model.__class__._under(), _id = item._id) }}">{{ item }}</a>
                     {% else %}
                         <span>{{ item }}</span>
                     {% endif %}
@@ -111,7 +111,7 @@
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic|default('', True) }}" />
             <div class="data-source" data-type="json"
-                 data-url="{{ url_for('admin.show_model_json', model = target._underscore() ) }}"></div>
+                 data-url="{{ url_for('admin.show_model_json', model = target._under() ) }}"></div>
         </div>
     {% elif meta == "references" %}
         {% set info = cls[name] %}
@@ -133,7 +133,7 @@
                 {% endfor %}
             </ul>
             <div class="data-source" data-type="json"
-                 data-url="{{ url_for('admin.show_model_json', model = target._underscore() ) }}"></div>
+                 data-url="{{ url_for('admin.show_model_json', model = target._under() ) }}"></div>
         </div>
     {% elif meta == "enum" %}
         {% set info = cls[name] %}
@@ -215,7 +215,7 @@
              data-value_attribute="{{ _name }}" data-display_attribute="{{ _default }}" data-number_options="-1">
             <input type="hidden" class="hidden-field" name="{{ name }}" value="{{ logic|default('', True) }}" />
             <div class="data-source" data-type="json"
-                 data-url="{{ url_for('admin.show_model_json', model = target._underscore() ) }}"></div>
+                 data-url="{{ url_for('admin.show_model_json', model = target._under() ) }}"></div>
         </div>
     {% elif type_s == "file" %}
         <a data-name="{{ name }}" class="uploader" data-error="{{ error }}">Select file</a>

@@ -916,7 +916,7 @@ class AdminPart(
         # new entity is shown instead of the default show model
         if factory:
             cls = result.__class__
-            model_name = cls._underscore()
+            model_name = cls._under()
             model_id = result._id
             return self.redirect(
                 self.url_for(
@@ -929,7 +929,7 @@ class AdminPart(
         # runs the default redirection process that displays the model
         # page for the model used as target for the operation
         return self.redirect(
-            next or self.url_for("admin.show_model", model = model._underscore())
+            next or self.url_for("admin.show_model", model = model._under())
         )
 
     @appier.ensure(token = "admin")
@@ -1002,7 +1002,7 @@ class AdminPart(
             )
 
         return self.redirect(
-            self.url_for("admin.show_model", model = model._underscore())
+            self.url_for("admin.show_model", model = model._under())
         )
 
     @appier.ensure(token = "admin")
@@ -1077,7 +1077,7 @@ class AdminPart(
         return self.redirect(
             self.url_for(
                 "admin.show_entity",
-                model = model._underscore(),
+                model = model._under(),
                 _id = _id
             )
         )
@@ -1091,7 +1091,7 @@ class AdminPart(
         return self.redirect(
             self.url_for(
                 "admin.show_model",
-                model = model._underscore()
+                model = model._under()
             )
         )
 
@@ -1460,7 +1460,7 @@ class AdminPart(
     def _available(self, models):
         models = self._concrete(models)
         return [model for model in models if\
-             appier.check_login(self, "admin.models." + model._underscore())]
+             appier.check_login(self, "admin.models." + model._under())]
 
     def _sort(self, object, model):
         if "sort" in object: return object

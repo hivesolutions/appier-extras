@@ -2,11 +2,11 @@
 {% block title %}{% if is_global %}{{ model._readable(plural = True) }}{% else %}{{ entity }}{% endif %} / {{ definition.name }}{% endblock %}
 {% block name %}
     {% if is_global %}
-        <a href="{{ url_for('admin.show_model', model = model._underscore()) }}">
+        <a href="{{ url_for('admin.show_model', model = model._under()) }}">
             {{ model._readable(plural = True) }}
         </a>
     {% else %}
-        <a href="{{ url_for('admin.show_entity', model = model._underscore(), _id = entity._id) }}">
+        <a href="{{ url_for('admin.show_entity', model = model._under(), _id = entity._id) }}">
             {{ entity }}
         </a>
     {% endif %}
@@ -44,9 +44,9 @@
                     </td>
                     {% for name in names or target.list_names() %}
                         {% if loop.first %}
-                            {% if acl("admin.models." + target._underscore()) %}
+                            {% if acl("admin.models." + target._under()) %}
                                 <td class="text-left">
-                                    <a href="{{ url_for('admin.show_entity', model = target._underscore(), _id = entity._id) }}">
+                                    <a href="{{ url_for('admin.show_entity', model = target._under(), _id = entity._id) }}">
                                         {{ out(entity, name) }}
                                     </a>
                                 </td>

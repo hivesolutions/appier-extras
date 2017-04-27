@@ -10,14 +10,14 @@
                     <h3>{{ appier.underscore_to_readable(section, capitalize = True) }}</h3>
                     <ul>
                         {% for model in available %}
-                            {% if acl("admin.models." + model._underscore()) %}
+                            {% if acl("admin.models." + model._under()) %}
                                 <li>
                                     <div class="left">
-                                        <a class="name" href="{{ url_for('admin.show_model', model = model._underscore()) }}">{{ model._readable(plural = True) }}</a>
+                                        <a class="name" href="{{ url_for('admin.show_model', model = model._under()) }}">{{ model._readable(plural = True) }}</a>
                                     </div>
                                     <div class="right">
-                                        <span class="button create" data-link="{{ url_for('admin.new_entity', model = model._underscore()) }}">create</span>
-                                        <span class="button update" data-link="{{ url_for('admin.show_model', model = model._underscore()) }}">update</span>
+                                        <span class="button create" data-link="{{ url_for('admin.new_entity', model = model._under()) }}">create</span>
+                                        <span class="button update" data-link="{{ url_for('admin.show_model', model = model._under()) }}">update</span>
                                     </div>
                                     <div class="clear"></div>
                                 </li>
