@@ -53,7 +53,7 @@ body.flat .balloon > .baloon-icon:hover {
 
 .balloon > .balloon-contents {
     animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
-    -o-animation: fade-in0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -o-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -ms-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -moz-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -webkit-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
