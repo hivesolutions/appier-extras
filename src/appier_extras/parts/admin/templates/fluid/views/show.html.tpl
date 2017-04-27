@@ -22,7 +22,7 @@
                 <th class="text-left selection">
                     <input type="checkbox" class="square small" />
                 </th>
-                {% for name in names or model.list_names() %}
+                {% for name in names or target.list_names() %}
                     {% set description = target.to_description(name) %}
                     {% if name == page.sorter %}
                         <th class="text-left direction {{ page.direction }}">
