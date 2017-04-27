@@ -498,6 +498,7 @@ class Account(base.Base):
 
     @classmethod
     def _build(cls, model, map):
+        super(Account, cls)._build(model, map)
         username = model["username"]
         model["avatar_url"] = cls._get_avatar_url_g(username)
 

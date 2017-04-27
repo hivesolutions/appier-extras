@@ -127,11 +127,13 @@ class Search(base.Base):
     @classmethod
     def _build(cls, model, map):
         super(Search, cls)._build(model, map)
+        owner = appier.get_app()
         target_cls = model["target_cls"]
         target_id = model["target_id"]
-        model["url"] = appier.get_app().url_for(
+        target = owner.get_model(target_cls)
+        model["url"] = owner.url_for(
             "admin.show_entity",
-            model = target_cls.lower(),
+            model = target._under(),
             _id = target_id
         )
         return model

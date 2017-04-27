@@ -305,10 +305,6 @@ class Base(appier.Model):
         cls.delete_c()
 
     @classmethod
-    def _build(cls, model, map):
-        pass
-
-    @classmethod
     def _csv_import(
         cls,
         file,
