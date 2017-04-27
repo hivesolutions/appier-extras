@@ -51,9 +51,9 @@
                 {% if acl("admin.models." + _model._name()) %}
                     {% if section == "models" and model and model._name() == _model._name() %}
                         <a class="selected"
-                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._plural() }}</a>
+                           href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._readable(plural = True) }}</a>
                     {% else %}
-                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._plural() }}</a>
+                        <a href="{{ url_for('admin.show_model', model = _model._name()) }}">{{ _model._readable(plural = True) }}</a>
                     {% endif %}
                 {% endif %}
             {% endfor %}

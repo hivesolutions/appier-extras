@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}{{ model._plural() }}{% endblock %}
-{% block name %}{{ model._plural() }}{% endblock %}
+{% block title %}{{ model._readable(plural = True) }}{% endblock %}
+{% block name %}{{ model._readable(plural = True) }}{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}

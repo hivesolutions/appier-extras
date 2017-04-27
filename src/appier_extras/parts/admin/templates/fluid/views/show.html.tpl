@@ -1,9 +1,9 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}{% if is_global %}{{ model._plural() }}{% else %}{{ entity }}{% endif %} / {{ definition.name }}{% endblock %}
+{% block title %}{% if is_global %}{{ model._readable(plural = True) }}{% else %}{{ entity }}{% endif %} / {{ definition.name }}{% endblock %}
 {% block name %}
     {% if is_global %}
         <a href="{{ url_for('admin.show_model', model = model._name()) }}">
-            {{ model._plural() }}
+            {{ model._readable(plural = True) }}
         </a>
     {% else %}
         <a href="{{ url_for('admin.show_entity', model = model._name(), _id = entity._id) }}">

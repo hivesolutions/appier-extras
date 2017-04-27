@@ -109,7 +109,7 @@ class Settings(base.Base):
         return linked
 
     @classmethod
-    def _plural(self):
+    def _plural(cls):
         return "Settings"
 
     def get_facebook_api(self):
