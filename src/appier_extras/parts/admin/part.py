@@ -1015,11 +1015,14 @@ class AdminPart(
             meta = True,
             _id = self.get_adapter().object_id(_id)
         )
+        previous_url, next_url = self._entity_urls(entity)
         return self.template(
             "entities/show.html.tpl",
             section = "models",
             entity = entity,
-            model = model
+            model = model,
+            previous_url = previous_url,
+            next_url = next_url
         )
 
     @appier.ensure(token = "admin")
@@ -1510,3 +1513,19 @@ class AdminPart(
         cls = self.field("cls", None)
         if not cls: return default
         return self.owner.get_model(cls)
+
+    def _entity_urls(self, entity):
+        model = entity.__class__
+        previous = entity.previous()
+        next = entity.next()
+        previous_url = self.url_for(
+            "admin.show_entity",
+            model = model._under(),
+            _id = previous._id
+        ) if previous else None
+        next_url = self.url_for(
+            "admin.show_entity",
+            model = model._under(),
+            _id = next._id
+        ) if next else None
+        return previous_url, next_url

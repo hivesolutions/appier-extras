@@ -389,6 +389,24 @@ class Base(appier.Model):
 
         self.destroy_index()
 
+    def previous(self, name = "id", raise_e = False):
+        kwargs = dict()
+        kwargs[name] = {"$lt" : getattr(self, name)}
+        kwargs["sort"] = ((name, -1),)
+        return self.get(
+            raise_e = raise_e,
+            **kwargs
+        )
+
+    def next(self, name = "id", raise_e = False):
+        kwargs = dict()
+        kwargs[name] = {"$gt" : getattr(self, name)}
+        kwargs["sort"] = ((name, 1),)
+        return self.get(
+            raise_e = raise_e,
+            **kwargs
+        )
+
     def build_index(self, use_class = True):
         from appier_extras.parts.admin.models import search
 
