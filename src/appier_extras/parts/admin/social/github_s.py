@@ -49,12 +49,19 @@ class Github(object):
         if not appier.conf("GITHUB_SECRET"): return False
         return True
 
-    def ensure_github_account(self, create = True, owner = None):
-        owner = owner or appier.get_app()
+    def ensure_github_account(self, create = True):
         api = self.get_github_api()
         user = api.self_user()
-        account = models.Account.get(
-            email = user["email"],
+        email = user["email"]
+        github_login = user["login"]
+        account = self.owner.admin_account.get(
+            github_login = github_login,
+            rules = False,
+            raise_e = False
+        )
+        account = account or self.owner.admin_account.from_session()
+        account = account or self.owner.admin_accoun.get(
+            email = email,
             rules = False,
             raise_e = False
         )
@@ -64,20 +71,20 @@ class Github(object):
                 message = "No account found for github account"
             )
 
-            account = owner.admin_account(
-                username = user["email"],
-                email = user["email"],
+            account = self.owner.admin_account(
+                username = email,
+                email = email,
                 password = api.access_token,
                 password_confirm = api.access_token,
-                github_login = user["login"],
+                github_login = github_login,
                 github_token = api.access_token,
-                type = owner.admin_account.USER_TYPE
+                type = self.owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)
 
         if not account.github_login:
-            account.github_login = user["login"]
+            account.github_login = github_login
             account.github_token = api.access_token
             account.save()
 

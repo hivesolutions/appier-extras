@@ -49,12 +49,19 @@ class Facebook(object):
         if not appier.conf("FB_SECRET"): return False
         return True
 
-    def ensure_facebook_account(self, create = True, owner = None):
-        owner = owner or appier.get_app()
+    def ensure_facebook_account(self, create = True):
         api = self.get_facebook_api()
         user = api.self_user()
-        account = owner.admin_account.get(
-            email = user["email"],
+        email = user["email"]
+        facebook_id = user["id"]
+        account = self.owner.admin_account.get(
+            facebook_id = facebook_id,
+            rules = False,
+            raise_e = False
+        )
+        account = account or self.owner.admin_account.from_session()
+        account = account or self.owner.admin_account.get(
+            email = email,
             rules = False,
             raise_e = False
         )
@@ -64,20 +71,20 @@ class Facebook(object):
                 message = "No account found for facebook account"
             )
 
-            account = owner.admin_account(
-                username = user["email"],
-                email = user["email"],
+            account = self.owner.admin_account(
+                username = email,
+                email = email,
                 password = api.access_token,
                 password_confirm = api.access_token,
-                facebook_id = user["id"],
+                facebook_id = facebook_id,
                 facebook_token = api.access_token,
-                type = owner.admin_account.USER_TYPE
+                type = self.owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)
 
         if not account.facebook_id:
-            account.facebook_id = user["id"]
+            account.facebook_id = facebook_id
             account.facebook_token = api.access_token
             account.save()
 

@@ -49,12 +49,18 @@ class Twitter(object):
         if not appier.conf("TWITTER_SECRET"): return False
         return True
 
-    def ensure_twitter_account(self, create = True, owner = None):
-        owner = owner or appier.get_app()
+    def ensure_twitter_account(self, create = True):
         api = self.get_twitter_api()
         user = api.verify_account()
         email = "%s@twitter.com" % user["screen_name"]
-        account = owner.admin_account.get(
+        twitter_username = user["screen_name"]
+        account = self.owner.admin_account.get(
+            twitter_username = twitter_username,
+            rules = False,
+            raise_e = False
+        )
+        account = account or self.owner.admin_account.from_session()
+        account = account or self.owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
@@ -65,20 +71,20 @@ class Twitter(object):
                 message = "No account found for twitter account"
             )
 
-            account = owner.admin_account(
-                username = user["screen_name"],
+            account = self.owner.admin_account(
+                username = twitter_username,
                 email = email,
                 password = api.oauth_token,
                 password_confirm = api.oauth_token,
-                twitter_username = user["screen_name"],
+                twitter_username = twitter_username,
                 twitter_token = api.oauth_token,
-                type = owner.admin_account.USER_TYPE
+                type = self.owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)
 
         if not account.twitter_username:
-            account.twitter_username = user["screen_name"]
+            account.twitter_username = twitter_username
             account.twitter_token = api.oauth_token
             account.save()
 

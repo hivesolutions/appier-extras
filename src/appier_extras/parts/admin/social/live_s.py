@@ -49,12 +49,18 @@ class Live(object):
         if not appier.conf("LIVE_SECRET"): return False
         return True
 
-    def ensure_live_account(self, create = True, owner = None):
-        owner = owner or appier.get_app()
+    def ensure_live_account(self, create = True):
         api = self.get_live_api()
         user = api.self_user()
         email = user["emails"]["preferred"]
-        account = owner.admin_account.get(
+        live_id = user["id"]
+        account = self.owner.admin_account.get(
+            live_id = live_id,
+            rules = False,
+            raise_e = False
+        )
+        account = account or self.owner.admin_account.from_session()
+        account = account or self.owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
@@ -65,20 +71,20 @@ class Live(object):
                 message = "No account found for live account"
             )
 
-            account = owner.admin_account(
+            account = self.owner.admin_account(
                 username = email,
                 email = email,
                 password = api.access_token,
                 password_confirm = api.access_token,
-                live_id = user["id"],
+                live_id = live_id,
                 live_token = api.access_token,
-                type = owner.admin_account.USER_TYPE
+                type = self.owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)
 
         if not account.live_id:
-            account.live_id = user["id"]
+            account.live_id = live_id
             account.live_token = api.access_token
             account.save()
 
