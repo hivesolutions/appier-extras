@@ -49,12 +49,18 @@ class Google(object):
         if not appier.conf("GOOGLE_SECRET"): return False
         return True
 
-    def ensure_google_account(self, create = True, owner = None):
-        owner = owner or appier.get_app()
+    def ensure_google_account(self, create = True):
         api = self.get_google_api()
         user = api.self_user()
         email = user["emails"][0]["value"]
-        account = owner.admin_account.get(
+        google_id = user["id"]
+        account = self.owner.admin_account.get(
+            google_id = google_id,
+            rules = False,
+            raise_e = False
+        )
+        account = account or self.owner.admin_account.from_session()
+        account = account or self.owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
@@ -65,20 +71,20 @@ class Google(object):
                 message = "No account found for google account"
             )
 
-            account = owner.admin_account(
+            account = self.owner.admin_account(
                 username = email,
                 email = email,
                 password = api.access_token,
                 password_confirm = api.access_token,
-                google_id = user["id"],
+                google_id = google_id,
                 google_token = api.access_token,
-                type = owner.admin_account.USER_TYPE
+                type = self.owner.admin_account.USER_TYPE
             )
             account.save()
             account = account.reload(rules = False)
 
         if not account.google_id:
-            account.google_id = user["id"]
+            account.google_id = google_id
             account.google_token = api.access_token
             account.save()
 
