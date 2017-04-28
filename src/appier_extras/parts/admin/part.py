@@ -186,18 +186,23 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>/<str:_id>/delete", self.delete_entity),
             (("GET",), "/admin/facebook", self.facebook),
             (("GET",), "/admin/facebook/unlink", self.unlink_facebook),
+            (("GET",), "/admin/facebook/unset", self.unset_facebook),
             (("GET",), "/admin/facebook/oauth", self.oauth_facebook),
             (("GET",), "/admin/github", self.github),
             (("GET",), "/admin/github/unlink", self.unlink_github),
+            (("GET",), "/admin/github/unset", self.unset_github),
             (("GET",), "/admin/github/oauth", self.oauth_github),
             (("GET",), "/admin/google", self.google),
             (("GET",), "/admin/google/unlink", self.unlink_google),
+            (("GET",), "/admin/google/unset", self.unset_google),
             (("GET",), "/admin/google/oauth", self.oauth_google),
             (("GET",), "/admin/live", self.live),
             (("GET",), "/admin/live/unlink", self.unlink_live),
+            (("GET",), "/admin/live/unset", self.unset_live),
             (("GET",), "/admin/live/oauth", self.oauth_live),
             (("GET",), "/admin/twitter", self.twitter),
             (("GET",), "/admin/twitter/unlink", self.unlink_twitter),
+            (("GET",), "/admin/twitter/unset", self.unset_twitter),
             (("GET",), "/admin/twitter/oauth", self.oauth_twitter),
             (("GET",), "/admin/log.json", self.show_log, None, True),
             (("GET",), "/admin/configs.json", self.show_configs, None, True),
@@ -1144,6 +1149,13 @@ class AdminPart(
            next or self.url_for("admin.social")
         )
 
+    def unset_facebook(self):
+        next = self.field("next")
+        self.unset_facebook_account()
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
+        )
+
     def oauth_facebook(self):
         code = self.field("code")
         state = self.field("state")
@@ -1189,6 +1201,13 @@ class AdminPart(
             settings.save()
         return self.redirect(
            next or self.url_for("admin.social")
+        )
+
+    def unset_github(self):
+        next = self.field("next")
+        self.unset_twitter_account()
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_github(self):
@@ -1243,6 +1262,13 @@ class AdminPart(
             settings.save()
         return self.redirect(
            next or self.url_for("admin.social")
+        )
+
+    def unset_google(self):
+        next = self.field("next")
+        self.unset_google_account()
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_google(self):
@@ -1300,6 +1326,13 @@ class AdminPart(
            next or self.url_for("admin.social")
         )
 
+    def unset_live(self):
+        next = self.field("next")
+        self.unset_live_account()
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
+        )
+
     def oauth_live(self):
         code = self.field("code")
         state = self.field("state")
@@ -1343,6 +1376,13 @@ class AdminPart(
             settings.save()
         return self.redirect(
            next or self.url_for("admin.social")
+        )
+
+    def unset_twitter(self):
+        next = self.field("next")
+        self.unset_twitter_account()
+        return self.redirect(
+           next or self.url_for(self.owner.admin_login_redirect)
         )
 
     def oauth_twitter(self):

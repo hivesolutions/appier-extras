@@ -100,6 +100,12 @@ class Facebook(object):
 
         return account
 
+    def unset_facebook_account(self):
+        account = self.owner.admin_account.from_session()
+        account.facebook_id = None
+        account.facebook_token = None
+        account.save()
+
     def ensure_facebook_api(self, state = None, scope = None, refresh = False):
         access_token = self.session.get("fb.access_token", None)
         if access_token and not refresh: return

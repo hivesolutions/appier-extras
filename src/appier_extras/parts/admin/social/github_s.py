@@ -100,6 +100,12 @@ class Github(object):
 
         return account
 
+    def unset_github_account(self):
+        account = self.owner.admin_account.from_session()
+        account.github_login = None
+        account.github_token = None
+        account.save()
+
     def ensure_github_api(self, state = None, scope = None, refresh = False):
         access_token = self.session.get("gh.access_token", None)
         if access_token and not refresh: return

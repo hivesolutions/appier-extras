@@ -100,6 +100,12 @@ class Google(object):
 
         return account
 
+    def unset_google_account(self):
+        account = self.owner.admin_account.from_session()
+        account.google_id = None
+        account.google_token = None
+        account.save()
+
     def ensure_google_api(
         self,
         state = None,

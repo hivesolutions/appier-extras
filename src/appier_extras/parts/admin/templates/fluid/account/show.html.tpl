@@ -8,45 +8,45 @@
         {% if own.has_facebook() %}
             <li>
                 {% if account.facebook_id %}
-                    <a href="{{ url_for('admin.unlink_facebook') }}">Unlink Facebook</a>
+                    <a href="{{ url_for('admin.unset_facebook', next = location_f) }}">Unlink Facebook</a>
                 {% else %}
-                    <a href="{{ url_for('admin.facebook') }}">Link Facebook</a>
+                    <a href="{{ url_for('admin.facebook', next = location_f) }}">Link Facebook</a>
                 {% endif %}
             </li>
         {% endif %}
         {% if own.has_github() %}
             <li>
                 {% if account.github_login %}
-                    <a href="{{ url_for('admin.unlink_github') }}">Unlink GitHub</a>
+                    <a href="{{ url_for('admin.unset_github', next = location_f) }}">Unlink GitHub</a>
                 {% else %}
-                    <a href="{{ url_for('admin.github') }}">Link GitHub</a>
+                    <a href="{{ url_for('admin.github', next = location_f) }}">Link GitHub</a>
                 {% endif %}
             </li>
         {% endif %}
         {% if own.has_google() %}
             <li>
                 {% if account.google_id %}
-                    <a href="{{ url_for('admin.unlink_google') }}">Unlink Google</a>
+                    <a href="{{ url_for('admin.unset_google', next = location_f) }}">Unlink Google</a>
                 {% else %}
-                    <a href="{{ url_for('admin.google') }}">Link Google</a>
+                    <a href="{{ url_for('admin.google', next = location_f) }}">Link Google</a>
                 {% endif %}
             </li>
         {% endif %}
         {% if own.has_live() %}
             <li>
                 {% if account.live_id %}
-                    <a href="{{ url_for('admin.unlink_live') }}">Unlink Live</a>
+                    <a href="{{ url_for('admin.unset_live', next = location_f) }}">Unlink Live</a>
                 {% else %}
-                    <a href="{{ url_for('admin.live') }}">Link Live</a>
+                    <a href="{{ url_for('admin.live', next = location_f) }}">Link Live</a>
                 {% endif %}
             </li>
         {% endif %}
         {% if own.has_twitter() %}
             <li>
                 {% if account.twitter_username %}
-                    <a href="{{ url_for('admin.unlink_twitter') }}">Unlink Twitter</a>
+                    <a href="{{ url_for('admin.unset_twitter', next = location_f) }}">Unlink Twitter</a>
                 {% else %}
-                    <a href="{{ url_for('admin.twitter') }}">Link Twitter</a>
+                    <a href="{{ url_for('admin.twitter', next = location_f) }}">Link Twitter</a>
                 {% endif %}
             </li>
         {% endif %}

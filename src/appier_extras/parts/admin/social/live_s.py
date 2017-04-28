@@ -100,6 +100,12 @@ class Live(object):
 
         return account
 
+    def unset_live_account(self):
+        account = self.owner.admin_account.from_session()
+        account.live_id = None
+        account.live_token = None
+        account.save()
+
     def ensure_live_api(self, state = None, scope = None, refresh = False):
         access_token = self.session.get("live.access_token", None)
         if access_token and not refresh: return

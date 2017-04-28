@@ -104,6 +104,12 @@ class Twitter(object):
 
         return account
 
+    def unset_twitter_account(self):
+        account = self.owner.admin_account.from_session()
+        account.twitter_username = None
+        account.twitter_token = None
+        account.save()
+
     def ensure_twitter_api(self, state = None, refresh = False):
         oauth_token = self.session.get("tw.oauth_token", None)
         oauth_token_secret = self.session.get("tw.oauth_token_secret", None)
