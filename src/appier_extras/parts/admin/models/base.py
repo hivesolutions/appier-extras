@@ -389,8 +389,7 @@ class Base(appier.Model):
 
         self.destroy_index()
 
-    def previous(self, name = "id", raise_e = False):
-        kwargs = dict()
+    def previous(self, name = "id", raise_e = False, *args, **kwargs):
         kwargs[name] = {"$lt" : getattr(self, name)}
         kwargs["sort"] = ((name, -1),)
         return self.get_v(
@@ -398,8 +397,7 @@ class Base(appier.Model):
             **kwargs
         )
 
-    def next(self, name = "id", raise_e = False):
-        kwargs = dict()
+    def next(self, name = "id", raise_e = False, *args, **kwargs):
         kwargs[name] = {"$gt" : getattr(self, name)}
         kwargs["sort"] = ((name, 1),)
         return self.get_v(

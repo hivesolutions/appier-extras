@@ -26,11 +26,11 @@
                 </div>
                 <div class="item">
                     <dt>Last Login</dt>
-                    <dd>{{ account.last_login }}</dd>
+                    <dd>{{ account.last_login_meta }}</dd>
                 </div>
                 <div class="item">
                     <dt>Type</dt>
-                    <dd>{{ account.type }}</dd>
+                    <dd><span class="tag">{{ appier.underscore_to_readable(account.type_meta, capitalize = True) }}</span></dd>
                 </div>
                 <div class="separator"></div>
                 <div class="item">

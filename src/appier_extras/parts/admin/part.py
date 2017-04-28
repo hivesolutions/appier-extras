@@ -166,6 +166,7 @@ class AdminPart(
             (("GET",), "/admin/search", self.search),
             (("GET",), "/admin/accounts/new", self.new_account),
             (("POST",), "/admin/accounts", self.create_account),
+            (("GET",), "/admin/accounts/me", self.me_account),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
@@ -405,11 +406,19 @@ class AdminPart(
             )
         )
 
+    def me_account(self):
+        account_c = self._get_cls(self.account_c)
+        account = account_c.from_session(meta = True)
+        return self.template(
+            "account/show.html.tpl",
+            account = account
+        )
+
     def show_account(self, username):
         account_c = self._get_cls(self.account_c)
         account = account_c.get(
             username = username,
-            rules = False
+            meta = True
         )
         return self.template(
             "account/show.html.tpl",

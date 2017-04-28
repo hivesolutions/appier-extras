@@ -25,7 +25,9 @@
                     <div class="header-contents">
                         <img class="avatar-image" src="{{ url_for('admin.avatar_account', username = session.username) }}" />
                         <div class="avatar-contents">
-                            <h2>{{ session.username }}</h2>
+                            <h2>
+                                <a href="{{ url_for('admin.me_account') }}">{{ session.username }}</a>
+                            </h2>
                             <h3>{{ session.email }}</h3>
                         </div>
                     </div>
