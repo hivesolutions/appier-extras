@@ -49,7 +49,7 @@ class Google(object):
         if not appier.conf("GOOGLE_SECRET"): return False
         return True
 
-    def ensure_google_account(self, create = True):
+    def ensure_google_account(self, create = True, safe = True):
         api = self.get_google_api()
         user = api.self_user()
         email = user["emails"][0]["value"]
@@ -65,6 +65,9 @@ class Google(object):
             rules = False,
             raise_e = False
         )
+
+        if safe and "gg.access_token" in self.session:
+            del self.session["gg.access_token"]
 
         if not account:
             if not create: raise appier.NotFoundError(

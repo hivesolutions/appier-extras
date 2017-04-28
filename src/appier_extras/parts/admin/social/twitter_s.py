@@ -49,7 +49,7 @@ class Twitter(object):
         if not appier.conf("TWITTER_SECRET"): return False
         return True
 
-    def ensure_twitter_account(self, create = True):
+    def ensure_twitter_account(self, create = True, safe = True):
         api = self.get_twitter_api()
         user = api.verify_account()
         email = "%s@twitter.com" % user["screen_name"]
@@ -65,6 +65,13 @@ class Twitter(object):
             rules = False,
             raise_e = False
         )
+
+        if safe and "tw.oauth_token" in self.session:
+            del self.session["tw.oauth_token"]
+        if safe and "tw.oauth_token_secret" in self.session:
+            del self.session["tw.oauth_token_secret"]
+        if safe and "tw.oauth_temporary" in self.session:
+            del self.session["tw.oauth_temporary"]
 
         if not account:
             if not create: raise appier.NotFoundError(

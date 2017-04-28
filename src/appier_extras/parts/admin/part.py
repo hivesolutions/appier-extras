@@ -1098,7 +1098,7 @@ class AdminPart(
         )
 
     def facebook(self):
-        next = self.field("next")
+        next = self.field("next", "")
         context = self.field("context", "login")
         state = context + ":" + next
         secure = not context == "login"
@@ -1145,7 +1145,7 @@ class AdminPart(
         )
 
     def github(self):
-        next = self.field("next")
+        next = self.field("next", "")
         context = self.field("context", "login")
         state = context + ":" + next
         secure = not context == "login"
@@ -1192,7 +1192,7 @@ class AdminPart(
         )
 
     def google(self):
-        next = self.field("next")
+        next = self.field("next", "")
         context = self.field("context", "login")
         state = context + ":" + next
         secure = not context == "login"
@@ -1254,7 +1254,7 @@ class AdminPart(
         )
 
     def live(self):
-        next = self.field("next")
+        next = self.field("next", "")
         context = self.field("context", "login")
         state = context + ":" + next
         secure = not context == "login"
@@ -1301,7 +1301,7 @@ class AdminPart(
         )
 
     def twitter(self):
-        next = self.field("next")
+        next = self.field("next", "")
         context = self.field("context", "login")
         state = context + ":" + next
         secure = not context == "login"

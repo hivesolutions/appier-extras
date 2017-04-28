@@ -49,7 +49,7 @@ class Github(object):
         if not appier.conf("GITHUB_SECRET"): return False
         return True
 
-    def ensure_github_account(self, create = True):
+    def ensure_github_account(self, create = True, safe = True):
         api = self.get_github_api()
         user = api.self_user()
         email = user["email"]
@@ -65,6 +65,9 @@ class Github(object):
             rules = False,
             raise_e = False
         )
+
+        if safe and "gh.access_token" in self.session:
+            del self.session["gh.access_token"]
 
         if not account:
             if not create: raise appier.NotFoundError(

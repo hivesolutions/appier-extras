@@ -49,7 +49,7 @@ class Facebook(object):
         if not appier.conf("FB_SECRET"): return False
         return True
 
-    def ensure_facebook_account(self, create = True):
+    def ensure_facebook_account(self, create = True, safe = True):
         api = self.get_facebook_api()
         user = api.self_user()
         email = user["email"]
@@ -65,6 +65,9 @@ class Facebook(object):
             rules = False,
             raise_e = False
         )
+
+        if safe and "fb.access_token" in self.session:
+            del self.session["fb.access_token"]
 
         if not account:
             if not create: raise appier.NotFoundError(
