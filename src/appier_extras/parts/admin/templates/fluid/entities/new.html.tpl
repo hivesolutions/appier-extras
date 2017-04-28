@@ -2,6 +2,9 @@
 {% block title %}{{ model._readable() }}{% endblock %}
 {% block name %}{{ model._readable() }}{% endblock %}
 {% block content %}
+    <div class="shortcuts">
+        <div class="key" data-key="67" data-url="{{ url_for('admin.show_model', model = model._under()) }}"></div>
+    </div>
     <form action="{{ url_for('admin.create_entity', model = model._under()) }}"
           enctype="multipart/form-data" method="post" class="form inline">
         <div class="section">

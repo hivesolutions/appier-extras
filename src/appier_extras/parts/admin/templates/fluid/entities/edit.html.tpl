@@ -7,6 +7,9 @@
          data-message="Do you really want to delete [{{ entity }}] ?">Delete</div>
 {% endblock %}
 {% block content %}
+    <div class="shortcuts">
+        <div class="key" data-key="67" data-url="{{ url_for('admin.show_entity', model = model._under(), _id = entity._id) }}"></div>
+    </div>
     <form action="{{ url_for('admin.update_entity', model = model._under(), _id = entity._id) }}"
           enctype="multipart/form-data" method="post" class="form inline">
         <div class="section">
