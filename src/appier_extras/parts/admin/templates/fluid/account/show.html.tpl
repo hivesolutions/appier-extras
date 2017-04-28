@@ -5,41 +5,51 @@
 {% block buttons %}
     {{ super() }}
     <ul class="drop-down" data-name="Operations">
-        <li>
-            {% if account.facebook_id %}
-                <a href="{{ url_for('admin.unlink_facebook') }}">Unlink Facebook</a>
-            {% else %}
-                <a href="{{ url_for('admin.facebook') }}">Link Facebook</a>
-            {% endif %}
-        </li>
-        <li>
-            {% if account.github_login %}
-                <a href="{{ url_for('admin.unlink_github') }}">Unlink GitHub</a>
-            {% else %}
-                <a href="{{ url_for('admin.github') }}">Link GitHub</a>
-            {% endif %}
-        </li>
-        <li>
-            {% if account.google_id %}
-                <a href="{{ url_for('admin.unlink_google') }}">Unlink Google</a>
-            {% else %}
-                <a href="{{ url_for('admin.google') }}">Link Google</a>
-            {% endif %}
-        </li>
-        <li>
-            {% if account.live_id %}
-                <a href="{{ url_for('admin.unlink_live') }}">Unlink Live</a>
-            {% else %}
-                <a href="{{ url_for('admin.live') }}">Link Live</a>
-            {% endif %}
-        </li>
-        <li>
-            {% if account.twitter_username %}
-                <a href="{{ url_for('admin.unlink_twitter') }}">Unlink Twitter</a>
-            {% else %}
-                <a href="{{ url_for('admin.twitter') }}">Link Twitter</a>
-            {% endif %}
-        </li>
+        {% if own.has_facebook() %}
+            <li>
+                {% if account.facebook_id %}
+                    <a href="{{ url_for('admin.unlink_facebook') }}">Unlink Facebook</a>
+                {% else %}
+                    <a href="{{ url_for('admin.facebook') }}">Link Facebook</a>
+                {% endif %}
+            </li>
+        {% endif %}
+        {% if own.has_github() %}
+            <li>
+                {% if account.github_login %}
+                    <a href="{{ url_for('admin.unlink_github') }}">Unlink GitHub</a>
+                {% else %}
+                    <a href="{{ url_for('admin.github') }}">Link GitHub</a>
+                {% endif %}
+            </li>
+        {% endif %}
+        {% if own.has_google() %}
+            <li>
+                {% if account.google_id %}
+                    <a href="{{ url_for('admin.unlink_google') }}">Unlink Google</a>
+                {% else %}
+                    <a href="{{ url_for('admin.google') }}">Link Google</a>
+                {% endif %}
+            </li>
+        {% endif %}
+        {% if own.has_live() %}
+            <li>
+                {% if account.live_id %}
+                    <a href="{{ url_for('admin.unlink_live') }}">Unlink Live</a>
+                {% else %}
+                    <a href="{{ url_for('admin.live') }}">Link Live</a>
+                {% endif %}
+            </li>
+        {% endif %}
+        {% if own.has_twitter() %}
+            <li>
+                {% if account.twitter_username %}
+                    <a href="{{ url_for('admin.unlink_twitter') }}">Unlink Twitter</a>
+                {% else %}
+                    <a href="{{ url_for('admin.twitter') }}">Link Twitter</a>
+                {% endif %}
+            </li>
+        {% endif %}
     </ul>
 {% endblock %}
 {% block content %}
