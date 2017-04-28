@@ -4,9 +4,6 @@
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <div class="shortcuts">
-        <div class="key" data-key="78" data-url="{{ url_for('admin.new_entity', model = model._under()) }}"></div>
-    </div>
     <ul class="drop-down views" data-name="Views">
         {% for view in model.views() %}
             {% set view_valid = not view.devel or own.is_devel() %}
@@ -126,6 +123,9 @@
     {% endfor %}
 {% endblock %}
 {% block content %}
+    <div class="shortcuts">
+        <div class="key" data-key="78" data-url="{{ url_for('admin.new_entity', model = model._under()) }}"></div>
+    </div>
     <table class="filter bulk" data-no_input="1" data-size="{{ page.size }}"
            data-total="{{ page.total }}" data-pages="{{ page.count }}">
         <thead>

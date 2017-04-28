@@ -97,9 +97,9 @@ body.flat .balloon > .balloon-contents {
 .panel-model {
     border: 1px solid #e0e0e0;
     margin: 24px 0px 24px 0px;
+    max-width: 100%;
     padding: 0px 0px 0px 0px;
     width: 690px;
-    max-width: 100%;
 }
 
 .panel-model h3 {
