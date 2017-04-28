@@ -406,7 +406,15 @@ class AdminPart(
         )
 
     def show_account(self, username):
-        raise appier.NotImplementedError()
+        account_c = self._get_cls(self.account_c)
+        account = account_c.get(
+            username = username,
+            rules = False
+        )
+        return self.template(
+            "account/show.html.tpl",
+            account = account
+        )
 
     def mail_account(self, username):
         raise appier.NotImplementedError()
