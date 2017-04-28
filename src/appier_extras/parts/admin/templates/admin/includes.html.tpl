@@ -2,7 +2,11 @@
 {% set libs_r = libs|default(own.admin_part._hybrid("libs")) %}
 
 <!-- css inclusion -->
-<link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
+{% if own.is_devel() %}
+    <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux.css" />
+{% else %}
+    <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/uxf/css/ux-min.css" />
+{% endif %}
 {% if theme_r %}
     {% if theme_r == "default" %}
         <link rel="stylesheet" type="text/css" href="//libs.bemisc.com/layout/css/layout.css" />
