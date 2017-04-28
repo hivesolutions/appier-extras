@@ -531,11 +531,19 @@ class Account(base.Base):
     def _get_avatar_url_g(cls, username, absolute = True, owner = None):
         owner = owner or appier.get_app()
         if not hasattr(owner, "admin_part"): return None
+        model = None if cls._is_master() else cls._name()
         return owner.url_for(
             "admin.avatar_account",
             username = username,
+            cls = model,
             absolute = absolute
         )
+
+    @classmethod
+    def _is_master(cls, owner = None):
+        owner = owner or appier.get_app()
+        admin_part = owner.admin_part
+        return cls == admin_part.account_c
 
     def pre_validate(self):
         base.Base.pre_validate(self)
@@ -765,9 +773,12 @@ class Account(base.Base):
 
     @appier.link(name = "View Avatar", devel = True)
     def view_avatar_url(self, absolute = False):
-        return appier.get_app().url_for(
+        cls = self.__class__
+        model = None if cls._is_master() else cls._name()
+        return self.owner.url_for(
             "admin.avatar_account",
             username = self.username,
+            cls = model,
             absolute = absolute
         )
 

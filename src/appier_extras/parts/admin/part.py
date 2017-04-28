@@ -414,7 +414,8 @@ class AdminPart(
     def avatar_account(self, username):
         strict = self.field("strict", False, cast = bool)
         cache = self.field("cache", False, cast = bool)
-        account = self.account_c.get(
+        account_c = self._get_cls(self.account_c)
+        account = account_c.get(
             username = username,
             rules = False
         )
@@ -1504,3 +1505,8 @@ class AdminPart(
 
     def _to_meta(self, type):
         return appier.Model._to_meta(type)
+
+    def _get_cls(self, default = None):
+        cls = self.field("cls", None)
+        if not cls: return default
+        return self.owner.get_model(cls)
