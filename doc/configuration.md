@@ -15,6 +15,11 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `ADMIN_OPEN` (`bool`) - If the administration interface should be open and available to end-users (defaults to `True`)
 * `ADMIN_AVATAR_DEFAULT` (`bool`) - If a new default image should be set for an account's avatar if none is set (defaults to `False`)
 
+### Social
+
+* `ADMIN_SOCIAL_LIBS` (`list`) - List of social agents that should have their libraries ensured to be installed (using `pip`) at loading,
+note that this should be an expensive on load operation (defaults to `[]`)
+
 ### Email
 
 * `BULK_EMAIL` (`bool`) - If the sent email should be marked as bulk by default (defaults to `False`)

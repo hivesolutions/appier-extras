@@ -78,6 +78,7 @@ class AdminPart(
         self.theme = appier.conf("ADMIN_THEME", "flat")
         self.style = appier.conf("ADMIN_STYLE", "")
         self.libs = appier.conf("ADMIN_LIBS", "current")
+        self.social_libs = appier.conf("ADMIN_SOCIAL_LIBS", [], cast = list)
 
     def load(self):
         appier.Part.load(self)
@@ -125,6 +126,10 @@ class AdminPart(
             if not model_c.is_attached(): continue
             if not model_c.is_concrete(): continue
             self.logger.debug(model_c)
+
+        for social_lib in self.social_libs:
+            method = getattr(self, "ensure_" + social_lib)
+            method()
 
     def routes(self):
         return [

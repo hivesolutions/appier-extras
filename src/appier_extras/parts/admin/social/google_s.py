@@ -41,6 +41,9 @@ import appier
 
 class Google(object):
 
+    def ensure_google(self):
+        appier.ensure_pip("google", package = "google_api")
+
     def has_google(self):
         try: import google
         except: google = None

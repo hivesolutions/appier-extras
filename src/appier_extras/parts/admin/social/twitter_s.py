@@ -41,6 +41,9 @@ import appier
 
 class Twitter(object):
 
+    def ensure_twitter(self):
+        appier.ensure_pip("twitter", package = "twitter_api")
+
     def has_twitter(self):
         try: import twitter
         except: twitter = None

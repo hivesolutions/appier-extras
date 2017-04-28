@@ -41,6 +41,9 @@ import appier
 
 class Live(object):
 
+    def ensure_live(self):
+        appier.ensure_pip("live", package = "live_api")
+
     def has_live(self):
         try: import live
         except: live = None

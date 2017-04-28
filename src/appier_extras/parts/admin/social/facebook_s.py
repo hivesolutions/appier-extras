@@ -41,6 +41,9 @@ import appier
 
 class Facebook(object):
 
+    def ensure_facebook(self):
+        appier.ensure_pip("facebook", package = "facebook_api")
+
     def has_facebook(self):
         try: import facebook
         except: facebook = None

@@ -41,6 +41,9 @@ import appier
 
 class Github(object):
 
+    def ensure_github(self):
+        appier.ensure_pip("github", package = "github_api_python")
+
     def has_github(self):
         try: import github
         except: github = None
