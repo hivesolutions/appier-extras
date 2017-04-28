@@ -112,9 +112,10 @@ class Account(base.Base):
         description = "Facebook ID"
     )
 
-    twitter_username = appier.field(
+    github_login = appier.field(
         index = "hashed",
-        safe = True
+        safe = True,
+        description = "GitHub Login"
     )
 
     google_id = appier.field(
@@ -129,7 +130,7 @@ class Account(base.Base):
         description = "Live ID"
     )
 
-    github_login = appier.field(
+    twitter_username = appier.field(
         index = "hashed",
         safe = True
     )
@@ -139,7 +140,7 @@ class Account(base.Base):
         meta = "secret"
     )
 
-    twitter_token = appier.field(
+    github_token = appier.field(
         private = True,
         meta = "secret"
     )
@@ -154,7 +155,7 @@ class Account(base.Base):
         meta = "secret"
     )
 
-    github_token = appier.field(
+    twitter_token = appier.field(
         private = True,
         meta = "secret"
     )

@@ -17,7 +17,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{{ url_for('admin.view_model', model = model._under(), view = view.method) }}" >{{ view.name }}</a>
+                        <a href="{{ url_for('admin.view_model', model = model._under(), view = view.method) }}">{{ view.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -34,7 +34,7 @@
                 {% else %}
                     <li>
                         <a class="no-async" target="_blank"
-                           href="{{ url_for('admin.link_model', model = model._under(), link = link.method, is_global = '1') }}" >{{ link.name }}</a>
+                           href="{{ url_for('admin.link_model', model = model._under(), link = link.method, is_global = '1') }}">{{ link.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
