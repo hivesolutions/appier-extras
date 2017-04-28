@@ -35,9 +35,9 @@
         {% if own.has_live() %}
             <li>
                 {% if account.live_id %}
-                    <a href="{{ url_for('admin.unset_live', next = location_f) }}">Unlink Live</a>
+                    <a href="{{ url_for('admin.unset_live', next = location_f) }}">Unlink Microsoft</a>
                 {% else %}
-                    <a href="{{ url_for('admin.live', next = location_f) }}">Link Live</a>
+                    <a href="{{ url_for('admin.live', next = location_f) }}">Link Microsoft</a>
                 {% endif %}
             </li>
         {% endif %}

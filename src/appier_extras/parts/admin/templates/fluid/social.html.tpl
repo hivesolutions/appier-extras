@@ -46,7 +46,7 @@
             {% if "live" in socials %}
                 {% if "live" in linked %}
                     <li>
-                        <div class="name"><a class="warning" href="{{ url_for('admin.unlink_live', context = 'global', next = location) }}">Unlink Microsoft profile</a></div>
+                        <div class="name"><a class="warning" href="{{ url_for('admin.unlink_live', context = 'global', next = location) }}">Unlink Microsoft account</a></div>
                         <div class="description"><span>You're currently linked to Microsoft under <strong>{{ linked.live }}</strong></span></div>
                     </li>
                 {% else %}
@@ -59,7 +59,7 @@
             {% if "twitter" in socials %}
                 {% if "twitter" in linked %}
                     <li>
-                        <div class="name"><a class="warning" href="{{ url_for('admin.unlink_twitter', context = 'global', next = location) }}">Unlink Twitter information</a></div>
+                        <div class="name"><a class="warning" href="{{ url_for('admin.unlink_twitter', context = 'global', next = location) }}">Unlink Twitter account</a></div>
                         <div class="description"><span>You're currently linked to Twitter under <strong>{{ linked.twitter }}</strong></span></div>
                     </li>
                 {% else %}
