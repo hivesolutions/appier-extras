@@ -52,7 +52,7 @@ class Facebook(object):
     def ensure_facebook_account(self, create = True, safe = True):
         api = self.get_facebook_api()
         user = api.self_user()
-        email = user["email"]
+        email = user.get("email", None)
         facebook_id = user["id"]
         account = self.owner.admin_account.get(
             facebook_id = facebook_id,
@@ -60,7 +60,7 @@ class Facebook(object):
             raise_e = False
         )
         account = account or self.owner.admin_account.from_session()
-        account = account or self.owner.admin_account.get(
+        account = account or email and self.owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
