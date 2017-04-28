@@ -88,7 +88,7 @@
                     <dd>{{ account.facebook_id|default("-", True) }}</dd>
                 </div>
                 <div class="item">
-                    <dt>GiHub Login</dt>
+                    <dt>GitHub Login</dt>
                     <dd>{{ account.github_login|default("-", True) }}</dd>
                 </div>
                 <div class="item">
