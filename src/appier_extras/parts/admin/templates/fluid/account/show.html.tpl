@@ -2,6 +2,10 @@
 {% block title %}{{ account.username }}{% endblock %}
 {% block name %}{{ account.username }}{% endblock %}
 {% block style %}no-header{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    <div class="button button-color button-grey" data-link="#">Mut put operations here</div>
+{% endblock %}
 {% block content %}
     <div class="show-panel">
         <div class="panel-header">
