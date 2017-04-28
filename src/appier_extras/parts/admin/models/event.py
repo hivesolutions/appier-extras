@@ -93,7 +93,7 @@ class Event(base.Base):
         for event in events: event.notify(arguments = arguments)
 
     @appier.operation(name = "Notify")
-    def notify(self, arguments = {}, delay = True, owner = None):
+    def notify(self, arguments = {}, delay = True):
         cls = self.__class__
         delay_s = ("a delayed" if delay else "an immediate")
         logger = appier.get_logger()
@@ -101,14 +101,13 @@ class Event(base.Base):
             "Notifying handler '%s' for '%s' in %s fashion ..." %\
             (self.handler, self.name, delay_s)
         )
-        owner = owner or appier.get_app()
         method = getattr(self, "notify_" + self.handler)
         arguments_m = dict(self.arguments)
         arguments_m.update(arguments)
         arguments_m.update(event = self.name, handler = self.handler)
         arguments_m = cls.transform(arguments_m, self.handler + "_")
         kwargs = dict(arguments = arguments_m)
-        if delay: owner.delay(method, kwargs = kwargs)
+        if delay: self.owner.delay(method, kwargs = kwargs)
         else: method(arguments, **kwargs)
 
     @classmethod
