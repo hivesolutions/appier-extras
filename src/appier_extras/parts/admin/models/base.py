@@ -393,7 +393,7 @@ class Base(appier.Model):
         kwargs = dict()
         kwargs[name] = {"$lt" : getattr(self, name)}
         kwargs["sort"] = ((name, -1),)
-        return self.get(
+        return self.get_v(
             raise_e = raise_e,
             **kwargs
         )
@@ -402,7 +402,7 @@ class Base(appier.Model):
         kwargs = dict()
         kwargs[name] = {"$gt" : getattr(self, name)}
         kwargs["sort"] = ((name, 1),)
-        return self.get(
+        return self.get_v(
             raise_e = raise_e,
             **kwargs
         )
