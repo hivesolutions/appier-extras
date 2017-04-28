@@ -60,7 +60,7 @@ class Github(object):
             raise_e = False
         )
         account = account or self.owner.admin_account.from_session()
-        account = account or self.owner.admin_accoun.get(
+        account = account or self.owner.admin_account.get(
             email = email,
             rules = False,
             raise_e = False
