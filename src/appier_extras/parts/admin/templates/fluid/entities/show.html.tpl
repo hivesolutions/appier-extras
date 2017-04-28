@@ -3,6 +3,12 @@
 {% block name %}{{ entity }}{% endblock %}
 {% block buttons %}
     {{ super() }}
+    <div class="shortcuts">
+        <div class="key" data-key="76" data-url="{{ url_for('admin.show_model', model = model._under()) }}"></div>
+        <div class="key" data-key="69" data-url="{{ url_for('admin.edit_entity', model = model._under(), _id = entity._id) }}"></div>
+        {% if previous_url %}<div class="previous-url hidden">{{ previous_url }}</div>{% endif %}
+        {% if next_url %}<div class="next-url hidden">{{ next_url }}</div>{% endif %}
+    </div>
     <ul class="drop-down views force" data-name="Views">
         {% for view in model.views() %}
             {% set view_valid = not view.devel or own.is_devel() %}
