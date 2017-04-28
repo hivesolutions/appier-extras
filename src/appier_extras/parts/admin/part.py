@@ -515,8 +515,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin.status")
     def list_parts(self):
-        app = appier.get_app()
-        parts = app.get_parts()
+        parts = self.owner.get_parts()
         return self.template(
             "parts.html.tpl",
             section = "status",
@@ -525,8 +524,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin.status")
     def list_libraries(self):
-        app = appier.get_app()
-        libraries = app.get_libraries()
+        libraries = self.owner.get_libraries()
         return self.template(
             "libraries.html.tpl",
             section = "status",
@@ -567,7 +565,7 @@ class AdminPart(
             message = "No test email defined"
         )
         models.Base.send_email_g(
-            appier.get_app(),
+            self.owner,
             "admin/email/test.html.tpl",
             receivers = [receiver],
             subject = "Test email",
