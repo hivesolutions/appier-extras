@@ -722,20 +722,20 @@ class Account(base.Base):
         self.last_login = time.time()
         self.save()
 
-    @appier.operation(name = "Generate Key")
+    @appier.operation(name = "Generate Key", level = 2)
     def generate_key_s(self, force = False):
         self = self.reload(rules = False)
         if self.key and not force: return
         self.key = self.secret()
         self.save()
 
-    @appier.operation(name = "Mark Unconfirmed")
+    @appier.operation(name = "Mark Unconfirmed", level = 2)
     def mark_unconfirmed_s(self):
         self.enabled = False
         self.confirmation_token = self.secret()
         self.save()
 
-    @appier.operation(name = "Email New")
+    @appier.operation(name = "Email New", level = 2)
     def email_new(self, password = None):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
@@ -748,7 +748,7 @@ class Account(base.Base):
             account_password = password
         )
 
-    @appier.operation(name = "Email Confirm")
+    @appier.operation(name = "Email Confirm", level = 2)
     def email_confirm(self):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(
@@ -760,7 +760,7 @@ class Account(base.Base):
             account = account
         )
 
-    @appier.operation(name = "Email Recover")
+    @appier.operation(name = "Email Recover", level = 2)
     def email_recover(self):
         account = self.reload(rules = False, meta = True)
         base.Base.send_email_g(

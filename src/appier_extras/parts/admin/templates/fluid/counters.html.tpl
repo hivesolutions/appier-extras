@@ -6,7 +6,7 @@
     <table class="filter no-fixed" data-no_input="1">
         <thead>
             <tr class="table-row table-header">
-                <th class="text-left">Identififer</th>
+                <th class="text-left">Identifier</th>
                 <th class="text-left">Sequence</th>
             </tr>
         </thead>
