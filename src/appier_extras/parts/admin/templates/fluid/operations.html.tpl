@@ -21,13 +21,13 @@
         </li>
         <li>
             <div class="name">
-                <a class="link" href="{{ url_for('admin.test_email', context = 'global', next = location) }}">Send test email</a>
+                <a class="link" href="{{ url_for('admin.test_email', context = 'global', next = location) }}">Send Test Email</a>
             </div>
             <div class="description"><span>Sending this email is going to use loaded SMTP configuration</span></div>
         </li>
         <li>
             <div class="name">
-                <a class="link" href="{{ url_for('admin.test_event', context = 'global', next = location) }}">Trigger test event</a>
+                <a class="link" href="{{ url_for('admin.test_event', context = 'global', next = location) }}">Trigger Test Event</a>
             </div>
             <div class="description"><span>All handlers for the event are going to be triggered</span></div>
         </li>
