@@ -14,6 +14,48 @@
     <span>{{ definition.name }}</span>
 {% endblock %}
 {% block style %}no-padding{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    <ul class="drop-down operations" data-name="Operations">
+        {% for operation in target.operations() %}
+            {% set operation_valid = not operation.devel or own.is_devel() %}
+            {% if operation.instance and operation_valid %}
+                {% if operation.parameters %}
+                    <li>
+                        <a class="button" data-window_open="#window-{{ operation.method }}">{{ operation.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ url_for('admin.operation_model', model = target._under(), operation = operation.method, next = location_f) }}">{{ operation.name }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}
+{% block windows %}
+    {{ super() }}
+    {% for operation in target.operations() %}
+        {% if operation.parameters %}
+            <div id="window-{{ operation.method }}" class="window window-operation">
+                <h1>{{ operation.name }}</h1>
+                <form class="form" method="post" enctype="multipart/form-data"
+                      action="{{ url_for('admin.operation_model', model = target._under(), operation = operation.method, is_global = '' if operation.instance else '1', next = location_f) }}">
+                    {% for parameter in operation.parameters %}
+                        {% set label, name, data_type = parameter[:3] %}
+                        {% set default = parameter[3] if parameter|length > 3 else "" %}
+                        <label>{{ label }}</label>
+                        {{ tag_input_b("parameters", value = default, type = data_type) }}
+                    {% endfor %}
+                    <div class="window-buttons">
+                        <span class="button button-cancel close-button">Cancel</span>
+                        <span class="button button-confirm" data-submit="1">Confirm</span>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
 {% block content %}
     <table class="filter bulk" data-no_input="1" data-size="{{ page.size }}"
            data-total="{{ page.total }}" data-pages="{{ page.count }}">
