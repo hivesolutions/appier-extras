@@ -772,6 +772,16 @@ class Account(base.Base):
             account = account
         )
 
+    @appier.operation(
+        name = "Upload Avatar",
+        parameters = (("Avatar", "avatar", "file"),)
+    )
+    def upload_avatar_s(self, avatar):
+        cls = self.__class__
+        if not avatar: return
+        self.avatar = cls.avatar.type(avatar)
+        self.save()
+
     @appier.link(name = "View Avatar", devel = True)
     def view_avatar_url(self, absolute = False):
         cls = self.__class__
