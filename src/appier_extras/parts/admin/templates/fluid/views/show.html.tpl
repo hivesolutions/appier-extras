@@ -32,7 +32,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <div class="button button-color"
+    <div class="button button-color button-grey"
          data-link="{{ url_for('admin.show_model', model = target._under()) }}">View All</div>
 {% endblock %}
 {% block windows %}

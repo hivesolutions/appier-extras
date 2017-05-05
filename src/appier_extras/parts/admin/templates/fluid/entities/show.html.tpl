@@ -59,7 +59,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <div class="button button-color button-grey"
+    <div class="button button-color button-blue"
          data-link="{{ url_for('admin.edit_entity', model = model._under(), _id = entity._id) }}">Edit</div>
 {% endblock %}
 {% block windows %}
