@@ -4,7 +4,7 @@
 {% block style %}no-header{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <ul class="drop-down" data-name="Operations">
+    <ul class="drop-down drop-down-left" data-name="Operations">
         {% if own.has_facebook() %}
             <li>
                 {% if account.facebook_id %}
