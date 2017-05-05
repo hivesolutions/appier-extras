@@ -16,7 +16,7 @@
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}
-    <ul class="drop-down operations" data-name="Operations">
+    <ul class="drop-down drop-down-left operations" data-name="Operations">
         {% for operation in target.operations() %}
             {% set operation_valid = not operation.devel or own.is_devel() %}
             {% if operation.instance and operation_valid %}
