@@ -102,6 +102,10 @@ body.flat .balloon > .balloon-contents {
     width: 690px;
 }
 
+body.mobile-s .panel-model {
+    margin: 12px 0px 12px 0px;
+}
+
 .panel-model h3 {
     background-color: #f0f0f0;
     border-bottom: 1px solid #e0e0e0;
@@ -182,6 +186,10 @@ body.flat .pages > .page {
     background-color: #888888;
     border-color: #888888;
     color: #ffffff;
+}
+
+body.mobile-s .pages > .page.other {
+    display: none;
 }
 
 .pages > .page.disabled {

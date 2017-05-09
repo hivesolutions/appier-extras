@@ -59,52 +59,81 @@
     {% endfor %}
 {% endblock %}
 {% block content %}
-    <table class="filter bulk" data-no_input="1" data-size="{{ page.size }}"
-           data-total="{{ page.total }}" data-pages="{{ page.count }}">
-        <thead>
-            <tr class="table-row table-header">
-                <th class="text-left selection">
-                    <input type="checkbox" class="square small" />
-                </th>
-                {% for name in names or target.list_names() %}
-                    {% set description = target.to_description(name) %}
-                    {% if name == page.sorter %}
-                        <th class="text-left direction {{ page.direction }}">
-                            <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
-                        </th>
-                    {% else %}
-                        <th class="text-left">
-                            <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
-                        </th>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody class="filter-contents">
+    <div class="listers">
+        <div class="cards lister">
             {% for entity in entities %}
-                <tr class="table-row" data-id="{{ entity._id }}">
-                    <td class="text-left selection">
+                <div class="card">
+                    <dl>
+                        {% for name in target.list_names() %}
+                            <div class="item">
+                                {% set description = target.to_description(name) %}
+                                <dt>{{ description }}</dt>
+                                {% if loop.first %}
+                                    {% if acl("admin.models." + model._under()) %}
+                                        <dd>
+                                            <a href="{{ url_for('admin.show_entity', model = target._under(), _id = entity._id) }}">
+                                                {{ out(entity, name) }}
+                                            </a>
+                                        </dd>
+                                    {% else %}
+                                        <dd class="text-left">{{ out(entity, name) }}</dd>
+                                    {% endif %}
+                                {% else %}
+                                    <dd class="text-left">{{ out(entity, name) }}</dd>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </dl>
+                </div>
+            {% endfor %}
+        </div>
+        <table class="filter bulk lister" data-no_input="1" data-size="{{ page.size }}"
+               data-total="{{ page.total }}" data-pages="{{ page.count }}">
+            <thead>
+                <tr class="table-row table-header">
+                    <th class="text-left selection">
                         <input type="checkbox" class="square small" />
-                    </td>
+                    </th>
                     {% for name in names or target.list_names() %}
-                        {% if loop.first %}
-                            {% if acl("admin.models." + target._under()) %}
-                                <td class="text-left">
-                                    <a href="{{ url_for('admin.show_entity', model = target._under(), _id = entity._id) }}">
-                                        {{ out(entity, name) }}
-                                    </a>
-                                </td>
-                            {% else %}
-                                <td class="text-left">{{ out(entity, name) }}</td>
-                            {% endif %}
+                        {% set description = target.to_description(name) %}
+                        {% if name == page.sorter %}
+                            <th class="text-left direction {{ page.direction }}">
+                                <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
+                            </th>
                         {% else %}
-                            <td class="text-left">{{ out(entity, name) }}</td>
+                            <th class="text-left">
+                                <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
+                            </th>
                         {% endif %}
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="filter-contents">
+                {% for entity in entities %}
+                    <tr class="table-row" data-id="{{ entity._id }}">
+                        <td class="text-left selection">
+                            <input type="checkbox" class="square small" />
+                        </td>
+                        {% for name in names or target.list_names() %}
+                            {% if loop.first %}
+                                {% if acl("admin.models." + target._under()) %}
+                                    <td class="text-left">
+                                        <a href="{{ url_for('admin.show_entity', model = target._under(), _id = entity._id) }}">
+                                            {{ out(entity, name) }}
+                                        </a>
+                                    </td>
+                                {% else %}
+                                    <td class="text-left">{{ out(entity, name) }}</td>
+                                {% endif %}
+                            {% else %}
+                                <td class="text-left">{{ out(entity, name) }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% if page.count > 1 %}
         {{ paging(page.index, page.count, caller = page.query) }}
     {% endif %}

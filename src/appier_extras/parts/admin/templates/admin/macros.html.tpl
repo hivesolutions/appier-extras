@@ -305,7 +305,7 @@
             {% if index == current %}
                 <span class="page selected">{{ index }}</span>
             {% else %}
-                <a href="{{ href }}" class="page">{{ index }}</a>
+                <a href="{{ href }}" class="page other">{{ index }}</a>
             {% endif %}
         {% endfor %}
         {% if current != count %}
