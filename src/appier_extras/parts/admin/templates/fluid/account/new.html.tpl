@@ -3,7 +3,11 @@
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
-        <h1>Sign up</h1>
+        {% if owner.logo_url %}
+            <img class="login-logo" src="{{ owner.logo_url }}" />
+        {% else %}
+            <h1>Sign up</h1>
+        {% endif %}
         <h3>Create you new account on <strong>{{ owner.description }}</strong></h3>
         {% if error %}
             <div class="quote error">{{ error }}</div>
