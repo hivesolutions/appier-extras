@@ -30,8 +30,8 @@
             <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
                 {% block logo %}
                     {% if owner.logo_url %}
-                        <div class="logo" style="text-align:right;">
-                            <img src="{{ owner.logo_url }}" alt="logo" />
+                        <div class="logo" style="float:right;">
+                            <img src="{{ owner.logo_url }}" alt="logo" style="max-width:144px;" />
                         </div>
                     {% endif %}
                 {% endblock %}
