@@ -28,7 +28,13 @@
         {% block metadata %}{% endblock %}
         <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">
             <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
-                {% block logo %}{% endblock %}
+                {% block logo %}
+                    {% if owner.logo_url %}
+                        <div class="logo" style="text-align:right;">
+                            <img src="{{ owner.logo_url }}" alt="logo" />
+                        </div>
+                    {% endif %}
+                {% endblock %}
                 <div class="content">
                     {{ h1(self.title()) }}
                     {% block content %}{% endblock %}
