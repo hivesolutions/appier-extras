@@ -69,7 +69,7 @@
                                 {% set description = target.to_description(name) %}
                                 <dt>{{ description }}</dt>
                                 {% if loop.first %}
-                                    {% if acl("admin.models." + model._under()) %}
+                                    {% if acl("admin.models." + target._under()) %}
                                         <dd>
                                             <a href="{{ url_for('admin.show_entity', model = target._under(), _id = entity._id) }}">
                                                 {{ out(entity, name) }}
