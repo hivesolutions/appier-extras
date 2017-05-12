@@ -34,7 +34,9 @@
                     {% block content %}{% endblock %}
                 </div>
                 <div class="footer" style="font-size:10px;line-height:16px;text-align:right;margin-top: 48px;">
-                    &copy; {{ owner.copyright|default(copyright, True)|default("2014-2017 Hive Solutions", True) }} &middot; {{ "All rights reserved"|locale }}<br/>
+                    {% set copyright = owner.copyright|default(copyright, True)|default("Hive Solutions", True) %}
+                    {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2014-2017", True) %}
+                    &copy; {{ copyright_year }} {{ copyright }} &middot; {{ "All rights reserved"|locale }}<br/>
                 </div>
             </div>
         </div>
