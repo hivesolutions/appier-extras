@@ -1,7 +1,13 @@
 <div class="top-bar">
     <div class="container">
         <div class="logo">
-            <a>{{ owner.description }}</a>
+            {% if owner.logo_url %}
+                <a>
+                    <img src="{{ owner.logo_url }}" />
+                </a>
+            {% else %}
+                <a>{{ owner.description }}</a>
+            {% endif %}
         </div>
         <div class="drop-field entities" placeholder="Search over some of the items"
              data-number_options="4">
