@@ -962,6 +962,7 @@ class AdminPart(
     def view_model(self, model, view):
         appier.ensure_login(self, token = "admin.models." + model)
 
+        parameters = self.get_fields("parameters", [])
         _id = self.field("id", None)
         is_global = False if _id else True
 
@@ -978,10 +979,12 @@ class AdminPart(
         )
 
         definition = model.view(view)
+        parameters = definition.cast(parameters)
         method = getattr(entity, view)
         result = method(
             rules = False,
             meta = True,
+            *parameters,
             **object
         )
         target = result["model"]
