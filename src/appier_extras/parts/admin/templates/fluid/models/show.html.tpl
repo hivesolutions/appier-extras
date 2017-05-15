@@ -85,7 +85,7 @@
         {% if view.parameters %}
             <div id="window-{{ view.method }}" class="window window-view">
                 <h1>{{ view.name }}</h1>
-                <form class="form" method="post" enctype="multipart/form-data"
+                <form class="form" method="get"
                       action="{{ url_for('admin.view_model', model = model._under(), view = view.method) }}">
                     {% for parameter in view.parameters %}
                         {% set label, name, data_type = parameter[:3] %}

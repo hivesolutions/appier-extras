@@ -1,6 +1,12 @@
 {% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}{{ entity }}{% endblock %}
-{% block name %}{{ entity }}{% endblock %}
+{% block name %}
+    <a href="{{ url_for('admin.show_model', model = model._under()) }}">
+        {{ model._readable(plural = True) }}
+    </a>
+    <span>/</span>
+       <span>{{ entity }}</span>
+{% endblock %}
 {% block buttons %}
     {{ super() }}
     <div class="button button-color button-red button-confirm" data-link="{{ url_for('admin.delete_entity', model = model._under(), _id = entity._id) }}"

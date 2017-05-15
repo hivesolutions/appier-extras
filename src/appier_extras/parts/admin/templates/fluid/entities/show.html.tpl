@@ -1,6 +1,12 @@
 {% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}{{ entity }}{% endblock %}
-{% block name %}{{ entity }}{% endblock %}
+{% block name %}
+    <a href="{{ url_for('admin.show_model', model = model._under()) }}">
+        {{ model._readable(plural = True) }}
+    </a>
+    <span>/</span>
+    <span>{{ entity }}</span>
+{% endblock %}
 {% block buttons %}
     {{ super() }}
     <ul class="drop-down views force" data-name="Views">
@@ -68,7 +74,7 @@
         {% if view.parameters %}
             <div id="window-{{ view.method }}" class="window window-view">
                 <h1>{{ view.name }}</h1>
-                <form class="form" method="post" enctype="multipart/form-data"
+                <form class="form" method="get"
                       action="{{ url_for('admin.view_model', model = model._under(), view = view.method, id = entity._id) }}">
                     {% for parameter in view.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
