@@ -64,6 +64,26 @@
 {% endblock %}
 {% block windows %}
     {{ super() }}
+    {% for view in model.views() %}
+        {% if view.parameters %}
+            <div id="window-{{ view.method }}" class="window window-view">
+                <h1>{{ view.name }}</h1>
+                <form class="form" method="post" enctype="multipart/form-data"
+                      action="{{ url_for('admin.view_model', model = model._under(), view = view.method, id = entity._id) }}">
+                    {% for parameter in view.parameters %}
+                        {% set label, name, data_type = parameter[:3] %}
+                        {% set default = parameter[3] if parameter|length > 3 else "" %}
+                        <label>{{ label }}</label>
+                        {{ tag_input_b("parameters", value = default, type = data_type) }}
+                    {% endfor %}
+                    <div class="window-buttons">
+                        <span class="button button-cancel close-button">Cancel</span>
+                        <span class="button button-confirm" data-submit="1">Confirm</span>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    {% endfor %}
     {% for link in model.links() %}
         {% if link.parameters %}
             <div id="window-{{ link.method }}" class="window window-link">
