@@ -4,7 +4,7 @@
     <p>Hello <strong>{{ account.username }}</strong>,</p>
     <p>
         You're receiving this email because you account has just
-        been confirmed.
+        been confirmed. You can now start using your account.
     </p>
     {{ h2("Support") }}
     {% set support_email = config.conf("SUPPORT_EMAIL")|default("no-reply@appier.hive.pt", True) %}

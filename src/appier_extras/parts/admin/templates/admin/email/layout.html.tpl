@@ -26,26 +26,33 @@
     </head>
     <body style="font-family:{{ self.font_family() }};font-size:{{ self.font_size() }};line-height:{{ self.line_height() }};color:{{ self.font_color() }};text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;" bgcolor="{{ self.background_color() }}">
         {% block metadata %}{% endblock %}
-        <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">
-            <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
-                {% block logo %}
-                    {% if owner.logo_url %}
-                        <div class="logo" style="float:right;">
-                            <img src="{{ owner.logo_url }}" alt="logo" style="max-width:144px;" />
+        {% block container %}
+            <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">
+                <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
+                    {% block logo %}
+                        {% if owner.logo_url %}
+                            <div class="logo" style="text-align:center;">
+                                <img src="{{ owner.logo_url }}" alt="logo" style="max-width:144px;" />
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                    {% block content_base %}
+                        <div class="content">
+                            {% set margin_top = "18px" if owner.logo_url else "38px" %}
+                            {{ h1(self.title(), margin_top = margin_top) }}
+                            {% block content %}{% endblock %}
                         </div>
-                    {% endif %}
-                {% endblock %}
-                <div class="content">
-                    {{ h1(self.title()) }}
-                    {% block content %}{% endblock %}
-                </div>
-                <div class="footer" style="font-size:10px;line-height:16px;text-align:right;margin-top: 48px;">
-                    {% set copyright = owner.copyright|default(copyright, True)|default("Hive Solutions", True) %}
-                    {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2014-2017", True) %}
-                    &copy; {{ copyright_year }} {{ copyright }} &middot; {{ "All rights reserved"|locale }}<br/>
+                    {% endblock %}
+                    {% block footer %}
+                        <div class="footer" style="font-size:10px;line-height:16px;text-align:right;margin-top: 48px;">
+                            {% set copyright = owner.copyright|default(copyright, True)|default("Hive Solutions", True) %}
+                            {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2014-2017", True) %}
+                            &copy; {{ copyright_year }} {{ copyright }} &middot; {{ "All rights reserved"|locale }}<br/>
+                        </div>
+                    {% endblock %}
                 </div>
             </div>
-        </div>
+        {% endblock %}
     </body>
     </html>
 {% endblock %}
