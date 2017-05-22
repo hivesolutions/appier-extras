@@ -227,6 +227,15 @@
                data-type="date" data-error="{{ error }}" />
     {% elif type_s == "longtext" %}
         <textarea class="text-area" name="{{ name }}" data-error="{{ error }}"></textarea>
+    {% elif type_s == "list" %}
+        <input type="text" class="text-field" name="{{ name }}"
+               value="{{ value|dumps if value else '[]' }}" data-error="{{ error }}" />
+    {% elif type_s == "map" %}
+        <input type="text" class="text-field" name="{{ name }}"
+               value="{{ value|dumps if value else '{}' }}" data-error="{{ error }}" />
+    {% elif type_s == "longmap" %}
+        <textarea class="text-area" name="{{ name }}"
+                  data-error="{{ error }}">{{ value|dumps if value else "{}" }}</textarea>
     {% elif type_s == "country" %}
         <div class="drop-field drop-field-select {{ disabled_s|safe }}" data-error="{{ error }}"
              data-number_options="-1">
