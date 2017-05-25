@@ -55,6 +55,7 @@ setuptools.setup(
         "appier_extras.parts",
         "appier_extras.parts.admin",
         "appier_extras.parts.admin.models",
+        "appier_extras.parts.admin.models.oauth",
         "appier_extras.parts.admin.social",
         "appier_extras.parts.captcha",
         "appier_extras.parts.csfr",

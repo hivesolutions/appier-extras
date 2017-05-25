@@ -34,22 +34,8 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import oauth
-from . import account
-from . import base
-from . import config
-from . import event
-from . import role
-from . import search
-from . import settings
-from . import snapshot
+from . import oauth_client
+from . import oauth_token
 
-from .oauth import *
-from .account import Account
-from .base import Base
-from .config import Config
-from .event import Event
-from .role import Role
-from .search import Search
-from .settings import Settings
-from .snapshot import Snapshot
+from .oauth_client import OAuthClient
+from .oauth_token import OAuthToken

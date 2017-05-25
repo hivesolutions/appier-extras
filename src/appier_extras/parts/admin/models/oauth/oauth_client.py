@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,22 +37,7 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import oauth
-from . import account
-from . import base
-from . import config
-from . import event
-from . import role
-from . import search
-from . import settings
-from . import snapshot
+from appier_extras.parts.admin.models import base
 
-from .oauth import *
-from .account import Account
-from .base import Base
-from .config import Config
-from .event import Event
-from .role import Role
-from .search import Search
-from .settings import Settings
-from .snapshot import Snapshot
+class OAuthClient(base.Base):
+    pass
