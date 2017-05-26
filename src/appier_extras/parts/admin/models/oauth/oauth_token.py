@@ -185,11 +185,14 @@ class OAuthToken(base.Base):
 
     def _filter_scope(self, scope):
         result = []
+
         account = self.get_account()
         tokens = account.tokens()
         tokens_m = appier.to_tokens_m(tokens)
+
         for token in scope:
             valid = appier.check_token(None, token, tokens_m = tokens_m)
             if not valid: continue
             result.append(token)
+
         return result
