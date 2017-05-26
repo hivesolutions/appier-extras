@@ -150,6 +150,7 @@ class OAuthToken(base.Base):
 
             appier.not_null("scope"),
             appier.not_empty("scope"),
+            appier.string_gt("scope", 0),
 
             appier.not_null("redirect_uri"),
             appier.not_empty("redirect_uri"),
