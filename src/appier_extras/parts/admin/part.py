@@ -560,13 +560,14 @@ class AdminPart(
             libraries = libraries
         )
 
-    @appier.ensure()
+    @appier.private
     def oauth_authorize(self):
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
         scope = self.field("scope", cast = list, mandatory = True)
         response_type = self.field("response_type", "code")
         state = self.field("state", None)
+        appier.verify("response_type", "code")
         oauth_client = models.OAuthClient.get(
             client_id = client_id,
             redirect_uri = redirect_uri
@@ -586,7 +587,6 @@ class AdminPart(
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
         scope = self.field("scope", cast = list, mandatory = True)
-        response_type = self.field("response_type", mandatory = True)
         state = self.field("state", mandatory = True)
         account = self.account_c.from_session()
         oauth_client = models.OAuthClient.get(
@@ -599,8 +599,11 @@ class AdminPart(
         )
         return self.redirect(
             redirect_uri,
-            code = oauth_token.authorization_code,
-            sate = state
+            params = dict(
+                code = oauth_token.authorization_code,
+                scope = " ".join(oauth_token.tokens),
+                state = state,
+            )
         )
 
     def oauth_access_token(self):
