@@ -159,6 +159,14 @@ class OAuthToken(base.Base):
         ]
 
     @classmethod
+    def list_names(cls):
+        return ["access_token", "created", "username"]
+
+    @classmethod
+    def _underscore(cls, plural = True):
+        return "oauth_tokens" if plural else "oauth_token"
+
+    @classmethod
     def _readable(cls, plural = False):
         return "OAuth Tokens" if plural else "OAuth Token"
 

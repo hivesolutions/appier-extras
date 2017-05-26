@@ -152,6 +152,7 @@ class AdminPart(
             (("GET",), "/admin/parts", self.list_parts),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/oauth/authorize", self.oauth_authorize),
+            (("POST",), "/admin/oauth/authorize", self.do_oauth_authorize),
             (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
@@ -581,7 +582,7 @@ class AdminPart(
         )
 
     @appier.ensure()
-    def oauth_do_authorize(self):
+    def do_oauth_authorize(self):
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
         scope = self.field("scope", cast = list, mandatory = True)

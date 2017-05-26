@@ -12,7 +12,7 @@
         {% if error %}
             <div class="quote error">{{ error }}</div>
         {% endif %}
-        <form action="{{ url_for('admin.do_authorize') }}" method="post" class="form">
+        <form action="{{ url_for('admin.do_oauth_authorize') }}" method="post" class="form">
             <input type="hidden" name="client_id" value="{{ client_id }}" />
             <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
             <input type="hidden" name="scope" value="{{ scope }}" />

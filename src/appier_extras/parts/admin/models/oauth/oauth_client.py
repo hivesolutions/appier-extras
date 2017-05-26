@@ -98,6 +98,10 @@ class OAuthClient(base.Base):
         return ["name", "client_id", "redirect_uri"]
 
     @classmethod
+    def _underscore(cls, plural = True):
+        return "oauth_clients" if plural else "oauth_client"
+
+    @classmethod
     def _readable(cls, plural = False):
         return "OAuth Clients" if plural else "OAuth Client"
 
