@@ -46,6 +46,7 @@ class OAuthClient(base.Base):
 
     name = appier.field(
         index = "hashed",
+        default = True,
         immutable = True
     )
     """ The name of the client, this should be used as primary
@@ -103,10 +104,26 @@ class OAuthClient(base.Base):
     def pre_create(self):
         base.Base.pre_create(self)
 
-        if not hasattr(self, "client_id") or not self.client_id:
-            self.client_id = appier.gen_token()
-        if not hasattr(self, "client_secret") or not self.client_secret:
-            self.client_secret = appier.gen_token()
+        self.client_id = appier.gen_token()
+        self.client_secret = appier.gen_token()
+
+    @appier.operation(
+        name = "Build Token",
+        parameters = (
+             ("Username", "username", str),
+             ("Scope", "scope", list)
+        ),
+        factory = True,
+        level = 2
+    )
+    def build_token(self, username, scope = []):
+        _oauth_token = oauth_token.OAuthToken()
+        _oauth_token.username = username
+        _oauth_token.scope = scope
+        _oauth_token.redirect_uri = self.redirect_uri
+        _oauth_token.client = self
+        _oauth_token.save()
+        return _oauth_token
 
     @appier.operation(name = "Invalidate Tokens", level = 2)
     def invalidate_s(self):
