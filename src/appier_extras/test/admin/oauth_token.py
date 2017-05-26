@@ -84,3 +84,14 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_token.username, "username")
         self.assertEqual(oauth_token.scope, ["admin", "user"])
         self.assertEqual(oauth_token.tokens, ["user"])
+
+        tokens = oauth_client.get_tokens()
+
+        self.assertEqual(len(tokens), 1)
+        self.assertEqual(tokens[0].username, "username")
+
+        oauth_client.invalidate_s()
+
+        tokens = oauth_client.get_tokens()
+
+        self.assertEqual(len(tokens), 0)

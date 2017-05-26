@@ -118,6 +118,9 @@ class OAuthClient(base.Base):
         self.client_id = appier.gen_token(hash = hashlib.md5)
         self.client_secret = appier.gen_token()
 
+    def get_tokens(self):
+        return oauth_token.OAuthToken.find(client = self.id)
+
     @appier.operation(
         name = "Build Token",
         parameters = (
@@ -148,5 +151,5 @@ class OAuthClient(base.Base):
 
         # retrieves the complete set of oauth (access) tokens for the
         # current client and runs the delete operation (removing them)
-        tokens = oauth_token.OAuthToken.find(client = self.id)
+        tokens = self.get_tokens()
         for token in tokens: token.delete()
