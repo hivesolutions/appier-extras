@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import hashlib
+
 import appier
 
 from appier_extras.parts.admin.models import base
@@ -113,7 +115,7 @@ class OAuthClient(base.Base):
     def pre_create(self):
         base.Base.pre_create(self)
 
-        self.client_id = appier.gen_token()
+        self.client_id = appier.gen_token(hash = hashlib.md5)
         self.client_secret = appier.gen_token()
 
     @appier.operation(

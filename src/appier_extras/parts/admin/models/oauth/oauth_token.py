@@ -58,9 +58,17 @@ class OAuthToken(base.Base):
     """ The authorization code duration (in seconds), to be
     used for proper authorization code validation """
 
-    access_token = appier.field(
+    name = appier.field(
         index = "hashed",
         default = True,
+        safe = True,
+        immutable = True
+    )
+    """ Simplified name value, created from the first few
+    characters of the access token value """
+
+    access_token = appier.field(
+        index = "hashed",
         safe = True,
         immutable = True
     )
@@ -88,7 +96,6 @@ class OAuthToken(base.Base):
     username = appier.field(
         index = "hashed",
         safe = True,
-        private = True,
         immutable = True
     )
     """ The name of the user that is authorized this
@@ -166,7 +173,7 @@ class OAuthToken(base.Base):
 
     @classmethod
     def list_names(cls):
-        return ["access_token", "created", "username"]
+        return ["name", "created", "username"]
 
     @classmethod
     def login(cls, access_token):
@@ -193,6 +200,7 @@ class OAuthToken(base.Base):
         self.expires_in = cls.DEFAULT_DURATION
         self.refresh_token = appier.gen_token()
         self.tokens = self._filter_scope(self.scope)
+        self.name = self.access_token[:8]
 
         self._verify()
 
