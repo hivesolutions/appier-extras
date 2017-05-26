@@ -620,7 +620,8 @@ class AdminPart(
         )
         oauth_token = models.OAuthToken.get(
             authorization_code = code,
-            client = oauth_client.id
+            client = oauth_client.id,
+            rules = False
         )
         oauth_token.verify_code(
             code,
