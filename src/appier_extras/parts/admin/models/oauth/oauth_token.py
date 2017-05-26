@@ -49,6 +49,10 @@ class OAuthToken(base.Base):
     """ The default duration of the oauth token, this
     value should not be too long to avoid security issues """
 
+    CODE_DURATION = 600
+    """ The authorization code duration (in seconds), to be
+    used for proper authorization code validation """
+
     access_token = appier.field(
         index = "hashed",
         default = True,
@@ -176,6 +180,13 @@ class OAuthToken(base.Base):
             username = self.username
         )
 
+    def verify_code(self, code, grant_type = "authorization_code", client = None):
+        cls = self.__class__
+        appier.verify(self.authorization_code == code)
+        appier.verify(time.time() - self.authorization_code_date < cls.CODE_DURATION)
+        appier.verify(grant_type, "authorization_code")
+        appier.verify(self.client.id == client.id)
+
     def _verify(self):
         self._verify_scope()
 
@@ -184,6 +195,20 @@ class OAuthToken(base.Base):
         appier.verify(len(self.scope) == len(scope_s))
 
     def _filter_scope(self, scope):
+        """
+        Filters the provided sequence of tokens for the scope, so
+        that only the ones allowed for the requested user are used.
+
+        This avoid security issues like someone requesting values
+        for a token that is for which the user is not allowed.
+
+        :type scope: List
+        :param scope: The list of tokens to be filtered.
+        :rtype: List
+        :return: The resulting filtering list containing only the
+        tokens for which the impersonated user is capable.
+        """
+
         result = []
 
         account = self.get_account()

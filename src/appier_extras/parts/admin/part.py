@@ -151,6 +151,8 @@ class AdminPart(
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/parts", self.list_parts),
             (("GET",), "/admin/libraries", self.list_libraries),
+            (("GET",), "/admin/oauth/authorize", self.oauth_authorize),
+            (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
             (("GET",), "/admin/operations/test_email", self.test_email),
@@ -555,6 +557,43 @@ class AdminPart(
             "libraries.html.tpl",
             section = "status",
             libraries = libraries
+        )
+
+    @appier.ensure()
+    def oauth_authorize(self):
+        client_id = self.field("client_id", mandatory = True)
+        redirect_uri = self.field("redirect_uri", mandatory = True)
+        scope = self.field("scope", cast = list, mandatory = True)
+        response_type = self.field("response_type", "code")
+        return self.template(
+            "oauth/authorize.html.tpl",
+            client_id = client_id,
+            redirect_uri = redirect_uri,
+            scope = scope,
+            response_type = response_type
+        )
+
+    def oauth_access_token(self):
+        client_id = self.field("client_id", mandatory = True)
+        client_secret = self.field("client_secret", mandatory = True)
+        redirect_uri = self.field("redirect_uri", mandatory = True)
+        code = self.field("code", mandatory = True)
+        grant_type = self.field("grant_type", "authorization_code")
+
+        oauth_client = models.OAuthClient.get(
+            client_id = client_id,
+            client_secret = client_secret,
+            redirect_uri = redirect_uri
+        )
+        oauth_token = models.OAuthToken.get(authorization_code = code)
+        oauth_token.verify_code(
+            code,
+            grant_type = grant_type,
+            client = oauth_client
+        )
+
+        return dict(
+            access_token = oauth_token.access_token
         )
 
     @appier.ensure(token = "admin")
