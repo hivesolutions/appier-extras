@@ -245,7 +245,6 @@ class Base(appier.Model):
         unsubscribe = kwargs.pop("unsubscribe", unsubscribe)
         logo = kwargs.pop("logo", logo)
         inline = kwargs.pop("inline", inline)
-        kwargs["owner"] = owner
         settings = dict(
             bulk = bulk,
             unsubscribe = unsubscribe,

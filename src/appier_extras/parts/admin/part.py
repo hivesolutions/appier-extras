@@ -226,7 +226,6 @@ class AdminPart(
         return appier.Part.template(
             self,
             template,
-            owner = self.owner,
             models_d = self.models_d,
             *args,
             **kwargs
