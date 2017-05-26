@@ -182,6 +182,7 @@ class OAuthToken(base.Base):
         self.expires_in = cls.DEFAULT_DURATION
         self.refresh_token = appier.gen_token()
         self.tokens = self._filter_scope(self.scope)
+
         self._verify()
 
     def get_account(self):
@@ -218,15 +219,24 @@ class OAuthToken(base.Base):
         tokens for which the impersonated user is capable.
         """
 
+        # builds the list that is going to be used to store the
+        # result of the scope filtering (acl verification)
         result = []
 
+        # retrieves the account associated with the oauth token
+        # and the (acl) tokens for it converting them into a map
+        # to be used for acl verification operations
         account = self.get_account()
         tokens = account.tokens()
         tokens_m = appier.to_tokens_m(tokens)
 
+        # iterates over each token of the scope to validate it
+        # according to the acl of the associated account
         for token in scope:
             valid = appier.check_token(None, token, tokens_m = tokens_m)
             if not valid: continue
             result.append(token)
 
+        # returns the final result that contains only the scope
+        # tokens for which the account is entitle to register
         return result
