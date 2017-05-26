@@ -42,14 +42,11 @@ import unittest
 import appier
 import appier_extras
 
-from . import mock
-
 class AccountTest(unittest.TestCase):
 
     def setUp(self):
         self.app = appier.App(session_c = appier.MemorySession)
         self.app._register_models_m(appier_extras.admin.models)
-        self.app._register_models_m(mock, "Mocks")
 
     def tearDown(self):
         self.app.unload()

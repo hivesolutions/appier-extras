@@ -52,6 +52,7 @@ class OAuthClient(base.Base):
 
     client_id = appier.field(
         index = "hashed",
+        private = True,
         immutable = True
     )
     """ The client identifier issued to the client during the
@@ -59,15 +60,13 @@ class OAuthClient(base.Base):
 
     client_secret = dict(
         index = "hashed",
+        private = True,
         immutable = True
     )
     """ The client secret issued to the client during the
     registration process (should be globally unique) """
 
-    redirect_uri = dict(
-        type = "text",
-        mandatory = True
-    )
+    redirect_uri = dict()
     """ The redirect uri where to redirect, the user agent
     after a successful token request operation """
 
@@ -95,3 +94,11 @@ class OAuthClient(base.Base):
             appier.not_empty("redirect_uri"),
             appier.is_url("redirect_uri")
         ]
+
+    def pre_validate(self):
+        base.Base.pre_create(self)
+
+        if not hasattr(self, "client_id") or self.client_id == None:
+            self.client_id = appier.gen_token()
+        if not hasattr(self, "client_secret") or self.client_secret == None:
+            self.client_secret = appier.gen_token()
