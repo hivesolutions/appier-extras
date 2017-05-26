@@ -153,3 +153,13 @@ class OAuthClient(base.Base):
         # current client and runs the delete operation (removing them)
         tokens = self.get_tokens()
         for token in tokens: token.delete()
+
+    @appier.view(name = "Tokens")
+    def tokens_v(self, *args, **kwargs):
+        cls = oauth_token.OAuthToken
+        kwargs["sort"] = kwargs.get("sort", [("id", -1)])
+        return dict(
+            model = cls,
+            entities = cls.find(client = self.id, *args, **kwargs),
+            page = cls.paginate(client = self.id, *args, **kwargs)
+        )
