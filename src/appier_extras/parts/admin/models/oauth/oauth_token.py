@@ -44,6 +44,11 @@ import appier
 from appier_extras.parts.admin.models import base
 
 class OAuthToken(base.Base):
+    """
+    Model class that represent an OAuth 2 access token
+    that as been in created for a specific user context
+    and with a certain duration scope.
+    """
 
     DEFAULT_DURATION = 3600
     """ The default duration of the oauth token, this
@@ -164,6 +169,12 @@ class OAuthToken(base.Base):
         return ["access_token", "created", "username"]
 
     @classmethod
+    def login(cls, access_token):
+        oauth_token = cls.get(access_token = access_token)
+        oauth_token.verify_expired()
+        return oauth_token
+
+    @classmethod
     def _underscore(cls, plural = True):
         return "oauth_tokens" if plural else "oauth_token"
 
@@ -196,6 +207,9 @@ class OAuthToken(base.Base):
         appier.verify(time.time() - self.authorization_code_date < cls.CODE_DURATION)
         appier.verify(grant_type, "authorization_code")
         appier.verify(self.client.id == client.id)
+
+    def verify_expired(self):
+        appier.verify(time.time() < self.created + self.expires_in)
 
     def _verify(self):
         self._verify_scope()
@@ -240,3 +254,10 @@ class OAuthToken(base.Base):
         # returns the final result that contains only the scope
         # tokens for which the account is entitle to register
         return result
+
+    def _set_session(self, unset = True, safes = [], method = "set"):
+        cls = self.__class__
+        account = self.get_account()
+        account._set_session(unset = unset, safes = safes, method = method)
+        if unset: return
+        set("tokens", self.tokens)
