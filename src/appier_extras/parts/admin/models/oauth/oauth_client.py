@@ -43,6 +43,11 @@ from appier_extras.parts.admin.models import base
 from appier_extras.parts.admin.models.oauth import oauth_token
 
 class OAuthClient(base.Base):
+    """
+    Represents an OAuth 2.0 API client and contains the
+    secret information used to authenticate it. Should be
+    able to generate access tokens.
+    """
 
     name = appier.field(
         index = "hashed",
