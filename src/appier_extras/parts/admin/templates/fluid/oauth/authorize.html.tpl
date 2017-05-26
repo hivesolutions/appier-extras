@@ -8,7 +8,7 @@
         {% else %}
             <h1>Authorize</h1>
         {% endif %}
-        <h3>Allow Access to {{ oauth_client.name }}</h3>
+        <h3>Allow account access from <strong>{{ oauth_client.name }}</strong></h3>
         {% if error %}
             <div class="quote error">{{ error }}</div>
         {% endif %}
