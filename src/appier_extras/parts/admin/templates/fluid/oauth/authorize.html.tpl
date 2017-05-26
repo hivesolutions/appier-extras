@@ -1,41 +1,32 @@
 {% extends "admin/admin.simple.html.tpl" %}
-{% block title %}Allow Access{% endblock %}
+{% block title %}Authorize{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         {% if owner.logo_url %}
             <img class="login-logo" src="{{ owner.logo_url }}" />
         {% else %}
-            <h1>Login</h1>
+            <h1>Authorize</h1>
         {% endif %}
-        <h3>Allow Access</h3>
+        <h3>Allow Access to {{ oauth_client.name }}</h3>
         {% if error %}
             <div class="quote error">{{ error }}</div>
         {% endif %}
-        <form action="{{ url_for('admin.login') }}" method="post" class="form">
+        <form action="{{ url_for('admin.do_authorize') }}" method="post" class="form">
             <input type="hidden" name="client_id" value="{{ client_id }}" />
-            <input type="hidden" name="client_id" value="{{ client_id }}" />
-            <input type="hidden" name="scope" value="{{ next|default('', True) }}" />
-            <input type="hidden" name="next" value="{{ next|default('', True) }}" />
-            <div class="input">
-                <input type="hidden" class="text-field full focus" name="username" value="{{ username }}"
-                       placeholder="username" />
-            </div>
-            <div class="input">
-                <input type="password" class="text-field full" name="password" placeholder="password" />
-            </div>
-            <div class="forgot">
-                <a href="{{ url_for('admin.recover') }}">Forgot your password?</a>
+            <input type="hidden" name="redirect_uri" value="{{ redirect_uri }}" />
+            <input type="hidden" name="scope" value="{{ scope }}" />
+            <input type="hidden" name="response_type" value="{{ response_type }}" />
+            <input type="hidden" name="state" value="{{ state }}" />
+            <div class="tokens">
+                {% for token in tokens %}
+                    <div class="token">{{ token }}</div>
+                {% endfor %}
             </div>
             <div class="buttons">
-                <span class="button medium button-color button-blue" data-submit="true">Login</span>
+                <span class="button medium button-color button-blue" data-submit="true">Allow</span>
+                <span class="button medium button-color button-red" data-submit="true">Deny</span>
             </div>
-            {% if owner.admin_open %}
-                <div class="new">
-                    <span>or</span>
-                    <a href="{{ url_for('admin.new_account') }}">create new account</a>
-                </div>
-            {% endif %}
         </form>
     </div>
 {% endblock %}

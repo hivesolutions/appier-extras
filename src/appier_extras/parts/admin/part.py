@@ -565,12 +565,41 @@ class AdminPart(
         redirect_uri = self.field("redirect_uri", mandatory = True)
         scope = self.field("scope", cast = list, mandatory = True)
         response_type = self.field("response_type", "code")
+        state = self.field("state", None)
+        oauth_client = models.OAuthClient.get(
+            client_id = client_id,
+            redirect_uri = redirect_uri
+        )
         return self.template(
             "oauth/authorize.html.tpl",
             client_id = client_id,
             redirect_uri = redirect_uri,
             scope = scope,
-            response_type = response_type
+            response_type = response_type,
+            state = state,
+            oauth_client = oauth_client
+        )
+
+    @appier.ensure()
+    def oauth_do_authorize(self):
+        client_id = self.field("client_id", mandatory = True)
+        redirect_uri = self.field("redirect_uri", mandatory = True)
+        scope = self.field("scope", cast = list, mandatory = True)
+        response_type = self.field("response_type", mandatory = True)
+        state = self.field("state", mandatory = True)
+        account = self.account_c.from_session()
+        oauth_client = models.OAuthClient.get(
+            client_id = client_id,
+            redirect_uri = redirect_uri
+        )
+        oauth_token = oauth_client.build_token_s(
+            username = account.username,
+            scope = scope
+        )
+        return self.redirect(
+            redirect_uri,
+            code = oauth_token.authorization_code,
+            sate = state
         )
 
     def oauth_access_token(self):
