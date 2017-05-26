@@ -130,7 +130,7 @@ class OAuthToken(base.Base):
     """ The acl entries associated with this access token """
 
     client = appier.field(
-        type = appier.references(
+        type = appier.reference(
             "OAuthClient",
             name = "id"
         ),

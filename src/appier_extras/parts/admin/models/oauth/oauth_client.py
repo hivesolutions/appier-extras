@@ -116,7 +116,7 @@ class OAuthClient(base.Base):
         factory = True,
         level = 2
     )
-    def build_token(self, username, scope = []):
+    def build_token_s(self, username, scope = []):
         _oauth_token = oauth_token.OAuthToken()
         _oauth_token.username = username
         _oauth_token.scope = scope
