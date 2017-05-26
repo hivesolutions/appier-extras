@@ -67,7 +67,7 @@ class MarkdownParser(object):
         listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\. (?P<listo_value>[^\r\n]+))"
         blockquote = r"(?P<blockquote>^[\>][ \t]*(?P<blockquote_value>[^\r\n]*))"
         image = r"(?P<image>\!(?P<image_label>\[.+?\])(?P<image_value>\(.+?\)))"
-        link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ ]+\)))"
+        link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ !]+\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
