@@ -40,4 +40,7 @@ __license__ = "Apache License, Version 2.0"
 from appier_extras.parts.admin.models import base
 
 class OAuthToken(base.Base):
-    pass
+
+    @classmethod
+    def _readable(cls, plural = False):
+        return "OAuth Tokens" if plural else "OAuth Token"

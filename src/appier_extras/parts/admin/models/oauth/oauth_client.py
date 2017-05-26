@@ -40,6 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import appier
 
 from appier_extras.parts.admin.models import base
+from appier_extras.parts.admin.models.oauth import oauth_token
 
 class OAuthClient(base.Base):
 
@@ -52,21 +53,26 @@ class OAuthClient(base.Base):
 
     client_id = appier.field(
         index = "hashed",
-        private = True,
-        immutable = True
+        safe = True,
+        immutable = True,
+        description = "Client ID"
     )
     """ The client identifier issued to the client during the
     registration process (should be globally unique) """
 
     client_secret = dict(
         index = "hashed",
+        safe = True,
         private = True,
         immutable = True
     )
     """ The client secret issued to the client during the
     registration process (should be globally unique) """
 
-    redirect_uri = dict()
+    redirect_uri = dict(
+        meta = "url",
+        description = "Redirect URI"
+    )
     """ The redirect uri where to redirect, the user agent
     after a successful token request operation """
 
@@ -80,25 +86,38 @@ class OAuthClient(base.Base):
             appier.string_lt("name", 64),
             appier.not_duplicate("name", cls._name()),
 
-            appier.not_null("client_id"),
-            appier.not_empty("client_id"),
-            appier.string_gt("client_id", 32),
-            appier.not_duplicate("client_id", cls._name()),
-
-            appier.not_null("client_secret"),
-            appier.not_empty("client_secret"),
-            appier.string_gt("client_secret", 32),
-            appier.not_duplicate("client_secret", cls._name()),
-
             appier.not_null("redirect_uri"),
             appier.not_empty("redirect_uri"),
             appier.is_url("redirect_uri")
         ]
 
-    def pre_validate(self):
+    @classmethod
+    def list_names(cls):
+        return ["name", "client_id", "redirect_uri"]
+
+    @classmethod
+    def _readable(cls, plural = False):
+        return "OAuth Clients" if plural else "OAuth Client"
+
+    def pre_create(self):
         base.Base.pre_create(self)
 
-        if not hasattr(self, "client_id") or self.client_id == None:
+        if not hasattr(self, "client_id") or not self.client_id:
             self.client_id = appier.gen_token()
-        if not hasattr(self, "client_secret") or self.client_secret == None:
+        if not hasattr(self, "client_secret") or not self.client_secret:
             self.client_secret = appier.gen_token()
+
+    @appier.operation(name = "Invalidate Tokens", level = 2)
+    def invalidate_s(self):
+        """
+        Operation that invalidates the complete set of oauth (access)
+        tokens associated with the current oauth client.
+
+        This is a serious operation that should be used carefully to
+        avoid unwanted behavior and loss of availability.
+        """
+
+        # retrieves the complete set of oauth (access) tokens for the
+        # current client and runs the delete operation (removing them)
+        tokens = oauth_token.OAuthToken.find(client = self.id)
+        for token in tokens: token.delete()
