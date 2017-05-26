@@ -45,7 +45,7 @@ from appier_extras.parts.admin.models import base
 
 class OAuthToken(base.Base):
     """
-    Model class that represent an OAuth 2 access token
+    Model class that represent an OAuth 2.0 access token
     that as been in created for a specific user context
     and with a certain duration scope.
     """
