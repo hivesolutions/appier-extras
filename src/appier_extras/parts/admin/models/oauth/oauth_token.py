@@ -120,14 +120,13 @@ class OAuthToken(base.Base):
     (in addition or as a replacement for an expired access
     token), without having to involve the resource owner. """
 
-    acl_entries = appier.field(
+    tokens = appier.field(
         type = list,
         safe = True,
         private = True,
-        immutable = True,
-        description = "ACL Entries"
+        immutable = True
     )
-    """ The acl entries associated with this access token """
+    """ The acl tokens associated with this access token """
 
     client = appier.field(
         type = appier.reference(
@@ -169,6 +168,28 @@ class OAuthToken(base.Base):
         self.authorization_code_date = time.time()
         self.expires_in = cls.DEFAULT_DURATION
         self.refresh_token = appier.gen_token()
+        self.tokens = self._filter_scope(self.scope)
+        self._verify()
 
-    def get_user(self):
-        return self.owner.admin_part.account_c.get(username = self.username)
+    def get_account(self):
+        return self.owner.admin_part.account_c.get(
+            username = self.username
+        )
+
+    def _verify(self):
+        self._verify_scope()
+
+    def _verify_scope(self):
+        scope_s = set(self.scope)
+        appier.verify(len(self.scope) == len(scope_s))
+
+    def _filter_scope(self, scope):
+        result = []
+        account = self.get_account()
+        tokens = account.tokens()
+        tokens_m = appier.to_tokens_m(tokens)
+        for token in scope:
+            valid = appier.check_token(None, token, tokens_m = tokens_m)
+            if not valid: continue
+            result.append(token)
+        return result

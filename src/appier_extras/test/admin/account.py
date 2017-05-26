@@ -45,8 +45,10 @@ import appier_extras
 class AccountTest(unittest.TestCase):
 
     def setUp(self):
-        self.app = appier.App(session_c = appier.MemorySession)
-        self.app._register_models_m(appier_extras.admin.models)
+        self.app = appier.App(
+            parts = (appier_extras.admin.AdminPart,),
+            session_c = appier.MemorySession
+        )
 
     def tearDown(self):
         self.app.unload()
