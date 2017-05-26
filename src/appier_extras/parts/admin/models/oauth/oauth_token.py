@@ -201,12 +201,11 @@ class OAuthToken(base.Base):
             username = self.username
         )
 
-    def verify_code(self, code, grant_type = "authorization_code", client = None):
+    def verify_code(self, code, grant_type = "authorization_code"):
         cls = self.__class__
         appier.verify(self.authorization_code == code)
         appier.verify(time.time() - self.authorization_code_date < cls.CODE_DURATION)
         appier.verify(grant_type, "authorization_code")
-        appier.verify(self.client.id == client.id)
 
     def verify_expired(self):
         appier.verify(time.time() < self.created + self.expires_in)

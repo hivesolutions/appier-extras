@@ -618,11 +618,13 @@ class AdminPart(
             client_secret = client_secret,
             redirect_uri = redirect_uri
         )
-        oauth_token = models.OAuthToken.get(authorization_code = code)
+        oauth_token = models.OAuthToken.get(
+            authorization_code = code,
+            client = oauth_client.id
+        )
         oauth_token.verify_code(
             code,
-            grant_type = grant_type,
-            client = oauth_client
+            grant_type = grant_type
         )
 
         return dict(
