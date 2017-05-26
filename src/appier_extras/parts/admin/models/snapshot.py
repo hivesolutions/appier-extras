@@ -80,7 +80,7 @@ class Snapshot(base.Base):
         return ["id", "created", "target_id", "target_cls"]
 
     @classmethod
-    def order_name(self):
+    def order_name(cls):
         return ["id", -1]
 
     @classmethod

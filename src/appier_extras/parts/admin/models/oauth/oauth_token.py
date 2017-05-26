@@ -176,6 +176,10 @@ class OAuthToken(base.Base):
         return ["name", "created", "username"]
 
     @classmethod
+    def order_name(cls):
+        return ["id", -1]
+
+    @classmethod
     def login(cls, access_token):
         oauth_token = cls.get(access_token = access_token)
         oauth_token.verify_expired()

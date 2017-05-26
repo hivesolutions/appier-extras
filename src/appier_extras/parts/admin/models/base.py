@@ -190,7 +190,7 @@ class Base(appier.Model):
         return names
 
     @classmethod
-    def order_name(self):
+    def order_name(cls):
         return "id"
 
     @classmethod
