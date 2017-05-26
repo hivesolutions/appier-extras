@@ -37,7 +37,61 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import appier
+
 from appier_extras.parts.admin.models import base
 
 class OAuthClient(base.Base):
-    pass
+
+    name = appier.field(
+        index = "hashed",
+        immutable = True
+    )
+    """ The name of the client, this should be used as primary
+    identification to the end-user """
+
+    client_id = appier.field(
+        index = "hashed",
+        immutable = True
+    )
+    """ The client identifier issued to the client during the
+    registration process (should be globally unique) """
+
+    client_secret = dict(
+        index = "hashed",
+        immutable = True
+    )
+    """ The client secret issued to the client during the
+    registration process (should be globally unique) """
+
+    redirect_uri = dict(
+        type = "text",
+        mandatory = True
+    )
+    """ The redirect uri where to redirect, the user agent
+    after a successful token request operation """
+
+    @classmethod
+    def validate(cls):
+        return super(OAuthClient, cls).validate() + [
+            appier.not_null("name"),
+            appier.not_empty("name"),
+            appier.is_lower("name"),
+            appier.string_gt("name", 3),
+            appier.string_lt("name", 64),
+            appier.not_duplicate("name", cls._name()),
+
+            appier.not_null("client_id"),
+            appier.not_empty("client_id"),
+            appier.string_gt("client_id", 32),
+            appier.not_duplicate("client_id", cls._name()),
+
+            appier.not_null("client_secret"),
+            appier.not_empty("client_secret"),
+            appier.string_gt("client_secret", 32),
+            appier.not_duplicate("client_secret", cls._name()),
+
+            appier.not_null("redirect_uri"),
+            appier.not_empty("redirect_uri"),
+            appier.is_url("redirect_uri")
+        ]
