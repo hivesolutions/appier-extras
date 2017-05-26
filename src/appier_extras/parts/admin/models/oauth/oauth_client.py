@@ -60,7 +60,7 @@ class OAuthClient(base.Base):
     """ The client identifier issued to the client during the
     registration process (should be globally unique) """
 
-    client_secret = dict(
+    client_secret = appier.field(
         index = "hashed",
         safe = True,
         private = True,
@@ -69,7 +69,8 @@ class OAuthClient(base.Base):
     """ The client secret issued to the client during the
     registration process (should be globally unique) """
 
-    redirect_uri = dict(
+    redirect_uri = appier.field(
+        index = "hashed",
         meta = "url",
         description = "Redirect URI"
     )
