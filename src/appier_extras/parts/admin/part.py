@@ -651,9 +651,11 @@ class AdminPart(
         )
         oauth_token.unset_code_s()
 
+        # returns the final map based response containing the complete
+        # set of elements to the client to be used
         return dict(
             access_token = oauth_token.access_token,
-            token_type = "normal",
+            token_type = "bearer",
             expires_in = oauth_token.expires_in,
             refresh_token = oauth_token.refresh_token
         )
