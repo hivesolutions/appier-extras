@@ -216,7 +216,7 @@ class OAuthToken(base.Base):
 
         # retrieves the complete set of tokens from the account
         # and then converts them into the map version of them
-        account = owner.admin_part.account_c.from_session()
+        account = account or owner.admin_part.account_c.from_session()
         tokens = account.tokens()
         tokens_m = appier.to_tokens_m(tokens)
 
