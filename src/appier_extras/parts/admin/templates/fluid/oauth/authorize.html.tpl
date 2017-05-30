@@ -19,7 +19,7 @@
             <input type="hidden" name="response_type" value="{{ response_type }}" />
             <input type="hidden" name="state" value="{{ state }}" />
             <div class="tokens">
-                {% for token in scope %}
+                {% for token in tokens %}
                     <div class="token">{{ token }}</div>
                 {% endfor %}
             </div>

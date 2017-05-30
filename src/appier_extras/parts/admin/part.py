@@ -565,16 +565,64 @@ class AdminPart(
 
     @appier.private
     def oauth_authorize(self):
+        # retrieves the complete set of fields that are going
+        # to be used on the initial authorize state of oauth
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
-        scope = self.field("scope", cast = list, mandatory = True)
+        scope = self.field("scope", mandatory = True)
         response_type = self.field("response_type", "code")
         state = self.field("state", None)
+
+        # verifies/ensures that the response type to be received
+        # is the code, as that's the only one supported
         appier.verify("response_type", "code")
+
+        # normalizes the scope value to the list representation
+        # and then sorts it in the normal manner (normalization)
+        scope_l = scope.split(" ")
+        scope_l.sort()
+
+        # runs the mandatory retrieval of the oauth client associated
+        # with the provided client id
         oauth_client = models.OAuthClient.get(
             client_id = client_id,
             redirect_uri = redirect_uri
         )
+
+        # retrieves the current account from session and then
+        # normalizes the provided scope list to convert it to
+        # tokens (filters on account permissions) then tries to
+        # retrieve an already existing compatible oauth token
+        account = self.account_c.from_session()
+        tokens = models.OAuthToken._filter_scope_g(scope_l, account = account)
+        oauth_token = models.OAuthToken.get(
+            redirect_uri = redirect_uri,
+            username = account.username,
+            scope = scope_l,
+            tokens = tokens,
+            client = oauth_client.id,
+            rules = False,
+            raise_e = False
+        )
+
+        # in case there's an already existing oauth token that
+        # has the same requirements (scope, client, redirect url)
+        # of the one being requested, then a new authorization code
+        # is generated and the user agent is redirected immediately
+        # as there's no extra need for user interaction
+        if oauth_token:
+            oauth_token.set_code_s()
+            return self.redirect(
+                redirect_uri,
+                params = dict(
+                    code = oauth_token.authorization_code,
+                    scope = " ".join(oauth_token.tokens),
+                    tokens = tokens,
+                )
+            )
+
+        # runs the template rendering for the oauth authorize panel
+        # it should prompt the final user for permission agreement
         return self.template(
             "oauth/authorize.html.tpl",
             client_id = client_id,
@@ -582,15 +630,20 @@ class AdminPart(
             scope = scope,
             response_type = response_type,
             state = state,
-            oauth_client = oauth_client
+            oauth_client = oauth_client,
+            tokens = tokens
         )
 
     @appier.ensure()
     def do_oauth_authorize(self):
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
-        scope = self.field("scope", cast = list, mandatory = True)
+        scope = self.field("scope", mandatory = True)
         state = self.field("state", mandatory = True)
+
+        scope_l = scope.split(" ")
+        scope_l.sort()
+
         account = self.account_c.from_session()
         oauth_client = models.OAuthClient.get(
             client_id = client_id,
@@ -598,8 +651,9 @@ class AdminPart(
         )
         oauth_token = oauth_client.build_token_s(
             username = account.username,
-            scope = scope
+            scope = scope_l
         )
+
         return self.redirect(
             redirect_uri,
             params = dict(
