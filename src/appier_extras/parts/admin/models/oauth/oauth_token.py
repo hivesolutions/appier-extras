@@ -180,8 +180,11 @@ class OAuthToken(base.Base):
         return ["id", -1]
 
     @classmethod
-    def login(cls, access_token):
-        oauth_token = cls.get(access_token = access_token)
+    def login(cls, access_token, rules = False):
+        oauth_token = cls.get(
+            access_token = access_token,
+            rules = rules
+        )
         oauth_token.verify_expired()
         return oauth_token
 

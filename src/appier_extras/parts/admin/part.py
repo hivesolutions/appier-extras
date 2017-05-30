@@ -155,6 +155,7 @@ class AdminPart(
             (("POST",), "/admin/oauth/authorize", self.do_oauth_authorize),
             (("GET",), "/admin/oauth/deny", self.oauth_deny),
             (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token),
+            (("GET", "POST"), "/admin/oauth/login", self.oauth_login),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
             (("GET",), "/admin/operations/test_email", self.test_email),
@@ -645,10 +646,7 @@ class AdminPart(
         # verifies that the authorization code is the expected
         # one and then unsets it from the oauth token, so that
         # it's no longer going to be used
-        oauth_token.verify_code(
-            code,
-            grant_type = grant_type
-        )
+        oauth_token.verify_code(code, grant_type = grant_type)
         oauth_token.unset_code_s()
 
         # returns the final map based response containing the complete
@@ -658,6 +656,32 @@ class AdminPart(
             token_type = "bearer",
             expires_in = oauth_token.expires_in,
             refresh_token = oauth_token.refresh_token
+        )
+
+    def oauth_login(self):
+        # retrieves the reference to the access token that has been
+        # provided to the request and then uses it to retrieve the
+        # token, note that an exception is raised if no access token
+        # is provided (as expected)
+        access_token = self.field("access_token", mandatory = True)
+        oauth_token = models.OAuthToken.login(access_token)
+
+        # updates the current session with the proper
+        # values to correctly authenticate the user
+        oauth_token._set_session()
+
+        # retrieves the session identifier (sid) for the currently
+        # assigned session, this is going to be used in the next
+        # requests to refer to the proper session
+        sid = self.session.sid
+
+        # redirects the current operation to the next url or in
+        # alternative to the root index of the administration
+        return dict(
+            sid = sid,
+            session_id = sid,
+            username = oauth_token.username,
+            tokens = oauth_token.tokens
         )
 
     @appier.ensure(token = "admin")
