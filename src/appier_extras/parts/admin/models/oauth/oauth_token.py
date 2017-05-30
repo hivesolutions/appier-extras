@@ -208,6 +208,11 @@ class OAuthToken(base.Base):
 
         self._verify()
 
+    def unset_code_s(self):
+        self.authorization_code = None
+        self.authorization_code_date = None
+        self.save()
+
     def get_account(self):
         return self.owner.admin_part.account_c.get(
             username = self.username
@@ -215,6 +220,8 @@ class OAuthToken(base.Base):
 
     def verify_code(self, code, grant_type = "authorization_code"):
         cls = self.__class__
+        appier.verify(not self.authorization_code == None)
+        appier.verify(not self.authorization_code_date == None)
         appier.verify(self.authorization_code == code)
         appier.verify(time.time() - self.authorization_code_date < cls.CODE_DURATION)
         appier.verify(grant_type, "authorization_code")

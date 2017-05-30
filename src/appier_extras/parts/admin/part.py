@@ -619,12 +619,18 @@ class AdminPart(
         )
 
     def oauth_access_token(self):
+        # retrieve the multiple fields that are going to be used for the
+        # process of issuing the access token (only authorization code is
+        # going to be returned to the client)
         client_id = self.field("client_id", mandatory = True)
         client_secret = self.field("client_secret", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
         code = self.field("code", mandatory = True)
         grant_type = self.field("grant_type", "authorization_code")
 
+        # tries to retrieve the oauth client associated with the
+        # provided client id and secret and then uses the value to
+        # retrieve the associated oauth token via association
         oauth_client = models.OAuthClient.get(
             client_id = client_id,
             client_secret = client_secret,
@@ -635,13 +641,21 @@ class AdminPart(
             client = oauth_client.id,
             rules = False
         )
+
+        # verifies that the authorization code is the expected
+        # one and then unsets it from the oauth token, so that
+        # it's no longer going to be used
         oauth_token.verify_code(
             code,
             grant_type = grant_type
         )
+        oauth_token.unset_code_s()
 
         return dict(
-            access_token = oauth_token.access_token
+            access_token = oauth_token.access_token,
+            token_type = "normal",
+            expires_in = oauth_token.expires_in,
+            refresh_token = oauth_token.refresh_token
         )
 
     @appier.ensure(token = "admin")
