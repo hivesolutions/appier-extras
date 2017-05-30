@@ -154,8 +154,8 @@ class AdminPart(
             (("GET",), "/admin/oauth/authorize", self.oauth_authorize),
             (("POST",), "/admin/oauth/authorize", self.do_oauth_authorize),
             (("GET",), "/admin/oauth/deny", self.oauth_deny),
-            (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token),
-            (("GET", "POST"), "/admin/oauth/login", self.oauth_login),
+            (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token, None, True),
+            (("GET", "POST"), "/admin/oauth/login", self.oauth_login, None, True),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
             (("GET",), "/admin/operations/test_email", self.test_email),
@@ -218,6 +218,7 @@ class AdminPart(
             (("GET",), "/admin/configs.json", self.show_configs, None, True),
             (("GET",), "/api/admin/ping", self.ping_api, None, True),
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
+            (("GET",), "/api/admin/routes", self.routes_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, True),
             (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, True)
         ]
@@ -1580,6 +1581,10 @@ class AdminPart(
             username = username,
             tokens = account.tokens()
         )
+
+    @appier.ensure(token = "admin")
+    def routes_api(self):
+        return dict(routes = self._routes())
 
     def socials(self):
         socials = []
