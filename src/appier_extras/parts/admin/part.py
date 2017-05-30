@@ -107,6 +107,9 @@ class AdminPart(
         self.owner.admin_open = appier.conf(
             "ADMIN_OPEN", False, cast = bool
         )
+        self.owner.admin_oauth = appier.conf(
+            "ADMIN_OAUTH", True, cast = bool
+        )
         self.owner.admin_avatar_default = appier.conf(
             "ADMIN_AVATAR_DEFAULT", False, cast = bool
         )
@@ -565,6 +568,12 @@ class AdminPart(
 
     @appier.private
     def oauth_authorize(self):
+        # verifies if the oauth system is allowed if that's not
+        # the case raises an exception indicating so
+        if not self.owner.admin_oauth: raise appier.SecurityError(
+            message = "OAuth not allowed"
+        )
+
         # retrieves the complete set of fields that are going
         # to be used on the initial authorize state of oauth
         client_id = self.field("client_id", mandatory = True)
@@ -636,6 +645,10 @@ class AdminPart(
 
     @appier.ensure()
     def do_oauth_authorize(self):
+        if not self.owner.admin_oauth: raise appier.SecurityError(
+            message = "OAuth not allowed"
+        )
+
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
         scope = self.field("scope", mandatory = True)
@@ -665,6 +678,9 @@ class AdminPart(
 
     @appier.private
     def oauth_deny(self):
+        if not self.owner.admin_oauth: raise appier.SecurityError(
+            message = "OAuth not allowed"
+        )
         redirect_uri = self.field("redirect_uri", mandatory = True)
         return self.redirect(
             redirect_uri,
@@ -675,6 +691,12 @@ class AdminPart(
         )
 
     def oauth_access_token(self):
+        # verifies if the oauth system is allowed if that's not
+        # the case raises an exception indicating so
+        if not self.owner.admin_oauth: raise appier.SecurityError(
+            message = "OAuth not allowed"
+        )
+
         # retrieve the multiple fields that are going to be used for the
         # process of issuing the access token (only authorization code is
         # going to be returned to the client)
@@ -714,6 +736,12 @@ class AdminPart(
         )
 
     def oauth_login(self):
+        # verifies if the oauth system is allowed if that's not
+        # the case raises an exception indicating so
+        if not self.owner.admin_oauth: raise appier.SecurityError(
+            message = "OAuth not allowed"
+        )
+
         # retrieves the reference to the access token that has been
         # provided to the request and then uses it to retrieve the
         # token, note that an exception is raised if no access token

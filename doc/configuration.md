@@ -12,7 +12,8 @@ The following are reserved configuration variables that modify Appier Extras beh
 * `ADMIN_LIBS` (`str`) - The version of the base javascript libraries to be used (eg: `current`, `legacy`, `next`, `edge`),
 should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `ADMIN_BACKGROUND` (`str`) - The URL of the image to be used as background for simple pages (defaults to `None`)
-* `ADMIN_OPEN` (`bool`) - If the administration interface should be open and available to end-users (defaults to `True`)
+* `ADMIN_OPEN` (`bool`) - If the administration interface should be open and available to end-users (defaults to `False`)
+* `ADMIN_OAUTH` (`bool`) - If OAuth 2.0 support should be enabled for the administration interface (defaults to `True`)
 * `ADMIN_AVATAR_DEFAULT` (`bool`) - If a new default image should be set for an account's avatar if none is set (defaults to `False`)
 
 ### Social
