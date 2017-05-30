@@ -25,7 +25,8 @@
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Allow</span>
-                <span class="button medium button-color button-red" data-submit="true">Deny</span>
+                <span class="button medium button-color button-red"
+                      data-link="{{ url_for('admin.oauth_deny', redirect_uri = redirect_uri) }}">Deny</span>
             </div>
         </form>
     </div>

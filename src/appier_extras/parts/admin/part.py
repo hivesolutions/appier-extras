@@ -153,6 +153,7 @@ class AdminPart(
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/oauth/authorize", self.oauth_authorize),
             (("POST",), "/admin/oauth/authorize", self.do_oauth_authorize),
+            (("GET",), "/admin/oauth/deny", self.oauth_deny),
             (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
@@ -603,6 +604,16 @@ class AdminPart(
                 code = oauth_token.authorization_code,
                 scope = " ".join(oauth_token.tokens),
                 state = state,
+            )
+        )
+
+    @appier.private
+    def oauth_deny(self):
+        redirect_uri = self.field("redirect_uri", mandatory = True)
+        return self.redirect(
+            redirect_uri,
+            params = dict(
+                error = "access_denied"
             )
         )
 
