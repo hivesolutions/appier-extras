@@ -613,7 +613,8 @@ class AdminPart(
         return self.redirect(
             redirect_uri,
             params = dict(
-                error = "access_denied"
+                error = "access_denied",
+                error_description = "Permissions error"
             )
         )
 
