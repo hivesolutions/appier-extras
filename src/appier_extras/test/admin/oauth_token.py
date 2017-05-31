@@ -95,3 +95,55 @@ class OAuthTokenTest(unittest.TestCase):
         tokens = oauth_client.get_tokens()
 
         self.assertEqual(len(tokens), 0)
+
+    def test_reuse(self):
+        account = appier_extras.admin.Account()
+        account.username = "username"
+        account.email = "username@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        oauth_client = appier_extras.admin.OAuthClient()
+        oauth_client.name = "name"
+        oauth_client.redirect_uri = "http://localhost/oauth"
+        oauth_client.save()
+
+        self.assertNotEqual(oauth_client.id, None)
+        self.assertNotEqual(oauth_client.client_id, None)
+        self.assertNotEqual(oauth_client.client_secret, None)
+        self.assertEqual(oauth_client.name, "name")
+        self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
+
+        oauth_token = oauth_client.build_token_s("username", scope = ["admin", "user"])
+
+        self.assertNotEqual(oauth_token.id, None)
+        self.assertNotEqual(oauth_token.access_token, None)
+        self.assertNotEqual(oauth_token.authorization_code, None)
+        self.assertNotEqual(oauth_token.authorization_code_date, None)
+        self.assertEqual(oauth_token.client.id, oauth_client.id)
+        self.assertEqual(oauth_token.username, "username")
+        self.assertEqual(oauth_token.scope, ["admin", "user"])
+        self.assertEqual(oauth_token.tokens, ["user"])
+
+        result, tokens, oauth_token = appier_extras.admin.OAuthToken.reuse_s(
+            "http://localhost/oauth",
+            ["admin", "user"],
+            oauth_client,
+            account = account,
+            owner = self.app
+        )
+
+        self.assertNotEqual(result, False)
+        self.assertNotEqual(tokens, None)
+        self.assertNotEqual(oauth_token, None)
+        self.assertNotEqual(oauth_token.id, None)
+        self.assertNotEqual(oauth_token.access_token, None)
+        self.assertNotEqual(oauth_token.authorization_code, None)
+        self.assertNotEqual(oauth_token.authorization_code_date, None)
+        self.assertEqual(result, True)
+        self.assertEqual(tokens, ["user"])
+        self.assertEqual(oauth_token.client.id, oauth_client.id)
+        self.assertEqual(oauth_token.username, "username")
+        self.assertEqual(oauth_token.scope, ["admin", "user"])
+        self.assertEqual(oauth_token.tokens, ["user"])

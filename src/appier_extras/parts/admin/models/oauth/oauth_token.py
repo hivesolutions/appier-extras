@@ -178,6 +178,43 @@ class OAuthToken(base.Base):
         return ["id", -1]
 
     @classmethod
+    def reuse_s(cls, redirect_uri, scope, oauth_client, account = None, owner = None):
+        # defaults the provided owner value to the global registered
+        # app to be used if required for account defaulting
+        owner = owner or appier.get_app()
+
+        # retrieves the current account from session and then
+        # normalizes the provided scope list to convert it to
+        # tokens (filters on account permissions) then tries to
+        # retrieve an already existing compatible oauth token
+        account = account or owner.admin_part.account_c.from_session()
+        tokens = cls._filter_scope_g(scope, account = account)
+        oauth_token = cls.get(
+            redirect_uri = redirect_uri,
+            username = account.username,
+            scope = scope,
+            tokens = tokens,
+            client = oauth_client.id,
+            rules = False,
+            raise_e = False
+        )
+
+        # in case there's no valid equivalent token, returns the
+        # control flow immediately with an invalid value
+        if not oauth_token: return False, tokens, oauth_token
+
+        # in case there's an already existing oauth token that
+        # has the same requirements (scope, client, redirect url)
+        # of the one being requested, then a new authorization code
+        # is generated and the user agent is redirected immediately
+        # as there's no extra need for user interaction
+        oauth_token.set_code_s()
+
+        # returns a valid result indicating both the retrieved tokens
+        # and the oauth token that can be used for re-usage
+        return True, tokens, oauth_token
+
+    @classmethod
     def login(cls, access_token, rules = False):
         oauth_token = cls.get(
             access_token = access_token,

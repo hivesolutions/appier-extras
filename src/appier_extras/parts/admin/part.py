@@ -598,37 +598,20 @@ class AdminPart(
             redirect_uri = redirect_uri
         )
 
-        # retrieves the current account from session and then
-        # normalizes the provided scope list to convert it to
-        # tokens (filters on account permissions) then tries to
-        # retrieve an already existing compatible oauth token
-        account = self.account_c.from_session()
-        tokens = models.OAuthToken._filter_scope_g(scope_l, account = account)
-        oauth_token = models.OAuthToken.get(
-            redirect_uri = redirect_uri,
-            username = account.username,
-            scope = scope_l,
-            tokens = tokens,
-            client = oauth_client.id,
-            rules = False,
-            raise_e = False
+        # tries to re-use an already authorized token that is considered
+        # equivalent to the current one, if the re-usage operation is a
+        # success then redirects the user agent immediately
+        result, tokens, oauth_token = models.OAuthToken.reuse_s(
+            redirect_uri, scope_l, oauth_client
         )
-
-        # in case there's an already existing oauth token that
-        # has the same requirements (scope, client, redirect url)
-        # of the one being requested, then a new authorization code
-        # is generated and the user agent is redirected immediately
-        # as there's no extra need for user interaction
-        if oauth_token:
-            oauth_token.set_code_s()
-            return self.redirect(
-                redirect_uri,
-                params = dict(
-                    code = oauth_token.authorization_code,
-                    scope = " ".join(oauth_token.tokens),
-                    tokens = tokens,
-                )
+        if result: return self.redirect(
+            redirect_uri,
+            params = dict(
+                code = oauth_token.authorization_code,
+                scope = " ".join(oauth_token.tokens),
+                tokens = oauth_token.tokens,
             )
+        )
 
         # runs the template rendering for the oauth authorize panel
         # it should prompt the final user for permission agreement
