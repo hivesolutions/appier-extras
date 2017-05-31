@@ -220,7 +220,7 @@ class OAuthToken(base.Base):
             access_token = access_token,
             rules = rules
         )
-        oauth_token.verify_expired()
+        oauth_token.touch_expired()
         return oauth_token
 
     @classmethod
@@ -305,6 +305,26 @@ class OAuthToken(base.Base):
         return self.owner.admin_part.account_c.get(
             username = self.username
         )
+
+    def touch_expired(self, delete = True):
+        """
+        Method to be called upon the token usage so that the
+        expiration for the oauth token may be checked.
+
+        If the verification fails it's possible to have the
+        current token removed from the data source
+
+        :type delete: bool
+        :param delete: If the token should be automatically
+        removed from the data source if it's expired (any of
+        the verification fails).
+        """
+
+        try:
+            self.verify_expired()
+        except:
+            if delete: self.delete()
+            raise
 
     def verify_code(self, code, grant_type = "authorization_code"):
         cls = self.__class__
