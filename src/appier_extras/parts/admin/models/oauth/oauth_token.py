@@ -189,7 +189,7 @@ class OAuthToken(base.Base):
         # retrieve an already existing compatible oauth token
         account = account or owner.admin_part.account_c.from_session()
         tokens = cls._filter_scope_g(scope, account = account)
-        oauth_token = cls.get(
+        oauth_token = cls.get_e(
             redirect_uri = redirect_uri,
             username = account.username,
             scope = scope,
@@ -216,7 +216,7 @@ class OAuthToken(base.Base):
 
     @classmethod
     def login(cls, access_token, rules = False):
-        oauth_token = cls.get(
+        oauth_token = cls.get_e(
             access_token = access_token,
             rules = rules
         )

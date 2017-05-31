@@ -593,7 +593,7 @@ class AdminPart(
 
         # runs the mandatory retrieval of the oauth client associated
         # with the provided client id
-        oauth_client = models.OAuthClient.get(
+        oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
             redirect_uri = redirect_uri
         )
@@ -641,7 +641,7 @@ class AdminPart(
         scope_l.sort()
 
         account = self.account_c.from_session()
-        oauth_client = models.OAuthClient.get(
+        oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
             redirect_uri = redirect_uri
         )
@@ -692,12 +692,12 @@ class AdminPart(
         # tries to retrieve the oauth client associated with the
         # provided client id and secret and then uses the value to
         # retrieve the associated oauth token via association
-        oauth_client = models.OAuthClient.get(
+        oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
             client_secret = client_secret,
             redirect_uri = redirect_uri
         )
-        oauth_token = models.OAuthToken.get(
+        oauth_token = models.OAuthToken.get_e(
             authorization_code = code,
             client = oauth_client.id,
             rules = False
