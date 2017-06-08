@@ -508,6 +508,7 @@ class Account(base.Base):
         prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
         delete = getattr(session, method)
+        if "cls" in session: delete("cls")
         if "username" in session: delete("username")
         if "name" in session: delete("name")
         if "email" in session: delete("email")
@@ -806,6 +807,7 @@ class Account(base.Base):
         if unset: cls._unset_session(safes = safes)
         self.session.ensure()
         set = getattr(self.session, method)
+        set("cls", cls.__name__)
         set("username", self.username)
         set("name", self.email)
         set("email", self.email)
