@@ -44,8 +44,9 @@ import binascii
 
 from appier_extras.parts.admin.models import base
 from appier_extras.parts.admin.models import role
+from appier_extras.parts.admin.partials import authenticable
 
-class Account(base.Base):
+class Account(base.Base, authenticable.Authenticable):
 
     ADMIN_TYPE = 1
     USER_TYPE = 2
@@ -502,13 +503,6 @@ class Account(base.Base):
         super(Account, cls)._build(model, map)
         username = model["username"]
         model["avatar_url"] = cls._get_avatar_url_g(username)
-        
-    @classmethod
-    def _unset_account(cls, prefixes = None, safes = [], method = "delete"):
-        session = appier.get_session()
-        _cls = session.get("cls", None)
-        if _cls: cls = appier.get_model(_cls)
-        cls._unset_session(prefixes = prefixes, safes = safes, method = method)
 
     @classmethod
     def _unset_session(cls, prefixes = None, safes = [], method = "delete"):

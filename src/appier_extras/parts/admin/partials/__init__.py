@@ -34,12 +34,6 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import models
-from . import partials
-from . import social
-from . import part
+from . import authenticable
 
-from .models import *
-from .partials import *
-from .social import *
-from .part import AdminPart
+from .authenticable import Authenticable

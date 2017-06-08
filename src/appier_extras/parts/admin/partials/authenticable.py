@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,12 +37,20 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import models
-from . import partials
-from . import social
-from . import part
+import appier
 
-from .models import *
-from .partials import *
-from .social import *
-from .part import AdminPart
+class Authenticable(object):
+
+    @classmethod
+    def _unset_account(cls, prefixes = None, safes = [], method = "delete"):
+        session = appier.get_session()
+        _cls = session.get("cls", None)
+        if _cls: cls = appier.get_model(_cls)
+        cls._unset_session(prefixes = prefixes, safes = safes, method = method)
+
+    @classmethod
+    def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
+        pass
+
+    def _set_session(self, unset = True, safes = [], method = "set"):
+        pass
