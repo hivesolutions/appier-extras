@@ -502,6 +502,13 @@ class Account(base.Base):
         super(Account, cls)._build(model, map)
         username = model["username"]
         model["avatar_url"] = cls._get_avatar_url_g(username)
+        
+    @classmethod
+    def _unset_account(cls, prefixes = None, safes = [], method = "delete"):
+        session = appier.get_session()
+        _cls = session.get("cls", None)
+        if _cls: cls = appier.get_model(_cls)
+        cls._unset_session(prefixes = prefixes, safes = safes, method = method)
 
     @classmethod
     def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
@@ -804,7 +811,7 @@ class Account(base.Base):
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
-        if unset: cls._unset_session(safes = safes)
+        if unset: cls._unset_account(safes = safes)
         self.session.ensure()
         set = getattr(self.session, method)
         set("cls", cls.__name__)

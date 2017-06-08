@@ -307,16 +307,10 @@ class AdminPart(
         # the redirection operation at the end of the logout operation
         next = self.field("next")
 
-        # tries to retrieve the proper account class to be used for the
-        # logout and defaulting to the base one if there's none defined
-        cls = self.session.get("cls", None)
-        if cls: account_c = self.get_model(cls)
-        else: account_c = self.account_c
-
         # verifies the existence of the various account related session
         # attributes and in case they exist removes them from session as
         # the user is currently logging out from session
-        account_c._unset_session()
+        self.account_c._unset_account()
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
