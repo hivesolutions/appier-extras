@@ -79,8 +79,8 @@ class Base(appier.Model):
         meta = "enum",
         enum = ENABLE_S,
         observations = """Simple flag that controls if the entity
-        is considered to be enabled (for context usage), usage of
-        this flag is not mandatory and relies on the context"""
+        is considered to be enabled, respecting this flag is not
+        mandatory and relies on specific usage context"""
     )
     """ Boolean field that defines if a certain entity is considered
     to be enabled or disabled, the meaning of disable should depend
