@@ -340,7 +340,7 @@ class MarkdownGenerator(object):
 
     def _generate(self, nodes):
         for node in nodes:
-            is_map = type(node) == dict
+            is_map = isinstance(node, dict)
             _type = node["type"] if is_map else "normal"
             method = getattr(self, "generate_" + _type)
             method(node)
