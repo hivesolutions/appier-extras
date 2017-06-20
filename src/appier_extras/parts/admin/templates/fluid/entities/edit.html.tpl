@@ -21,9 +21,17 @@
         <div class="section">
             {% for name in model.update_names() %}
                 {% set description = model.to_description(name) %}
+                {% set observations = model.to_observations(name) %}
                 <div class="item">
                     <div class="label">
-                        <label>{{ description }}</label>
+                        {% if observations %}
+                            <div class="balloon balloon-observations">
+                                <label class="baloon-icon">{{ description }}</label>
+                                <div class="balloon-contents">{{ observations }}</div>
+                            </div>
+                        {% else%}
+                            <label>{{ description }}</label>
+                        {% endif %}
                     </div>
                     <div class="input">
                         {{ input(entity, name) }}

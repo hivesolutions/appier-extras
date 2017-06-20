@@ -64,7 +64,9 @@ class Base(appier.Model):
         index = "all",
         increment = True,
         safe = True,
-        description = "ID"
+        description = "ID",
+        observations = """The base identifier of the entity to
+        be used as a unique value on the entity context"""
     )
     """ The global incremental identifier of the base model
     this should always be considered a unique way of addressing
@@ -75,7 +77,9 @@ class Base(appier.Model):
         index = "all",
         initial = True,
         meta = "enum",
-        enum = ENABLE_S
+        enum = ENABLE_S,
+        observations = """Simple flag that controls if the entity
+        is considered to be enabled (for context usage)"""
     )
     """ Boolean field that defines if a certain entity is considered
     to be enabled or disabled, the meaning of disable should depend
