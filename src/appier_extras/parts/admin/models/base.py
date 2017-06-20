@@ -79,7 +79,8 @@ class Base(appier.Model):
         meta = "enum",
         enum = ENABLE_S,
         observations = """Simple flag that controls if the entity
-        is considered to be enabled (for context usage)"""
+        is considered to be enabled (for context usage), usage of
+        this flag is not mandatory and relies on the context"""
     )
     """ Boolean field that defines if a certain entity is considered
     to be enabled or disabled, the meaning of disable should depend
@@ -88,7 +89,9 @@ class Base(appier.Model):
 
     description = appier.field(
         meta = "text",
-        default = True
+        default = True,
+        observations = """Plain text description of the entity, proper
+        usage should be defined by the context"""
     )
     """ Global description value for which the meaning should be defined
     by the context of usage (eg: name, observations, etc.) """
@@ -98,7 +101,9 @@ class Base(appier.Model):
         index = "all",
         safe = True,
         immutable = True,
-        meta = "datetime"
+        meta = "datetime",
+        observations = """Date when the entity was initially created, should
+        be immutable (not changeable)"""
     )
     """ The original date and time of the entity creation, this should
     be an immutable timestamp and never changed """
@@ -107,14 +112,17 @@ class Base(appier.Model):
         type = int,
         index = "all",
         safe = True,
-        meta = "datetime"
+        meta = "datetime",
+        observations = """Date when the entity was last modified"""
     )
     """ The date and time of the latest save operation for the current
     entity, note that the create operation changes this value """
 
     meta = appier.field(
         type = dict,
-        description = "Metadata"
+        description = "Metadata",
+        observations = """Dictionary based information to be "attached"
+        to the entity, proper usage depends on context"""
     )
     """ Additional (unstructured) information to be stored together with
     the entity for unpredicted purposes, note that these values should not
