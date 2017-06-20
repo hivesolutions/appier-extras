@@ -266,7 +266,7 @@ class Base(appier.Model):
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
         if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
-        html_handler = lambda html: cls._inlinify(html)
+        html_handler = cls._inlinify
         html_handler = html_handler if inline else None
         owner.email(
             sender = sender,
