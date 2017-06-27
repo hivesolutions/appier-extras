@@ -321,7 +321,7 @@ class Base(appier.Model):
         file,
         callback,
         strict = False,
-        named = None,
+        named = False,
         delimiter = ",",
         quotechar = "\"",
         quoting = csv.QUOTE_MINIMAL,
@@ -336,7 +336,7 @@ class Base(appier.Model):
             )
         args, _varargs, kwargs = appier.legacy.getargspec(callback)[:3]
         has_header = True if "header" in args or kwargs else False
-        if named == None: named = False if has_header else True
+        has_map = True if "map" in args or kwargs else False
         if is_unicode:
             data = data.decode(encoding)
             buffer = appier.legacy.StringIO(data)
@@ -351,10 +351,12 @@ class Base(appier.Model):
         header = next(csv_reader)
         if named: tuple_t = collections.namedtuple("csv_tuple", header)
         for line in csv_reader:
+            kwargs = dict()
             if not is_unicode: line = [value.decode(encoding) for value in line]
             if named: line = tuple_t(*line)
-            if has_header: callback(line, header = header)
-            else: callback(line)
+            if has_header: kwargs["header"] = header
+            if has_map: kwargs["map"] = dict(zip(header, line))
+            callback(line, **kwargs)
 
     @classmethod
     def _inlinify(cls, data, engine = None):
