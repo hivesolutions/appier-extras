@@ -79,8 +79,6 @@ class OpbeatPart(appier.Part):
         is_soft = False,
         strict = False
     ):
-        cls = self.__class__
-
         if not strict and is_soft: return
 
         api = self._get_api()
@@ -93,7 +91,7 @@ class OpbeatPart(appier.Part):
             exception.message or str(exception)
 
         lines = traceback.format_exc().splitlines()
-        lines = cls._lines(lines)
+        lines = appier.App._lines(lines)
 
         payload = dict(
             message = message,
