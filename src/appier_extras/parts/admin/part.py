@@ -251,8 +251,9 @@ class AdminPart(
 
     def exception_handler(self, error):
         import traceback
+        cls = self.__class__
         lines = traceback.format_exc().splitlines()
-        lines = self._lines(lines)
+        lines = cls._lines(lines)
         lines = lines if self.owner.is_devel() else []
         return self.template(
             "error.html.tpl",
