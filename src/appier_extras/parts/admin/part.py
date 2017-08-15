@@ -1057,21 +1057,55 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def link_model(self, model, link):
+        # ensures that the proper token is available so that the
+        # operation may be executed under the current context
         appier.ensure_login(self, token = "admin.models." + model)
+
+        # retrieves the complete set of sequential parameters that
+        # are going to be applied to the link operations
         parameters = self.get_fields("parameters", [])
+
+        # tries to get the context reference that is going to be "passed"
+        # to the underlying link operation if required
+        context = self.field("context", None)
+        context = context.split(",") if context else None
+
+        # retrieves the reference to the complete set of ids of entities
+        # for which the link operation should be applied
         ids = self.field("ids", "")
         ids = ids.split(",")
+
         ids = [self.get_adapter().object_id(_id) for _id in ids if _id]
         is_global = self.field("is_global", False, cast = bool)
         model = self.get_model(model)
+
+        # creates the set of named arguments dictionary to be used
+        # for the selection of the target entities
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
+
+        # retrieves the reference to the appropriate entities (or
+        # classes) taking into account if the link is global or not
         if is_global: entities = (model,)
         else: entities = model.find_v(**kwargs)
+
+        # defines the default result value as an invalid value,
+        # this will ensure an error in the redirection process
         result = None
+
+        # creates the dictionary that is going to hold the named
+        # arguments for the URL generation
+        if context: kwargs["context"] = context
+
+        # iterates over the complete set of selected entities to
+        # obtain the result redirection string value for each of
+        # them, notice that only the last is going to be used
         for entity in entities:
             method = getattr(entity, link)
-            result = method(*parameters)
+            result = method(*parameters, **kwargs)
+
+        # runs the redirection of the user agent to the final
+        # result string (and URL) value
         return self.redirect(result)
 
     @appier.ensure(token = "admin")
@@ -1131,8 +1165,12 @@ class AdminPart(
 
         # in case the factory mode is enabled, a new entity has been
         # created and proper redirection must be performed so that the
-        # new entity is shown instead of the default show model
+        # new entity is shown instead of the default show model, in case
+        # the returned value from the operation is a string one the
+        # redirection is made directly to that target value
         if factory:
+            is_string = appier.legacy.is_string(result)
+            if is_string: return self.redirect(result)
             cls = result.__class__
             model_name = cls._under()
             model_id = result._id
