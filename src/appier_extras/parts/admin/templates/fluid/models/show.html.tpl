@@ -26,11 +26,11 @@
             {% if not link.instance and link_valid %}
                 {% if link.parameters %}
                     <li>
-                        <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
+                        <a class="button {% if link.context %}context{% endif %}" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
                     </li>
                 {% else %}
                     <li>
-                        <a class="no-async" target="_blank"
+                        <a class="no-async {% if link.context %}context{% endif %}" target="_blank"
                            href="{{ url_for('admin.link_model', model = model._under(), link = link.method, is_global = '1') }}">{{ link.name }}</a>
                     </li>
                 {% endif %}
@@ -103,7 +103,7 @@
     {% endfor %}
     {% for link in model.links() %}
         {% if link.parameters %}
-            <div id="window-{{ link.method }}" class="window window-link">
+            <div id="window-{{ link.method }}" class="window window-link {% if link.context %}context{% endif %}">
                 <h1>{{ link.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.link_model', model = model._under(), link = link.method, is_global = '' if link.instance else '1') }}">
