@@ -53,6 +53,14 @@ going to be used in the generation of the random string
 value that is going to be used as basis for secret generation """
 
 class Base(appier.Model):
+    """
+    Top level abstract class from which all the appier admin
+    based models should inherit. It contains utility structures
+    and logic to better handle a model under appier admin.
+
+    Only models that inherit from this abstract model will be
+    shown in the appier admin back-office.
+    """
 
     ENABLE_S = {
         True : "enabled",
@@ -216,6 +224,10 @@ class Base(appier.Model):
     @classmethod
     def description_name(cls):
         return None
+
+    @classmethod
+    def is_abstract(cls):
+        return True
 
     @classmethod
     def is_indexed(cls):
