@@ -105,7 +105,7 @@
         {% if link.parameters %}
             <div id="window-{{ link.method }}" class="window window-link">
                 <h1>{{ link.name }}</h1>
-                <form class="form {% if link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
+                <form class="form {% if not link.instance and link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.link_model', model = model._under(), link = link.method, is_global = '' if link.instance else '1') }}">
                     {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
