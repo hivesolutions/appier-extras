@@ -1089,13 +1089,18 @@ class AdminPart(
         if is_global: entities = (model,)
         else: entities = model.find_v(**kwargs)
 
-        # defines the default result value as an invalid value,
-        # this will ensure an error in the redirection process
-        result = None
+        # creates the new keyword based dictionary that is going to
+        # be used to set the named arguments for the link method call
+        # in case there's some (eg: context)
+        kwargs = dict()
 
         # creates the dictionary that is going to hold the named
         # arguments for the URL generation
         if context: kwargs["context"] = context
+
+        # defines the default result value as an invalid value,
+        # this will ensure an error in the redirection process
+        result = None
 
         # iterates over the complete set of selected entities to
         # obtain the result redirection string value for each of
