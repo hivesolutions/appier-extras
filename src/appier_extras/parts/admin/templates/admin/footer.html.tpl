@@ -5,8 +5,8 @@
     &copy; Copyright {{ copyright_year }} by
     {% if copyright_url %}
         <a href="{{ copyright_url }}">{{ copyright }}</a>.<br/>
-       {% else %}
-           <span>{{ copyright }}</span>.<br/>
-       {% endif %}
+    {% else %}
+        <span>{{ copyright }}</span>.<br/>
+    {% endif %}
     {% if session.username %}<a href="{{ url_for('admin.show_account', username = session.username) }}">{{ session.username }}</a> // <a href="{{ url_for('admin.logout') }}">logout</a><br/>{% endif %}
 </div>
