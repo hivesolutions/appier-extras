@@ -371,19 +371,21 @@ class Base(appier.Model):
             callback(line, **kwargs)
 
     @classmethod
-    def _inlinify(cls, data, engine = None):
+    def _inlinify(cls, data, engine = None, *args, **kwargs):
         engine = engine or appier.conf("INLINER_ENGINE", None)
         if not engine: return data
         method = getattr(cls, "_inlinify_" + engine)
-        return method(data)
+        return method(data, *args, **kwargs)
 
     @classmethod
-    def _inlinify_premailer(cls, data):
+    def _inlinify_premailer(cls, data, *args, **kwargs):
         premailer = appier.import_pip("premailer")
-        return premailer.transform(data)
+        keep_style_tags = kwargs.get("keep_style_tags", True)
+        inliner = premailer.Premailer(data, keep_style_tags = keep_style_tags)
+        return inliner.transform(data)
 
     @classmethod
-    def _inlinify_toronado(cls, data):
+    def _inlinify_toronado(cls, data, *args, **kwargs):
         toronado = appier.import_pip("toronado")
         return toronado.from_string(data)
 
