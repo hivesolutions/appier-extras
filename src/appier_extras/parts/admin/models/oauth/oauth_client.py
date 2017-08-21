@@ -158,8 +158,10 @@ class OAuthClient(base.Base):
     def tokens_v(self, *args, **kwargs):
         cls = oauth_token.OAuthToken
         kwargs["sort"] = kwargs.get("sort", [("id", -1)])
-        return dict(
+        kwargs.update(client = self.id)
+        return appier.lazy_dict(
             model = cls,
-            entities = cls.find(client = self.id, *args, **kwargs),
-            page = cls.paginate(client = self.id, *args, **kwargs)
+            kwargs = kwargs,
+            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
         )
