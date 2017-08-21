@@ -1190,6 +1190,7 @@ class AdminPart(
             return self.redirect(
                 self.url_for(
                     "admin.show_entity",
+                    message = "Operation completed with success",
                     model = model_name,
                     _id = model_id
                 )
@@ -1198,7 +1199,12 @@ class AdminPart(
         # runs the default redirection process that displays the model
         # page for the model used as target for the operation
         return self.redirect(
-            next or self.url_for("admin.show_model", model = model._under())
+            next or self.url_for(
+                "admin.show_model",
+                message = "Operation completed with success",
+                model = model._under()
+            ),
+            message = "Operation completed with success"
         )
 
     @appier.ensure(token = "admin")
