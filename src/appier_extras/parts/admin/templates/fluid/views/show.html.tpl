@@ -16,6 +16,23 @@
 {% block style %}no-padding{% endblock %}
 {% block buttons %}
     {{ super() }}
+    <ul class="drop-down links" data-name="Links">
+        {% for link in target.links() %}
+            {% set link_valid = not link.devel or own.is_devel() %}
+            {% if not link.instance and link.context and link_valid %}
+                {% if link.parameters %}
+                    <li>
+                        <a class="button context" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="no-async context" target="_blank"
+                           href="{{ url_for('admin.link_model', model = target._under(), link = link.method, is_global = '1') }}">{{ link.name }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
     <ul class="drop-down operations" data-name="Operations">
         {% for operation in target.operations() %}
             {% set operation_valid = not operation.devel or own.is_devel() %}
@@ -37,6 +54,26 @@
 {% endblock %}
 {% block windows %}
     {{ super() }}
+    {% for link in target.links() %}
+        {% if link.parameters %}
+            <div id="window-{{ link.method }}" class="window window-link">
+                <h1>{{ link.name }}</h1>
+                <form class="form {% if not link.instance and link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
+                      action="{{ url_for('admin.link_model', model = target._under(), link = link.method, is_global = '' if link.instance else '1') }}">
+                    {% for parameter in link.parameters %}
+                        {% set label, name, data_type = parameter[:3] %}
+                        {% set default = parameter[3] if parameter|length > 3 else "" %}
+                        <label>{{ label }}</label>
+                        {{ tag_input_b("parameters", value = default, type = data_type) }}
+                    {% endfor %}
+                    <div class="window-buttons">
+                        <span class="button button-cancel close-button">Cancel</span>
+                        <span class="button button-confirm" data-submit="1">Confirm</span>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    {% endfor %}
     {% for operation in target.operations() %}
         {% if operation.parameters %}
             <div id="window-{{ operation.method }}" class="window window-operation">
