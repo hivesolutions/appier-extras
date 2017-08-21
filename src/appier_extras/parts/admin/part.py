@@ -1065,6 +1065,10 @@ class AdminPart(
         # are going to be applied to the link operations
         parameters = self.get_fields("parameters", [])
 
+        # retrieves the reference to the view that is going to be used
+        # to filter the entities for which to generate the link (if any)
+        view = self.field("view", None)
+
         # tries to get the context reference that is going to be "passed"
         # to the underlying link operation if required
         context = self.field("context", None)
@@ -1094,8 +1098,10 @@ class AdminPart(
         # in case there's some (eg: context)
         kwargs = dict()
 
-        # creates the dictionary that is going to hold the named
-        # arguments for the URL generation
+        # applies both the view and the context to the keyword based
+        # dictionary to be passed to the link (generation) method, they
+        # are going to constrain the domain for the link execution
+        if view: kwargs["view"] = view
         if context: kwargs["context"] = context
 
         # defines the default result value as an invalid value,
@@ -1124,6 +1130,7 @@ class AdminPart(
         # complete set of casting operations for each of them
         parameters = self.get_fields("parameters", [])
         next = self.field("next")
+        view = self.field("view", None)
         ids = self.field("ids", "")
         ids = ids.split(",")
         ids = [self.get_adapter().object_id(_id) for _id in ids if _id]
@@ -1147,6 +1154,7 @@ class AdminPart(
         # if this is a global operation classes are used instead
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
+        kwargs = self._apply_view(view, kwargs, cls = model)
         if is_global: entities = (model,)
         else: entities = model.find_v(**kwargs)
 
@@ -1201,6 +1209,8 @@ class AdminPart(
         _id = self.field("id", None)
         is_global = False if _id else True
 
+        model_s = model
+
         model = self.get_model(model)
         model.assert_is_concrete_g()
 
@@ -1227,6 +1237,9 @@ class AdminPart(
         page = result["page"]
         names = result.get("names", None)
 
+        if _id: view_s = "%s:%s.%s" % (model_s, _id, view)
+        else: "%s.%s" % (model_s, view)
+
         return self.template(
             "views/show.html.tpl",
             section = "models",
@@ -1237,6 +1250,7 @@ class AdminPart(
             page = page,
             definition = definition,
             names = names,
+            view = view_s,
             is_global = is_global
         )
 
@@ -1833,3 +1847,72 @@ class AdminPart(
             _id = next._id
         ) if next else None
         return previous_url, next_url
+
+    def _find_context(self, cls, *args, **kwargs):
+        """
+        Runs a find operation taking into account both the provided
+        view (as a field) and the context.
+
+        This method is extremely useful for back-office operations
+        that use the dynamic view filtering.
+
+        :type cls: Class
+        :param cls: The (model) class that is going to be used in
+        the find operation.
+        :rtype: List
+        :return: The complete set of results from the data source
+        according to the provided parameters, filtered view and context.
+        """
+
+        view = self.field("view", None)
+        context = self.field("context", [], cast = list)
+        kwargs = self._apply_view(view, kwargs, cls = cls)
+        if not context: return cls.find(*args, **kwargs)
+        ids = [self.get_adapter().object_id(_id) for _id in context if _id]
+        return cls.find(_id = {"$in" : ids}, *args, **kwargs)
+
+    def _apply_view(self, view, kwargs, cls = None):
+        """
+        Applies a certain view (with properly defined syntax) into
+        the provided arguments so that it's possible to run the
+        final result in a typical find operation.
+
+        Optionally one may provide the model class so that the view
+        is ensured to be associated with such class.
+
+        :type view: String
+        :param view: The string describing the view that should be
+        applied to the provided arguments.
+        :type kwargs: Dictionary
+        :param kwargs: The dictionary that contains the extra arguments
+        that are going to be affected by the view apply operation.
+        This object is going to be mutated.
+        :type cls: Class
+        :param cls: The class that if provided is going to be validated
+        against the view, meaning that only views that were designed to
+        returns entities of this class are going to pass validation.
+        :rtype: Dictionary
+        :return: The final dictionary with the view filter applied.
+        """
+
+        if not view: return kwargs
+
+        model, view = view.split(".")
+
+        is_instance = ":" in model
+        if is_instance: model, id = model.split(":")
+
+        model = self.get_model(model)
+        model.assert_is_concrete_g()
+
+        if is_instance: model = model.get(
+            _id = self.get_adapter().object_id(id)
+        )
+
+        method = getattr(model, view)
+        result = method(run = False, **kwargs)
+
+        appier.verify(not cls or result["model"] == cls)
+
+        kwargs = result["kwargs"]
+        return kwargs

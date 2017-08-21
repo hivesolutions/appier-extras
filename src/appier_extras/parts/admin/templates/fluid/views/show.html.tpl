@@ -125,7 +125,7 @@
             {% endfor %}
         </div>
         <table class="filter bulk lister" data-no_input="1" data-size="{{ page.size }}"
-               data-total="{{ page.total }}" data-pages="{{ page.count }}">
+               data-total="{{ page.total }}" data-pages="{{ page.count }}" data-view="{{ view }}">
             <thead>
                 <tr class="table-row table-header">
                     <th class="text-left selection">
