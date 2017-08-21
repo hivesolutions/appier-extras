@@ -1210,6 +1210,7 @@ class AdminPart(
         is_global = False if _id else True
 
         model_s = model
+        parameters_s = ",".join(parameters)
 
         model = self.get_model(model)
         model.assert_is_concrete_g()
@@ -1238,7 +1239,8 @@ class AdminPart(
         names = result.get("names", None)
 
         if _id: view_s = "%s:%s.%s" % (model_s, _id, view)
-        else: "%s.%s" % (model_s, view)
+        else: view_s = "%s.%s" % (model_s, view)
+        if parameters_s: view_s += "(%s)" % parameters_s
 
         return self.template(
             "views/show.html.tpl",
@@ -1909,8 +1911,24 @@ class AdminPart(
             _id = self.get_adapter().object_id(id)
         )
 
+        start_param = view.find("(")
+        end_param = view.find(")")
+        is_valid = not start_param == -1 and not end_param == -1
+
+        if is_valid:
+            view, parameters = view[:start_param], view[start_param + 1:end_param]
+            parameters = [parameter.strip() for parameter in parameters.split(",")]
+        else:
+            parameters = []
+
+        definition = model.view(view)
+        parameters = definition.cast(parameters)
+        parameters_kw = definition.cast(parameters, keyword = True)
+        parameters_kw.update(kwargs)
+
         method = getattr(model, view)
-        result = method(**kwargs)
+        method_kw = appier.legacy.getargspec(method)[2]
+        result = method(**parameters_kw) if method_kw else method(*parameters, **kwargs)
 
         appier.verify(not cls or result["model"] == cls)
 
