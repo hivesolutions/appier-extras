@@ -1910,7 +1910,7 @@ class AdminPart(
         )
 
         method = getattr(model, view)
-        result = method(run = False, **kwargs)
+        result = method(**kwargs)
 
         appier.verify(not cls or result["model"] == cls)
 
