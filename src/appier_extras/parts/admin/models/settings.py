@@ -117,7 +117,9 @@ class Settings(base.Base):
     @classmethod
     def get_extra(cls, name, default = None):
         settings = cls.get_settings()
-        return settings.get(name, default)
+        if not settings: return default
+        if not settings.extra: return default
+        return settings.extra.get(name, default)
 
     @classmethod
     def _plural(cls):
