@@ -109,17 +109,26 @@ class Settings(base.Base):
         return linked
 
     @classmethod
+    def get_extra(cls, name, default = None):
+        settings = cls.get_settings()
+        if not settings: return default
+        if not settings.extra: return default
+        return settings.extra.get(name, default)
+
+    @classmethod
     def set_extra_s(cls, name, value):
         settings = cls.get_settings()
         settings.extra[name] = value
         settings.save()
 
     @classmethod
-    def get_extra(cls, name, default = None):
+    def del_extra_s(cls, name):
         settings = cls.get_settings()
-        if not settings: return default
-        if not settings.extra: return default
-        return settings.extra.get(name, default)
+        if not settings: return
+        if not settings.extra: return
+        if not name in settings.extra: return
+        del settings.extra[name]
+        settings.save()
 
     @classmethod
     def _plural(cls):
