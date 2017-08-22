@@ -45,6 +45,7 @@ import tempfile
 
 import appier
 
+from appier_extras import base
 from appier_extras.parts.admin import models
 from appier_extras.parts.admin import social
 
@@ -80,6 +81,20 @@ class AdminPart(
         self.style = appier.conf("ADMIN_STYLE", "")
         self.libs = appier.conf("ADMIN_LIBS", "current")
         self.social_libs = appier.conf("ADMIN_SOCIAL_LIBS", [], cast = list)
+        self._last_login = None
+        self._login_count = 0
+
+    def version(self):
+        return base.VERSION
+
+    def info(self):
+
+        info = appier.Part.info(self)
+        info.update(
+            last_login = self._last_login_s,
+            login_count = self._login_count
+        )
+        return info
 
     def load(self):
         appier.Part.load(self)
@@ -155,6 +170,7 @@ class AdminPart(
             (("GET",), "/admin/routes", self.list_routes),
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/parts", self.list_parts),
+            (("GET",), "/admin/parts/<str:name>", self.show_part),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/oauth/authorize", self.oauth_authorize),
             (("POST",), "/admin/oauth/authorize", self.do_oauth_authorize),
@@ -297,6 +313,9 @@ class AdminPart(
         # updates the current session with the proper
         # values to correctly authenticate the user
         account._set_session()
+
+        self._login_count += 1
+        self._last_login = time.time()
 
         # redirects the current operation to the next url or in
         # alternative to the root index of the administration
@@ -557,6 +576,20 @@ class AdminPart(
             "parts.html.tpl",
             section = "status",
             parts = parts
+        )
+
+    @appier.ensure(token = "admin.status")
+    def show_part(self, name):
+        part = self.owner.get_part(name)
+        info = part.info()
+        info_l = appier.legacy.keys(info)
+        info_l.sort()
+        return self.template(
+            "part.html.tpl",
+            section = "status",
+            part = part,
+            info = info,
+            info_l = info_l
         )
 
     @appier.ensure(token = "admin.status")
@@ -1942,3 +1975,9 @@ class AdminPart(
 
         kwargs = result["kwargs"]
         return kwargs
+
+    @property
+    def _last_login_s(self):
+        if not self._last_login: return None
+        date_time = datetime.datetime.utcfromtimestamp(self._last_login)
+        return date_time.strftime("%Y-%m-%d %H:%M:%S")

@@ -1,17 +1,11 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}Sessions / {{ session_s.sid }}{% endblock %}
+{% block title %}Parts / {{ info.name }}{% endblock %}
 {% block name %}
-    <a href="{{ url_for('admin.list_sessions') }}">Sessions</a>
+    <a href="{{ url_for('admin.list_parts') }}">Parts</a>
     <span>/</span>
-    <span>{{ session_s.sid }}</span>
+    <span>{{ info.name }}</span>
 {% endblock %}
 {% block style %}no-padding{% endblock %}
-{% block buttons %}
-    {{ super() }}
-    <div class="button button-color button-red button-confirm"
-         data-message="Do you really want to delete [{{ session_s.sid }}] ?"
-         data-link="{{ url_for('admin.delete_session', sid = session_s.sid) }}">Delete</div>
-{% endblock %}
 {% block content %}
     <table class="filter" data-no_input="1">
         <thead>
@@ -21,8 +15,8 @@
             </tr>
         </thead>
         <tbody class="filter-contents">
-            {% for key in session_s.sorted() %}
-                {% set value = session_s[key] %}
+            {% for key in info_l %}
+                {% set value = info[key] %}
                 <tr class="table-row">
                     <td class="text-left">
                         <strong>{{ key }}</strong>
