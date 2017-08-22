@@ -88,7 +88,6 @@ class AdminPart(
         return base.VERSION
 
     def info(self):
-
         info = appier.Part.info(self)
         info.update(
             last_login = self._last_login_s,
@@ -150,6 +149,12 @@ class AdminPart(
         for social_lib in self.social_libs:
             method = getattr(self, "ensure_" + social_lib)
             method()
+
+        self.account_c.bind_g("touch_login", self._on_touch_login)
+
+    def unload(self):
+        appier.Part.unload(self)
+        self.account_c.unbind_g("touch_login", self._on_touch_login)
 
     def routes(self):
         return [
@@ -313,9 +318,6 @@ class AdminPart(
         # updates the current session with the proper
         # values to correctly authenticate the user
         account._set_session()
-
-        self._login_count += 1
-        self._last_login = time.time()
 
         # redirects the current operation to the next url or in
         # alternative to the root index of the administration
@@ -1976,8 +1978,12 @@ class AdminPart(
         kwargs = result["kwargs"]
         return kwargs
 
+    def _on_touch_login(self, account):
+        self._last_login = time.time()
+        self._login_count += 1
+
     @property
-    def _last_login_s(self):
+    def _last_login_s(self, format = "%Y-%m-%d %H:%M:%S UTC"):
         if not self._last_login: return None
         date_time = datetime.datetime.utcfromtimestamp(self._last_login)
-        return date_time.strftime("%Y-%m-%d %H:%M:%S")
+        return date_time.strftime(format)

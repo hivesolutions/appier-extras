@@ -719,10 +719,18 @@ class Account(base.Base, authenticable.Authenticable):
 
     @appier.operation(name = "Touch Login")
     def touch_login_s(self):
+        # retrieves the global reference to the account class so that
+        # it can be used for the triggering of global operations
+        cls = self.__class__
+
         # updates the last login of the account with the current timestamp
         # and saves the account so that this value is persisted
         self.last_login = time.time()
         self.save()
+
+        # triggers the global event indicating that a new account has been
+        # touched about a new login operation (allows proper notification)
+        cls.trigger_g("touch_login", self)
 
     @appier.operation(name = "Generate Key", level = 2)
     def generate_key_s(self, force = False):
