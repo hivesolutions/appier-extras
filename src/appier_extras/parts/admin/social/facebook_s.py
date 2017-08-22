@@ -74,7 +74,7 @@ class Facebook(object):
 
         if not account:
             if not create: raise appier.NotFoundError(
-                message = "No account found for facebook account"
+                message = "No account found for Facebook account"
             )
 
             account = self.owner.admin_account(

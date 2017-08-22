@@ -74,7 +74,7 @@ class Live(object):
 
         if not account:
             if not create: raise appier.NotFoundError(
-                message = "No account found for live account"
+                message = "No account found for Microsoft Live account"
             )
 
             account = self.owner.admin_account(

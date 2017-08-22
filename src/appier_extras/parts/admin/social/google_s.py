@@ -74,7 +74,7 @@ class Google(object):
 
         if not account:
             if not create: raise appier.NotFoundError(
-                message = "No account found for google account"
+                message = "No account found for Google account"
             )
 
             account = self.owner.admin_account(

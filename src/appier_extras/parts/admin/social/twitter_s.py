@@ -78,7 +78,7 @@ class Twitter(object):
 
         if not account:
             if not create: raise appier.NotFoundError(
-                message = "No account found for twitter account"
+                message = "No account found for Twitter account"
             )
 
             account = self.owner.admin_account(

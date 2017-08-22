@@ -74,7 +74,7 @@ class Github(object):
 
         if not account:
             if not create: raise appier.NotFoundError(
-                message = "No account found for github account"
+                message = "No account found for GitHub account"
             )
 
             account = self.owner.admin_account(
