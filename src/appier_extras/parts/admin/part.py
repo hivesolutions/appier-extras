@@ -150,11 +150,45 @@ class AdminPart(
             method = getattr(self, "ensure_" + social_lib)
             method()
 
+        self.load_settings()
+
         self.account_c.bind_g("touch_login", self._on_touch_login)
 
     def unload(self):
         appier.Part.unload(self)
+
         self.account_c.unbind_g("touch_login", self._on_touch_login)
+
+
+    ## ---start
+
+    @property
+    def settings_l(self):
+        return (
+            "_last_login",
+            "_login_count"
+        )
+
+    def load_settings(self):
+        settings = models.Settings.get_extra(self.name() + ":settings")
+        if not settings: return
+        for name in self.settings_l:
+            current = getattr(self, name)
+            value = settings.get(name, current)
+            setattr(self, name, value)
+
+    def dump_settings(self):
+        extra = dict()
+        for name in self.settings_l:
+            value = getattr(self, name)
+            extra[name] = value
+        models.Settings.set_extra_s(self.name() + ":settings", extra)
+
+    def flush_settings(self):
+        return self.dump_settings()
+
+    ## ---end
+
 
     def routes(self):
         return [
@@ -1981,9 +2015,13 @@ class AdminPart(
     def _on_touch_login(self, account):
         self._last_login = time.time()
         self._login_count += 1
+        self.flush_settings()
 
     @property
     def _last_login_s(self, format = "%Y-%m-%d %H:%M:%S UTC"):
         if not self._last_login: return None
-        date_time = datetime.datetime.utcfromtimestamp(self._last_login)
-        return date_time.strftime(format)
+        try:
+            date_time = datetime.datetime.utcfromtimestamp(self._last_login)
+            return date_time.strftime(format)
+        except TypeError:
+            return None
