@@ -83,26 +83,36 @@
                     <dd><span class="tag">{{ appier.underscore_to_readable(account.type_meta, capitalize = True) }}</span></dd>
                 </div>
                 <div class="separator"></div>
-                <div class="item">
-                    <dt>Facebook ID</dt>
-                    <dd>{{ account.facebook_id|default("-", True) }}</dd>
-                </div>
-                <div class="item">
-                    <dt>GitHub Login</dt>
-                    <dd>{{ account.github_login|default("-", True) }}</dd>
-                </div>
-                <div class="item">
-                    <dt>Google ID</dt>
-                    <dd>{{ account.google_id|default("-", True) }}</dd>
-                </div>
-                <div class="item">
-                    <dt>Live ID</dt>
-                    <dd>{{ account.live_id|default("-", True) }}</dd>
-                </div>
-                <div class="item">
-                    <dt>Twitter Username</dt>
-                    <dd>{{ account.twitter_username|default("-", True) }}</dd>
-                </div>
+                {% if own.has_facebook() %}
+                    <div class="item">
+                        <dt>Facebook ID</dt>
+                        <dd>{{ account.facebook_id|default("-", True) }}</dd>
+                    </div>
+                {% endif %}
+                {% if own.has_github() %}
+                    <div class="item">
+                        <dt>GitHub Login</dt>
+                        <dd>{{ account.github_login|default("-", True) }}</dd>
+                    </div>
+                {% endif %}
+                {% if own.has_google() %}
+                    <div class="item">
+                        <dt>Google ID</dt>
+                        <dd>{{ account.google_id|default("-", True) }}</dd>
+                    </div>
+                {% endif %}
+                {% if own.has_live() %}
+                    <div class="item">
+                        <dt>Live ID</dt>
+                        <dd>{{ account.live_id|default("-", True) }}</dd>
+                    </div>
+                {% endif %}
+                {% if own.has_twitter() %}
+                    <div class="item">
+                        <dt>Twitter Username</dt>
+                        <dd>{{ account.twitter_username|default("-", True) }}</dd>
+                    </div>
+                {% endif %}
             </dl>
         </div>
     </div>

@@ -51,7 +51,7 @@
                     </li>
                 {% else %}
                     <li>
-                        <div class="name"><a href="{{ url_for('admin.live', context = 'global', next = location) }}">Link Microsoft Live account</a></div>
+                        <div class="name"><a href="{{ url_for('admin.live', context = 'global', next = location) }}">Link Microsoft account</a></div>
                         <div class="description"><span>Enable access to you Microsoft profile</span></div>
                     </li>
                 {% endif %}

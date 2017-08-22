@@ -109,6 +109,17 @@ class Settings(base.Base):
         return linked
 
     @classmethod
+    def set_extra_s(cls, name, value):
+        settings = cls.get_settings()
+        settings.extra[name] = value
+        settings.save()
+
+    @classmethod
+    def get_extra(cls, name, default = None):
+        settings = cls.get_settings()
+        return settings.get(name, default)
+
+    @classmethod
     def _plural(cls):
         return "Settings"
 
