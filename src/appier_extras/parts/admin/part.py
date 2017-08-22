@@ -74,6 +74,7 @@ class AdminPart(
     ):
         appier.Part.__init__(self, *args, **kwargs)
         self.account_c = account_c
+        self.role_c = role_c
         self.layout = appier.conf("ADMIN_LAYOUT", "fluid")
         self.theme = appier.conf("ADMIN_THEME", "flat")
         self.style = appier.conf("ADMIN_STYLE", "")
@@ -97,6 +98,7 @@ class AdminPart(
         self.owner.login_redirect = "admin.index"
         self.owner.logout_redirect = "admin.login"
         self.owner.admin_account = self.account_c
+        self.owner.admin_role = self.role_c
         self.owner.admin_login_redirect = "admin.index"
         self.owner.admin_logout_redirect = "admin.login"
         self.owner.admin_facebook_scope = ("email",)
