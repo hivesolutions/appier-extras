@@ -125,6 +125,10 @@ class Search(base.Base):
         for index in indexes: index.delete(*args, **kwargs)
 
     @classmethod
+    def _plural(cls):
+        return "Searches"
+
+    @classmethod
     def _build(cls, model, map):
         super(Search, cls)._build(model, map)
         owner = appier.get_app()
