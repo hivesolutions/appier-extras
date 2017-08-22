@@ -42,6 +42,8 @@ import random
 
 import appier
 
+from appier_extras import base
+
 try:
     import PIL.Image
     import PIL.ImageDraw
@@ -59,6 +61,9 @@ class CaptchaPart(appier.Part):
 
     :see: http://en.wikipedia.org/wiki/CAPTCHA
     """
+
+    def version(self):
+        return base.VERSION
 
     def routes(self):
         return [

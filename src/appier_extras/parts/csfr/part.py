@@ -41,6 +41,8 @@ import hashlib
 
 import appier
 
+from appier_extras import base
+
 class CSFRPart(appier.Part):
     """
     Modular part class that provides the required infra-structure
@@ -51,6 +53,9 @@ class CSFRPart(appier.Part):
 
     :see: http://en.wikipedia.org/wiki/Cross-site_request_forgery
     """
+
+    def version(self):
+        return base.VERSION
 
     def load(self):
         appier.Part.load(self)

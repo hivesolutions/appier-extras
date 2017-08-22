@@ -41,6 +41,8 @@ import logging
 
 import appier
 
+from appier_extras import base
+
 from . import handler
 
 class SematextPart(appier.Part):
@@ -53,6 +55,9 @@ class SematextPart(appier.Part):
 
     :see: http://sematext.com
     """
+
+    def version(self):
+        return base.VERSION
 
     def load(self):
         appier.Part.load(self)

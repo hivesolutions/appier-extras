@@ -42,6 +42,8 @@ import traceback
 
 import appier
 
+from appier_extras import base
+
 class OpbeatPart(appier.Part):
     """
     Modular part class that provides the system to handle Opbeat
@@ -52,6 +54,9 @@ class OpbeatPart(appier.Part):
 
     :see: http://opbeat.com
     """
+
+    def version(self):
+        return base.VERSION
 
     def load(self):
         appier.Part.load(self)
