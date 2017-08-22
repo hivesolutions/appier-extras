@@ -8,7 +8,7 @@
             <tr class="table-row table-header">
                 <th class="text-left">Part</th>
                 <th class="text-left">Version</th>
-                <th class="text-left">Class</th>
+                <th class="text-left no-mobile">Class</th>
             </tr>
         </thead>
         <tbody class="filter-contents">
@@ -20,7 +20,7 @@
                         </strong>
                     </td>
                     <td class="text-left">{{ part.version }}</td>
-                    <td class="text-left">{{ part.class_name }}</td>
+                    <td class="text-left no-mobile">{{ part.class_name }}</td>
                 </tr>
             {% endfor %}
         </tbody>
