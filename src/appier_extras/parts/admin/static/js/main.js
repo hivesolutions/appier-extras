@@ -22,3 +22,47 @@
 // __date__      = $LastChangedDate$
 // __copyright__ = Copyright (c) 2008-2017 Hive Solutions Lda.
 // __license__   = Apache License, Version 2.0
+
+(function(jQuery) {
+    jQuery.fn.uapply = function(options) {
+        // sets the jquery matched object
+        var matchedObject = this;
+
+        // retrieves the reference to the header message elements contained
+        // in the matched object and starts the proper message plugin in it
+        var message = jQuery(".header-message", matchedObject);
+        message.umessage();
+    };
+})(jQuery);
+
+(function(jQuery) {
+    jQuery.fn.umessage = function(options) {
+        // sets the jquery matched object
+        var matchedObject = this;
+
+        // retrieves the contents part of the message container as it's
+        // going to be used in the registration of the click handler
+        var messageContents = jQuery(".message-contents", matchedObject);
+
+        // sets the timeout for the fade out operation of the matched
+        // object that is going to be used to auto-hide the message
+        setTimeout(function() {
+            matchedObject.fadeOut(300);
+        }, 7500);
+
+        // registers for the click operation for the message contents
+        // so that the associated header message is hidden
+        messageContents.click(function() {
+            var element = jQuery(this);
+            var message = element.parents(".header-message");
+            message.fadeOut(300);
+        });
+    };
+})(jQuery);
+
+jQuery(document).ready(function() {
+    var _body = jQuery("body");
+    _body.bind("applied", function(event, base) {
+        base.uapply();
+    });
+});
