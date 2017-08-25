@@ -1178,6 +1178,10 @@ class AdminPart(
         model = self.get_model(model)
         definition = model.operation(operation)
 
+        # uses the definition of the operation to retrieve its descriptive
+        # name to be used in the message to be sent to the end-user
+        operation_s = definition.get("name", operation)
+
         # using the retrieved information determines if the operation
         # is considered to be a factory one (generates entity) and
         # then casts the provided parameters according to metadata
@@ -1227,7 +1231,7 @@ class AdminPart(
             return self.redirect(
                 self.url_for(
                     "admin.show_entity",
-                    message = "Operation completed with success",
+                    message = "Operation '%s' completed with success" % operation_s,
                     model = model_name,
                     _id = model_id
                 )
@@ -1238,10 +1242,10 @@ class AdminPart(
         return self.redirect(
             next or self.url_for(
                 "admin.show_model",
-                message = "Operation completed with success",
+                message = "Operation '%s' completed with success" % operation_s,
                 model = model._under()
             ),
-            message = "Operation completed with success"
+            message = "Operation '%s' completed with success" % operation_s
         )
 
     @appier.ensure(token = "admin")
