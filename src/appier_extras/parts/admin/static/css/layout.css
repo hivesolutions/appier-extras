@@ -29,6 +29,48 @@ __copyright__ = Copyright (c) 2008-2017 Hive Solutions Lda.
 __license__   = Apache License, Version 2.0
 */
 
+@-webkit-keyframes fade-into-rise-long {
+    from {
+        opacity: 0;
+        -webkit-transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: translateY(0px);
+    }
+}
+
+@keyframes fade-into-rise-long {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+@-webkit-keyframes fade-out-visibility {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fade-out-visibility {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
 .balloon {
     display: inline-block;
 }
@@ -206,23 +248,52 @@ body.mobile-s .pages > .page.other {
 }
 
 .header-message .message-contents {
-    background-color: #cee6c5;
-    border: 1px solid #86c795;
-    color: #4d4d4d;
     cursor: pointer;
     font-weight: bold;
     height: 30px;
     line-height: 30px;
-    margin: -17px auto -15px auto;
+    padding: 6px 24px 6px 24px;
     text-align: center;
-    width: 300px;
 }
 
-body.flat .header-message .message-contents {
+.header-message .message-contents {
+    animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -o-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -ms-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -moz-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -webkit-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    background-color: #6d6d6d;
+    border: 1px solid #4d4d4d;
+    border-radius: 3px 3px 3px 3px;
+    -moz-border-radius: 3px 3px 3px 3px;
+    -webkit-border-radius: 3px 3px 3px 3px;
+    bottom: 32px;
+    box-shadow: 0px 1px 4px #999999;
+    -moz-box-shadow: 0px 1px 4px #999999;
+    -webkit-box-shadow: 0px 1px 4px #999999;
+    color: #ffffff;
     font-weight: 600;
+    position: fixed;
+    right: 32px;
+    z-index: 30;
+}
+
+.header-message.invisible .message-contents {
+    animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -o-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -ms-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -moz-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -webkit-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    visibility: hidden;
+}
+
+.header-message.success .message-contents {
+    background-color: #cee6c5;
+    border: 1px solid #86c795;
+    color: #4d4d4d;
 }
 
 .header-message.error .message-contents {
-    background-color: #fcc0c0;
-    border-color: #f68f8f;
+    background-color: #e53935;
+    border-color: #ab000d;
 }
