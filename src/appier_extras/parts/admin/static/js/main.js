@@ -43,19 +43,21 @@
         // retrieves the contents part of the message container as it's
         // going to be used in the registration of the click handler
         var messageContents = jQuery(".message-contents", matchedObject);
+        var timeout = messageContents.attr("data-timeout") || 7500;
+        timeout = parseInt(timeout);
 
         // sets the timeout for the fade out operation of the matched
         // object that is going to be used to auto-hide the message
         setTimeout(function() {
-            matchedObject.fadeOut(300);
-        }, 7500);
+            matchedObject.addClass("invisible");
+        }, timeout);
 
         // registers for the click operation for the message contents
         // so that the associated header message is hidden
         messageContents.click(function() {
             var element = jQuery(this);
             var message = element.parents(".header-message");
-            message.fadeOut(300);
+            message.addClass("invisible");
         });
     };
 })(jQuery);
