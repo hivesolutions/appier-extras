@@ -1139,7 +1139,7 @@ class AdminPart(
         # dictionary to be passed to the link (generation) method, they
         # are going to constrain the domain for the link execution
         if view: kwargs["view"] = view
-        if context: kwargs["context"] = context
+        if context: kwargs["context"] = "_id:in:" + ";".join(context)
 
         # defines the default result value as an invalid value,
         # this will ensure an error in the redirection process
