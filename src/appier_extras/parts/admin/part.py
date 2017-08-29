@@ -1914,11 +1914,10 @@ class AdminPart(
         """
 
         view = self.field("view", None)
-        context = self.field("context", [], cast = list)
         kwargs = self._apply_view(view, kwargs, cls = cls)
-        if not context: return cls.find(*args, **kwargs)
-        ids = [self.get_adapter().object_id(_id) for _id in context if _id]
-        return cls.find(_id = {"$in" : ids}, *args, **kwargs)
+        object = appier.get_object(alias = True, find = True)
+        kwargs.update(object)
+        return cls.find(*args, **kwargs)
 
     def _apply_view(self, view, kwargs, cls = None):
         """
