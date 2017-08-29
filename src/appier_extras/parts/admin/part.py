@@ -1195,7 +1195,7 @@ class AdminPart(
         # if this is a global operation classes are used instead
         if ids: kwargs = dict(_id = {"$in" : ids})
         else: kwargs = dict()
-        kwargs = self._apply_view(view, kwargs, cls = model)
+        kwargs = self._apply_view(view, kwargs = kwargs, cls = model)
         if is_global: entities = (model,)
         else: entities = model.find_v(**kwargs)
 
@@ -1897,10 +1897,10 @@ class AdminPart(
         ) if next else None
         return previous_url, next_url
 
-    def _find_context(self, cls, *args, **kwargs):
+    def _find_view(self, cls, *args, **kwargs):
         """
-        Runs a find operation taking into account both the provided
-        view (as a field) and the context.
+        Runs a find operation taking into account the provided
+        view (as a field) constraining the domain.
 
         This method is extremely useful for back-office operations
         that use the dynamic view filtering.
@@ -1910,16 +1910,14 @@ class AdminPart(
         the find operation.
         :rtype: List
         :return: The complete set of results from the data source
-        according to the provided parameters, filtered view and context.
+        according to the provided parameters and filtered view.
         """
 
         view = self.field("view", None)
-        kwargs = self._apply_view(view, kwargs, cls = cls)
-        object = appier.get_object(alias = True, find = True)
-        kwargs.update(object)
+        kwargs = self._apply_view(view, kwargs = kwargs, cls = cls)
         return cls.find(*args, **kwargs)
 
-    def _apply_view(self, view, kwargs, cls = None):
+    def _apply_view(self, view, kwargs = None, cls = None):
         """
         Applies a certain view (with properly defined syntax) into
         the provided arguments so that it's possible to run the
@@ -1942,6 +1940,8 @@ class AdminPart(
         :rtype: Dictionary
         :return: The final dictionary with the view filter applied.
         """
+
+        kwargs = dict() if kwargs == None else kwargs
 
         if not view: return kwargs
 

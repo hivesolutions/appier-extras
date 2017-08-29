@@ -32,10 +32,30 @@ __license__   = Apache License, Version 2.0
 @-webkit-keyframes fade-into-rise-long {
     from {
         opacity: 0;
+        -o-opacity: 0;
+        -ms-opacity: 0;
+        -moz-opacity: 0;
+        -khtml-opacity: 0;
+        -webkit-opacity: 0;
+        transform: translateY(18px);
+        -o-transform: translateY(18px);
+        -ms-transform: translateY(18px);
+        -moz-transform: translateY(18px);
+        -khtml-transform: translateY(18px);
         -webkit-transform: translateY(18px);
     }
     to {
         opacity: 1;
+        -o-opacity: 1;
+        -ms-opacity: 1;
+        -moz-opacity: 1;
+        -khtml-opacity: 1;
+        -webkit-opacity: 1;
+        transform: translateY(0px);
+        -o-transform: translateY(0px);
+        -ms-transform: translateY(0px);
+        -moz-transform: translateY(0px);
+        -khtml-transform: translateY(0px);
         -webkit-transform: translateY(0px);
     }
 }
@@ -43,31 +63,71 @@ __license__   = Apache License, Version 2.0
 @keyframes fade-into-rise-long {
     from {
         opacity: 0;
+        -o-opacity: 0;
+        -ms-opacity: 0;
+        -moz-opacity: 0;
+        -khtml-opacity: 0;
+        -webkit-opacity: 0;
         transform: translateY(18px);
+        -o-transform: translateY(18px);
+        -ms-transform: translateY(18px);
+        -moz-transform: translateY(18px);
+        -khtml-transform: translateY(18px);
+        -webkit-transform: translateY(18px);
     }
     to {
         opacity: 1;
+        -o-opacity: 1;
+        -ms-opacity: 1;
+        -moz-opacity: 1;
+        -khtml-opacity: 1;
+        -webkit-opacity: 1;
         transform: translateY(0px);
+        -o-transform: translateY(0px);
+        -ms-transform: translateY(0px);
+        -moz-transform: translateY(0px);
+        -khtml-transform: translateY(0px);
+        -webkit-transform: translateY(0px);
     }
 }
 
 @-webkit-keyframes fade-out-visibility {
     from {
         opacity: 1;
+        -o-opacity: 1;
+        -ms-opacity: 1;
+        -moz-opacity: 1;
+        -khtml-opacity: 1;
+        -webkit-opacity: 1;
         visibility: visible;
     }
     to {
         opacity: 0;
+        -o-opacity: 0;
+        -ms-opacity: 0;
+        -moz-opacity: 0;
+        -khtml-opacity: 0;
+        -webkit-opacity: 0;
     }
 }
 
 @keyframes fade-out-visibility {
     from {
         opacity: 1;
+        -o-opacity: 1;
+        -ms-opacity: 1;
+        -moz-opacity: 1;
+        -khtml-opacity: 1;
+        -webkit-opacity: 1;
         visibility: visible;
     }
     to {
         opacity: 0;
+        -o-opacity: 0;
+        -ms-opacity: 0;
+        -moz-opacity: 0;
+        -khtml-opacity: 0;
+        -webkit-opacity: 0;
     }
 }
 
@@ -81,6 +141,7 @@ __license__   = Apache License, Version 2.0
     -o-transition: color 0.10s ease-in;
     -ms-transition: color 0.10s ease-in;
     -moz-transition: color 0.10s ease-in;
+    -khtml-transition: color 0.10s ease-in;
     -webkit-transition: color 0.10s ease-in;
 }
 
@@ -98,12 +159,21 @@ body.flat .balloon > .baloon-icon:hover {
     -o-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -ms-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -moz-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -khtml-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -webkit-animation: fade-in 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     animation-delay: 1s;
+    -o-animation-delay: 1s;
+    -ms-animation-delay: 1s;
+    -moz-animation-delay: 1s;
+    -khtml-animation-delay: 1s;
+    -webkit-animation-delay: 1s;
     background-color: #fafafa;
     border: 1px solid #cccccc;
     box-shadow: 0px 1px 4px #dddddd;
+    -o-box-shadow: 0px 1px 4px #dddddd;
+    -ms-box-shadow: 0px 1px 4px #dddddd;
     -moz-box-shadow: 0px 1px 4px #dddddd;
+    -khtml-box-shadow: 0px 1px 4px #dddddd;
     -webkit-box-shadow: 0px 1px 4px #dddddd;
     display: none;
     font-size: 13px;
@@ -122,15 +192,27 @@ body.flat .balloon > .balloon-contents {
     -o-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -ms-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -moz-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
+    -khtml-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     -webkit-animation: fade-into-drop 0.25s 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0) forwards;
     border-radius: 5px 5px 5px 5px;
+    -o-border-radius: 5px 5px 5px 5px;
+    -ms-border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
+    -khtml-border-radius: 5px 5px 5px 5px;
     -webkit-border-radius: 5px 5px 5px 5px;
     box-shadow: none;
+    -o-box-shadow: none;
+    -ms-box-shadow: none;
     -moz-box-shadow: none;
+    -khtml-box-shadow: none;
     -webkit-box-shadow: none;
     font-weight: 600;
     opacity: 0.0;
+    -o-opacity: 0.0;
+    -ms-opacity: 0.0;
+    -moz-opacity: 0.0;
+    -khtml-opacity: 0.0;
+    -webkit-opacity: 0.0;
 }
 
 .balloon:hover > .balloon-contents {
@@ -210,13 +292,19 @@ body.flat .pages > .page {
 
 .pages > .page:first-child {
     border-radius: 4px 0px 0px 4px;
+    -o-border-radius: 4px 0px 0px 4px;
+    -ms-border-radius: 4px 0px 0px 4px;
     -moz-border-radius: 4px 0px 0px 4px;
+    -khtml-border-radius: 4px 0px 0px 4px;
     -webkit-border-radius: 4px 0px 0px 4px;
 }
 
 .pages > .page:last-child {
     border-radius: 0px 4px 4px 0px;
+    -o-border-radius: 0px 4px 4px 0px;
+    -ms-border-radius: 0px 4px 4px 0px;
     -moz-border-radius: 0px 4px 4px 0px;
+    -khtml-border-radius: 0px 4px 4px 0px;
     -webkit-border-radius: 0px 4px 4px 0px;
     border-right: 1px solid #cccccc;
 }
@@ -261,15 +349,22 @@ body.mobile-s .pages > .page.other {
     -o-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     -ms-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     -moz-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -khtml-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     -webkit-animation: fade-into-rise-long 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     background-color: #6d6d6d;
     border: 1px solid #4d4d4d;
     border-radius: 3px 3px 3px 3px;
+    -o-border-radius: 3px 3px 3px 3px;
+    -ms-border-radius: 3px 3px 3px 3px;
     -moz-border-radius: 3px 3px 3px 3px;
+    -khtml-border-radius: 3px 3px 3px 3px;
     -webkit-border-radius: 3px 3px 3px 3px;
     bottom: 32px;
     box-shadow: 0px 1px 4px #999999;
+    -o-box-shadow: 0px 1px 4px #999999;
+    -ms-box-shadow: 0px 1px 4px #999999;
     -moz-box-shadow: 0px 1px 4px #999999;
+    -khtml-box-shadow: 0px 1px 4px #999999;
     -webkit-box-shadow: 0px 1px 4px #999999;
     color: #ffffff;
     font-weight: 600;
@@ -283,6 +378,7 @@ body.mobile-s .pages > .page.other {
     -o-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     -ms-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     -moz-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
+    -khtml-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     -webkit-animation: fade-out-visibility 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.0);
     visibility: hidden;
 }
