@@ -533,12 +533,13 @@ class Base(appier.Model):
         self.enabled = False
         self.save()
 
-    def update_meta_s(self, meta):
-        if not self.meta: self.meta = meta
-        else: self.meta.update(meta)
+    def touch_s(self):
         self.save()
 
-    def touch_s(self):
+    def update_meta_s(self, meta):
+        appier.verify(isinstance(meta, dict))
+        if not self.meta: self.meta = meta
+        else: self.meta.update(meta)
         self.save()
 
     def to_locale(self, *args, **kwargs):
