@@ -69,3 +69,23 @@ class SettingsTest(unittest.TestCase):
         result = appier_extras.admin.Settings.get_extra("hello", "other")
 
         self.assertEqual(result, "other")
+
+    def test_meta(self):
+        settings = appier_extras.admin.Settings()
+        settings.save()
+
+        self.assertEqual(settings.meta, {})
+
+        settings = settings.reload()
+        settings.update_meta_s(dict(hello = "world"))
+
+        self.assertEqual(settings.meta, dict(hello = "world"))
+
+        settings = settings.reload()
+        settings.update_meta_s(world = "hello")
+
+        self.assertEqual(settings.meta, dict(hello = "world", world = "hello"))
+
+        account = settings.reload()
+
+        self.assertEqual(account.meta, dict(hello = "world", world = "hello"))

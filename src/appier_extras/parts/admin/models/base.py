@@ -536,6 +536,13 @@ class Base(appier.Model):
     def touch_s(self):
         self.save()
 
+    def update_meta_s(self, meta = None, **kwargs):
+        meta = kwargs if meta == None else meta
+        appier.verify(isinstance(meta, dict))
+        if not self.meta: self.meta = meta
+        else: self.meta.update(meta)
+        self.save()
+
     def to_locale(self, *args, **kwargs):
         return self.owner.to_locale(*args, **kwargs)
 
