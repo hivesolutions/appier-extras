@@ -319,7 +319,7 @@ class AdminPart(
         # values to correctly authenticate the user
         account._set_session()
 
-        # redirects the current operation to the next url or in
+        # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return self.redirect(
             next or self.url_for(self.owner.admin_login_redirect)
@@ -778,7 +778,7 @@ class AdminPart(
         # requests to refer to the proper session
         sid = self.session.sid
 
-        # redirects the current operation to the next url or in
+        # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return dict(
             sid = sid,
@@ -1744,7 +1744,7 @@ class AdminPart(
         # requests to refer to the proper session
         sid = self.session.sid
 
-        # redirects the current operation to the next url or in
+        # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return dict(
             sid = sid,
