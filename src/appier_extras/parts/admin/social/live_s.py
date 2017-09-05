@@ -121,7 +121,7 @@ class Live(object):
         redirect_url = self.url_for("admin.oauth_live", absolute = True)
         access_token = self.session and self.session.get("live.access_token", None)
         if scope: kwargs["scope"] = scope
-        return live.Api(
+        return live.API(
             client_id = appier.conf("LIVE_ID"),
             client_secret = appier.conf("LIVE_SECRET"),
             redirect_url = redirect_url,

@@ -121,7 +121,7 @@ class Facebook(object):
         redirect_url = self.url_for("admin.oauth_facebook", absolute = True)
         access_token = self.session and self.session.get("fb.access_token", None)
         if scope: kwargs["scope"] = scope
-        return facebook.Api(
+        return facebook.API(
             client_id = appier.conf("FB_ID"),
             client_secret = appier.conf("FB_SECRET"),
             redirect_url = redirect_url,

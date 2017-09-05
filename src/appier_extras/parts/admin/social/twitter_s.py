@@ -134,7 +134,7 @@ class Twitter(object):
         redirect_url = self.url_for("admin.oauth_twitter", absolute = True)
         oauth_token = self.session and self.session.get("tw.oauth_token", None)
         oauth_token_secret = self.session and self.session.get("tw.oauth_token_secret", None)
-        return twitter.Api(
+        return twitter.API(
             client_key = appier.conf("TWITTER_KEY"),
             client_secret = appier.conf("TWITTER_SECRET"),
             redirect_url = redirect_url,
