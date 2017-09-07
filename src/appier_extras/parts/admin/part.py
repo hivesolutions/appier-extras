@@ -447,6 +447,7 @@ class AdminPart(
             )
         )
 
+    @appier.ensure()
     def me_account(self):
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(meta = True)
@@ -455,6 +456,7 @@ class AdminPart(
             account = account
         )
 
+    @appier.ensure("admin.accounts")
     def show_account(self, username):
         account_c = self._get_cls(self.account_c)
         account = account_c.get(
@@ -466,6 +468,7 @@ class AdminPart(
             account = account
         )
 
+    @appier.ensure("admin.accounts")
     def mail_account(self, username):
         raise appier.NotImplementedError()
 
@@ -1753,7 +1756,7 @@ class AdminPart(
             tokens = account.tokens()
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure()
     def me_account_api(self):
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(map = True)
