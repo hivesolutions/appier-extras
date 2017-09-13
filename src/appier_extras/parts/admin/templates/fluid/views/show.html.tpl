@@ -60,6 +60,9 @@
                 <h1>{{ link.name }}</h1>
                 <form class="form {% if not link.instance and link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.link_model', model = target._under(), link = link.method, is_global = '' if link.instance else '1') }}">
+                    {% if link.description %}
+                        <p class="description">{{ link.description }}</p>
+                    {% endif %}
                     {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
@@ -80,6 +83,9 @@
                 <h1>{{ operation.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.operation_model', model = target._under(), operation = operation.method, is_global = '' if operation.instance else '1', next = location_f) }}">
+                    {% if operation.description %}
+                        <p class="description">{{ operation.description }}</p>
+                    {% endif %}
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}

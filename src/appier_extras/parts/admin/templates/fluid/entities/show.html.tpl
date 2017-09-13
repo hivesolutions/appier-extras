@@ -76,6 +76,9 @@
                 <h1>{{ view.name }}</h1>
                 <form class="form" method="get"
                       action="{{ url_for('admin.view_model', model = model._under(), view = view.method, id = entity._id) }}">
+                    {% if view.description %}
+                        <p class="description">{{ view.description }}</p>
+                    {% endif %}
                     {% for parameter in view.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
@@ -96,6 +99,9 @@
                 <h1>{{ link.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id) }}">
+                    {% if link.description %}
+                        <p class="description">{{ link.description }}</p>
+                    {% endif %}
                     {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
@@ -116,6 +122,9 @@
                 <h1>{{ operation.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.operation_model', model = model._under(), operation = operation.method, ids = entity._id, next = location_f) }}">
+                    {% if operation.description %}
+                        <p class="description">{{ operation.description }}</p>
+                    {% endif %}
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
