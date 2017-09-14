@@ -412,5 +412,11 @@ body.mobile-s .pages > .page.other {
     margin: 0px auto 0px auto;
     padding-bottom: 12px;
     padding-top: 12px;
-    text-align: center;
+}
+
+.window.window-view .description > p,
+.window.window-link .description > p,
+.window.window-operation .description > p {
+    line-height: 20px;
+    margin: 0px auto 0px auto;
 }
