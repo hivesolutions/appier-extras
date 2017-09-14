@@ -337,15 +337,15 @@ class MarkdownGenerator(object):
     ):
         is_instance = isinstance(parser, MarkdownParser)
         if not is_instance: parser = parser()
-        out_file = appier.legacy.BytesIO()
+        file = appier.legacy.BytesIO()
         try:
-            generator = cls(file = out_file, *args, **kwargs)
+            generator = cls(file = file, *args, **kwargs)
             nodes = parser.parse(contents)
             generator.generate(nodes)
-            out_file.seek(0)
-            result = out_file.read()
+            file.seek(0)
+            result = file.read()
         finally:
-            out_file.close()
+            file.close()
         return result
 
     def reset(self):
