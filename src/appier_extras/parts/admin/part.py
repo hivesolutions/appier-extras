@@ -46,6 +46,7 @@ import tempfile
 import appier
 
 from appier_extras import base
+from appier_extras import utils
 from appier_extras.parts.admin import models
 from appier_extras.parts.admin import social
 
@@ -138,6 +139,8 @@ class AdminPart(
         self.owner.lib_loaders["jinja2"] = self._jinja2_loader
         self.owner.lib_loaders["ssl"] = self._ssl_loader
 
+        self.owner.add_filter(self.markdown_jinja, "markdown", type = "eval")
+
         if self.owner.allow_headers: self.owner.allow_headers += ", X-Secret-Key"
 
         self.logger.debug("Generating admin interfaces ...")
@@ -155,6 +158,7 @@ class AdminPart(
     def unload(self):
         appier.Part.unload(self)
         self.account_c.unbind_g("touch_login", self._on_touch_login)
+        self.owner.remove_filter("markdown")
 
     def routes(self):
         return [
@@ -1773,6 +1777,18 @@ class AdminPart(
 
     def linked(self):
         return models.Settings.linked_apis()
+
+    def markdown_jinja(self, eval_ctx, value):
+        return self.owner.escape_jinja_f(self.markdown, eval_ctx, value)
+
+    def markdown(self, value):
+        return utils.MarkdownHTML.process_str(
+            value,
+            options = dict(
+                anchors = False,
+                blank = True
+            )
+        )
 
     def _counters(self):
         adapter = self.get_adapter()
