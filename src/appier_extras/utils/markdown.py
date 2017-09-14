@@ -46,8 +46,8 @@ import appier
 
 class MarkdownParser(object):
     """
-    Parser object for the md (markdown) format, should be able to
-    parse the normalized standard definition of markdown.
+    Parser object for the md (Markdown) format, should be able to
+    parse the normalized standard definition of Markdown.
 
     The parser is based on the original specification published
     under the daring fireball blog, supporting the typical readability
