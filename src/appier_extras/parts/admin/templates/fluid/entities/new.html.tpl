@@ -16,7 +16,7 @@
                         {% if observations %}
                             <div class="balloon balloon-observations">
                                 <label class="baloon-icon">{{ description }}</label>
-                                <div class="balloon-contents">{{ observations }}</div>
+                                <div class="balloon-contents">{{ observations|sentence|markdown }}</div>
                             </div>
                         {% else%}
                             <label>{{ description }}</label>
