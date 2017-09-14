@@ -219,6 +219,11 @@ body.flat .balloon > .balloon-contents {
     display: block;
 }
 
+.balloon-contents > p {
+    line-height: 20px;
+    margin: 0px auto 0px auto;
+}
+
 .panel-model {
     border: 1px solid #e0e0e0;
     margin: 24px 0px 24px 0px;
