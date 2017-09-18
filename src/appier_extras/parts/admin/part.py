@@ -1799,20 +1799,26 @@ class AdminPart(
     def linked(self):
         return models.Settings.linked_apis()
 
-    def markdown_jinja(self, eval_ctx, value, encoding = "utf-8"):
+    def markdown_jinja(self, eval_ctx, value, *args, **kwargs):
         return self.owner.escape_jinja_f(
             self.markdown,
             eval_ctx,
             value,
-            encoding = encoding
+            *args, **kwargs
         )
 
-    def markdown(self, value, encoding = "utf-8"):
+    def markdown(
+        self,
+        value,
+        anchors = False,
+        blank = True,
+        encoding = "utf-8"
+    ):
         value = utils.MarkdownHTML.process_str(
             value,
             options = dict(
-                anchors = False,
-                blank = True
+                anchors = anchors,
+                blank = blank
             ),
             encoding = encoding
         )
