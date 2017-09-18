@@ -302,7 +302,7 @@ class AdminPart(
         self.owner.set_preference(self.name() + ":settings", settings)
 
     def flush_settings(self):
-        return self.owner.flush_preferences()
+        self.dump_settings()
 
     def index(self):
         return self.list_models()

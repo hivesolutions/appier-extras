@@ -93,6 +93,14 @@
                     </dd>
                 </div>
                 <div class="item">
+                    <dt>Cache class</dt>
+                    <dd>{{ own.cache_c.__name__ }}</dd>
+                </div>
+                <div class="item">
+                    <dt>Preferences class</dt>
+                    <dd>{{ own.preferences_c.__name__ }}</dd>
+                </div>
+                <div class="item">
                     <dt>Adapter class</dt>
                     <dd>{{ own.adapter.__class__.__name__ }}</dd>
                 </div>
