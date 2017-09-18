@@ -46,6 +46,7 @@ import tempfile
 import appier
 
 from appier_extras import base
+from appier_extras import utils
 from appier_extras.parts.admin import models
 from appier_extras.parts.admin import social
 
@@ -138,6 +139,8 @@ class AdminPart(
         self.owner.lib_loaders["jinja2"] = self._jinja2_loader
         self.owner.lib_loaders["ssl"] = self._ssl_loader
 
+        self.owner.add_filter(self.markdown_jinja, "markdown", type = "eval")
+
         if self.owner.allow_headers: self.owner.allow_headers += ", X-Secret-Key"
 
         self.logger.debug("Generating admin interfaces ...")
@@ -158,6 +161,7 @@ class AdminPart(
         appier.Part.unload(self)
 
         self.account_c.unbind_g("touch_login", self._on_touch_login)
+        self.owner.remove_filter("markdown")
 
     def routes(self):
         return [
@@ -340,7 +344,7 @@ class AdminPart(
         # values to correctly authenticate the user
         account._set_session()
 
-        # redirects the current operation to the next url or in
+        # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return self.redirect(
             next or self.url_for(self.owner.admin_login_redirect)
@@ -468,6 +472,7 @@ class AdminPart(
             )
         )
 
+    @appier.ensure()
     def me_account(self):
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(meta = True)
@@ -476,6 +481,7 @@ class AdminPart(
             account = account
         )
 
+    @appier.ensure("admin.accounts")
     def show_account(self, username):
         account_c = self._get_cls(self.account_c)
         account = account_c.get(
@@ -487,6 +493,7 @@ class AdminPart(
             account = account
         )
 
+    @appier.ensure("admin.accounts")
     def mail_account(self, username):
         raise appier.NotImplementedError()
 
@@ -799,7 +806,7 @@ class AdminPart(
         # requests to refer to the proper session
         sid = self.session.sid
 
-        # redirects the current operation to the next url or in
+        # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return dict(
             sid = sid,
@@ -1765,7 +1772,7 @@ class AdminPart(
         # requests to refer to the proper session
         sid = self.session.sid
 
-        # redirects the current operation to the next url or in
+        # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return dict(
             sid = sid,
@@ -1774,7 +1781,7 @@ class AdminPart(
             tokens = account.tokens()
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure()
     def me_account_api(self):
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(map = True)
@@ -1791,6 +1798,18 @@ class AdminPart(
 
     def linked(self):
         return models.Settings.linked_apis()
+
+    def markdown_jinja(self, eval_ctx, value):
+        return self.owner.escape_jinja_f(self.markdown, eval_ctx, value)
+
+    def markdown(self, value):
+        return utils.MarkdownHTML.process_str(
+            value,
+            options = dict(
+                anchors = False,
+                blank = True
+            )
+        )
 
     @property
     def settings_l(self):

@@ -87,6 +87,9 @@
                 <h1>{{ view.name }}</h1>
                 <form class="form" method="get"
                       action="{{ url_for('admin.view_model', model = model._under(), view = view.method) }}">
+                    {% if view.description %}
+                        <div class="description">{{ view.description|sentence|markdown }}</div>
+                    {% endif %}
                     {% for parameter in view.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
@@ -107,6 +110,9 @@
                 <h1>{{ link.name }}</h1>
                 <form class="form {% if not link.instance and link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.link_model', model = model._under(), link = link.method, is_global = '' if link.instance else '1') }}">
+                    {% if link.description %}
+                        <div class="description">{{ link.description|sentence|markdown }}</div>
+                    {% endif %}
                     {% for parameter in link.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
@@ -127,6 +133,9 @@
                 <h1>{{ operation.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
                       action="{{ url_for('admin.operation_model', model = model._under(), operation = operation.method, is_global = '' if operation.instance else '1', next = location_f) }}">
+                    {% if operation.description %}
+                        <div class="description">{{ operation.description|sentence|markdown }}</div>
+                    {% endif %}
                     {% for parameter in operation.parameters %}
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}

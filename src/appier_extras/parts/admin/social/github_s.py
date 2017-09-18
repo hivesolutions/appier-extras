@@ -121,7 +121,7 @@ class Github(object):
         redirect_url = self.url_for("admin.oauth_github", absolute = True)
         access_token = self.session and self.session.get("gh.access_token", None)
         if scope: kwargs["scope"] = scope
-        return github.Api(
+        return github.API(
             client_id = appier.conf("GITHUB_ID"),
             client_secret = appier.conf("GITHUB_SECRET"),
             redirect_url = redirect_url,

@@ -46,8 +46,8 @@ import appier
 
 class MarkdownParser(object):
     """
-    Parser object for the md (markdown) format, should be able to
-    parse the normalized standard definition of markdown.
+    Parser object for the md (Markdown) format, should be able to
+    parse the normalized standard definition of Markdown.
 
     The parser is based on the original specification published
     under the daring fireball blog, supporting the typical readability
@@ -314,12 +314,39 @@ class MarkdownGenerator(object):
         self.reset()
 
     @classmethod
-    def process(cls, in_file, out_file, parser = MarkdownParser):
-        parser = parser()
-        generator = cls(file = out_file)
+    def process(
+        cls,
+        in_file,
+        out_file,
+        parser = MarkdownParser,
+        *args, **kwargs
+    ):
+        is_instance = isinstance(parser, MarkdownParser)
+        if not is_instance: parser = parser()
+        generator = cls(file = out_file, *args, **kwargs)
         contents = in_file.read()
         nodes = parser.parse(contents)
         generator.generate(nodes)
+
+    @classmethod
+    def process_str(
+        cls,
+        contents,
+        parser = MarkdownParser,
+        *args, **kwargs
+    ):
+        is_instance = isinstance(parser, MarkdownParser)
+        if not is_instance: parser = parser()
+        file = appier.legacy.BytesIO()
+        try:
+            generator = cls(file = file, *args, **kwargs)
+            nodes = parser.parse(contents)
+            generator.generate(nodes)
+            file.seek(0)
+            result = file.read()
+        finally:
+            file.close()
+        return result
 
     def reset(self):
         pass
@@ -338,6 +365,9 @@ class MarkdownGenerator(object):
         if self.encoding: value = value.encode(self.encoding)
         self.file.write(value)
 
+    def generate_normal(self, node):
+        raise appier.NotImplementedError()
+
     def _generate(self, nodes):
         for node in nodes:
             is_map = isinstance(node, dict)
@@ -352,7 +382,8 @@ class MarkdownHTML(MarkdownGenerator):
         file = None,
         encoding = "utf-8",
         options = dict(
-            anchors = True
+            anchors = True,
+            blank = False
         ),
         base_url = ""
     ):
@@ -439,7 +470,9 @@ class MarkdownHTML(MarkdownGenerator):
         label = node["label"]
         value = node["value"]
         value = value if self.is_absolute(value) else self.base_url + value
-        self.open("<a href=\"%s\">" % value)
+        blank = self.options.get("blank", False)
+        target = "_blank" if blank else "_self"
+        self.open("<a href=\"%s\" target=\"%s\">" % (value, target))
         self._generate(label)
         self.close("</a>")
 

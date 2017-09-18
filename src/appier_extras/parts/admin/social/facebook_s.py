@@ -54,7 +54,12 @@ class Facebook(object):
 
     def ensure_facebook_account(self, create = True, safe = True):
         api = self.get_facebook_api()
-        user = api.self_user()
+        user = api.self_user(
+            fields = (
+                "id",
+                "email"
+            )
+        )
         email = user.get("email", None)
         facebook_id = user["id"]
         account = self.owner.admin_account.get(
@@ -121,7 +126,7 @@ class Facebook(object):
         redirect_url = self.url_for("admin.oauth_facebook", absolute = True)
         access_token = self.session and self.session.get("fb.access_token", None)
         if scope: kwargs["scope"] = scope
-        return facebook.Api(
+        return facebook.API(
             client_id = appier.conf("FB_ID"),
             client_secret = appier.conf("FB_SECRET"),
             redirect_url = redirect_url,

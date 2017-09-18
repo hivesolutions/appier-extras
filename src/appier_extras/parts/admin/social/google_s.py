@@ -132,7 +132,7 @@ class Google(object):
         redirect_url = self.url_for("admin.oauth_google", absolute = True)
         access_token = self.session and self.session.get("gg.access_token", None)
         if scope: kwargs["scope"] = scope
-        return google.Api(
+        return google.API(
             client_id = appier.conf("GOOGLE_ID"),
             client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,

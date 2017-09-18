@@ -204,7 +204,7 @@ class OAuthToken(base.Base):
         if not oauth_token: return False, tokens, oauth_token
 
         # in case there's an already existing oauth token that
-        # has the same requirements (scope, client, redirect url)
+        # has the same requirements (scope, client, redirect URL)
         # of the one being requested, then a new authorization code
         # is generated and the user agent is redirected immediately
         # as there's no extra need for user interaction

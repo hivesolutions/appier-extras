@@ -154,7 +154,7 @@ class Event(base.Base):
         import mailme
         logger = appier.get_logger()
         logger.debug("Running Mailme notification ...")
-        api = mailme.Api()
+        api = mailme.API()
         return api.send(arguments)
 
     def notify_nexmo(self, arguments = {}):
@@ -165,7 +165,7 @@ class Event(base.Base):
         text = arguments["text"]
         logger = appier.get_logger()
         logger.debug("Running Nexmo notification for '%s' ..." % receiver)
-        api = nexmo.Api()
+        api = nexmo.API()
         return api.send_sms(sender, receiver, text)
 
     @appier.operation(name = "Duplicate", factory = True)

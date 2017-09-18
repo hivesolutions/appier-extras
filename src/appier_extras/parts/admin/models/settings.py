@@ -140,7 +140,7 @@ class Settings(base.Base):
         if not self.facebook_token: return None
         redirect_url = self.owner.url_for("admin.oauth_facebook", absolute = True)
         access_token = self.facebook_token
-        return facebook.Api(
+        return facebook.API(
             client_id = appier.conf("FB_ID"),
             client_secret = appier.conf("FB_SECRET"),
             redirect_url = redirect_url,
@@ -153,7 +153,7 @@ class Settings(base.Base):
         if not self.github_token: return None
         redirect_url = self.owner.url_for("admin.oauth_github", absolute = True)
         access_token = self.github_token
-        return github.Api(
+        return github.API(
             client_id = appier.conf("GITHUB_ID"),
             client_secret = appier.conf("GITHUB_SECRET"),
             redirect_url = redirect_url,
@@ -168,7 +168,7 @@ class Settings(base.Base):
         redirect_url = self.owner.url_for("admin.oauth_google", absolute = True)
         access_token = self.google_token
         refresh_token = self.google_refresh_token
-        api = google.Api(
+        api = google.API(
             client_id = appier.conf("GOOGLE_ID"),
             client_secret = appier.conf("GOOGLE_SECRET"),
             redirect_url = redirect_url,
@@ -184,7 +184,7 @@ class Settings(base.Base):
         if not self.live_token: return None
         redirect_url = self.owner.url_for("admin.oauth_live", absolute = True)
         access_token = self.live_token
-        return live.Api(
+        return live.API(
             client_id = appier.conf("LIVE_ID"),
             client_secret = appier.conf("LIVE_SECRET"),
             redirect_url = redirect_url,
@@ -199,7 +199,7 @@ class Settings(base.Base):
         redirect_url = self.owner.url_for("admin.oauth_twitter", absolute = True)
         oauth_token = self.twitter_token
         oauth_token_secret = self.twitter_token_secret
-        return twitter.Api(
+        return twitter.API(
             client_key = appier.conf("TWITTER_KEY"),
             client_secret = appier.conf("TWITTER_SECRET"),
             redirect_url = redirect_url,

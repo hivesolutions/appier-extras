@@ -219,6 +219,11 @@ body.flat .balloon > .balloon-contents {
     display: block;
 }
 
+.balloon-contents > p {
+    line-height: 20px;
+    margin: 0px auto 0px auto;
+}
+
 .panel-model {
     border: 1px solid #e0e0e0;
     margin: 24px 0px 24px 0px;
@@ -392,4 +397,29 @@ body.mobile-s .pages > .page.other {
 .header-message.error .message-contents {
     background-color: #e53935;
     border-color: #ab000d;
+}
+
+.window.window-view > form,
+.window.window-link > form,
+.window.window-operation > form {
+    max-width: 420px;
+}
+
+.window.window-view .description,
+.window.window-link .description,
+.window.window-operation .description {
+    border-bottom: 1px solid #f2f2f2;
+    border-top: 1px solid #f2f2f2;
+    font-size: 13px;
+    line-height: 20px;
+    margin: 0px auto 0px auto;
+    padding-bottom: 12px;
+    padding-top: 12px;
+}
+
+.window.window-view .description > p,
+.window.window-link .description > p,
+.window.window-operation .description > p {
+    line-height: 20px;
+    margin: 0px auto 0px auto;
 }
