@@ -159,37 +159,6 @@ class AdminPart(
 
         self.account_c.unbind_g("touch_login", self._on_touch_login)
 
-
-    ## ---start
-
-    @property
-    def settings_l(self):
-        return (
-            "_last_login",
-            "_login_count"
-        )
-
-    def load_settings(self):
-        settings = models.Settings.get_extra(self.name() + ":settings")
-        if not settings: return
-        for name in self.settings_l:
-            current = getattr(self, name)
-            value = settings.get(name, current)
-            setattr(self, name, value)
-
-    def dump_settings(self):
-        extra = dict()
-        for name in self.settings_l:
-            value = getattr(self, name)
-            extra[name] = value
-        models.Settings.set_extra_s(self.name() + ":settings", extra)
-
-    def flush_settings(self):
-        return self.dump_settings()
-
-    ## ---end
-
-
     def routes(self):
         return [
             (("GET",), "/admin", self.index),
@@ -316,6 +285,24 @@ class AdminPart(
             error = error,
             lines = lines
         )
+
+    def load_settings(self):
+        settings = self.owner.get_preference(self.name() + ":settings")
+        if not settings: return
+        for name in self.settings_l:
+            current = getattr(self, name)
+            value = settings.get(name, current)
+            setattr(self, name, value)
+
+    def dump_settings(self):
+        settings = dict()
+        for name in self.settings_l:
+            value = getattr(self, name)
+            settings[name] = value
+        self.owner.set_preference(self.name() + ":settings", settings)
+
+    def flush_settings(self):
+        return self.owner.flush_preferences()
 
     def index(self):
         return self.list_models()
@@ -1804,6 +1791,13 @@ class AdminPart(
 
     def linked(self):
         return models.Settings.linked_apis()
+
+    @property
+    def settings_l(self):
+        return (
+            "_last_login",
+            "_login_count"
+        )
 
     def _counters(self):
         adapter = self.get_adapter()
