@@ -548,8 +548,9 @@ class Base(appier.Model):
 
     def send_email(self, *args, **kwargs):
         cls = self.__class__
-        kwargs["own"] = self
-        return cls.send_email_g(self.owner, *args, **kwargs)
+        owner = kwargs.pop("owner", self.owner)
+        kwargs["own"] = kwargs.pop("own", self)
+        return cls.send_email_g(owner, *args, **kwargs)
 
     def secret(self):
         token = "".join(random.choice(RANDOM_RANGE) for _index in range(32))
