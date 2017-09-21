@@ -548,6 +548,7 @@ class Base(appier.Model):
 
     def send_email(self, *args, **kwargs):
         cls = self.__class__
+        kwargs["own"] = self
         return cls.send_email_g(self.owner, *args, **kwargs)
 
     def secret(self):
