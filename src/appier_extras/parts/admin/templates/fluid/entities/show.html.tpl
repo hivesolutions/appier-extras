@@ -28,7 +28,7 @@
     <ul class="drop-down links force" data-name="Links">
         {% for link in model.links() %}
             {% set link_valid = not link.devel or own.is_devel() %}
-            {% if link.instance and link_valid %}
+            {% if (link.instance or link.context) and link_valid %}
                 {% if link.parameters %}
                     <li>
                         <a class="button" data-window_open="#window-{{ link.method }}">{{ link.name }}</a>
@@ -36,7 +36,7 @@
                 {% else %}
                     <li>
                         <a class="no-async" target="_blank"
-                           href="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id) }}">{{ link.name }}</a>
+                           href="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id, context = entity._id) }}">{{ link.name }}</a>
                     </li>
                 {% endif %}
             {% endif %}
@@ -98,7 +98,7 @@
             <div id="window-{{ link.method }}" class="window window-link">
                 <h1>{{ link.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
-                      action="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id) }}">
+                      action="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id, context = entity._id) }}">
                     {% if link.description %}
                         <div class="description">{{ link.description|sentence|markdown }}</div>
                     {% endif %}
