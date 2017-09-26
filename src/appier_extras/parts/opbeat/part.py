@@ -109,7 +109,7 @@ class OpbeatPart(appier.Part):
             http = dict(
                 url = self.url_for("location", absolute = True),
                 method = self.request.method,
-                data = self.request.get_data(),
+                data = self.request.get_encoded(),
                 query_string = self.request.query,
                 cookies = self.request.get_header("Cookie"),
                 headers = self.request.in_headers,
