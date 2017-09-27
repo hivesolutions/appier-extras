@@ -35,8 +35,13 @@
                     </li>
                 {% else %}
                     <li>
-                        <a class="no-async" target="_blank"
-                           href="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id, context = entity._id) }}">{{ link.name }}</a>
+                        {% if link.context %}
+                            <a class="no-async" target="_blank"
+                               href="{{ url_for('admin.link_model', model = model._under(), link = link.method, context = entity._id) }}">{{ link.name }}</a>
+                        {% else %}
+                            <a class="no-async" target="_blank"
+                               href="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id) }}">{{ link.name }}</a>
+                        {% endif %}
                     </li>
                 {% endif %}
             {% endif %}
@@ -95,10 +100,15 @@
     {% endfor %}
     {% for link in model.links() %}
         {% if link.parameters %}
+            {% if link.context %}
+                {% set form_url = url_for('admin.link_model', model = model._under(), link = link.method, context = entity._id) %}
+            {% else %}
+                {% set form_url = url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id) %}
+            {% endif %}
             <div id="window-{{ link.method }}" class="window window-link">
                 <h1>{{ link.name }}</h1>
                 <form class="form" method="post" enctype="multipart/form-data"
-                      action="{{ url_for('admin.link_model', model = model._under(), link = link.method, ids = entity._id, context = entity._id) }}">
+                      action="{{ form_url }}">
                     {% if link.description %}
                         <div class="description">{{ link.description|sentence|markdown }}</div>
                     {% endif %}
