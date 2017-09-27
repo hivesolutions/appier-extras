@@ -1178,7 +1178,8 @@ class AdminPart(
         # them, notice that only the last is going to be used
         for entity in entities:
             method = getattr(entity, link)
-            result = method(*parameters, **kwargs)
+            method_kw = appier.legacy.getargspec(method)[2]
+            result = method(*parameters, **kwargs) if method_kw else method(*parameters)
 
         # runs the redirection of the user agent to the final
         # result string (and URL) value
