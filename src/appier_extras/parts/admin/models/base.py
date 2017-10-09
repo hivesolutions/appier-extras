@@ -238,6 +238,13 @@ class Base(appier.Model):
         return False
 
     @classmethod
+    def secret_g(cls):
+        token = "".join(random.choice(RANDOM_RANGE) for _index in range(32))
+        token_bytes = appier.legacy.bytes(token)
+        url_sha1 = hashlib.sha1(token_bytes)
+        return url_sha1.hexdigest()
+
+    @classmethod
     def build_index_g(cls, *args, **kwargs):
         models = cls.find(*args, **kwargs)
         for model in models: model.build_index()
@@ -553,10 +560,8 @@ class Base(appier.Model):
         return cls.send_email_g(owner, *args, **kwargs)
 
     def secret(self):
-        token = "".join(random.choice(RANDOM_RANGE) for _index in range(32))
-        token_bytes = appier.legacy.bytes(token)
-        url_sha1 = hashlib.sha1(token_bytes)
-        return url_sha1.hexdigest()
+        cls = self.__class__
+        return cls.secret_g()
 
     @appier.operation(name = "Enable")
     def op_enable_s(self):
