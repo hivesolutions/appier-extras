@@ -38,6 +38,7 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import csv
+import json
 import time
 import random
 import string
@@ -378,6 +379,27 @@ class Base(appier.Model):
             if has_header: kwargs["header"] = header
             if has_map: kwargs["map"] = dict(zip(header, line))
             callback(line, **kwargs)
+
+    @classmethod
+    def _json_import(
+        cls,
+        file,
+        callback,
+        callback_header = None,
+        strict = False,
+        encoding = "utf-8"
+    ):
+        _file_name, mime_type, data = file
+        is_json = mime_type in ("text/json", "application/json")
+        if not is_json and strict:
+            raise appier.OperationalError(
+                message = "Invalid mime type '%s'" % mime_type
+            )
+        data = data.decode(encoding)
+        json_data = json.loads(data)
+        header = appier.legacy.keys(json_data[0]) if json_data else []
+        if callback_header: callback_header(header)
+        for item in json_data: callback(item)
 
     @classmethod
     def _inlinify(cls, data, engine = None, *args, **kwargs):
