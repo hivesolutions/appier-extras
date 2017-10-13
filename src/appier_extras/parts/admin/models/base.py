@@ -339,6 +339,7 @@ class Base(appier.Model):
         cls,
         file,
         callback,
+        callback_header = None,
         strict = False,
         named = False,
         delimiter = ",",
@@ -368,6 +369,7 @@ class Base(appier.Model):
             quoting = quoting
         )
         header = next(csv_reader)
+        if callback_header: callback_header(header)
         if named: tuple_t = collections.namedtuple("csv_tuple", header)
         for line in csv_reader:
             kwargs = dict()
