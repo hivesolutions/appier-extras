@@ -1070,7 +1070,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def show_model(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         model.assert_is_concrete_g()
         object = appier.get_object(
             alias = True,
@@ -1363,7 +1363,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def show_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         entity = model.get_v(
             rules = False,
             meta = True,
@@ -1385,7 +1385,7 @@ class AdminPart(
         eager_l = self.field("eager_l", True, cast = bool)
         rules = self.field("rules", False, cast = bool)
         meta = self.field("meta", False, cast = bool)
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         entity = model.get_v(
             eager_l = eager_l,
             rules = rules,
@@ -1398,7 +1398,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def edit_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         entity = model.get_v(
             rules = False,
             meta = True,
@@ -1415,7 +1415,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def update_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         entity = model.get_v(
             rules = False,
             meta = True,
@@ -1443,7 +1443,7 @@ class AdminPart(
     @appier.ensure(token = "admin")
     def delete_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         entity = model.get_v(_id = self.get_adapter().object_id(_id))
         entity.delete()
         return self.redirect(
@@ -1940,10 +1940,10 @@ class AdminPart(
     def _to_meta(self, type):
         return appier.Model._to_meta(type)
 
-    def _get_cls(self, default = None):
+    def _get_cls(self, default = None, raise_e = True):
         cls = self.field("cls", None)
         if not cls: return default
-        return self.owner.get_model(cls)
+        return self.owner.get_model(cls, raise_e = raise_e)
 
     def _entity_urls(self, entity):
         model = entity.__class__
@@ -2014,7 +2014,7 @@ class AdminPart(
         is_instance = ":" in model
         if is_instance: model, id = model.split(":")
 
-        model = self.get_model(model)
+        model = self.get_model(model, raise_e = True)
         model.assert_is_concrete_g()
 
         if is_instance: model = model.get(
