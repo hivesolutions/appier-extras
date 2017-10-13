@@ -675,8 +675,7 @@ class Account(base.Base, authenticable.Authenticable):
         avatar = self.avatar if hasattr(self, "avatar") else None
         if not avatar:
             if strict: raise appier.NotFoundError(
-                message = "Avatar not found for user '%s'" % self.username,
-                code = 404
+                message = "Avatar not found for user '%s'" % self.username
             )
             return self.owner.send_static(
                 "images/" + image,
