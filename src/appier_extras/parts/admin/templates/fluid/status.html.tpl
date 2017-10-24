@@ -12,7 +12,7 @@
     {% set counters_c = own._counters().count() %}
     <div class="show-panel">
         <div class="panel-header">
-            <img class="image square no-border" src="{{ url_for('admin', filename = 'images/logo_96.png') }}" />
+            <img class="image square no-border" src="{{ own.logo_square_url or url_for('admin', filename = 'images/logo_96.png') }}" />
             <div class="details">
                 <h2>{{ owner.description }}</h2>
             </div>
