@@ -147,6 +147,7 @@ class AdminPart(
         for model_c in self.models_r:
             if not model_c.is_attached(): continue
             if not model_c.is_concrete(): continue
+            if not issubclass(model_c, models.Base): continue
             self.logger.debug(model_c)
 
         for social_lib in self.social_libs:
