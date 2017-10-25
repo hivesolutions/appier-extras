@@ -147,7 +147,7 @@ class AdminPart(
         for model_c in self.models_r:
             if not model_c.is_attached(): continue
             if not model_c.is_concrete(): continue
-            if not issubclass(model_c, models.Base): continue
+            if not model_c.is_child(models.Base): continue
             self.logger.debug(model_c)
 
         for social_lib in self.social_libs:
@@ -820,7 +820,7 @@ class AdminPart(
     def build_index(self):
         empty = self.field("empty", True, cast = bool)
         if empty: models.Search.delete_c()
-        for model in self._attached(self.models_r):
+        for model in self._administrable(self.models_r):
             model.build_index_g()
         return self.redirect(
             self.url_for(
@@ -831,7 +831,7 @@ class AdminPart(
 
     @appier.ensure(token = "admin")
     def build_index_db(self):
-        for model in self._attached(self.models_r):
+        for model in self._administrable(self.models_r):
             model._destroy_indexes()
             model._build_indexes()
         return self.redirect(
@@ -1893,8 +1893,13 @@ class AdminPart(
         models = self._attached(models)
         return [model for model in models if model.is_concrete()]
 
+    def _administrable(self, _models, parent = None):
+        parent = parent or models.Base
+        _models = self._concrete(_models)
+        return [model for model in _models if model.is_child(parent)]
+
     def _available(self, models):
-        models = self._concrete(models)
+        models = self._administrable(models)
         return [model for model in models if\
              appier.check_login(self, "admin.models." + model._under())]
 

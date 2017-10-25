@@ -3,7 +3,7 @@
 {% block name %}Status{% endblock %}
 {% block style %}no-header{% endblock %}
 {% block content %}
-    {% set models_c = own._concrete(own.models_r)|length %}
+    {% set models_c = own._administrable(own.models_r)|length %}
     {% set routes_c = own.info_dict().routes %}
     {% set configs_c = own.info_dict().configs %}
     {% set parts_c = own.info_dict().parts|length %}
