@@ -39,6 +39,7 @@ from . import account
 from . import base
 from . import config
 from . import event
+from . import locale
 from . import role
 from . import search
 from . import settings
@@ -49,6 +50,7 @@ from .account import Account
 from .base import Base
 from .config import Config
 from .event import Event
+from .locale import Locale
 from .role import Role
 from .search import Search
 from .settings import Settings
