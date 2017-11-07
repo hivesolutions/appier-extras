@@ -101,6 +101,10 @@
                     <dd>{{ own.preferences_c.__name__ }}</dd>
                 </div>
                 <div class="item">
+                    <dt>Bus class</dt>
+                    <dd>{{ own.bus_c.__name__ }}</dd>
+                </div>
+                <div class="item">
                     <dt>Adapter class</dt>
                     <dd>{{ own.adapter.__class__.__name__ }}</dd>
                 </div>
