@@ -87,4 +87,4 @@ class Config(base.Base):
 
     def post_delete(self):
         appier.Model.post_delete(self)
-        appier.conf_s(self.key, None)
+        appier.conf_r(self.key)
