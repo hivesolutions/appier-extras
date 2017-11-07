@@ -43,6 +43,12 @@ from appier_extras.parts.admin.models import base
 
 class Config(base.Base):
 
+    _CONFIG = {}
+    """ The reference to the last dictionary of
+    configuration that has been loaded into memory
+    this may be used to calculate the deltas, for
+    proper removal (garbage collection) """
+
     key = appier.field(
         index = "all",
         default = True
@@ -56,6 +62,7 @@ class Config(base.Base):
     def setup(cls):
         super(Config, cls).setup()
         cls._flush()
+        appier.get_bus().bind("config/reload", cls._flush)
 
     @classmethod
     def validate(cls):
@@ -73,18 +80,40 @@ class Config(base.Base):
         return ["key", "value"]
 
     @classmethod
+    def config_d(cls):
+        configs = cls.find_e()
+        return dict([(config.key, config.value) for config in configs])
+
+    @classmethod
     def _flush(cls):
-        configs = cls.find()
-        for config in configs: appier.conf_s(config.key, config.value)
+        # retrieves the dictionary of configurations currently
+        # enabled in the data source
+        config_d = cls.config_d()
+
+        # iterates over the complete set of configuration
+        # key in the previous configuration, to try to determine
+        # the ones that have been removed
+        for key in cls._CONFIG:
+            if key in config_d: continue
+            appier.conf_r(key)
+
+        # iterates over the complete set of key value pairs
+        # in the configuration dictionary to set these configuration
+        for key, value in appier.legacy.iteritems(config_d):
+            appier.conf_s(key, value)
+
+        # updates the current configuration dictionary with
+        # the one that has just been retrieved
+        cls._CONFIG = config_d
 
     def post_create(self):
         appier.Model.post_create(self)
-        appier.conf_s(self.key, self.value)
+        self.owner.trigger_bus("config/reload")
 
     def post_update(self):
         appier.Model.post_update(self)
-        appier.conf_s(self.key, self.value)
+        self.owner.trigger_bus("config/reload")
 
     def post_delete(self):
         appier.Model.post_delete(self)
-        appier.conf_r(self.key)
+        self.owner.trigger_bus("config/reload")
