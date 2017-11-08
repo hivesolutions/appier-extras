@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import json
+
 import appier
 
 from appier_extras.parts.admin.models import base
@@ -80,6 +82,30 @@ class Locale(base.Base):
     def bundles_d(cls, locale = None):
         bundles = cls.find_e()
         return dict([(bundle.locale, bundle.data_j) for bundle in bundles])
+
+    @classmethod
+    @appier.operation(
+        name = "Import Bundle",
+        parameters = (
+            ("JSON File", "file", "file"),
+            ("Locale", "locale", str),
+            ("Strict", "strict", bool, False)
+        ),
+        factory = True
+    )
+    def import_bundle_s(cls, file, locale, strict = False):
+        _file_name, mime_type, data = file
+        is_json = mime_type in ("text/json", "application/json")
+        if not is_json and strict: raise appier.OperationalError(
+            message = "Invalid MIME type '%s'" % mime_type
+        )
+        data = data.decode("utf-8")
+        data_j = json.loads(data)
+        locale_e = cls.get(locale = locale, raise_e = False)
+        if locale_e: locale_e.data_j.update(data_j)
+        else: locale_e = cls(locale = locale, data_j = data_j)
+        locale_e.save()
+        return locale_e
 
     @classmethod
     def _flush(cls):
