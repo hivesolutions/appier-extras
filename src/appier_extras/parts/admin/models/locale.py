@@ -50,8 +50,15 @@ class Locale(base.Base):
 
     data_j = appier.field(
         type = dict,
+        private = True,
         meta = "longmap",
         description = "JSON Data"
+    )
+
+    count_l = appier.field(
+        type = int,
+        initial = 0,
+        description = "Count"
     )
 
     @classmethod
@@ -74,11 +81,11 @@ class Locale(base.Base):
 
     @classmethod
     def list_names(cls):
-        return ["locale", "description"]
+        return ["locale", "description", "count_l"]
 
     @classmethod
     def bundles_d(cls, locale = None):
-        locales = cls.find_e()
+        locales = cls.find_e(rules = False)
         return dict([(locale.locale, locale.data_u) for locale in locales])
 
     @classmethod
@@ -92,7 +99,7 @@ class Locale(base.Base):
     )
     def import_bundle_s(cls, file, locale, strict = False):
         data_j = cls._json_read(file)
-        locale_e = cls.get(locale = locale, raise_e = False)
+        locale_e = cls.get(locale = locale, rules = False, raise_e = False)
         if locale_e: locale_e.data_j.update(data_j)
         else: locale_e = cls(locale = locale, data_j = data_j)
         locale_e.save()
@@ -117,7 +124,7 @@ class Locale(base.Base):
                 result[locale_n] = locale_m
 
         for locale, data_j in appier.legacy.iteritems(result):
-            locale_e = cls.get(locale = locale, raise_e = False)
+            locale_e = cls.get(locale = locale, rules = False, raise_e = False)
             if locale_e: locale_e.data_j.update(data_j)
             else: locale_e = cls(locale = locale, data_j = data_j)
             locale_e.save()
@@ -149,10 +156,12 @@ class Locale(base.Base):
 
     def pre_create(self):
         base.Base.pre_create(self)
+        self.count_l = len(self.data_j)
         self.data_j = self.__class__._escape(self.data_j)
 
     def pre_update(self):
         appier.Model.pre_update(self)
+        self.count_l = len(self.data_j)
         self.data_j = self.__class__._escape(self.data_j)
 
     def post_create(self):
