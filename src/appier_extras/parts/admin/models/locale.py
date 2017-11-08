@@ -119,7 +119,7 @@ class Locale(base.Base):
             appier.get_app()._register_bundle(data_j, locale)
 
     @classmethod
-    def _escape(cls, data_j, target = ".", sequence = "##"):
+    def _escape(cls, data_j, target = ".", sequence = "::"):
         data_j = dict(data_j)
         for key, value in appier.legacy.items(data_j):
             _key = key.replace(target, sequence)
@@ -129,7 +129,7 @@ class Locale(base.Base):
         return data_j
 
     @classmethod
-    def _unescape(cls, data_j, target = ".", sequence = "##"):
+    def _unescape(cls, data_j, target = ".", sequence = "::"):
         return cls._escape(data_j, target = sequence, sequence = target)
 
     def pre_create(self):
