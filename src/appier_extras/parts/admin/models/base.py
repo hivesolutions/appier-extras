@@ -353,7 +353,7 @@ class Base(appier.Model):
         is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
         if not is_csv and strict:
             raise appier.OperationalError(
-                message = "Invalid mime type '%s'" % mime_type
+                message = "Invalid MIME type '%s'" % mime_type
             )
         args, _varargs, kwargs = appier.legacy.getargspec(callback)[:3]
         has_header = True if "header" in args or kwargs else False
@@ -393,7 +393,7 @@ class Base(appier.Model):
         is_json = mime_type in ("text/json", "application/json")
         if not is_json and strict:
             raise appier.OperationalError(
-                message = "Invalid mime type '%s'" % mime_type
+                message = "Invalid MIME type '%s'" % mime_type
             )
         data = data.decode(encoding)
         json_data = json.loads(data)
