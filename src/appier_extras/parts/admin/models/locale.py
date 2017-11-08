@@ -80,8 +80,8 @@ class Locale(base.Base):
 
     @classmethod
     def bundles_d(cls, locale = None):
-        bundles = cls.find_e()
-        return dict([(bundle.locale, bundle.data_j) for bundle in bundles])
+        locales = cls.find_e()
+        return dict([(locale.locale, locale.data_u) for locale in locales])
 
     @classmethod
     @appier.operation(
@@ -118,14 +118,41 @@ class Locale(base.Base):
         for locale, data_j in appier.legacy.iteritems(bundles_d):
             appier.get_app()._register_bundle(data_j, locale)
 
+    @classmethod
+    def _escape(cls, data_j, target = ".", sequence = "##"):
+        data_j = dict(data_j)
+        for key, value in appier.legacy.items(data_j):
+            _key = key.replace(target, sequence)
+            if _key == key: continue
+            data_j[_key] = value
+            del data_j[key]
+        return data_j
+
+    @classmethod
+    def _unescape(cls, data_j, target = ".", sequence = "##"):
+        return cls._escape(data_j, target = sequence, sequence = target)
+
+    def pre_create(self):
+        base.Base.pre_create(self)
+        self.data_j = self.__class__._escape(self.data_j)
+
+    def pre_update(self):
+        appier.Model.pre_update(self)
+        self.data_j = self.__class__._escape(self.data_j)
+
     def post_create(self):
-        appier.Model.post_create(self)
+        base.Base.post_create(self)
         self.owner.trigger_bus("locale/reload")
 
     def post_update(self):
-        appier.Model.post_update(self)
+        base.Base.post_update(self)
         self.owner.trigger_bus("locale/reload")
 
     def post_delete(self):
-        appier.Model.post_delete(self)
+        base.Base.post_delete(self)
         self.owner.trigger_bus("locale/reload")
+
+    @property
+    def data_u(self):
+        cls = self.__class__
+        return cls._unescape(self.data_j)

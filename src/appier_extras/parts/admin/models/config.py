@@ -107,13 +107,13 @@ class Config(base.Base):
         cls._CONFIG = config_d
 
     def post_create(self):
-        appier.Model.post_create(self)
+        base.Base.post_create(self)
         self.owner.trigger_bus("config/reload")
 
     def post_update(self):
-        appier.Model.post_update(self)
+        base.Base.post_update(self)
         self.owner.trigger_bus("config/reload")
 
     def post_delete(self):
-        appier.Model.post_delete(self)
+        base.Base.post_delete(self)
         self.owner.trigger_bus("config/reload")
