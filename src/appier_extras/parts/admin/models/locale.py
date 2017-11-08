@@ -37,8 +37,6 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-import json
-
 import appier
 
 from appier_extras.parts.admin.models import base
@@ -88,24 +86,41 @@ class Locale(base.Base):
         name = "Import Bundle",
         parameters = (
             ("JSON File", "file", "file"),
-            ("Locale", "locale", str),
-            ("Strict", "strict", bool, False)
+            ("Locale", "locale", str)
         ),
         factory = True
     )
     def import_bundle_s(cls, file, locale, strict = False):
-        _file_name, mime_type, data = file
-        is_json = mime_type in ("text/json", "application/json")
-        if not is_json and strict: raise appier.OperationalError(
-            message = "Invalid MIME type '%s'" % mime_type
-        )
-        data = data.decode("utf-8")
-        data_j = json.loads(data)
+        data_j = cls._json_read(file)
         locale_e = cls.get(locale = locale, raise_e = False)
         if locale_e: locale_e.data_j.update(data_j)
         else: locale_e = cls(locale = locale, data_j = data_j)
         locale_e.save()
         return locale_e
+
+    @classmethod
+    @appier.operation(
+        name = "Import CSV",
+        parameters = (("CSV File", "file", "file"),)
+    )
+    def import_csv_s(cls, file):
+        csv_reader = cls._csv_read(file)
+        header = next(csv_reader)
+
+        result = dict()
+        locales_n = header[1:]
+        for line in csv_reader:
+            name, locales_v = line[0], line[1:]
+            for locale_n, locale_v in zip(locales_n, locales_v):
+                locale_m = result.get(locale_n, {})
+                locale_m[name] = locale_v
+                result[locale_n] = locale_m
+
+        for locale, data_j in appier.legacy.iteritems(result):
+            locale_e = cls.get(locale = locale, raise_e = False)
+            if locale_e: locale_e.data_j.update(data_j)
+            else: locale_e = cls(locale = locale, data_j = data_j)
+            locale_e.save()
 
     @classmethod
     def _flush(cls):
