@@ -349,26 +349,18 @@ class Base(appier.Model):
         encoding = "utf-8"
     ):
         is_unicode = appier.legacy.PYTHON_3
-        _file_name, mime_type, data = file
-        is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
-        if not is_csv and strict:
-            raise appier.OperationalError(
-                message = "Invalid MIME type '%s'" % mime_type
-            )
+        csv_reader = cls._csv_read(
+            file,
+            strict = strict,
+            named = named,
+            delimiter = delimiter,
+            quotechar = quotechar,
+            quoting = quoting,
+            encoding = encoding
+        )
         args, _varargs, kwargs = appier.legacy.getargspec(callback)[:3]
         has_header = True if "header" in args or kwargs else False
         has_map = True if "map" in args or kwargs else False
-        if is_unicode:
-            data = data.decode(encoding)
-            buffer = appier.legacy.StringIO(data)
-        else:
-            buffer = appier.legacy.BytesIO(data)
-        csv_reader = csv.reader(
-            buffer,
-            delimiter = delimiter,
-            quotechar = quotechar,
-            quoting = quoting
-        )
         header = next(csv_reader)
         if callback_header: callback_header(header)
         if named: tuple_t = collections.namedtuple("csv_tuple", header)
@@ -381,11 +373,54 @@ class Base(appier.Model):
             callback(line, **kwargs)
 
     @classmethod
+    def _csv_read(
+        cls,
+        file,
+        strict = False,
+        named = False,
+        delimiter = ",",
+        quotechar = "\"",
+        quoting = csv.QUOTE_MINIMAL,
+        encoding = "utf-8"
+    ):
+        is_unicode = appier.legacy.PYTHON_3
+        _file_name, mime_type, data = file
+        is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
+        if not is_csv and strict:
+            raise appier.OperationalError(
+                message = "Invalid MIME type '%s'" % mime_type
+            )
+        if is_unicode:
+            data = data.decode(encoding)
+            buffer = appier.legacy.StringIO(data)
+        else:
+            buffer = appier.legacy.BytesIO(data)
+        csv_reader = csv.reader(
+            buffer,
+            delimiter = delimiter,
+            quotechar = quotechar,
+            quoting = quoting
+        )
+        return csv_reader
+
+    @classmethod
     def _json_import(
         cls,
         file,
         callback,
         callback_header = None,
+        strict = False,
+        encoding = "utf-8"
+    ):
+        json_data = cls._json_read(file, strict = strict, encoding = encoding)
+        header = appier.legacy.keys(json_data[0]) if json_data else []
+        if callback_header: callback_header(header)
+        for item in json_data: callback(item)
+
+    @classmethod
+    def _json_read(
+        cls,
+        file,
         strict = False,
         encoding = "utf-8"
     ):
@@ -397,9 +432,7 @@ class Base(appier.Model):
             )
         data = data.decode(encoding)
         json_data = json.loads(data)
-        header = appier.legacy.keys(json_data[0]) if json_data else []
-        if callback_header: callback_header(header)
-        for item in json_data: callback(item)
+        return json_data
 
     @classmethod
     def _inlinify(cls, data, engine = None, *args, **kwargs):
