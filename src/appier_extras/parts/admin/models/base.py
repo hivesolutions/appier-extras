@@ -362,7 +362,7 @@ class Base(appier.Model):
         has_header = True if "header" in args or kwargs else False
         has_map = True if "map" in args or kwargs else False
         header = next(csv_reader)
-        if not is_unicode: header = header.decode(header)
+        if not is_unicode: header = [value.decode(header) for value in header]
         if callback_header: callback_header(header)
         if named: tuple_t = collections.namedtuple("csv_tuple", header)
         for line in csv_reader:
