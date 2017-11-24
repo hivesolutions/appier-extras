@@ -1889,6 +1889,9 @@ class AdminPart(
     def _attached(self, models):
         return [model for model in models if model.is_attached()]
 
+    def _visible(self, models):
+        return [model for model in models if model.is_visible()]
+
     def _concrete(self, models):
         models = self._attached(models)
         return [model for model in models if model.is_concrete()]
@@ -1898,10 +1901,14 @@ class AdminPart(
         _models = self._concrete(_models)
         return [model for model in _models if model.is_child(parent)]
 
-    def _available(self, models):
-        models = self._administrable(models)
+    def _accessible(self, models):
         return [model for model in models if\
              appier.check_login(self, "admin.models." + model._under())]
+
+    def _available(self, models):
+        models = self._administrable(models)
+        models = self._visible(models)
+        return self._accessible(models)
 
     def _sort(self, object, model):
         if "sort" in object: return object
