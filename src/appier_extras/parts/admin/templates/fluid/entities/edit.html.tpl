@@ -1,7 +1,7 @@
 {% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}{{ entity }}{% endblock %}
 {% block name %}
-    {% if model.is_visible() %}
+    {% if own._is_available(model) %}
         <a href="{{ url_for('admin.show_model', model = model._under()) }}">
             {{ model._readable(plural = True) }}
         </a>

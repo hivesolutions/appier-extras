@@ -1908,7 +1908,16 @@ class AdminPart(
     def _available(self, models):
         models = self._administrable(models)
         models = self._visible(models)
-        return self._accessible(models)
+        models = self._accessible(models)
+        return models
+
+    def _is_available(self, model, parent = None):
+        parent = parent or models.Base
+        if not model.is_child(parent): return False
+        if not model.is_concrete(): return False
+        if not model.is_visible(): return False
+        if not appier.check_login(self, "admin.models." + model._under()): return False
+        return True
 
     def _sort(self, object, model):
         if "sort" in object: return object
