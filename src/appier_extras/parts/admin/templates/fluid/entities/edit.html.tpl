@@ -1,11 +1,15 @@
 {% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}{{ entity }}{% endblock %}
 {% block name %}
-    <a href="{{ url_for('admin.show_model', model = model._under()) }}">
-        {{ model._readable(plural = True) }}
-    </a>
+    {% if model.is_visible() %}
+        <a href="{{ url_for('admin.show_model', model = model._under()) }}">
+            {{ model._readable(plural = True) }}
+        </a>
+    {% else %}
+        <span>{{ model._readable(plural = True) }}</span>
+    {% endif %}
     <span>/</span>
-       <span>{{ entity }}</span>
+    <span>{{ entity }}</span>
 {% endblock %}
 {% block buttons %}
     {{ super() }}
