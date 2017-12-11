@@ -93,7 +93,7 @@ class Prismic(object):
         return entry
 
     @classmethod
-    def _get_prismic_cache(cls):
+    def _get_prismic_cache(cls, serialize = True):
         if cls._prismic_cache: return cls._prismic_cache
         cache_engine = appier.conf("CACHE", "memory")
         cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
@@ -101,6 +101,7 @@ class Prismic(object):
         cache_engine = cache_engine.capitalize() + "Cache"
         cache_engine = getattr(appier, cache_engine)
         cls._prismic_cache = cache_engine()
+        if serialize: cls._prismic_cache = appier.SerializedCache(cls._prismic_cache)
         return cls._prismic_cache
 
     def prismic_value(

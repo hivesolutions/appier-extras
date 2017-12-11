@@ -111,7 +111,7 @@ class Contentful(object):
         return None
 
     @classmethod
-    def _get_contentful_cache(cls):
+    def _get_contentful_cache(cls, serialize = True):
         if cls._contentful_cache: return cls._contentful_cache
         cache_engine = appier.conf("CACHE", "memory")
         cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
@@ -119,6 +119,7 @@ class Contentful(object):
         cache_engine = cache_engine.capitalize() + "Cache"
         cache_engine = getattr(appier, cache_engine)
         cls._contentful_cache = cache_engine()
+        if serialize: cls._contentful_cache = appier.SerializedCache(cls._contentful_cache)
         return cls._contentful_cache
 
     def contentful_image(
