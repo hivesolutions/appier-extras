@@ -18,8 +18,9 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 
 ### CMS
 
-* `CMS_CACHE_ENGINE` (`str`) -
-* `CONTENTFUL_CACHE_ENGINE` (`str`) -
+* `CMS_CACHE_ENGINE` (`str`) - The generic name of the cache engine to be used for CMS access (defaults to `memory`)
+* `CONTENTFUL_CACHE_ENGINE` (`str`) - The name of the cache engine to be used for `Contentful` takes precedence over `CMS_CACHE_ENGINE`
+* `PRISMIC_CACHE_ENGINE` (`str`) - The name of the cache engine to be used for `Prismic CMS` takes precedence over `CMS_CACHE_ENGINE`
 
 ### Social
 

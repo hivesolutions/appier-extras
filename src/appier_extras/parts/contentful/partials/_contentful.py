@@ -55,19 +55,8 @@ class Contentful(object):
     impact while accessing the values """
 
     @classmethod
-    def get_contentful_cache(cls):
-        if cls._contentful_cache: return cls._contentful_cache
-        cache_engine = appier.conf("CACHE", "memory")
-        cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
-        cache_engine = appier.conf("CONTENTFUL_CACHE_ENGINE", cache_engine)
-        cache_engine = cache_engine.capitalize() + "Cache"
-        cache_engine = getattr(appier, cache_engine)
-        cls._contentful_cache = cache_engine()
-        return cls._contentful_cache
-
-    @classmethod
     def contentful_clear(cls):
-        cache = cls.get_contentful_cache()
+        cache = cls._get_contentful_cache()
         cache.clear()
 
     @classmethod
@@ -117,6 +106,17 @@ class Contentful(object):
             return fields
 
         return None
+
+    @classmethod
+    def _get_contentful_cache(cls):
+        if cls._contentful_cache: return cls._contentful_cache
+        cache_engine = appier.conf("CACHE", "memory")
+        cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
+        cache_engine = appier.conf("CONTENTFUL_CACHE_ENGINE", cache_engine)
+        cache_engine = cache_engine.capitalize() + "Cache"
+        cache_engine = getattr(appier, cache_engine)
+        cls._contentful_cache = cache_engine()
+        return cls._contentful_cache
 
     def contentful_image(
         self,

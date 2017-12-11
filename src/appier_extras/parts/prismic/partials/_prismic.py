@@ -37,5 +37,34 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import appier
+
 class Prismic(object):
-    pass
+    """
+    Partial (mixin) that adds the Prismic CMS proxy functionality
+    to a controller or model that inherits from it.
+
+    Most of the methods are meant to be used directly from the
+    template or controller.
+    """
+
+    _prismic_cache = None
+    """ The cache manager that is going to be used store
+    contentful values, this should have a huge performance
+    impact while accessing the values """
+
+    @classmethod
+    def prismic_clear(cls):
+        cache = cls._get_prismic_cache()
+        cache.clear()
+
+    @classmethod
+    def _get_prismic_cache(cls):
+        if cls._contentful_cache: return cls._contentful_cache
+        cache_engine = appier.conf("CACHE", "memory")
+        cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
+        cache_engine = appier.conf("PRISMIC_CACHE_ENGINE", cache_engine)
+        cache_engine = cache_engine.capitalize() + "Cache"
+        cache_engine = getattr(appier, cache_engine)
+        cls._contentful_cache = cache_engine()
+        return cls._contentful_cache
