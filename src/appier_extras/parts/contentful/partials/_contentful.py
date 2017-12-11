@@ -181,7 +181,7 @@ class Contentful(object):
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
         value = self._contentful_value(key, default = default, verify = verify, *args, **kwargs)
-        contentful_cache.set_item(key, value, expires = expires)
+        contentful_cache.set_item(cache_key, value, expires = expires)
         return value
 
     def contentful_markdown(

@@ -59,6 +59,28 @@ class Prismic(object):
         cache.clear()
 
     @classmethod
+    def _prismic_deref(cls, entry):
+        # verifies if the current value is not a dictionary
+        # and that the sys type is not defined in the entry
+        # value, if that's the case this is the termination
+        # condition and then returns the current entry as the value
+        if not isinstance(entry, dict): return entry
+        if not "type" in entry: return entry
+        if not "value" in entry: return entry
+
+        type = entry["type"]
+        values = entry["value"]
+        value = values[0] if values else dict()
+
+        if type == "StructuredText":
+            return value["text"]
+
+        if type == "Image":
+            return value["main"]["url"]
+
+        return entry
+
+    @classmethod
     def _get_prismic_cache(cls):
         if cls._prismic_cache: return cls._prismic_cache
         cache_engine = appier.conf("CACHE", "memory")
@@ -108,7 +130,7 @@ class Prismic(object):
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
         value = self._prismic_value(key, default = default, verify = verify, *args, **kwargs)
-        prismic_cache.set_item(key, value, expires = expires)
+        prismic_cache.set_item(cache_key, value, expires = expires)
         return value
 
     @property
@@ -133,7 +155,7 @@ class Prismic(object):
         # in case one of the pre-conditions is not met
         appier.verify(
             "." in key,
-            message = "Malformed key '%s', must include both content type and key" % key,
+            message = "Malformed key '%s', must include both document type and key" % key,
             code = 400
         )
 
@@ -156,12 +178,12 @@ class Prismic(object):
 
         # retrieves the complete set of items and in case there's at least
         # one returns the first one of it otherwise returns an empty dictionary
-        items = entries.get("items", [])
-        item = items[0] if items else dict()
+        item = entries[0] if entries else dict()
 
         # retrieves the complete set of field for the item and tries to retrieve
         # the requested field (by its identifier)
-        field = item.get("fields", {})
+        data = item.get("data", {})
+        field = data.get(document_type, {})
 
         # verifies if the requested field exists raising an exception otherwise
         # this should ensure that the value exists in prismic
@@ -181,13 +203,9 @@ class Prismic(object):
         is_link = isinstance(field_value, (dict, list, tuple))
         if not is_link: return field_value
 
-        # determines if the provided field value is a sequence or a dictionary
-        # and converts the the value from the link accordingly
-        is_sequence = isinstance(field_value, (list, tuple))
-        if is_sequence: field_value = [
-            cls._prismic_deref(entry, entries) for entry in field_value
-        ]
-        else: field_value = cls._prismic_deref(field_value, entries)
+        # runs the dereferencing process for the field value that is going to
+        # be retrieve so the proper (expected) value may be returned to caller
+        field_value = cls._prismic_deref(field_value)
 
         # returns the final dereferenced value to the caller method
         # this can be both a plain value or a sequence
