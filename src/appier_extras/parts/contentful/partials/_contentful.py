@@ -175,7 +175,7 @@ class Contentful(object):
         # tries to retrieve the reference to the contentful cache engine
         # (singleton instance) and verifies if the key exists in it, returning
         # immediately the value if that's the case
-        contentful_cache = cls.get_contentful_cache()
+        contentful_cache = cls._get_contentful_cache()
         if cache_key in contentful_cache: return contentful_cache[cache_key]
 
         # retrieve the value remotely and sets the value in the cache engine,
