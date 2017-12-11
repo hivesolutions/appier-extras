@@ -39,6 +39,7 @@ from . import captcha
 from . import contentful
 from . import csfr
 from . import opbeat
+from . import prismic
 from . import sematext
 
 from .admin import AdminPart
@@ -46,4 +47,5 @@ from .captcha import CaptchaPart
 from .contentful import Contentful
 from .csfr import CSFRPart, csfr_protect, csfr_ensure
 from .opbeat import OpbeatPart
+from .prismic import Prismic
 from .sematext import SematextHandler, SematextPart
