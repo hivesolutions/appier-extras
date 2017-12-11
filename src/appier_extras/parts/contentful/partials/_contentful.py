@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import time
+
 import appier
 import appier_extras
 
@@ -147,7 +149,7 @@ class Contentful(object):
         key,
         default = None,
         locale = None,
-        expires = 3600,
+        timeout = 3600,
         verify = False,
         *args,
         **kwargs
@@ -181,7 +183,7 @@ class Contentful(object):
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
         value = self._contentful_value(key, default = default, verify = verify, *args, **kwargs)
-        contentful_cache.set_item(cache_key, value, expires = expires)
+        contentful_cache.set_item(cache_key, value, expires = time.time() + timeout)
         return value
 
     def contentful_markdown(
@@ -254,8 +256,8 @@ class Contentful(object):
                 *args,
                 **kwargs
             ) or dict()
-        except:
-            self.logger.warning("Problem while accessing Contentful")
+        except BaseException as exception:
+            self.logger.warning("Problem while accessing Contentful: %s" % exception)
             return default
 
         # retrieves the complete set of items and in case there's at least
