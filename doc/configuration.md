@@ -19,7 +19,7 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 ### CMS
 
 * `CMS_CACHE_ENGINE` (`str`) -
-* `CONTENTFUL_CACHE_ENGINE` (`str`) -  
+* `CONTENTFUL_CACHE_ENGINE` (`str`) -
 
 ### Social
 
