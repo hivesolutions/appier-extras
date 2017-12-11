@@ -40,7 +40,8 @@ __license__ = "Apache License, Version 2.0"
 import time
 
 import appier
-import appier_extras
+
+from appier_extras import utils
 
 class Contentful(object):
     """
@@ -209,7 +210,7 @@ class Contentful(object):
             **kwargs
         )
         if not value: return value
-        html_b = appier_extras.MarkdownHTML.process_str(
+        html_b = utils.MarkdownHTML.process_str(
             value,
             options = options
         )
