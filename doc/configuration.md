@@ -16,6 +16,11 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `ADMIN_OAUTH` (`bool`) - If OAuth 2.0 support should be enabled for the administration interface (defaults to `True`)
 * `ADMIN_AVATAR_DEFAULT` (`bool`) - If a new default image should be set for an account's avatar if none is set (defaults to `False`)
 
+### CMS
+
+* `CMS_CACHE_ENGINE` (`str`) -
+* `CONTENTFUL_CACHE_ENGINE` (`str`) -  
+
 ### Social
 
 * `ADMIN_SOCIAL_LIBS` (`list`) - List of social agents that should have their libraries ensured to be installed (using `pip`) at loading,

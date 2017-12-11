@@ -34,16 +34,6 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import admin
-from . import captcha
-from . import contentful
-from . import csfr
-from . import opbeat
-from . import sematext
+from . import _contentful
 
-from .admin import AdminPart
-from .captcha import CaptchaPart
-from .contentful import Contentful
-from .csfr import CSFRPart, csfr_protect, csfr_ensure
-from .opbeat import OpbeatPart
-from .sematext import SematextHandler, SematextPart
+from ._contentful import Contentful
