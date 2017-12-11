@@ -70,6 +70,9 @@ class Prismic(object):
         if not "type" in entry: return entry
         if not "value" in entry: return entry
 
+        # retrieves both the type and the (possible) multiple
+        # values for the current entry, then retrieves the first
+        # value as the "master" value for it
         type = entry["type"]
         values = entry["value"]
         value = values[0] if values else dict()
@@ -79,6 +82,13 @@ class Prismic(object):
 
         if type == "Image":
             return value["main"]["url"]
+
+        if type == "Group":
+            return [
+                dict(key, cls._prismic_deref(value))
+                for key, value in appier.legacy.iteritems(value)
+                for value in values
+            ]
 
         return entry
 
