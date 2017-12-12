@@ -78,9 +78,6 @@ class Prismic(object):
         type = entry["type"]
         values = entry["value"]
 
-        if type == "StructuredText":
-            return "\n".join([value["text"] for value in values])
-
         if type == "Text":
             return values
 
@@ -92,6 +89,9 @@ class Prismic(object):
 
         if type == "Link.web":
             return values["url"]
+
+        if type == "StructuredText":
+            return "\n".join([value["text"] for value in values])
 
         if type == "Group":
             group = []
