@@ -41,6 +41,8 @@ import time
 
 import appier
 
+from appier_extras import utils
+
 class Prismic(object):
     """
     Partial (mixin) that adds the Prismic CMS proxy functionality
@@ -145,6 +147,36 @@ class Prismic(object):
         value = self._prismic_value(key, default = default, verify = verify, *args, **kwargs)
         prismic_cache.set_item(cache_key, value, expires = time.time() + timeout)
         return value
+
+    def prismic_markdown(
+        self,
+        key,
+        include = 10,
+        default = None,
+        verify = False,
+        encoding = "utf-8",
+        options = dict(
+            anchors = False,
+            blank = False
+        ),
+        *args,
+        **kwargs
+    ):
+        value = self.prismic_value(
+            key,
+            include = include,
+            default = default,
+            verify = verify,
+            *args,
+            **kwargs
+        )
+        if not value: return value
+        html_b = utils.MarkdownHTML.process_str(
+            value,
+            options = options
+        )
+        html_s = html_b.decode(encoding)
+        return html_s
 
     @property
     def prismic_api(self):
