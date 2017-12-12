@@ -114,7 +114,7 @@ class Prismic(object):
         cache_engine = appier.conf("PRISMIC_CACHE_ENGINE", cache_engine)
         cache_engine = cache_engine.capitalize() + "Cache"
         cache_engine = getattr(appier, cache_engine)
-        ref._prismic_cache = cache_engine()
+        ref._prismic_cache = cache_engine.new(hash = True)
         if serialize: ref._prismic_cache = appier.SerializedCache(cls._prismic_cache)
         return ref._prismic_cache
 

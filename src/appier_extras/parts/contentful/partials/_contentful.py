@@ -119,7 +119,7 @@ class Contentful(object):
         cache_engine = appier.conf("CONTENTFUL_CACHE_ENGINE", cache_engine)
         cache_engine = cache_engine.capitalize() + "Cache"
         cache_engine = getattr(appier, cache_engine)
-        ref._contentful_cache = cache_engine()
+        ref._contentful_cache = cache_engine.new(hash = True)
         if serialize: ref._contentful_cache = appier.SerializedCache(cls._contentful_cache)
         return ref._contentful_cache
 
