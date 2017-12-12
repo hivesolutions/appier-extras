@@ -77,12 +77,15 @@ class Prismic(object):
         # value as the "master" value for it
         type = entry["type"]
         values = entry["value"]
-        value = values[0] if values else dict()
 
         if type == "StructuredText":
-            return value["text"]
+            return "\n".join([value["text"] for value in values])
+
+        if type == "Text":
+            return values
 
         if type == "Image":
+            value = values[0] if values else dict()
             return value["main"]["url"]
 
         if type == "Group":
