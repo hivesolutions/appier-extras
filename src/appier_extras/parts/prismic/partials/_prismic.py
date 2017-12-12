@@ -84,16 +84,24 @@ class Prismic(object):
         if type == "Text":
             return values
 
+        if type == "Select":
+            return values
+
         if type == "Image":
-            value = values[0] if values else dict()
-            return value["main"]["url"]
+            return values["main"]["url"]
+
+        if type == "Link.web":
+            return values["url"]
 
         if type == "Group":
-            return [
-                dict(key, cls._prismic_deref(value))
-                for key, value in appier.legacy.iteritems(value)
-                for value in values
-            ]
+            group = []
+            for value in values:
+                value_d = dict([
+                    (key, cls._prismic_deref(value))
+                    for key, value in appier.legacy.iteritems(value)
+                ])
+                group.append(value_d)
+            return group
 
         return entry
 
