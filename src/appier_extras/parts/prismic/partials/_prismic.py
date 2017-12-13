@@ -148,6 +148,12 @@ class Prismic(object):
         # a specific locale, so that proper context is used for caching
         cache_key = locale + ":" + key if locale else key
 
+        # in case there are named arguments provided, assumes that they must
+        # be key value pairs for the filtering of the scope and appends the
+        # extra filter string to the cache key
+        if kwargs: cache_key += ":" + ",".join("%s=%s" % (key, str(value)) for\
+            key, value in appier.legacy.iteritems(kwargs))
+
         # tries to retrieve the reference to the prismic cache engine
         # (singleton instance) and verifies if the key exists in it, returning
         # immediately the value if that's the case
