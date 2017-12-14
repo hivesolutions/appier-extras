@@ -118,6 +118,18 @@ class Prismic(object):
         if serialize: ref._prismic_cache = appier.SerializedCache(cls._prismic_cache)
         return ref._prismic_cache
 
+    @classmethod
+    def _filter_params(cls, kwargs):
+        params = dict()
+        for name in appier.legacy.keys(kwargs):
+            if name in ("lang",): continue
+            params[name] = kwargs.pop(name)
+        return params
+
+    def prismic_objects(self, *args, **kwargs):
+        kwargs["multiple"] = True
+        return self.prismic_value(*args, **kwargs)
+
     def prismic_value(
         self,
         key,
@@ -125,6 +137,7 @@ class Prismic(object):
         locale = None,
         timeout = 3600,
         verify = False,
+        multiple = False,
         *args,
         **kwargs
     ):
@@ -160,9 +173,15 @@ class Prismic(object):
         prismic_cache = cls._get_prismic_cache()
         if cache_key in prismic_cache: return prismic_cache[cache_key]
 
+        # determines if the provided key references a specific field/value on an
+        # object or if it instead tries to retrieve the complete object specification
+        # and then selects the appropriate retrieval method
+        method = self._prismic_value if "." in key else self._prismic_object
+        if multiple: method = self._prismic_objects
+
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
-        value = self._prismic_value(key, default = default, verify = verify, *args, **kwargs)
+        value = method(key, default = default, verify = verify, *args, **kwargs)
         prismic_cache.set_item(cache_key, value, expires = time.time() + timeout)
         return value
 
@@ -201,6 +220,89 @@ class Prismic(object):
         import prismic
         return prismic.API()
 
+    def _prismic_object(self, *args, **kwargs):
+        default = kwargs.get("default", None)
+        kwargs["include"] = 1
+        objects = self._prismic_objects(*args, **kwargs)
+        return objects[0] if objects else default
+
+    def _prismic_objects(
+        self,
+        key,
+        include = 10,
+        default = [],
+        verify = False,
+        *args,
+        **kwargs
+    ):
+        # retrieves the reference to the parent class value to be used
+        # to access class level methods
+        cls = self.__class__
+
+        # runs a series of assertions for the provided key, raising exceptions
+        # in case one of the pre-conditions is not met
+        appier.verify(
+            not "." in key,
+            message = "Malformed key '%s', must include both document type and key" % key,
+            code = 400
+        )
+
+        # filters the keyword arguments based arguments retrieving only the valid
+        # parameters to be used in the filters extension process
+        params = cls._filter_params(kwargs)
+
+        # sets the document type value as the provided key as we're trying
+        # to retrieve an object instead of a field
+        document_type = key
+
+        # retrieves the complete set of items that meet the document type
+        # criteria and selects the first one, default to an empty dictionary
+        # in case no items exist for such content type
+        try:
+            query = ["[[at(document.type,\"%s\")]]" % document_type]
+            query.extend(["[[at(my.%s.%s,\"%s\")]]" % (document_type, key, value) for\
+                key, value in appier.legacy.iteritems(params)])
+            entries = self.prismic_api.search_documents(
+                q = query,
+                page_size = include,
+                *args,
+                **kwargs
+            ) or []
+        except BaseException as exception:
+            self.logger.warning("Problem while accessing prismic: %s" % exception)
+            return default
+
+        # creates the list that is going to hold the multiple entry
+        # maps/objects that are going to store the dereferenced
+        # prismic entries (after the filtering)
+        entries_m = []
+
+        # iterates over the complete set of entries, to be able to
+        # creates the map/object with the dereferenced values
+        for entry in entries:
+            # creates the entry object/map that is going to be
+            # populated with the complete set of dereferenced fields
+            entry_m = dict()
+
+            # retrieves the data part of the entry and the
+            # field itself according to the document type
+            data = entry.get("data", {})
+            field = data.get(document_type, {})
+
+            # iterates over the complete set of fields identifiers
+            # and values and dereferences the values setting them
+            # then in the current entry map/object
+            for field_id, field_value in appier.legacy.iteritems(field):
+                field_value = cls._prismic_deref(field_value)
+                entry_m[field_id] = field_value
+
+            # adds the entry map/object to the current list of entries
+            entries_m.append(entry_m)
+
+        # returns the final processed list of entry objects with
+        # the complete set of dereferenced values
+        return entries_m
+
     def _prismic_value(
         self,
         key,
@@ -222,6 +324,10 @@ class Prismic(object):
             code = 400
         )
 
+        # filters the keyword arguments based arguments retrieving only the valid
+        # parameters to be used in the filters extension process
+        params = cls._filter_params(kwargs)
+
         # splits the provided key around the dot value (namespace oriented)
         # to obtain the document type and the field id
         document_type, field_id = key.split(".", 1)
@@ -230,22 +336,26 @@ class Prismic(object):
         # criteria and selects the first one, default to an empty dictionary
         # in case no items exist for such content type
         try:
+            query = ["[[at(document.type,\"%s\")]]" % document_type]
+            query.extend(["[[at(my.%s.%s,\"%s\")]]" % (document_type, key, value) for\
+                key, value in appier.legacy.iteritems(params)])
             entries = self.prismic_api.search_documents(
-                q = "[[at(document.type,\"%s\")]]" % document_type,
+                q = query,
+                page_size = include,
                 *args,
                 **kwargs
-            ) or dict()
+            ) or []
         except BaseException as exception:
             self.logger.warning("Problem while accessing prismic: %s" % exception)
             return default
 
         # retrieves the complete set of items and in case there's at least
         # one returns the first one of it otherwise returns an empty dictionary
-        item = entries[0] if entries else dict()
+        entry = entries[0] if entries else dict()
 
-        # retrieves the complete set of field for the item and tries to retrieve
+        # retrieves the complete set of field for the entry and tries to retrieve
         # the requested field (by its identifier)
-        data = item.get("data", {})
+        data = entry.get("data", {})
         field = data.get(document_type, {})
 
         # verifies if the requested field exists raising an exception otherwise
@@ -260,11 +370,6 @@ class Prismic(object):
         # retrieves the value of the field requested with the provided identifier
         # defaulting to the provided default value in case it does not exists
         field_value = field.get(field_id, default)
-
-        # tries to determine if the value of the field is a link one (wither
-        # a dictionary or a list) if that's not the case returns immediately
-        is_link = isinstance(field_value, (dict, list, tuple))
-        if not is_link: return field_value
 
         # runs the dereferencing process for the field value that is going to
         # be retrieve so the proper (expected) value may be returned to caller
