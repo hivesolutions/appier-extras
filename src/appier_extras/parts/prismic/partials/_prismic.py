@@ -373,7 +373,7 @@ class Prismic(object):
         field_value = field.get(field_id, default)
 
         # runs the dereferencing process for the field value that is going to
-        # be retrieve so the proper (expected) value may be returned to caller
+        # be retrieved so the proper (expected) value may be returned to caller
         field_value = cls._prismic_deref(field_value)
 
         # returns the final dereferenced value to the caller method
