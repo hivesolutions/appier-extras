@@ -222,14 +222,14 @@ class Prismic(object):
 
     def _prismic_object(self, *args, **kwargs):
         default = kwargs.get("default", None)
-        kwargs["include"] = 1
+        kwargs["limit"] = 1
         objects = self._prismic_objects(*args, **kwargs)
         return objects[0] if objects else default
 
     def _prismic_objects(
         self,
         key,
-        include = 10,
+        limit = 10,
         default = [],
         verify = False,
         *args,
@@ -264,7 +264,7 @@ class Prismic(object):
                 key, value in appier.legacy.iteritems(params)])
             entries = self.prismic_api.search_documents(
                 q = query,
-                page_size = include,
+                page_size = limit,
                 *args,
                 **kwargs
             ) or []
@@ -296,7 +296,8 @@ class Prismic(object):
                 field_value = cls._prismic_deref(field_value)
                 entry_m[field_id] = field_value
 
-            # adds the entry map/object to the current list of entries
+            # adds the entry map/object to the current list of entries,
+            # this list should represent a simplified structure
             entries_m.append(entry_m)
 
         # returns the final processed list of entry objects with
@@ -306,7 +307,7 @@ class Prismic(object):
     def _prismic_value(
         self,
         key,
-        include = 10,
+        limit = 1,
         default = None,
         verify = False,
         *args,
@@ -341,7 +342,7 @@ class Prismic(object):
                 key, value in appier.legacy.iteritems(params)])
             entries = self.prismic_api.search_documents(
                 q = query,
-                page_size = include,
+                page_size = limit,
                 *args,
                 **kwargs
             ) or []
