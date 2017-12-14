@@ -55,6 +55,11 @@ class OpbeatPart(appier.Part):
     :see: http://opbeat.com
     """
 
+    def __init__(self, *args, **kwargs):
+        appier.Part.__init__(self, *args, **kwargs)
+        self.log = kwargs.get("log", False)
+        self.log = appier.conf("OPBEAT_LOG", self.log, cast = bool)
+
     def version(self):
         return base.VERSION
 
@@ -65,16 +70,14 @@ class OpbeatPart(appier.Part):
 
         self.owner.bind("exception", self.exception)
 
-        log = appier.conf("OPBEAT_LOG", False, cast = bool)
-        if log: appier.ensure_pip(
+        if self.log: appier.ensure_pip(
             "opbeat",
             package = "opbeat_api",
             delayed = True
         )
 
     def exception(self, exception, is_soft = False):
-        log = appier.conf("OPBEAT_LOG", False, cast = bool)
-        if not log: return
+        if not self.log: return
         self.log_exception(exception, is_soft = is_soft)
 
     def log_exception(

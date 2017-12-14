@@ -56,6 +56,23 @@ class SematextPart(appier.Part):
     :see: http://sematext.com
     """
 
+    def __init__(self, *args, **kwargs):
+        appier.Part.__init__(self, *args, **kwargs)
+        self.log = kwargs.get("log", False)
+        self.buffer_size = kwargs.get("buffer_size", 128)
+        self.timeout = kwargs.get("timeout", 30)
+        self.log = appier.conf("OPBEAT_LOG", self.log, cast = bool)
+        self.buffer_size = appier.conf(
+            "SEMATEXT_BUFFER_SIZE",
+            self.buffer_size,
+            cast = int
+        )
+        self.timeout = appier.conf(
+            "SEMATEXT_TIMEOUT",
+            self.timeout,
+            cast = int
+        )
+
     def version(self):
         return base.VERSION
 
@@ -66,16 +83,13 @@ class SematextPart(appier.Part):
         self.add_handler()
 
     def add_handler(self, set_default = True):
-        log = appier.conf("SEMATEXT_LOG", False, cast = bool)
-        buffer_size = appier.conf("SEMATEXT_BUFFER_SIZE", 128, cast = int)
-        timeout = appier.conf("SEMATEXT_TIMEOUT", 30, cast = int)
-        if not log: return
+        if not self.log: return
         api = self._get_api()
         handler_sematext = handler.SematextHandler(
             owner = self,
             api = api,
-            buffer_size = buffer_size,
-            timeout = timeout
+            buffer_size = self.buffer_size,
+            timeout = self.timeout
         )
         handler_sematext.setLevel(self.owner.level)
         handler_sematext.setFormatter(self.owner.formatter)
