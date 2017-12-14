@@ -77,11 +77,20 @@ class AdminPart(
         appier.Part.__init__(self, *args, **kwargs)
         self.account_c = account_c
         self.role_c = role_c
-        self.layout = appier.conf("ADMIN_LAYOUT", "fluid")
-        self.theme = appier.conf("ADMIN_THEME", "flat")
-        self.style = appier.conf("ADMIN_STYLE", "")
-        self.libs = appier.conf("ADMIN_LIBS", "current")
-        self.social_libs = appier.conf("ADMIN_SOCIAL_LIBS", [], cast = list)
+        self.layout = kwargs.get("layout", "fluid")
+        self.theme = kwargs.get("theme", "flat")
+        self.style = kwargs.get("style", "")
+        self.libs = kwargs.get("libs", "current")
+        self.social_libs = kwargs.get("libs", [])
+        self.available = kwargs.get("available", True)
+        self.open = kwargs.get("open", False)
+        self.oauth = kwargs.get("oauth", True)
+        self.avatar_default = kwargs.get("avatar_default", False)
+        self.layout = appier.conf("ADMIN_LAYOUT", self.layout)
+        self.theme = appier.conf("ADMIN_THEME", self.theme)
+        self.style = appier.conf("ADMIN_STYLE", self.style)
+        self.libs = appier.conf("ADMIN_LIBS", self.libs)
+        self.social_libs = appier.conf("ADMIN_SOCIAL_LIBS", self.social_libs, cast = list)
         self._last_login = None
         self._login_count = 0
 
@@ -121,14 +130,17 @@ class AdminPart(
         self.owner.admin_google_scope = ("email",)
         self.owner.admin_live_scope = ("wl.basic", "wl.emails")
 
+        self.owner.admin_available = appier.conf(
+            "ADMIN_AVAILABLE", self.available, cast = bool
+        )
         self.owner.admin_open = appier.conf(
-            "ADMIN_OPEN", False, cast = bool
+            "ADMIN_OPEN", self.open, cast = bool
         )
         self.owner.admin_oauth = appier.conf(
-            "ADMIN_OAUTH", True, cast = bool
+            "ADMIN_OAUTH", self.oauth, cast = bool
         )
         self.owner.admin_avatar_default = appier.conf(
-            "ADMIN_AVATAR_DEFAULT", False, cast = bool
+            "ADMIN_AVATAR_DEFAULT", self.avatar_default, cast = bool
         )
 
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
@@ -139,7 +151,7 @@ class AdminPart(
         self.owner.lib_loaders["jinja2"] = self._jinja2_loader
         self.owner.lib_loaders["ssl"] = self._ssl_loader
 
-        self.owner.add_filter(self.markdown_jinja, "markdown", type = "eval")
+        self.owner.add_filter(self.markdown_jinja, "markdown")
 
         if self.owner.allow_headers: self.owner.allow_headers += ", X-Secret-Key"
 
@@ -324,6 +336,12 @@ class AdminPart(
         )
 
     def login(self):
+        # verifies if the current administration interface is
+        # available and if that's not the cases raises an error
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
+
         # retrieves the various fields that are going to be
         # used for the validation of the user under the current
         # authentication/authorization process
@@ -441,6 +459,9 @@ class AdminPart(
         )
 
     def new_account(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         if not self.owner.admin_open: raise appier.SecurityError(
             message = "Signup not allowed"
         )
@@ -451,6 +472,9 @@ class AdminPart(
         )
 
     def create_account(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         if not self.owner.admin_open: raise appier.SecurityError(
             message = "Signup not allowed"
         )
@@ -785,6 +809,12 @@ class AdminPart(
         )
 
     def oauth_login(self):
+        # verifies if the current administration interface is
+        # available and if that's not the cases raises an error
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
+
         # verifies if the oauth system is allowed if that's not
         # the case raises an exception indicating so
         if not self.owner.admin_oauth: raise appier.SecurityError(
@@ -1492,6 +1522,9 @@ class AdminPart(
         )
 
     def oauth_facebook(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         code = self.field("code")
         state = self.field("state")
         context, next = state.split(":", 1)
@@ -1546,6 +1579,9 @@ class AdminPart(
         )
 
     def oauth_github(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         code = self.field("code")
         state = self.field("state")
         context, next = state.split(":", 1)
@@ -1607,6 +1643,9 @@ class AdminPart(
         )
 
     def oauth_google(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         code = self.field("code")
         state = self.field("state")
         context, next = state.split(":", 1)
@@ -1669,6 +1708,9 @@ class AdminPart(
         )
 
     def oauth_live(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         code = self.field("code")
         state = self.field("state")
         context, next = state.split(":", 1)
@@ -1721,6 +1763,9 @@ class AdminPart(
         )
 
     def oauth_twitter(self):
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
         oauth_verifier = self.field("oauth_verifier")
         state = self.field("state")
         context, next = state.split(":", 1)
@@ -1757,6 +1802,12 @@ class AdminPart(
         return dict(time = time.time())
 
     def login_api(self):
+        # verifies if the current administration interface is
+        # available and if that's not the cases raises an error
+        if not self.owner.admin_available: raise appier.SecurityError(
+            message = "Administration not available"
+        )
+
         # retrieves the various fields that are going to be
         # used for the validation of the user under the current
         # authentication/authorization process
@@ -1800,13 +1851,9 @@ class AdminPart(
     def linked(self):
         return models.Settings.linked_apis()
 
-    def markdown_jinja(self, eval_ctx, value, *args, **kwargs):
-        return self.owner.escape_jinja_f(
-            self.markdown,
-            eval_ctx,
-            value,
-            *args, **kwargs
-        )
+    def markdown_jinja(self, value, *args, **kwargs):
+        result = self.markdown(value, *args, **kwargs)
+        return self.owner.escape_template(result)
 
     def markdown(
         self,
