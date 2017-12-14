@@ -91,6 +91,15 @@ class AdminPart(
         self.style = appier.conf("ADMIN_STYLE", self.style)
         self.libs = appier.conf("ADMIN_LIBS", self.libs)
         self.social_libs = appier.conf("ADMIN_SOCIAL_LIBS", self.social_libs, cast = list)
+        self.available = appier.conf("ADMIN_AVAILABLE", self.available, cast = bool)
+        self.open = appier.conf("ADMIN_OPEN", self.open, cast = bool)
+        self.oauth = appier.conf("ADMIN_OAUTH", self.oauth, cast = bool)
+        self.avatar_default = appier.conf(
+            "ADMIN_AVATAR_DEFAULT",
+            self.avatar_default,
+            cast = bool
+        )
+
         self._last_login = None
         self._login_count = 0
 
@@ -130,18 +139,10 @@ class AdminPart(
         self.owner.admin_google_scope = ("email",)
         self.owner.admin_live_scope = ("wl.basic", "wl.emails")
 
-        self.owner.admin_available = appier.conf(
-            "ADMIN_AVAILABLE", self.available, cast = bool
-        )
-        self.owner.admin_open = appier.conf(
-            "ADMIN_OPEN", self.open, cast = bool
-        )
-        self.owner.admin_oauth = appier.conf(
-            "ADMIN_OAUTH", self.oauth, cast = bool
-        )
-        self.owner.admin_avatar_default = appier.conf(
-            "ADMIN_AVATAR_DEFAULT", self.avatar_default, cast = bool
-        )
+        self.owner.admin_available = self.available
+        self.owner.admin_open = self.open
+        self.owner.admin_oauth = self.oauth
+        self.owner.admin_avatar_default = self.avatar_default
 
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
         self.owner.lib_loaders["netius"] = self._netius_loader
@@ -270,6 +271,7 @@ class AdminPart(
         ]
 
     def models(self):
+        if not self.available: return None
         return models
 
     def template(self, template, layout = None, *args, **kwargs):
