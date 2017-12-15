@@ -135,7 +135,7 @@ class Prismic(object):
         key,
         default = None,
         locale = None,
-        timeout = 3600,
+        timeout = 86400,
         verify = False,
         multiple = False,
         *args,
