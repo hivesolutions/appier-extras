@@ -86,6 +86,6 @@ class DiagPart(appier.Part):
             self.request.protocol,
             self.request.code,
             str(self.request.result_l or "-"),
-            self.request.get_header("Referer"),
-            self.request.get_header("User-Agent")
+            self.request.get_header("Referer") or "",
+            self.request.get_header("User-Agent") or ""
         )
