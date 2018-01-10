@@ -65,6 +65,7 @@ def size_round_unit(
     places = DEFAULT_PLACES,
     reduce = True,
     space = False,
+    justify = False,
     depth = 0
 ):
     """
@@ -91,6 +92,9 @@ def size_round_unit(
     :type space: bool
     :param space: If a space character must be used dividing
     the value from the unit symbol.
+    :type justify: bool
+    :param justify: If the size string value should be (right)
+    justified important for properly aligned values in a table.
     :type depth: int
     :param depth: The current iteration depth value.
     :rtype: String
@@ -102,6 +106,11 @@ def size_round_unit(
     # the minimum) this is the final iteration and the final
     # string representation is going to be created
     if size_value < minimum:
+        # calculates the maximum size of the string that is going
+        # to represent the base size value as the number of places
+        # plus one (representing the decimal separator character)
+        size_s = places + 1
+
         # calculates the target number of decimal places taking
         # into account the size (in digits) of the current size
         # value, this may never be a negative number
@@ -137,6 +146,11 @@ def size_round_unit(
         if reduce: size_value_s = size_value_s.rstrip("0")
         if reduce: size_value_s = size_value_s.rstrip(".")
 
+        # in case the justify flag is set runs the justification
+        # process on the size value taking into account the maximum
+        # size of the associated size string
+        if justify: size_value_s = size_value_s.rjust(size_s)
+
         # retrieves the size unit (string mode) for the current
         # depth according to the provided map
         size_unit = SIZE_UNITS_LIST[depth]
@@ -151,8 +165,8 @@ def size_round_unit(
         size_value_string = size_value_s + separator + size_unit
         return size_value_string
 
-    # otherwise the value is not acceptable
-    # and a new iteration must be ran
+    # otherwise the value is not acceptable and a new iteration
+    # must be ran with one less depth of size value
     else:
         # re-calculates the new size value, increments the depth
         # and runs the size round unit again with the new values
@@ -164,5 +178,6 @@ def size_round_unit(
             places = places,
             reduce = reduce,
             space = space,
+            justify = justify,
             depth = new_depth
         )
