@@ -62,6 +62,7 @@ setuptools.setup(
         "appier_extras.parts.contentful",
         "appier_extras.parts.contentful.partials",
         "appier_extras.parts.csfr",
+        "appier_extras.parts.diag",
         "appier_extras.parts.opbeat",
         "appier_extras.parts.prismic",
         "appier_extras.parts.prismic.partials",
