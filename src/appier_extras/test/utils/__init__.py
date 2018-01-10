@@ -33,9 +33,3 @@ __copyright__ = "Copyright (c) 2008-2017 Hive Solutions Lda."
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
-
-from . import markdown
-from . import net
-
-from .markdown import MarkdownParser, MarkdownGenerator, MarkdownHTML
-from .net import size_round_unit
