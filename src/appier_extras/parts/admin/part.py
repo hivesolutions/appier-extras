@@ -102,6 +102,7 @@ class AdminPart(
 
         self._last_login = None
         self._login_count = 0
+        self._sections = appier.OrderedDict()
 
     def version(self):
         return base.VERSION
@@ -280,7 +281,6 @@ class AdminPart(
         return appier.Part.template(
             self,
             template,
-            models_d = self.models_d,
             *args,
             **kwargs
         )
@@ -322,6 +322,12 @@ class AdminPart(
 
     def flush_settings(self):
         self.dump_settings()
+
+    def add_section(self, name, route):
+        self._sections[name] = route
+
+    def remove_section(self, name):
+        del self._sections[name]
 
     def index(self):
         return self.list_models()

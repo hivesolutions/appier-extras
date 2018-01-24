@@ -43,9 +43,21 @@
             <a href="{{ url_for('admin.status') }}">Status</a>
         {% endif %}
     {% endif %}
+    {% if own.admin_part._sections %}
+        <div class="separator"></div>
+        {% for name, route in own.admin_part._sections %}
+            {% if acl(route) %}
+                {% if section == "section:" + name|lower %}
+                    <a class="selected" href="{{ url_for(route) }}">{{ name }}</a>
+                {% else %}
+                    <a href="{{ url_for(route) }}">{{ name }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     <div class="separator"></div>
-    {% for _section, models in models_d.items() %}
-        {% set available = own._available(models) %}
+    {% for _section, models in own.admin_part.models_d.items() %}
+        {% set available = own.admin_part._available(models) %}
         {% if available|length > 0 %}
             {% for _model in available %}
                 {% if acl("admin.models." + _model._under()) %}

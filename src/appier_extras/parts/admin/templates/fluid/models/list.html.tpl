@@ -3,7 +3,7 @@
 {% block name %}Site Administration{% endblock %}
 {% block content %}
     <div>
-        {% for section, models in models_d.items() %}
+        {% for section, models in own.admin_part.models_d.items() %}
             {% set available = own._available(models) %}
             {% if available|length > 0 %}
                 <div class="panel-model">

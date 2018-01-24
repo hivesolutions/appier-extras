@@ -3,7 +3,7 @@
 {% block name %}Models{% endblock %}
 {% block content %}
     <ul>
-        {% for section, models in models_d.items() %}
+        {% for section, models in own.admin_part.models_d.items() %}
             {% for model in models %}
                 <li>{{ model._readable() }}</li>
             {% endfor %}
