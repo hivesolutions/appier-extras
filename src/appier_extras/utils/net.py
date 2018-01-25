@@ -45,6 +45,12 @@ SIZE_UNITS_LIST = (
 """ The size units list that contains the complete set of
 units indexed by the depth they represent """
 
+SIZE_UNITS_LIST_S = (
+    "B", "K", "M", "G", "T", "P", "E", "Z", "Y"
+)
+""" The simplified size units list that contains the complete set of
+units indexed by the depth they represent """
+
 SIZE_UNIT_COEFFICIENT = 1024
 """ The size unit coefficient as an integer value, this is
 going to be used in each of the size steps as divisor """
@@ -66,6 +72,7 @@ def size_round_unit(
     reduce = True,
     space = False,
     justify = False,
+    simplified = False,
     depth = 0
 ):
     """
@@ -95,6 +102,9 @@ def size_round_unit(
     :type justify: bool
     :param justify: If the size string value should be (right)
     justified important for properly aligned values in a table.
+    :type simplified: bool
+    :param simplified: If the simplified version of the units
+    should be used instead of the longer one.
     :type depth: int
     :param depth: The current iteration depth value.
     :rtype: String
@@ -153,7 +163,8 @@ def size_round_unit(
 
         # retrieves the size unit (string mode) for the current
         # depth according to the provided map
-        size_unit = SIZE_UNITS_LIST[depth]
+        if simplified: size_unit = SIZE_UNITS_LIST_S[depth]
+        else: size_unit = SIZE_UNITS_LIST[depth]
 
         # retrieves the appropriate separator based
         # on the value of the space flag
@@ -179,5 +190,6 @@ def size_round_unit(
             reduce = reduce,
             space = space,
             justify = justify,
+            simplified = simplified,
             depth = new_depth
         )
