@@ -43,7 +43,7 @@ import datetime
 import appier
 
 class DiagBase(appier.Model):
-    
+
     id = appier.field(
         type = int,
         index = "all",

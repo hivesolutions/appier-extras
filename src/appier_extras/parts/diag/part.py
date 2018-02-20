@@ -112,10 +112,13 @@ class DiagPart(appier.Part):
         )
 
     def _store_log(self):
+        browser_info = self.request.browser_info
         diag_http = models.DiagHTTP(
             address = self.request.address,
             method = self.request.method,
             path = self.request.path,
-            code = self.request.code
+            code = self.request.code,
+            browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            browse_info = browser_info
         )
         diag_http.save()

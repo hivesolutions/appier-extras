@@ -62,3 +62,14 @@ class DiagHTTP(base.DiagBase):
         type = int,
         immutable = True
     )
+
+    browser = appier.field(
+        index = "all",
+        immutable = True
+    )
+
+    browser_info = appier.field(
+        type = dict,
+        index = "all",
+        immutable = True
+    )
