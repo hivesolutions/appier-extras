@@ -37,13 +37,23 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import time
+import datetime
+
 import appier
 
 class HTTPDiag(appier.Model):
 
+    timestamp = appier.field(
+        type = int,
+        index = "all",
+        safe = True,
+        immutable = True,
+        meta = "datetime"
+    )
+
     method = appier.field(
         index = "all",
-        default = True,
         immutable = True
     )
 
@@ -51,3 +61,13 @@ class HTTPDiag(appier.Model):
         index = "all",
         immutable = True
     )
+
+    def pre_create(self):
+        appier.Model.pre_create(self)
+
+        self.timestamp = time.time()
+
+    @property
+    def timestamp_d(self):
+        if not self.timestamp: return self.timestamp
+        return datetime.datetime.fromtimestamp(self.timestamp)
