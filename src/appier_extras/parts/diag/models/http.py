@@ -43,6 +43,11 @@ from . import base
 
 class DiagHTTP(base.DiagBase):
 
+    address = appier.field(
+        index = "all",
+        immutable = True
+    )
+
     method = appier.field(
         index = "all",
         immutable = True

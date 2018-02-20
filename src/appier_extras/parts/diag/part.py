@@ -113,6 +113,7 @@ class DiagPart(appier.Part):
 
     def _store_log(self):
         diag_http = models.DiagHTTP(
+            address = self.request.address,
             method = self.request.method,
             path = self.request.path
         )

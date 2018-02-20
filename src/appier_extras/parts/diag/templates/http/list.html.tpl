@@ -8,6 +8,7 @@
             <tr class="table-row table-header">
                 <th class="text-left">Method</th>
                 <th class="text-left">Path</th>
+                <th class="text-left">Address</th>
                 <th class="text-left">Date</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
                     	<span class="tag {{ request.method|lower }}">{{ request.method }}</span>
                     </td>
                     <td class="text-left">{{ request.path }}</td>
+                    <td class="text-left">{{ request.address }}</td>
                     <td class="text-left">{{ request.timestamp_d }}</td>
                 </tr>
             {% endfor %}
