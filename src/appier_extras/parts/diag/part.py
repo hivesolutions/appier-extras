@@ -41,6 +41,8 @@ import appier
 
 from appier_extras import base
 
+from appier_extras.parts.diag import models
+
 class DiagPart(appier.Part):
     """
     Modular part class that provides an infra-structure of diagnostics
@@ -53,14 +55,30 @@ class DiagPart(appier.Part):
     def load(self):
         appier.Part.load(self)
 
+        if self.owner.admin_part:
+            self.owner.admin_part.add_section("HTTP Diag", "diag.list_http")
+
         appier.App.add_custom("before_request", self.before_request)
         appier.App.add_custom("after_request", self.after_request)
+
+    def routes(self):
+        return [
+            (("GET",), "/diag/http", self.list_http)
+        ]
 
     def before_request(self):
         pass
 
     def after_request(self):
         print(self._combined_log())
+        self._store_log()
+
+    @appier.ensure(token = "admin.status")
+    def list_http(self):
+        return self.template(
+            "http/list.html.tpl",
+            requests = models.HTTPDiag.find()
+        )
 
     def _common_log(self, user = "root"):
         template = "%s - %s [%s] \"%s %s %s\" %d %s"
@@ -89,3 +107,10 @@ class DiagPart(appier.Part):
             self.request.get_header("Referer") or "",
             self.request.get_header("User-Agent") or ""
         )
+
+    def _store_log(self):
+        http_diag = models.HTTPDiag(
+            method = self.request.method,
+            path = self.request.path
+        )
+        http_diag.save()

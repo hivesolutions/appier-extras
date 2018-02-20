@@ -90,6 +90,9 @@ setuptools.setup(
         "appier_extras.parts.captcha" : [
             "static/fonts/*",
             "static/patterns/*"
+        ],
+        "appier_extras.parts.diag" : [
+            "templates/http/*.tpl"
         ]
     },
     entry_points = {
