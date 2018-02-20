@@ -77,6 +77,7 @@ class DiagPart(appier.Part):
     def list_http(self):
         return self.template(
             "http/list.html.tpl",
+            section = "section:http_diag",
             requests = models.HTTPDiag.find()
         )
 
