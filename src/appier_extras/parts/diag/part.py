@@ -115,6 +115,7 @@ class DiagPart(appier.Part):
         diag_http = models.DiagHTTP(
             address = self.request.address,
             method = self.request.method,
-            path = self.request.path
+            path = self.request.path,
+            code = self.request.code
         )
         diag_http.save()

@@ -57,3 +57,8 @@ class DiagHTTP(base.DiagBase):
         index = "all",
         immutable = True
     )
+
+    code = appier.field(
+        type = int,
+        immutable = True
+    )
