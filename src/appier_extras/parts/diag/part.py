@@ -78,7 +78,9 @@ class DiagPart(appier.Part):
         return self.template(
             "http/list.html.tpl",
             section = "section:http_diag",
-            requests = models.HTTPDiag.find()
+            requests = models.HTTPDiag.find(
+                sort = (("id", -1),)
+            )
         )
 
     def _common_log(self, user = "root"):

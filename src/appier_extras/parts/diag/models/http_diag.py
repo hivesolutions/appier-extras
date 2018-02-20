@@ -44,6 +44,14 @@ import appier
 
 class HTTPDiag(appier.Model):
 
+    id = appier.field(
+        type = int,
+        index = "all",
+        increment = True,
+        safe = True,
+        description = "ID",
+    )
+
     timestamp = appier.field(
         type = int,
         index = "all",
