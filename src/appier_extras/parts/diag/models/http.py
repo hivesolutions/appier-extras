@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,8 +37,18 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import base
-from . import http
+import appier
 
-from .base import DiagBase
-from .http import DiagHTTP
+from . import base
+
+class DiagHTTP(base.DiagBase):
+
+    method = appier.field(
+        index = "all",
+        immutable = True
+    )
+
+    path = appier.field(
+        index = "all",
+        immutable = True
+    )

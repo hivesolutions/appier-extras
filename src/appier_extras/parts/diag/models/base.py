@@ -42,8 +42,8 @@ import datetime
 
 import appier
 
-class HTTPDiag(appier.Model):
-
+class DiagBase(appier.Model):
+    
     id = appier.field(
         type = int,
         index = "all",
@@ -58,16 +58,6 @@ class HTTPDiag(appier.Model):
         safe = True,
         immutable = True,
         meta = "datetime"
-    )
-
-    method = appier.field(
-        index = "all",
-        immutable = True
-    )
-
-    path = appier.field(
-        index = "all",
-        immutable = True
     )
 
     def pre_create(self):

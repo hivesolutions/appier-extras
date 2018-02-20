@@ -78,7 +78,7 @@ class DiagPart(appier.Part):
         return self.template(
             "http/list.html.tpl",
             section = "section:http_diag",
-            requests = models.HTTPDiag.find(
+            requests = models.DiagHTTP.find(
                 sort = (("id", -1),)
             )
         )
@@ -112,8 +112,8 @@ class DiagPart(appier.Part):
         )
 
     def _store_log(self):
-        http_diag = models.HTTPDiag(
+        diag_http = models.DiagHTTP(
             method = self.request.method,
             path = self.request.path
         )
-        http_diag.save()
+        diag_http.save()
