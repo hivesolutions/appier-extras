@@ -73,6 +73,18 @@ class DiagPart(appier.Part):
         appier.App.add_custom("before_request", self.before_request)
         appier.App.add_custom("after_request", self.after_request)
 
+    def unload(self):
+        appier.Part.unload(self)
+
+        if self.owner.admin_part:
+            self.owner.admin_part.remove_section_item(
+                "HTTP Requests",
+                section = "Diag"
+            )
+
+        appier.App.remove_custom("before_request", self.before_request)
+        appier.App.add_custom("after_request", self.after_request)
+
     def routes(self):
         return [
             (("GET",), "/admin/diag/http", self.list_http)
