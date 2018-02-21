@@ -61,6 +61,15 @@ class DiagPart(appier.Part):
     def version(self):
         return base.VERSION
 
+    def info(self):
+        info = appier.Part.info(self)
+        info.update(
+            store = self.store,
+            output = self.output,
+            format = self.format
+        )
+        return info
+
     def load(self):
         appier.Part.load(self)
 
