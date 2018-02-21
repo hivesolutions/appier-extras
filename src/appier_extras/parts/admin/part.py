@@ -675,8 +675,7 @@ class AdminPart(
             self.url_for(
                 "admin.show_part",
                 name = name,
-                message = "Part %s has been loaded" % name,
-                mtype = "success"
+                message = "Part %s has been loaded" % name
             )
         )
 
@@ -688,8 +687,7 @@ class AdminPart(
             self.url_for(
                 "admin.show_part",
                 name = name,
-                message = "Part %s has been unloaded" % name,
-                mtype = "error"
+                message = "Part %s has been unloaded" % name
             )
         )
 
