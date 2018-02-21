@@ -58,12 +58,28 @@ class DiagHTTP(base.DiagBase):
         immutable = True
     )
 
+    query = appier.field(
+        index = "all",
+        immutable = True
+    )
+
     code = appier.field(
         type = int,
         immutable = True
     )
 
+    protocol = appier.field(
+        index = "all",
+        immutable = True
+    )
+
     browser = appier.field(
+        index = "all",
+        immutable = True
+    )
+
+    headers = appier.field(
+        type = dict,
         index = "all",
         immutable = True
     )

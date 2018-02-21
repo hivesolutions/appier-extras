@@ -164,8 +164,11 @@ class DiagPart(appier.Part):
             address = self.request.address,
             method = self.request.method,
             path = self.request.path,
+            query = self.request.query,
             code = self.request.code,
+            protocol = self.request.protocol,
             browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
-            browse_info = browser_info
+            headers = self.request.in_headers,
+            browser_info = browser_info
         )
         diag_http.save()
