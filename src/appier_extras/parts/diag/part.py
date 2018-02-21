@@ -41,26 +41,82 @@ import appier
 
 from appier_extras import base
 
+from appier_extras.parts.diag import models
+
 class DiagPart(appier.Part):
     """
     Modular part class that provides an infra-structure of diagnostics
     that allow more and better debugging of an Application.
     """
 
+    def __init__(self, *args, **kwargs):
+        appier.Part.__init__(self, *args, **kwargs)
+        self.store = kwargs.get("store", True)
+        self.output = kwargs.get("output", True)
+        self.format = kwargs.get("format", "combined")
+        self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
+        self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
+        self.format = appier.conf("DIAG_FORMAT", self.format)
+
     def version(self):
         return base.VERSION
+
+    def info(self):
+        info = appier.Part.info(self)
+        info.update(
+            store = self.store,
+            output = self.output,
+            format = self.format
+        )
+        return info
 
     def load(self):
         appier.Part.load(self)
 
+        if self.owner.admin_part:
+            self.owner.admin_part.add_section_item(
+                "HTTP Requests", "diag.list_http",
+                section = "Diag"
+            )
+
         appier.App.add_custom("before_request", self.before_request)
         appier.App.add_custom("after_request", self.after_request)
+
+    def unload(self):
+        appier.Part.unload(self)
+
+        if self.owner.admin_part:
+            self.owner.admin_part.remove_section_item(
+                "HTTP Requests",
+                section = "Diag"
+            )
+
+        appier.App.remove_custom("before_request", self.before_request)
+        appier.App.remove_custom("after_request", self.after_request)
+
+    def routes(self):
+        return [
+            (("GET",), "/admin/diag/http", self.list_http)
+        ]
 
     def before_request(self):
         pass
 
     def after_request(self):
-        print(self._combined_log())
+        method = getattr(self, "_%s_log" % self.format)
+        result = method()
+        if self.output: print(result)
+        if self.store: self._store_log()
+
+    @appier.ensure(token = "admin.status")
+    def list_http(self):
+        return self.template(
+            "http/list.html.tpl",
+            section = "section:diag:http_requests",
+            requests = models.DiagHTTP.find(
+                sort = (("id", -1),)
+            )
+        )
 
     def _common_log(self, user = "root"):
         template = "%s - %s [%s] \"%s %s %s\" %d %s"
@@ -89,3 +145,15 @@ class DiagPart(appier.Part):
             self.request.get_header("Referer") or "",
             self.request.get_header("User-Agent") or ""
         )
+
+    def _store_log(self):
+        browser_info = self.request.browser_info
+        diag_http = models.DiagHTTP(
+            address = self.request.address,
+            method = self.request.method,
+            path = self.request.path,
+            code = self.request.code,
+            browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            browse_info = browser_info
+        )
+        diag_http.save()

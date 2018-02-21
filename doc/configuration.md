@@ -17,6 +17,12 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `ADMIN_OAUTH` (`bool`) - If OAuth 2.0 support should be enabled for the administration interface (defaults to `True`)
 * `ADMIN_AVATAR_DEFAULT` (`bool`) - If a new default image should be set for an account's avatar if none is set (defaults to `False`)
 
+### Diag
+
+* `DIAG_STORE` (`bool`) - If the multiple HTTP requests in diagnostics should be store in the data source (defaults to `True`)
+* `DIAG_OUTPUT` (`bool`) - If each of the HTTP requests should be printed to the stdout (defaults to `True`)
+* `DIAG_FORMAT` (`str`) - The format to be used while outputting the HTTP request (defaults to `combined`)
+
 ### CMS
 
 * `CMS_CACHE_ENGINE` (`str`) - The generic name of the cache engine to be used for CMS access (defaults to `memory`)
