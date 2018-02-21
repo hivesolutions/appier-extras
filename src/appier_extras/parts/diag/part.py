@@ -99,6 +99,9 @@ class DiagPart(appier.Part):
             (("GET",), "/admin/diag/http", self.list_http)
         ]
 
+    def models(self):
+        return models
+
     def before_request(self):
         pass
 
