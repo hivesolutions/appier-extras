@@ -35,7 +35,7 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 from . import base
-from . import http
+from . import request
 
 from .base import DiagBase
-from .http import DiagHTTP
+from .request import DiagRequest

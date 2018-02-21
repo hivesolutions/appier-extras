@@ -41,7 +41,7 @@ import appier
 
 from . import base
 
-class DiagHTTP(base.DiagBase):
+class DiagRequest(base.DiagBase):
 
     address = appier.field(
         index = "all",

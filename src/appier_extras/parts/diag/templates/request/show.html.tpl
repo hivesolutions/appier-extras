@@ -1,7 +1,7 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}HTTP Requests / {{ request.id }}{% endblock %}
+{% block title %}Requests / {{ request.id }}{% endblock %}
 {% block name %}
-    <a href="{{ url_for('diag.list_http') }}">HTTP Requests</a>
+    <a href="{{ url_for('diag.list_requests') }}">Requests</a>
     <span>/</span>
     <span>{{ request.id }}</span>
 {% endblock %}

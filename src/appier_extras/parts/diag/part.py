@@ -75,7 +75,7 @@ class DiagPart(appier.Part):
 
         if self.owner.admin_part:
             self.owner.admin_part.add_section_item(
-                "HTTP Requests", "diag.list_http",
+                "Requests", "diag.list_requests",
                 section = "Diag"
             )
 
@@ -87,7 +87,7 @@ class DiagPart(appier.Part):
 
         if self.owner.admin_part:
             self.owner.admin_part.remove_section_item(
-                "HTTP Requests",
+                "Requests",
                 section = "Diag"
             )
 
@@ -96,8 +96,8 @@ class DiagPart(appier.Part):
 
     def routes(self):
         return [
-            (("GET",), "/admin/diag/http", self.list_http),
-            (("GET",), "/admin/diag/http/<int:id>", self.show_http)
+            (("GET",), "/admin/diag/requests", self.list_requests),
+            (("GET",), "/admin/diag/requests/<int:id>", self.show_request)
         ]
 
     def models(self):
@@ -113,29 +113,29 @@ class DiagPart(appier.Part):
         if self.store: self._store_log()
 
     @appier.ensure(token = "admin.status")
-    def list_http(self):
+    def list_requests(self):
         object = appier.get_object(
             alias = True,
             page = True,
             find = True,
             sort = (("id", -1),)
         )
-        page = models.DiagHTTP.paginate(**object)
-        requests = models.DiagHTTP.find(meta = True, **object)
+        page = models.DiagRequest.paginate(**object)
+        requests = models.DiagRequest.find(meta = True, **object)
         return self.template(
-            "http/list.html.tpl",
-            section = "section:diag:http_requests",
+            "request/list.html.tpl",
+            section = "section:diag:requests",
             page = page,
             requests = requests,
-            model = models.DiagHTTP
+            model = models.DiagRequest
         )
 
     @appier.ensure(token = "admin.status")
-    def show_http(self, id):
+    def show_request(self, id):
         return self.template(
-            "http/show.html.tpl",
-            section = "section:diag:http_requests",
-            request = models.DiagHTTP.get(id = id)
+            "request/show.html.tpl",
+            section = "section:diag:requests",
+            request = models.DiagRequest.get(id = id)
         )
 
     def _common_log(self, user = "root"):
@@ -168,7 +168,7 @@ class DiagPart(appier.Part):
 
     def _store_log(self):
         browser_info = self.request.browser_info
-        diag_http = models.DiagHTTP(
+        diag_request = models.DiagRequest(
             address = self.request.address,
             method = self.request.method,
             path = self.request.path,
@@ -179,4 +179,4 @@ class DiagPart(appier.Part):
             headers = self.request.in_headers,
             browser_info = browser_info
         )
-        diag_http.save()
+        diag_request.save()
