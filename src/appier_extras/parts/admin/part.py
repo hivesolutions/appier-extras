@@ -670,7 +670,7 @@ class AdminPart(
     @appier.ensure(token = "admin.status")
     def load_part(self, name):
         part = self.owner.get_part(name)
-        part.load()
+        self.owner._load_part(part)
         return self.redirect(
             self.url_for(
                 "admin.show_part",
@@ -682,7 +682,7 @@ class AdminPart(
     @appier.ensure(token = "admin.status")
     def unload_part(self, name):
         part = self.owner.get_part(name)
-        part.unload()
+        self.owner._unload_part(part)
         return self.redirect(
             self.url_for(
                 "admin.show_part",
