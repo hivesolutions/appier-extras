@@ -198,6 +198,8 @@ class AdminPart(
             (("GET",), "/admin/configs", self.list_configs),
             (("GET",), "/admin/parts", self.list_parts),
             (("GET",), "/admin/parts/<str:name>", self.show_part),
+            (("GET",), "/admin/parts/<str:name>/load", self.load_part),
+            (("GET",), "/admin/parts/<str:name>/unload", self.unload_part),
             (("GET",), "/admin/libraries", self.list_libraries),
             (("GET",), "/admin/oauth/authorize", self.oauth_authorize),
             (("POST",), "/admin/oauth/authorize", self.do_oauth_authorize),
@@ -336,6 +338,8 @@ class AdminPart(
 
     def remove_section_item(self, name, section = None):
         del self._sections[section][name]
+        if self._sections[section]: return
+        del self._sections[section]
 
     def index(self):
         return self.list_models()
@@ -661,6 +665,30 @@ class AdminPart(
             part = part,
             info = info,
             info_l = info_l
+        )
+
+    @appier.ensure(token = "admin.status")
+    def load_part(self, name):
+        part = self.owner.get_part(name)
+        part.load()
+        return self.redirect(
+            self.url_for(
+                "admin.show_part",
+                name = name,
+                message = "Part '%s' has been loaded" % name
+            )
+        )
+
+    @appier.ensure(token = "admin.status")
+    def unload_part(self, name):
+        part = self.owner.get_part(name)
+        part.unload()
+        return self.redirect(
+            self.url_for(
+                "admin.show_part",
+                name = name,
+                message = "Part '%s' has been unloaded" % name
+            )
         )
 
     @appier.ensure(token = "admin.status")
