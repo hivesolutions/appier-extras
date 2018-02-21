@@ -49,6 +49,15 @@ class DiagPart(appier.Part):
     that allow more and better debugging of an Application.
     """
 
+    def __init__(self, *args, **kwargs):
+        appier.Part.__init__(self, *args, **kwargs)
+        self.store = kwargs.get("store", True)
+        self.output = kwargs.get("output", True)
+        self.format = kwargs.get("format", "combined")
+        self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
+        self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
+        self.format = appier.conf("DIAG_FORMAT", self.format)
+
     def version(self):
         return base.VERSION
 
@@ -70,8 +79,10 @@ class DiagPart(appier.Part):
         pass
 
     def after_request(self):
-        print(self._combined_log())
-        self._store_log()
+        method = getattr(self, "_%s_log" % self.format)
+        result = method()
+        if self.output: print(result)
+        if self.store: self._store_log()
 
     @appier.ensure(token = "admin.status")
     def list_http(self):
