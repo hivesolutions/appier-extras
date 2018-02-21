@@ -96,7 +96,8 @@ class DiagPart(appier.Part):
 
     def routes(self):
         return [
-            (("GET",), "/admin/diag/http", self.list_http)
+            (("GET",), "/admin/diag/http", self.list_http),
+            (("GET",), "/admin/diag/http/<int:id>", self.show_http)
         ]
 
     def models(self):
@@ -119,6 +120,14 @@ class DiagPart(appier.Part):
             requests = models.DiagHTTP.find(
                 sort = (("id", -1),)
             )
+        )
+
+    @appier.ensure(token = "admin.status")
+    def show_http(self, id):
+        return self.template(
+            "http/show.html.tpl",
+            section = "section:diag:http_requests",
+            request = models.DiagHTTP.get(id = id)
         )
 
     def _common_log(self, user = "root"):

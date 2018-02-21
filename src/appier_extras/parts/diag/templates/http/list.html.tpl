@@ -7,8 +7,8 @@
         <thead>
             <tr class="table-row table-header">
                 <th class="text-left">Method</th>
-                <th class="text-left">Status</th>
                 <th class="text-left">Path</th>
+                <th class="text-left">Status</th>
                 <th class="text-left">Address</th>
                 <th class="text-left">Date</th>
                 <th class="text-left">Browser</th>
@@ -20,8 +20,10 @@
                     <td class="text-left">
                         <span class="tag {{ request.method|lower }}">{{ request.method }}</span>
                     </td>
+                    <td class="text-left">
+                        <a href="{{ url_for('diag.show_http', id = request.id) }}">{{ request.path }}</a>
+                    </td>
                     <td class="text-left">{{ request.code }}</td>
-                    <td class="text-left">{{ request.path }}</td>
                     <td class="text-left">{{ request.address }}</td>
                     <td class="text-left">{{ request.timestamp_d }}</td>
                     <td class="text-left">{{ request.browser }}</td>
