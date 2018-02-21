@@ -48,7 +48,7 @@
         <div class="separator"></div>
         {% for name, route in own.admin_part._sections %}
             {% if acl(route) %}
-                {% if section == "section:" + name|lower|replace(" ", "_") %}
+                {% if section == "section:" + _section|lower|replace(" ", "_") + ":" + name|lower|replace(" ", "_") %}
                     <a class="selected" href="{{ url_for(route) }}">{{ name }}</a>
                 {% else %}
                     <a href="{{ url_for(route) }}">{{ name }}</a>
