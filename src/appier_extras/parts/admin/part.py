@@ -675,7 +675,8 @@ class AdminPart(
             self.url_for(
                 "admin.show_part",
                 name = name,
-                message = "Part '%s' has been loaded" % name
+                message = "Part %s has been loaded" % name,
+                mtype = "success"
             )
         )
 
@@ -687,7 +688,8 @@ class AdminPart(
             self.url_for(
                 "admin.show_part",
                 name = name,
-                message = "Part '%s' has been unloaded" % name
+                message = "Part %s has been unloaded" % name,
+                mtype = "error"
             )
         )
 
@@ -1334,7 +1336,7 @@ class AdminPart(
             return self.redirect(
                 self.url_for(
                     "admin.show_entity",
-                    message = "Operation '%s' completed with success" % operation_s,
+                    message = "Operation %s completed with success" % operation_s,
                     model = model_name,
                     _id = model_id
                 )
@@ -1345,10 +1347,10 @@ class AdminPart(
         return self.redirect(
             next or self.url_for(
                 "admin.show_model",
-                message = "Operation '%s' completed with success" % operation_s,
+                message = "Operation %s completed with success" % operation_s,
                 model = model._under()
             ),
-            message = "Operation '%s' completed with success" % operation_s
+            message = "Operation %s completed with success" % operation_s
         )
 
     @appier.ensure(token = "admin")
