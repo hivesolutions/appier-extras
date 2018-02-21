@@ -92,7 +92,8 @@ setuptools.setup(
             "static/patterns/*"
         ],
         "appier_extras.parts.diag" : [
-            "templates/http/*.tpl"
+            "templates/*.tpl",
+            "templates/*/*"
         ]
     },
     entry_points = {
