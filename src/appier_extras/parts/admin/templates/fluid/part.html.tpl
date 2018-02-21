@@ -6,6 +6,16 @@
     <span>{{ info.name }}</span>
 {% endblock %}
 {% block style %}no-padding{% endblock %}
+{% block buttons %}
+    {{ super() }}
+    {% if part.is_loaded() %}
+        <div class="button button-color button-red"
+             data-link="{{ url_for('admin.unload_part', name = info.name) }}">Unload</div>
+    {% else %}
+        <div class="button button-color button-green"
+             data-link="{{ url_for('admin.load_part', name = info.name) }}">Load</div>
+    {% endif %}
+{% endblock %}
 {% block content %}
     <table class="filter" data-no_input="1">
         <thead>
