@@ -79,12 +79,12 @@ setuptools.setup(
             "static/css/*",
             "static/images/*",
             "static/js/*",
-            "templates/admin/*.tpl",
-            "templates/admin/email/*.tpl",
+            "templates/admin/*",
+            "templates/admin/email/*",
             "templates/admin/email/*/*",
-            "templates/fluid/*.tpl",
+            "templates/fluid/*",
             "templates/fluid/*/*",
-            "templates/static/*.tpl",
+            "templates/static/*",
             "templates/static/*/*"
         ],
         "appier_extras.parts.captcha" : [
@@ -92,7 +92,7 @@ setuptools.setup(
             "static/patterns/*"
         ],
         "appier_extras.parts.diag" : [
-            "templates/*.tpl",
+            "templates/*",
             "templates/*/*"
         ]
     },
