@@ -65,7 +65,7 @@ class DiagPart(appier.Part):
         appier.Part.load(self)
 
         if self.owner.admin_part:
-            self.owner.admin_part.add_item(
+            self.owner.admin_part.add_section_item(
                 "HTTP Requests", "diag.list_http",
                 section = "Diag"
             )
