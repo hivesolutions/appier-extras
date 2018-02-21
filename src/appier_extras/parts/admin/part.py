@@ -329,12 +329,12 @@ class AdminPart(
     def remove_section(self, name):
         del self._sections[name]
 
-    def add_item(self, name, route, section = None):
+    def add_section_item(self, name, route, section = None):
         if not section in self._sections:
             self.add_section(section)
         self._sections[section][name] = route
 
-    def remove_item(self, name, section = None):
+    def remove_section_item(self, name, section = None):
         del self._sections[section][name]
 
     def index(self):
