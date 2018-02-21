@@ -1,6 +1,7 @@
 {% extends "admin/layout.fluid.html.tpl" %}
 {% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
+	<h3>Settings</h3>
     {% if acl("admin") %}
         {% if section == "admin" %}
             <a class="selected" href="{{ url_for('admin.index') }}">Home</a>
@@ -55,10 +56,11 @@
             {% endif %}
         {% endfor %}
     {% endif %}
-    <div class="separator"></div>
     {% for _section, models in own.admin_part.models_d.items() %}
         {% set available = own.admin_part._available(models) %}
         {% if available|length > 0 %}
+            <div class="separator"></div>
+            <h3>{{ appier.underscore_to_readable(_section, capitalize = True) }}</h3>
             {% for _model in available %}
                 {% if acl("admin.models." + _model._under()) %}
                     {% if section == "models" and model and model._under() == _model._under() %}
@@ -69,7 +71,6 @@
                     {% endif %}
                 {% endif %}
             {% endfor %}
-            <div class="separator"></div>
         {% endif %}
     {% endfor %}
 {% endblock %}
