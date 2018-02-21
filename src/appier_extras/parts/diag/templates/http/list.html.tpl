@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
-{% block title %}HTTP Diag{% endblock %}
-{% block name %}HTTP Diag{% endblock %}
+{% block title %}HTTP Requests{% endblock %}
+{% block name %}HTTP Requests{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block content %}
     <table class="filter" data-no_input="1">

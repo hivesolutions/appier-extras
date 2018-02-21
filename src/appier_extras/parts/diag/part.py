@@ -65,14 +65,17 @@ class DiagPart(appier.Part):
         appier.Part.load(self)
 
         if self.owner.admin_part:
-            self.owner.admin_part.add_section("HTTP Diag", "diag.list_http")
+            self.owner.admin_part.add_item(
+                "HTTP Requests", "diag.list_http",
+                section = "Diag"
+            )
 
         appier.App.add_custom("before_request", self.before_request)
         appier.App.add_custom("after_request", self.after_request)
 
     def routes(self):
         return [
-            (("GET",), "/diag/http", self.list_http)
+            (("GET",), "/admin/diag/http", self.list_http)
         ]
 
     def before_request(self):
@@ -88,7 +91,7 @@ class DiagPart(appier.Part):
     def list_http(self):
         return self.template(
             "http/list.html.tpl",
-            section = "section:http_diag",
+            section = "section:diag:http_requests",
             requests = models.DiagHTTP.find(
                 sort = (("id", -1),)
             )
