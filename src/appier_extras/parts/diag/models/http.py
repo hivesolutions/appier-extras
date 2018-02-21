@@ -65,7 +65,8 @@ class DiagHTTP(base.DiagBase):
 
     code = appier.field(
         type = int,
-        immutable = True
+        immutable = True,
+        description = "Status"
     )
 
     protocol = appier.field(

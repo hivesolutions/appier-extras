@@ -114,12 +114,20 @@ class DiagPart(appier.Part):
 
     @appier.ensure(token = "admin.status")
     def list_http(self):
+        object = appier.get_object(
+            alias = True,
+            page = True,
+            find = True,
+            sort = (("id", -1),)
+        )
+        page = models.DiagHTTP.paginate(**object)
+        requests = models.DiagHTTP.find(meta = True, **object)
         return self.template(
             "http/list.html.tpl",
             section = "section:diag:http_requests",
-            requests = models.DiagHTTP.find(
-                sort = (("id", -1),)
-            )
+            page = page,
+            requests = requests,
+            model = models.DiagHTTP
         )
 
     @appier.ensure(token = "admin.status")
