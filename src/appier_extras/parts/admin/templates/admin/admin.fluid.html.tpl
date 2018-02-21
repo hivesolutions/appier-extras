@@ -50,7 +50,7 @@
             <h3>{{ _section }}</h3>
             {% for name, route in items %}
                 {% if acl(route) %}
-                    {% if section == "section:" + name|lower %}
+                    {% if section == "section:" + _section|lower|replace(" ", "_") + ":" + name|lower|replace(" ", "_") %}
                         <a class="selected" href="{{ url_for(route) }}">{{ name }}</a>
                     {% else %}
                         <a href="{{ url_for(route) }}">{{ name }}</a>
