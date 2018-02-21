@@ -83,7 +83,7 @@ class DiagPart(appier.Part):
             )
 
         appier.App.remove_custom("before_request", self.before_request)
-        appier.App.add_custom("after_request", self.after_request)
+        appier.App.remove_custom("after_request", self.after_request)
 
     def routes(self):
         return [
