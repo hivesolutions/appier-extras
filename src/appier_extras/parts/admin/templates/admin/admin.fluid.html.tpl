@@ -1,7 +1,7 @@
 {% extends "admin/layout.fluid.html.tpl" %}
 {% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
-	<h3>Settings</h3>
+    <h3>Settings</h3>
     {% if acl("admin") %}
         {% if section == "admin" %}
             <a class="selected" href="{{ url_for('admin.index') }}">Home</a>
@@ -45,15 +45,18 @@
         {% endif %}
     {% endif %}
     {% if own.admin_part._sections %}
-        <div class="separator"></div>
-        {% for name, route in own.admin_part._sections %}
-            {% if acl(route) %}
-                {% if section == "section:" + _section|lower|replace(" ", "_") + ":" + name|lower|replace(" ", "_") %}
-                    <a class="selected" href="{{ url_for(route) }}">{{ name }}</a>
-                {% else %}
-                    <a href="{{ url_for(route) }}">{{ name }}</a>
+        {% for _section, items in own.admin_part._sections %}
+            <div class="separator"></div>
+            <h3>{{ _section }}</h3>
+            {% for name, route in items %}
+                {% if acl(route) %}
+                    {% if section == "section:" + _section|lower|replace(" ", "_") + ":" + name|lower|replace(" ", "_") %}
+                        <a class="selected" href="{{ url_for(route) }}">{{ name }}</a>
+                    {% else %}
+                        <a href="{{ url_for(route) }}">{{ name }}</a>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
+            {% endfor %}
         {% endfor %}
     {% endif %}
     {% for _section, models in own.admin_part.models_d.items() %}

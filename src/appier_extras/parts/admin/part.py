@@ -323,11 +323,19 @@ class AdminPart(
     def flush_settings(self):
         self.dump_settings()
 
-    def add_section(self, name, route):
-        self._sections[name] = route
+    def add_section(self, name):
+        self._sections[name] = appier.OrderedDict()
 
     def remove_section(self, name):
         del self._sections[name]
+
+    def add_item(self, name, route, section = None):
+        if not section in self._sections:
+            self.add_section(section)
+        self._sections[section][name] = route
+
+    def remove_item(self, name, section = None):
+        del self._sections[section][name]
 
     def index(self):
         return self.list_models()
