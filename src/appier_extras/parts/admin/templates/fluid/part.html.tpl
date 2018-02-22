@@ -31,7 +31,7 @@
                     <td class="text-left">
                         <strong>{{ key }}</strong>
                     </td>
-                    <td class="text-left">{{ value }}</td>
+                    <td class="text-left">{{ value|default("-", True) }}</td>
                 </tr>
             {% endfor %}
         </tbody>
