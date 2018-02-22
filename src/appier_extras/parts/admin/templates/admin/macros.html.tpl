@@ -328,6 +328,71 @@
     </div>
 {%- endmacro %}
 
+{% macro paging_listers(items, model, page, names = None) -%}
+    {% set _caller = caller %}
+    <div class="listers">
+        {% call(item) paging_cards(requests) %}
+            {{ _caller(item, True) }}
+        {% endcall %}
+        <table class="filter lister" data-no_input="1" data-size="{{ page.size }}"
+               data-total="{{ page.total }}" data-pages="{{ page.count }}">
+            {{ paging_header(
+                   request,
+                   model,
+                   page,
+                   names = ("method", "path", "code", "address", "date", "browser")
+               ) }}
+            {% call(item) paging_body(requests) %}
+                {{ _caller(item, False) }}
+            {% endcall %}
+        </table>
+    </div>
+    {% if page.count > 1 %}
+        {{ paging(page.index, page.count, caller = page.query) }}
+    {% endif %}
+{%- endmacro %}
+
+{% macro paging_cards(items, names = None) -%}
+    <div class="cards lister">
+        {% for item in items %}
+            <div class="card">
+                <dl>
+                    {{ caller(item) }}
+                </dl>
+            </div>
+        {% endfor %}
+    </div>
+{%- endmacro %}
+
+{% macro paging_header(items, model, page, names = None) -%}
+    <thead>
+        <tr class="table-row table-header">
+            {% for name in names %}
+                {% set description = model.to_description(name) %}
+                {% if name == page.sorter %}
+                    <th class="text-left direction {{ page.direction }}">
+                        <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
+                    </th>
+                {% else %}
+                    <th class="text-left">
+                        <a href="{{ page.query(sorter = name) }}">{{ description }}</a>
+                    </th>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </thead>
+{%- endmacro %}
+
+{% macro paging_body(items, names = None) -%}
+    <tbody class="filter-contents">
+        {% for item in items %}
+            <tr class="table-row">
+                {{ caller(item) }}
+            </tr>
+        {% endfor %}
+    </tbody>
+{%- endmacro %}
+
 {% macro build_hashtags(hashtags) -%}{% set hashtags_f = "" %}{% for hashtag in hashtags %}#{{ hashtag }}{% if not loop.last %} {% endif %}{% endfor %}{%- endmacro %}
 
 {% macro facebook_share(url, app_id = None, display = "page", prefix = "https://www.facebook.com/dialog/share") -%}{{ prefix }}?app_id={{ quote(app_id|default("", True)) }}&href={{ quote(url) }}&display={{ quote(display) }}{%- endmacro %}
