@@ -4,7 +4,7 @@
 {% block style %}no-padding{% endblock %}
 {% block content %}
     {% call(item, page) paging_listers(
-           request,
+        request,
         model,
         page,
         names = ("method", "path", "code", "address", "date", "browser")
