@@ -76,6 +76,11 @@ class OpbeatPart(appier.Part):
             delayed = True
         )
 
+    def unload(self):
+        appier.Part.unload(self)
+
+        self.owner.unbind("exception", self.exception)
+
     def exception(self, exception, is_soft = False):
         if not self.log: return
         self.log_exception(exception, is_soft = is_soft)
