@@ -329,6 +329,7 @@
 {%- endmacro %}
 
 {% macro paging_listers(items, model, page, names = None) -%}
+    {% set names = names or model.list_names() %}
     {% set _caller = caller %}
     <div class="listers">
         {% call(item) paging_cards(requests) %}
@@ -336,12 +337,7 @@
         {% endcall %}
         <table class="filter lister" data-no_input="1" data-size="{{ page.size }}"
                data-total="{{ page.total }}" data-pages="{{ page.count }}">
-            {{ paging_header(
-                   request,
-                   model,
-                   page,
-                   names = ("method", "path", "code", "address", "date", "browser")
-               ) }}
+            {{ paging_header(request, model, page, names = names) }}
             {% call(item) paging_body(requests) %}
                 {{ _caller(item, False) }}
             {% endcall %}
@@ -352,7 +348,7 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro paging_cards(items, names = None) -%}
+{% macro paging_cards(items) -%}
     <div class="cards lister">
         {% for item in items %}
             <div class="card">
@@ -365,6 +361,7 @@
 {%- endmacro %}
 
 {% macro paging_header(items, model, page, names = None) -%}
+    {% set names = names or model.list_names() %}
     <thead>
         <tr class="table-row table-header">
             {% for name in names %}
@@ -383,7 +380,7 @@
     </thead>
 {%- endmacro %}
 
-{% macro paging_body(items, names = None) -%}
+{% macro paging_body(items) -%}
     <tbody class="filter-contents">
         {% for item in items %}
             <tr class="table-row">
