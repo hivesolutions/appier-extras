@@ -328,17 +328,17 @@
     </div>
 {%- endmacro %}
 
-{% macro paging_listers(items, model, page, names = None) -%}
+{% macro paging_listers(items, model, page, names = None, selection = False) -%}
     {% set names = names or model.list_names() %}
     {% set _caller = caller %}
     <div class="listers">
-        {% call(item, name) paging_cards(requests, model, names = names) %}
+        {% call(item, name) paging_cards(items, model, names = names) %}
             {{ _caller(item, name, mode = "card") }}
         {% endcall %}
-        <table class="filter lister" data-no_input="1" data-size="{{ page.size }}"
-               data-total="{{ page.total }}" data-pages="{{ page.count }}">
-            {{ paging_header(request, model, page, names = names) }}
-            {% call(item, name) paging_body(requests, names = names) %}
+        <table class="filter lister {% if selection %}bulk{% endif %}" data-no_input="1"
+               data-size="{{ page.size }}" data-total="{{ page.total }}" data-pages="{{ page.count }}">
+            {{ paging_header(request, model, page, names = names, selection = selection) }}
+            {% call(item, name) paging_body(items, names = names, selection = selection) %}
                 {{ _caller(item, name, mode = "cell") }}
             {% endcall %}
         </table>
@@ -371,10 +371,15 @@
     </div>
 {%- endmacro %}
 
-{% macro paging_header(items, model, page, names = None) -%}
+{% macro paging_header(items, model, page, names = None, selection = False) -%}
     {% set names = names or model.list_names() %}
     <thead>
         <tr class="table-row table-header">
+            {% if selection %}
+                <th class="text-left selection">
+                    <input type="checkbox" class="square small" />
+                </th>
+            {% endif %}
             {% for name in names %}
                 {% set description = model.to_description(name) %}
                 {% if name == page.sorter %}
@@ -391,11 +396,16 @@
     </thead>
 {%- endmacro %}
 
-{% macro paging_body(items, names = None) -%}
+{% macro paging_body(items, names = None, selection = False) -%}
     {% set names = names or model.list_names() %}
     <tbody class="filter-contents">
         {% for item in items %}
             <tr class="table-row">
+                {% if selection %}
+                    <td class="text-left selection">
+                        <input type="checkbox" class="square small" />
+                    </td>
+                {% endif %}
                 {% for name in names %}
                     {% if caller %}
                         {{ caller(item, name) }}

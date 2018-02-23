@@ -4,28 +4,29 @@
 {% block style %}no-padding{% endblock %}
 {% block content %}
     {% call(item, name, mode = "card") paging_listers(
-        request,
+        requests,
         model,
         page,
         names = ("method", "path", "code", "address", "date", "browser")
     ) %}
-        {% set reference = name|capitalize %}
+        {% set reference = model.to_description(name) %}
         {% if name == "code" %}
             {% set reference = "Status" %}
         {% elif name == "date" %}
             {% set name = "timestamp_d" %}
         {% endif %}
+        {% set value = item[name] %}
 
         {% if name == "method" %}
-            {% call paging_item("Method", mode = mode) %}
-                <span class="tag {{ item.method|lower }}">{{ item.method }}</span>
+            {% call paging_item(description, mode = mode) %}
+                <span class="tag {{ value|lower }}">{{ value }}</span>
             {% endcall %}
         {% elif name == "path" %}
-            {% call paging_item("Path", mode = mode) %}
-                <a href="{{ url_for('diag.show_request', id = item.id) }}">{{ item.path }}</a>
+            {% call paging_item(description, mode = mode) %}
+                <a href="{{ url_for('diag.show_request', id = item.id) }}">{{ value }}</a>
             {% endcall %}
         {% else %}
-            {{ paging_item(reference, item[name], mode = mode) }}
+            {{ paging_item(reference, value, mode = mode) }}
         {% endif %}
     {% endcall %}
 {% endblock %}
