@@ -332,14 +332,14 @@
     {% set names = names or model.list_names() %}
     {% set _caller = caller %}
     <div class="listers">
-        {% call(item) paging_cards(requests) %}
-            {{ _caller(item, True) }}
+        {% call(item, name) paging_cards(requests, model, names = names) %}
+            {{ _caller(item, name, mode = "card") }}
         {% endcall %}
         <table class="filter lister" data-no_input="1" data-size="{{ page.size }}"
                data-total="{{ page.total }}" data-pages="{{ page.count }}">
             {{ paging_header(request, model, page, names = names) }}
-            {% call(item) paging_body(requests) %}
-                {{ _caller(item, False) }}
+            {% call(item, name) paging_body(requests, names = names) %}
+                {{ _caller(item, name, mode = "cell") }}
             {% endcall %}
         </table>
     </div>
@@ -348,12 +348,23 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro paging_cards(items) -%}
+{% macro paging_cards(items, model, names = None) -%}
+    {% set names = names or model.list_names() %}
     <div class="cards lister">
         {% for item in items %}
             <div class="card">
                 <dl>
-                    {{ caller(item) }}
+                    {% for name in names %}
+                        {% if caller %}
+                            {{ caller(item, name) }}
+                        {% else %}
+                            {% set description = model.to_description(name) %}
+                            <div class="item">
+                                <dt>{{ description }}</dt>
+                                <dd>{{ item[name] }}</dd>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </dl>
             </div>
         {% endfor %}
@@ -380,14 +391,66 @@
     </thead>
 {%- endmacro %}
 
-{% macro paging_body(items) -%}
+{% macro paging_body(items, names = None) -%}
+    {% set names = names or model.list_names() %}
     <tbody class="filter-contents">
         {% for item in items %}
             <tr class="table-row">
-                {{ caller(item) }}
+                {% for name in names %}
+                    {% if caller %}
+                        {{ caller(item, name) }}
+                    {% else %}
+                        <td class="text-left">{{ item[name] }}</td>
+                    {% endif %}
+                {% endfor %}
             </tr>
         {% endfor %}
     </tbody>
+{%- endmacro %}
+
+{% macro paging_item(name, value = None, alignment = "left", mode = "card") -%}
+    {% set _caller = caller %}
+    {% if mode == "card" %}
+        {% if _caller %}
+            {% call paging_card(name, value = value) %}
+                {{ _caller() }}
+            {% endcall %}
+        {% else %}
+            {{ paging_card(name, value = value) }}
+        {% endif %}
+    {% endif %}
+    {% if mode == "cell" %}
+        {% if _caller %}
+            {% call paging_cell(value = value, alignment = alignment) %}
+                {{ _caller() }}
+            {% endcall %}
+        {% else %}
+            {{ paging_cell(value = value, alignment = alignment) }}
+        {% endif %}
+    {% endif %}
+{%- endmacro %}
+
+{% macro paging_card(name, value = None) -%}
+    <div class="item">
+        <dt>{{ name }}</dt>
+        <dd>
+            {% if caller %}
+                {{ caller() }}
+            {% else %}
+                {{ value }}
+            {% endif %}
+        </dd>
+    </div>
+{%- endmacro %}
+
+{% macro paging_cell(value = None, alignment = "left") -%}
+    <td class="text-{{ alignment }}">
+        {% if caller %}
+            {{ caller() }}
+        {% else %}
+            {{ value }}
+        {% endif %}
+    </td>
 {%- endmacro %}
 
 {% macro build_hashtags(hashtags) -%}{% set hashtags_f = "" %}{% for hashtag in hashtags %}#{{ hashtag }}{% if not loop.last %} {% endif %}{% endfor %}{%- endmacro %}
