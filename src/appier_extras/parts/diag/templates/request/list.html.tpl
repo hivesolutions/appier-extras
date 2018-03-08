@@ -9,7 +9,7 @@
         page,
         names = ("method", "path", "code", "address", "date", "browser")
     ) %}
-        {% set reference = model.to_description(name) %}
+        {% set description = model.to_description(name) %}
         {% if name == "code" %}
             {% set reference = "Status" %}
         {% elif name == "date" %}
