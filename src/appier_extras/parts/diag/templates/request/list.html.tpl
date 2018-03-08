@@ -11,7 +11,7 @@
     ) %}
         {% set description = model.to_description(name) %}
         {% if name == "code" %}
-            {% set reference = "Status" %}
+            {% set description = "Status" %}
         {% elif name == "date" %}
             {% set name = "timestamp_d" %}
         {% endif %}
@@ -26,7 +26,7 @@
                 <a href="{{ url_for('diag.show_request', id = item.id) }}">{{ value }}</a>
             {% endcall %}
         {% else %}
-            {{ paging_item(reference, value, mode = mode) }}
+            {{ paging_item(description, value, mode = mode) }}
         {% endif %}
     {% endcall %}
 {% endblock %}
