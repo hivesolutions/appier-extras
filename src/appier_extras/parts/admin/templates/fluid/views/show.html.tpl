@@ -110,7 +110,7 @@
         names = names,
         selection = True
     ) %}
-        {% set reference = target.to_description(name) %}
+        {% set description = target.to_description(name) %}
         {% set is_first = names.index(name) == 0 %}
         {% if is_first %}
             {% if acl("admin.models." + target._under()) %}

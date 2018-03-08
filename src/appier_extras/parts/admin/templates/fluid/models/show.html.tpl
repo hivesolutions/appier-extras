@@ -163,7 +163,7 @@
         names = names,
         selection = True
     ) %}
-        {% set reference = model.to_description(name) %}
+        {% set description = model.to_description(name) %}
         {% set is_first = names.index(name) == 0 %}
         {% if is_first %}
             {% if acl("admin.models." + model._under()) %}
