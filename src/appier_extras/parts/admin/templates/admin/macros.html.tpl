@@ -328,17 +328,17 @@
     </div>
 {%- endmacro %}
 
-{% macro paging_listers(items, model, page, names = None, selection = False) -%}
+{% macro paging_listers(items, model, page, names = None, id_name = "_id", selection = False) -%}
     {% set names = names or model.list_names() %}
     {% set _caller = caller %}
     <div class="listers">
-        {% call(item, name) paging_cards(items, model, names = names) %}
+        {% call(item, name) paging_cards(items, model, names = names, id_name = id_name) %}
             {{ _caller(item, name, mode = "card") }}
         {% endcall %}
         <table class="filter lister {% if selection %}bulk{% endif %}" data-no_input="1"
                data-size="{{ page.size }}" data-total="{{ page.total }}" data-pages="{{ page.count }}">
             {{ paging_header(request, model, page, names = names, selection = selection) }}
-            {% call(item, name) paging_body(items, names = names, selection = selection) %}
+            {% call(item, name) paging_body(items, names = names, id_name = id_name, selection = selection) %}
                 {{ _caller(item, name, mode = "cell") }}
             {% endcall %}
         </table>
@@ -348,11 +348,11 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro paging_cards(items, model, names = None) -%}
+{% macro paging_cards(items, model, names = None, id_name = "_id") -%}
     {% set names = names or model.list_names() %}
     <div class="cards lister">
         {% for item in items %}
-            <div class="card">
+            <div class="card" data-id="{{ item[id_name]|default('', True) }}">
                 <dl>
                     {% for name in names %}
                         {% if caller %}
@@ -396,11 +396,11 @@
     </thead>
 {%- endmacro %}
 
-{% macro paging_body(items, names = None, selection = False) -%}
+{% macro paging_body(items, names = None, id_name = "_id", selection = False) -%}
     {% set names = names or model.list_names() %}
     <tbody class="filter-contents">
         {% for item in items %}
-            <tr class="table-row">
+            <tr class="table-row" data-id="{{ item[id_name]|default('', True) }}">
                 {% if selection %}
                     <td class="text-left selection">
                         <input type="checkbox" class="square small" />
