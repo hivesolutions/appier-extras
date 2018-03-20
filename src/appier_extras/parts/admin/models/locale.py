@@ -72,7 +72,7 @@ class Locale(base.Base):
         return super(Locale, cls).validate() + [
             appier.not_null("locale"),
             appier.not_empty("locale"),
-            appier.string_eq("locale", 5),
+            appier.is_regex("locale", "^[a-z]{2}(?:_[a-z]{2})?$"),
             appier.not_duplicate("locale", cls._name()),
 
             appier.not_null("data_j"),
