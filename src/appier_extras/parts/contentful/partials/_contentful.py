@@ -78,7 +78,7 @@ class Contentful(object):
 
         # retrieves the includes reference from the global entries
         # dictionary and then gather the items by the requested link type
-        includes = entries.get("includes", [])
+        includes = entries.get("includes", {})
         items = includes.get(link_type, [])
 
         # iterates over the complete set of items to try to find the
