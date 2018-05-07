@@ -105,7 +105,8 @@ class Event(base.Base):
         arguments = dict(arguments)
         for key, value in appier.legacy.items(arguments):
             if not appier.legacy.is_string(value, all = all): continue
-            value = value.format(arguments)
+            try: value = value.format(arguments)
+            except: value = value
             arguments[key] = value
         return arguments
 
