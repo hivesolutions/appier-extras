@@ -75,12 +75,38 @@ class Event(base.Base):
 
     @classmethod
     def transform(cls, arguments, prefix):
+        """
+        Runs the transformation process on the provided arguments
+        taking into account the filtering prefix, so that if the
+        argument name is prefixed by the provided prefix such prefix
+        is removed on a new re-set arguments.
+
+        :type arguments: Dictionary
+        :param arguments: The dictionary of arguments for which the
+        prefix transformation is going to take place.
+        :type prefix: String
+        :param prefix: The prefix that is going to be used in the
+        prefix removal transformation process.
+        :rtype: Dictionary
+        :return: The new dictionary of arguments with the processed
+        values without the associated prefix set.
+        """
+
         arguments = dict(arguments)
         prefix_l = len(prefix)
         for key, value in appier.legacy.items(arguments):
             if not key.startswith(prefix): continue
             key_prefix = key[prefix_l:]
             arguments[key_prefix] = value
+        return arguments
+
+    @classmethod
+    def format(cls, arguments, all = False):
+        arguments = dict(arguments)
+        for key, value in appier.legacy.items(arguments):
+            if not appier.legacy.is_string(value, all = all): continue
+            value = value.format(arguments)
+            arguments[key] = value
         return arguments
 
     @classmethod
@@ -106,6 +132,7 @@ class Event(base.Base):
         arguments_m.update(arguments)
         arguments_m.update(event = self.name, handler = self.handler)
         arguments_m = cls.transform(arguments_m, self.handler + "_")
+        arguments_m = cls.format(arguments_m)
         kwargs = dict(arguments = arguments_m)
         if delay: self.owner.delay(method, kwargs = kwargs)
         else: method(arguments, **kwargs)
