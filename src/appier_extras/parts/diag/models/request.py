@@ -65,6 +65,7 @@ class DiagRequest(base.DiagBase):
 
     code = appier.field(
         type = int,
+        index = "all",
         immutable = True,
         description = "Status"
     )
@@ -81,12 +82,10 @@ class DiagRequest(base.DiagBase):
 
     headers = appier.field(
         type = dict,
-        index = "all",
         immutable = True
     )
 
     browser_info = appier.field(
         type = dict,
-        index = "all",
         immutable = True
     )
