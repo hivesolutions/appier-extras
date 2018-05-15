@@ -47,6 +47,9 @@ class DiagPart(appier.Part):
     """
     Modular part class that provides an infra-structure of diagnostics
     that allow more and better debugging of an Application.
+
+    Notice that most of the diagnostics is performed locally and is
+    not optimized for proper asynchronous usage.
     """
 
     def __init__(self, *args, **kwargs):
