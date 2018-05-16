@@ -41,3 +41,13 @@ note that this should be an expensive on load operation (defaults to `[]`)
 * `LOGO_EMAIL` (`bool`) - If the logo should be displayed for the email by default (defaults to `False`)
 * `INLINE_EMAIL` (`bool`) - If by default the HTML of the email should be inlined (defaults to `False`)
 * `INLINER_ENGINE` (`str`) - The name of the engine (eg: `premailer`, `toronado`, etc.) that is going to be used to inline CSS directives into HTML (defaults to `None`)
+
+### Loggly
+
+* `LOGGLY_BUFFER_SIZE` (`int`) - The size of the in number of entries until the buffer is flushed (defaults to `128`)
+* `LOGGLY_TIMEOUT` (`int`) - The timeout in seconds in seconds until the buffer is flushed (defaults to `30`)
+
+### Sematext
+
+* `SEMATEXT_BUFFER_SIZE` (`int`) - The size of the in number of entries until the buffer is flushed (defaults to `128`)
+* `SEMATEXT_TIMEOUT` (`int`) - The timeout in seconds in seconds until the buffer is flushed (defaults to `30`)
