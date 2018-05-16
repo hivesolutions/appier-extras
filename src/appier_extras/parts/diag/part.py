@@ -150,7 +150,7 @@ class DiagPart(appier.Part):
     def _common_log(self, user = "root"):
         template = "%s - %s [%s] \"%s %s %s\" %d %s"
         return template % (
-            self.request.address,
+            self.request.get_address(),
             user,
             self.request.get_sdate(),
             self.request.method,
@@ -163,7 +163,7 @@ class DiagPart(appier.Part):
     def _combined_log(self, user = "root"):
         template = "%s - %s [%s] \"%s %s %s\" %d %s \"%s\" \"%s\""
         return template % (
-            self.request.address,
+            self.request.get_address(),
             user,
             self.request.get_sdate(),
             self.request.method,
@@ -179,7 +179,7 @@ class DiagPart(appier.Part):
         browser_info = self.request.browser_info
         browser_info = browser_info or dict()
         diag_request = models.DiagRequest(
-            address = self.request.address,
+            address = self.request.get_address(),
             method = self.request.method,
             path = self.request.path,
             query = self.request.query,
@@ -195,7 +195,7 @@ class DiagPart(appier.Part):
         browser_info = self.request.browser_info
         browser_info = browser_info or dict()
         item = dict(
-            address = self.request.address,
+            address = self.request.get_address(),
             method = self.request.method,
             path = self.request.path,
             query = self.request.query,
