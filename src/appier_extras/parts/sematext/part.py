@@ -61,7 +61,7 @@ class SematextPart(appier.Part):
         self.log = kwargs.get("log", False)
         self.buffer_size = kwargs.get("buffer_size", 128)
         self.timeout = kwargs.get("timeout", 30)
-        self.log = appier.conf("OPBEAT_LOG", self.log, cast = bool)
+        self.log = appier.conf("SEMATEXT_LOG", self.log, cast = bool)
         self.buffer_size = appier.conf(
             "SEMATEXT_BUFFER_SIZE",
             self.buffer_size,
