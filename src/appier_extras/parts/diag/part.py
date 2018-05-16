@@ -55,11 +55,14 @@ class DiagPart(appier.Part):
     def __init__(self, *args, **kwargs):
         appier.Part.__init__(self, *args, **kwargs)
         self.store = kwargs.get("store", True)
+        self.loggly = kwargs.get("loggly", True)
         self.output = kwargs.get("output", True)
         self.format = kwargs.get("format", "combined")
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
+        self.loggly = appier.conf("DIAG_LOGGLY", self.loggly, cast = bool)
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
+        self._loggly_api = None
 
     def version(self):
         return base.VERSION
@@ -114,6 +117,7 @@ class DiagPart(appier.Part):
         result = method()
         if self.output: print(result)
         if self.store: self._store_log()
+        if self.loggly: self._loggly_log()
 
     @appier.ensure(token = "admin.status")
     def list_requests(self):
@@ -183,3 +187,27 @@ class DiagPart(appier.Part):
             browser_info = browser_info
         )
         diag_request.save()
+
+    def _loggly_log(self):
+        browser_info = self.request.browser_info
+        item = dict(
+            address = self.request.address,
+            method = self.request.method,
+            path = self.request.path,
+            query = self.request.query,
+            code = self.request.code,
+            protocol = self.request.protocol,
+            browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            headers = self.request.in_headers,
+            browser_info = browser_info
+        )
+        api = self._get_loggly_api()
+        if not api: return
+        api.log(item)
+
+    def _get_loggly_api(self):
+        if self._loggly_api: return self._loggly_api
+        try: loggly = appier.import_pip("loggly", package = "loggly_api_python")
+        except: return None
+        self._loggly_api = loggly.API()
+        return self._loggly_api
