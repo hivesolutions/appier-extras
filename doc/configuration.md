@@ -22,6 +22,7 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `DIAG_STORE` (`bool`) - If the multiple HTTP requests in diagnostics should be store in the data source (defaults to `True`)
 * `DIAG_LOGGLY` (`bool`) - IF the Loggly based logging should be used (defaults to `False`)
 * `DIAG_OUTPUT` (`bool`) - If each of the HTTP requests should be printed to the stdout (defaults to `True`)
+* `DIAG_STDOUT` (`bool`) - Same as `DIAG_OUTPUT` (defaults to `True`)
 * `DIAG_FORMAT` (`str`) - The format to be used while outputting the HTTP request (defaults to `combined`)
 
 ### CMS

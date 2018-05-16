@@ -61,6 +61,7 @@ class DiagPart(appier.Part):
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
         self.loggly = appier.conf("DIAG_LOGGLY", self.loggly, cast = bool)
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
+        self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self._loggly_api = None
 
