@@ -183,6 +183,8 @@ class DiagPart(appier.Part):
             code = self.request.code,
             protocol = self.request.protocol,
             browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            browser_name = browser_info["name"],
+            browser_version = browser_info["version"],
             headers = self.request.in_headers,
             browser_info = browser_info
         )
@@ -198,6 +200,8 @@ class DiagPart(appier.Part):
             code = self.request.code,
             protocol = self.request.protocol,
             browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            browser_name = browser_info["name"],
+            browser_version = browser_info["version"],
             headers = self.request.in_headers,
             browser_info = browser_info
         )

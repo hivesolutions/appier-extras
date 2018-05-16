@@ -80,6 +80,16 @@ class DiagRequest(base.DiagBase):
         immutable = True
     )
 
+    browser_name = appier.field(
+        index = "all",
+        immutable = True
+    )
+
+    browser_version = appier.field(
+        index = "all",
+        immutable = True
+    )
+
     headers = appier.field(
         type = dict,
         immutable = True
