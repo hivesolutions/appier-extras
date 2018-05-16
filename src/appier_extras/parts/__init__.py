@@ -39,6 +39,7 @@ from . import captcha
 from . import contentful
 from . import csfr
 from . import diag
+from . import loggly
 from . import opbeat
 from . import prismic
 from . import sematext
@@ -48,6 +49,7 @@ from .captcha import CaptchaPart
 from .contentful import Contentful
 from .csfr import CSFRPart, csfr_protect, csfr_ensure
 from .diag import DiagPart
+from .loggly import LogglyHandler, LogglyPart
 from .opbeat import OpbeatPart
 from .prismic import Prismic
 from .sematext import SematextHandler, SematextPart
