@@ -177,6 +177,7 @@ class DiagPart(appier.Part):
 
     def _store_log(self):
         browser_info = self.request.browser_info
+        browser_info = browser_info or dict()
         diag_request = models.DiagRequest(
             address = self.request.address,
             method = self.request.method,
@@ -184,7 +185,7 @@ class DiagPart(appier.Part):
             query = self.request.query,
             code = self.request.code,
             protocol = self.request.protocol,
-            browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            browser = "%s/%s" % (browser_info.get("name"), browser_info.get("version")),
             headers = self.request.in_headers,
             browser_info = browser_info
         )
@@ -192,6 +193,7 @@ class DiagPart(appier.Part):
 
     def _loggly_log(self):
         browser_info = self.request.browser_info
+        browser_info = browser_info or dict()
         item = dict(
             address = self.request.address,
             method = self.request.method,
@@ -199,7 +201,7 @@ class DiagPart(appier.Part):
             query = self.request.query,
             code = self.request.code,
             protocol = self.request.protocol,
-            browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
+            browser = "%s/%s" % (browser_info.get("name"), browser_info.get("version")),
             headers = self.request.in_headers,
             browser_info = browser_info
         )
