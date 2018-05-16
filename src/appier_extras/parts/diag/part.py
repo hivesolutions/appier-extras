@@ -183,8 +183,6 @@ class DiagPart(appier.Part):
             code = self.request.code,
             protocol = self.request.protocol,
             browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
-            browser_name = browser_info["name"],
-            browser_version = browser_info["version"],
             headers = self.request.in_headers,
             browser_info = browser_info
         )
@@ -200,18 +198,16 @@ class DiagPart(appier.Part):
             code = self.request.code,
             protocol = self.request.protocol,
             browser = "%s/%s" % (browser_info["name"], browser_info["version"]),
-            browser_name = browser_info["name"],
-            browser_version = browser_info["version"],
             headers = self.request.in_headers,
             browser_info = browser_info
         )
         api = self._get_loggly_api()
         if not api: return
-        api.log(item)
+        api.log_buffer(item)
 
     def _get_loggly_api(self):
         if self._loggly_api: return self._loggly_api
         try: loggly = appier.import_pip("loggly", package = "loggly_api_python")
         except: return None
-        self._loggly_api = loggly.API()
+        self._loggly_api = loggly.API(delayer = self.owner.delay)
         return self._loggly_api
