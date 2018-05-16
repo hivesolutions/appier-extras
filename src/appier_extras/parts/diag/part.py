@@ -71,6 +71,7 @@ class DiagPart(appier.Part):
         info = appier.Part.info(self)
         info.update(
             store = self.store,
+            loggly = self.loggly,
             output = self.output,
             format = self.format
         )
