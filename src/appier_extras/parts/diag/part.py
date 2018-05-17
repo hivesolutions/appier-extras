@@ -69,6 +69,7 @@ class DiagPart(appier.Part):
         self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self._loggly_api = None
+        self._hostname_s = None
 
     def version(self):
         return base.VERSION
@@ -206,7 +207,6 @@ class DiagPart(appier.Part):
     def _loggly_log(self):
         item = dict(
             timestamp = self._timestamp,
-            hostname = self._hostname,
             address = self.request.get_address(),
             method = self.request.method,
             path = self.request.path,
@@ -218,6 +218,11 @@ class DiagPart(appier.Part):
             browser_info = self.request.browser_info,
             meta_info = self._meta_info,
             geo_info = self._geo_info
+        )
+        item.update(
+            hostname = self._hostname,
+            name = self.owner.name_b,
+            instance = self.owner.instance
         )
         api = self._get_loggly_api()
         if not api: return
@@ -242,7 +247,9 @@ class DiagPart(appier.Part):
 
     @property
     def _hostname(self):
-        return socket.gethostname()
+        if self._hostname_s: return self._hostname_s
+        self._hostname_s = socket.gethostname()
+        return self._hostname_s
 
     @property
     def _browser(self, default = "unknown"):
