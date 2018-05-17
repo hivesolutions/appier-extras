@@ -238,8 +238,7 @@ class DiagPart(appier.Part):
             return "%s/%s" % (browser_name, browser_version)
         elif browser_name:
             return browser_name
-        else:
-            return "unknown"
+        return default
 
     @property
     def _geo_info(self):
