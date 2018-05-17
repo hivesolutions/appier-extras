@@ -113,7 +113,7 @@ class SematextHandler(logging.Handler):
         # bulk flushing operation of the buffer, this is going to be
         # called on a delayed (async fashion) so that no blocking occurs
         # in the current logical flow
-        call_log = lambda: self.api.log_bulk("default", buffer)
+        call_log = lambda: self.api.log_bulk(buffer, type = "default")
 
         # schedules the call log operation and then empties the buffer
         # so that it's no longer going to be used (flushed)
