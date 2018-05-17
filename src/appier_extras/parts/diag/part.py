@@ -37,6 +37,8 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import time
+
 import appier
 
 from appier_extras import base
@@ -201,6 +203,7 @@ class DiagPart(appier.Part):
 
     def _loggly_log(self):
         item = dict(
+            timestamp = time.time(),
             address = self.request.get_address(),
             method = self.request.method,
             path = self.request.path,
