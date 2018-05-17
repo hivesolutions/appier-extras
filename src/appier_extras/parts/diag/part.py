@@ -57,11 +57,13 @@ class DiagPart(appier.Part):
         self.store = kwargs.get("store", True)
         self.loggly = kwargs.get("loggly", True)
         self.output = kwargs.get("output", True)
+        self.geo = kwargs.get("geo", True)
         self.format = kwargs.get("format", "combined")
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
         self.loggly = appier.conf("DIAG_LOGGLY", self.loggly, cast = bool)
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
+        self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self._loggly_api = None
 
@@ -102,6 +104,8 @@ class DiagPart(appier.Part):
         appier.App.remove_custom("before_request", self.before_request)
         appier.App.remove_custom("after_request", self.after_request)
 
+        self.flush_all()
+
     def routes(self):
         return [
             (("GET",), "/admin/diag/requests", self.list_requests),
@@ -120,6 +124,9 @@ class DiagPart(appier.Part):
         if self.output: print(result)
         if self.store: self._store_log()
         if self.loggly: self._loggly_log()
+
+    def flush_all(self):
+        self._loggly_flush()
 
     @appier.ensure(token = "admin.status")
     def list_requests(self):
@@ -185,15 +192,14 @@ class DiagPart(appier.Part):
             query = self.request.query,
             code = self.request.code,
             protocol = self.request.protocol,
-            browser = "%s/%s" % (browser_info.get("name"), browser_info.get("version")),
+            browser = self._browser,
             headers = self.request.in_headers,
-            browser_info = browser_info
+            browser_info = self.request.browser_info,
+            geo_info = self._geo_info
         )
         diag_request.save()
 
     def _loggly_log(self):
-        browser_info = self.request.browser_info
-        browser_info = browser_info or dict()
         item = dict(
             address = self.request.get_address(),
             method = self.request.method,
@@ -201,13 +207,19 @@ class DiagPart(appier.Part):
             query = self.request.query,
             code = self.request.code,
             protocol = self.request.protocol,
-            browser = "%s/%s" % (browser_info.get("name"), browser_info.get("version")),
+            browser = self._browser,
             headers = self.request.in_headers,
-            browser_info = browser_info
+            browser_info = self.request.browser_info,
+            geo_info = self._geo_info
         )
         api = self._get_loggly_api()
         if not api: return
         api.log_buffer(item)
+
+    def _loggly_flush(self):
+        if not self._loggly_api: return
+        api = self._get_loggly_api()
+        api.log_flush()
 
     def _get_loggly_api(self):
         if self._loggly_api: return self._loggly_api
@@ -215,3 +227,22 @@ class DiagPart(appier.Part):
         except: return None
         self._loggly_api = loggly.API(delayer = self.owner.delay)
         return self._loggly_api
+
+    @property
+    def _browser(self, default = "unknown"):
+        browser_info = self.request.browser_info
+        browser_info = browser_info or {}
+        browser_name = browser_info.get("name", None)
+        browser_version = browser_info.get("version", None)
+        if browser_name and browser_version:
+            return "%s/%s" % (browser_name, browser_version)
+        elif browser_name:
+            return browser_name
+        else:
+            return "unknown"
+
+    @property
+    def _geo_info(self):
+        if not self.geo: return {}
+        address = self.request.get_address()
+        return appier.GeoResolver.resolve(address) or {}
