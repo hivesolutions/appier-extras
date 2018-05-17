@@ -37,6 +37,7 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import socket
 import datetime
 
 import appier
@@ -205,6 +206,7 @@ class DiagPart(appier.Part):
     def _loggly_log(self):
         item = dict(
             timestamp = self._timestamp,
+            hostname = self._hostname,
             address = self.request.get_address(),
             method = self.request.method,
             path = self.request.path,
@@ -237,6 +239,10 @@ class DiagPart(appier.Part):
     def _timestamp(self, format = "%Y-%m-%dT%H:%M:%S"):
         now = datetime.datetime.utcnow()
         return now.strftime(format)
+
+    @property
+    def _hostname(self):
+        return socket.gethostname()
 
     @property
     def _browser(self, default = "unknown"):
