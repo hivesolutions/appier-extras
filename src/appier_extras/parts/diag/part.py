@@ -197,6 +197,7 @@ class DiagPart(appier.Part):
             browser = self._browser,
             headers = self.request.in_headers,
             browser_info = self.request.browser_info,
+            meta_info = self._meta_info,
             geo_info = self._geo_info
         )
         diag_request.save()
@@ -213,6 +214,7 @@ class DiagPart(appier.Part):
             browser = self._browser,
             headers = self.request.in_headers,
             browser_info = self.request.browser_info,
+            meta_info = self._meta_info,
             geo_info = self._geo_info
         )
         api = self._get_loggly_api()
@@ -247,6 +249,15 @@ class DiagPart(appier.Part):
         elif browser_name:
             return browser_name
         return default
+
+    @property
+    def _meta_info(self):
+        return dict(
+            is_mobile = self.request.is_mobile(),
+            is_tablet = self.request.is_tablet(),
+            is_browser = self.request.is_browser(),
+            is_bot = self.request.is_bot()
+        )
 
     @property
     def _geo_info(self):

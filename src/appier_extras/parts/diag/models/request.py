@@ -90,6 +90,11 @@ class DiagRequest(base.DiagBase):
         immutable = True
     )
 
+    meta_info = appier.field(
+        type = dict,
+        immutable = True
+    )
+
     geo_info = appier.field(
         type = dict,
         immutable = True
