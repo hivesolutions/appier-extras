@@ -27,11 +27,12 @@
         <tbody class="filter-contents">
             {% for key in info_l %}
                 {% set value = info[key] %}
+                {% set value = "-" if value in (None, "") else value %}
                 <tr class="table-row">
                     <td class="text-left">
                         <strong>{{ key }}</strong>
                     </td>
-                    <td class="text-left">{{ value|default("-", True) }}</td>
+                    <td class="text-left">{{ value }}</td>
                 </tr>
             {% endfor %}
         </tbody>
