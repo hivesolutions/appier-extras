@@ -62,12 +62,14 @@ class DiagPart(appier.Part):
         self.output = kwargs.get("output", True)
         self.geo = kwargs.get("geo", True)
         self.format = kwargs.get("format", "combined")
+        self.empty = kwargs.get("empty", False)
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
         self.loggly = appier.conf("DIAG_LOGGLY", self.loggly, cast = bool)
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
         self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
+        self.empty = appier.conf("DIAG_EMPTY", self.empty, cast = bool)
         self._loggly_api = None
         self._hostname_s = None
 
@@ -95,6 +97,10 @@ class DiagPart(appier.Part):
 
         appier.App.add_custom("before_request", self.before_request)
         appier.App.add_custom("after_request", self.after_request)
+
+        # in case the empty flag is set the complete set of
+        # request entities in the data store are deleted
+        if self.empty: models.DiagRequest.delete_c()
 
     def unload(self):
         appier.Part.unload(self)
