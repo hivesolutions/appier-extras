@@ -57,8 +57,8 @@ class DiagPart(appier.Part):
 
     def __init__(self, *args, **kwargs):
         appier.Part.__init__(self, *args, **kwargs)
-        self.store = kwargs.get("store", True)
-        self.loggly = kwargs.get("loggly", True)
+        self.store = kwargs.get("store", False)
+        self.loggly = kwargs.get("loggly", False)
         self.output = kwargs.get("output", True)
         self.geo = kwargs.get("geo", True)
         self.format = kwargs.get("format", "combined")
