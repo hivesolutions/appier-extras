@@ -36,11 +36,11 @@
                 </div>
                 <div class="item">
                     <dt>Platform</dt>
-                    <dd>{{ own.info_dict().platform }}</dd>
+                    <dd>{{ own.info_dict().platform |default("-", True) }}</dd>
                 </div>
                 <div class="item">
                     <dt>Server</dt>
-                    <dd>{{ own.info_dict().server }} {{ own.info_dict().server_version }}</dd>
+                    <dd>{{ own.info_dict().server|default("-", True) }} {{ own.info_dict().server_version|default("", True) }}</dd>
                 </div>
                 <div class="item">
                     <dt>Appier</dt>
