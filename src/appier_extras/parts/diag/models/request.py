@@ -48,6 +48,11 @@ class DiagRequest(base.DiagBase):
         immutable = True
     )
 
+    url = appier.field(
+        index = "all",
+        immutable = True
+    )
+
     method = appier.field(
         index = "all",
         immutable = True

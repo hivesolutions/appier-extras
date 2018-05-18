@@ -197,6 +197,7 @@ class DiagPart(appier.Part):
         browser_info = browser_info or dict()
         diag_request = models.DiagRequest(
             address = self.request.get_address(),
+            url = self.request.get_url(),
             method = self.request.method,
             path = self.request.path,
             query = self.request.query,
@@ -214,6 +215,7 @@ class DiagPart(appier.Part):
         item = dict(
             timestamp = self._timestamp,
             address = self.request.get_address(),
+            url = self.request.get_url(),
             method = self.request.method,
             path = self.request.path,
             query = self.request.query,
