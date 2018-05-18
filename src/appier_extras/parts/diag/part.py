@@ -230,7 +230,8 @@ class DiagPart(appier.Part):
         item.update(
             hostname = self._hostname,
             name = self.owner.name_b,
-            instance = self.owner.instance
+            instance = self.owner.instance,
+            server = self.owner.server_full
         )
         api = self._get_loggly_api()
         if not api: return
