@@ -25,6 +25,7 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 * `DIAG_STDOUT` (`bool`) - Same as `DIAG_OUTPUT`
 * `DIAG_GEO`(`bool`) - If the Geo IP resolution process should take place (extra CPU usage) for the processing of geographic information taken
 out of the IP address (defaults to `False`)
+* `DIAG_VERBOSE` (`bool`) - If the log output should be as verbose (extended) as possible (defaults to `False`)
 * `DIAG_FORMAT` (`str`) - The format to be used while outputting the HTTP request (defaults to `combined`)
 * `DIAG_EMPTY` (`bool`) - IF the complete set of stored request entities should be removed from the data store on part load, use this
 value carefully to avoid unwanted results (defaults to `False`)

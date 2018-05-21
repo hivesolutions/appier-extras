@@ -61,6 +61,7 @@ class DiagPart(appier.Part):
         self.loggly = kwargs.get("loggly", False)
         self.output = kwargs.get("output", True)
         self.geo = kwargs.get("geo", True)
+        self.verbose = kwargs.get("verbose", False)
         self.format = kwargs.get("format", "combined")
         self.empty = kwargs.get("empty", False)
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
@@ -68,6 +69,7 @@ class DiagPart(appier.Part):
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
         self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
+        self.verbose = appier.conf("DIAG_VERBOSE", self.verbose)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self.empty = appier.conf("DIAG_EMPTY", self.empty, cast = bool)
         self._loggly_api = None
@@ -237,6 +239,7 @@ class DiagPart(appier.Part):
             libraries = self.owner.get_libraries(map = True),
             parts = self.owner.get_parts(simple = True)
         )
+        if self.verbose: item.update(info_dict = self.owner.info_dict())
         api = self._get_loggly_api()
         if not api: return
         api.log_buffer(item)
