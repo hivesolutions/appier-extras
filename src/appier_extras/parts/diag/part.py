@@ -231,7 +231,11 @@ class DiagPart(appier.Part):
             hostname = self._hostname,
             name = self.owner.name_b,
             instance = self.owner.instance,
-            server = self.owner.server_full
+            appier = appier.VERSION,
+            platform = appier.PLATFORM,
+            server = self.owner.server_full,
+            libraries = self.owner.get_libraries(map = True),
+            parts = self.owner.get_parts(simple = True)
         )
         api = self._get_loggly_api()
         if not api: return
