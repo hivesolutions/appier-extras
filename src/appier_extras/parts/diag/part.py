@@ -131,11 +131,15 @@ class DiagPart(appier.Part):
         pass
 
     def after_request(self):
-        method = getattr(self, "_%s_log" % self.format)
-        result = method()
-        if self.output: print(result)
-        if self.store: self._store_log()
-        if self.loggly: self._loggly_log()
+        try:
+            if self.output: self._output_log()
+            if self.store: self._store_log()
+            if self.loggly: self._loggly_log()
+        except BaseException as exception:
+            self.owner.log_error(
+                exception,
+                message = "Problem running diag logging: %s"
+            )
 
     def flush_all(self):
         self._loggly_flush()
@@ -193,6 +197,11 @@ class DiagPart(appier.Part):
             self.request.get_header("Referer") or "",
             self.request.get_header("User-Agent") or ""
         )
+
+    def _output_log(self):
+        method = getattr(self, "_%s_log" % self.format)
+        result = method()
+        print(result)
 
     def _store_log(self):
         browser_info = self.request.browser_info
