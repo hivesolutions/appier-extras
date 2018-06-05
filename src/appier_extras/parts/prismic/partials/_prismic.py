@@ -188,7 +188,7 @@ class Prismic(object):
     def prismic_markdown(
         self,
         key,
-        include = 10,
+        limit = 10,
         default = None,
         verify = False,
         encoding = "utf-8",
@@ -201,7 +201,7 @@ class Prismic(object):
     ):
         value = self.prismic_value(
             key,
-            include = include,
+            limit = limit,
             default = default,
             verify = verify,
             *args,
