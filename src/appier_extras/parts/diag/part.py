@@ -62,6 +62,7 @@ class DiagPart(appier.Part):
         self.output = kwargs.get("output", True)
         self.geo = kwargs.get("geo", True)
         self.verbose = kwargs.get("verbose", False)
+        self.minimal = kwargs.get("minimal", False)
         self.format = kwargs.get("format", "combined")
         self.empty = kwargs.get("empty", False)
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
@@ -69,7 +70,8 @@ class DiagPart(appier.Part):
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
         self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
-        self.verbose = appier.conf("DIAG_VERBOSE", self.verbose)
+        self.verbose = appier.conf("DIAG_VERBOSE", self.verbose, cast = bool)
+        self.minimal = appier.conf("DIAG_MINIMAL", self.minimal, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self.empty = appier.conf("DIAG_EMPTY", self.empty, cast = bool)
         self._loggly_api = None
@@ -224,33 +226,9 @@ class DiagPart(appier.Part):
         diag_request.save()
 
     def _loggly_log(self):
-        item = dict(
-            timestamp = self._timestamp,
-            address = self.request.get_address(),
-            url = self.request.get_url(),
-            method = self.request.method,
-            path = self.request.path,
-            query = self.request.query,
-            code = self.request.code,
-            protocol = self.request.protocol,
-            duration = self.request.duration,
-            browser = self._browser,
-            headers = self.request.in_headers,
-            browser_info = self.request.browser_info,
-            meta_info = self._meta_info,
-            geo_info = self._geo_info
-        )
-        item.update(
-            hostname = self._hostname,
-            name = self.owner.name_b,
-            instance = self.owner.instance,
-            appier = appier.VERSION,
-            platform = appier.PLATFORM,
-            server = self.owner.server_full,
-            libraries = self.owner.get_libraries(map = True),
-            parts = self.owner.get_parts(simple = True)
-        )
-        if self.verbose: item.update(info_dict = self.owner.info_dict())
+        if self.minimal: item = self._get_item_minimal()
+        elif self.verbose: item = self._get_item_verbose()
+        else: item = self._get_item_normal()
         api = self._get_loggly_api()
         if not api: return
         api.log_buffer(item)
@@ -266,6 +244,51 @@ class DiagPart(appier.Part):
         except: return None
         self._loggly_api = loggly.API(delayer = self.owner.delay)
         return self._loggly_api
+
+    def _get_item(self, format = "normal"):
+        method = getattr(self, "_get_item_" + format)
+        return method()
+
+    def _get_item_base(self):
+        return dict()
+
+    def _get_item_minimal(self):
+        item = self._get_item_base()
+        item.update(
+            timestamp = self._timestamp,
+            address = self.request.get_address(),
+            url = self.request.get_url(),
+            method = self.request.method,
+            path = self.request.path,
+            query = self.request.query,
+            code = self.request.code
+        )
+        return item
+
+    def _get_item_normal(self):
+        item = self._get_item_minimal()
+        item.update(
+            protocol = self.request.protocol,
+            duration = self.request.duration,
+            browser = self._browser,
+            headers = self.request.in_headers,
+            hostname = self._hostname,
+            name = self.owner.name_b,
+            instance = self.owner.instance,
+            appier = appier.VERSION,
+            platform = appier.PLATFORM,
+            server = self.owner.server_full,
+            libraries = self.owner.get_libraries(map = True),
+            parts = self.owner.get_parts(simple = True)
+        )
+        return item
+
+    def _get_item_verbose(self):
+        item = self._get_item_normal()
+        item.update(
+            info_dict = self.owner.info_dict()
+        )
+        return item
 
     @property
     def _timestamp(self, format = "%Y-%m-%dT%H:%M:%S"):
