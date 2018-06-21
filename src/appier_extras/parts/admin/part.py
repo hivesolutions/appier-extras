@@ -147,6 +147,7 @@ class AdminPart(
 
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
         self.owner.lib_loaders["netius"] = self._netius_loader
+        self.owner.lib_loaders["pconvert"] = self._pconvert_loader
         self.owner.lib_loaders["PIL"] = self._pil_loader
         self.owner.lib_loaders["pymongo"] = self._pymongo_loader
         self.owner.lib_loaders["redis"] = self._redis_loader
@@ -1942,6 +1943,12 @@ class AdminPart(
         versions = []
         if hasattr(module, "VERSION"):
             versions.append(("Netius", module.VERSION))
+        return versions
+
+    def _pconvert_loader(self, module):
+        versions = []
+        if hasattr(module, "VERSION"):
+            versions.append(("P(NG) Convert", module.VERSION))
         return versions
 
     def _pil_loader(self, module):
