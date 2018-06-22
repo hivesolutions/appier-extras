@@ -1948,7 +1948,7 @@ class AdminPart(
     def _pconvert_loader(self, module):
         versions = []
         if hasattr(module, "VERSION"):
-            versions.append(("P(NG) Convert", module.VERSION))
+            versions.append(("P(NG)Convert", module.VERSION))
         return versions
 
     def _pil_loader(self, module):
