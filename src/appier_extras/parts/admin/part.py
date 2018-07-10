@@ -269,6 +269,8 @@ class AdminPart(
             (("GET",), "/admin/configs.json", self.show_configs, None, True),
             (("GET",), "/api/admin/ping", self.ping_api, None, True),
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
+            (("GET", "POST"), "/api/admin/oauth/access_token", self.oauth_access_token_api, None, True),
+            (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
             (("GET",), "/api/admin/accounts/me", self.me_account_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, True),
             (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, True)
@@ -1845,6 +1847,12 @@ class AdminPart(
 
     def ping_api(self):
         return dict(time = time.time())
+
+    def oauth_access_token_api(self):
+        return self.oauth_access_token()
+
+    def oauth_login_api(self):
+        return self.oauth_login()
 
     def login_api(self):
         # verifies if the current administration interface is
