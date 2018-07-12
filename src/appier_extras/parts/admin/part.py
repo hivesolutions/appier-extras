@@ -520,7 +520,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure()
+    @appier.ensure(context = "admin")
     def me_account(self):
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(meta = True)
@@ -529,7 +529,7 @@ class AdminPart(
             account = account
         )
 
-    @appier.ensure("admin.accounts")
+    @appier.ensure(token = "admin.accounts", context = "admin")
     def show_account(self, username):
         account_c = self._get_cls(self.account_c)
         account = account_c.get(
@@ -541,7 +541,7 @@ class AdminPart(
             account = account
         )
 
-    @appier.ensure("admin.accounts")
+    @appier.ensure(token = "admin.accounts", context = "admin")
     def mail_account(self, username):
         raise appier.NotImplementedError()
 
@@ -558,7 +558,7 @@ class AdminPart(
             cache = cache
         )
 
-    @appier.ensure(token = "admin.options")
+    @appier.ensure(token = "admin.options", context = "admin")
     def options(self):
         return self.template(
             "options.html.tpl",
@@ -567,7 +567,7 @@ class AdminPart(
             errors = dict()
         )
 
-    @appier.ensure(token = "admin.options")
+    @appier.ensure(token = "admin.options", context = "admin")
     def options_action(self):
         layout = self.field("layout")
         theme = self.field("theme")
@@ -603,7 +603,7 @@ class AdminPart(
             errors = dict()
         )
 
-    @appier.ensure(token = "admin.social")
+    @appier.ensure(token = "admin.social", context = "admin")
     def social(self):
         socials = self.socials()
         linked = self.linked()
@@ -614,21 +614,21 @@ class AdminPart(
             linked = linked
         )
 
-    @appier.ensure(token = "admin.operations")
+    @appier.ensure(token = "admin.operations", context = "admin")
     def operations(self):
         return self.template(
             "operations.html.tpl",
             section = "operations"
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def status(self):
         return self.template(
             "status.html.tpl",
             section = "status"
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def list_routes(self):
         return self.template(
             "routes.html.tpl",
@@ -636,7 +636,7 @@ class AdminPart(
             routes = self._routes()
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def list_configs(self):
         configs = appier.config.CONFIGS
         configs = appier.legacy.items(configs)
@@ -647,7 +647,7 @@ class AdminPart(
             configs = configs
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def list_parts(self):
         parts = self.owner.get_parts()
         return self.template(
@@ -656,7 +656,7 @@ class AdminPart(
             parts = parts
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def show_part(self, name):
         part = self.owner.get_part(name)
         info = part.info()
@@ -670,7 +670,7 @@ class AdminPart(
             info_l = info_l
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def load_part(self, name):
         part = self.owner.get_part(name)
         self.owner._load_part(part)
@@ -682,7 +682,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def unload_part(self, name):
         part = self.owner.get_part(name)
         self.owner._unload_part(part)
@@ -694,7 +694,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def list_libraries(self):
         libraries = self.owner.get_libraries()
         return self.template(
@@ -703,7 +703,7 @@ class AdminPart(
             libraries = libraries
         )
 
-    @appier.private
+    @appier.ensure(context = "admin")
     def oauth_authorize(self):
         # verifies if the oauth system is allowed if that's not
         # the case raises an exception indicating so
@@ -763,7 +763,7 @@ class AdminPart(
             tokens = tokens
         )
 
-    @appier.ensure()
+    @appier.ensure(context = "admin")
     def do_oauth_authorize(self):
         if not self.owner.admin_oauth: raise appier.SecurityError(
             message = "OAuth not allowed"
@@ -796,7 +796,7 @@ class AdminPart(
             )
         )
 
-    @appier.private
+    @appier.ensure(context = "admin")
     def oauth_deny(self):
         if not self.owner.admin_oauth: raise appier.SecurityError(
             message = "OAuth not allowed"
@@ -893,7 +893,7 @@ class AdminPart(
             tokens = oauth_token.tokens
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def build_index(self):
         empty = self.field("empty", True, cast = bool)
         if empty: models.Search.delete_c()
@@ -906,7 +906,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def build_index_db(self):
         for model in self._administrable(self.models_r):
             model._destroy_indexes()
@@ -918,7 +918,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def test_email(self):
         receiver = appier.conf("TEST_EMAIL", None)
         receiver = self.field("email", receiver)
@@ -940,7 +940,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def test_event(self):
         name = appier.conf("TEST_EVENT", "test")
         name = self.field("event", name)
@@ -953,7 +953,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def list_sessions(self):
         return self.template(
             "sessions.html.tpl",
@@ -961,7 +961,7 @@ class AdminPart(
             sessions = self.request.session_c.all()
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def empty_sessions(self):
         self.request.session_c.empty()
         return self.redirect(
@@ -971,7 +971,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def show_session_me(self):
         sid = self.session.sid
         return self.template(
@@ -990,7 +990,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def show_session(self, sid):
         sid = str(sid)
         return self.template(
@@ -999,7 +999,7 @@ class AdminPart(
             session_s = self.request.session_c.get_s(sid)
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def delete_session(self, sid):
         sid = str(sid)
         self.request.session_c.expire(sid)
@@ -1010,7 +1010,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.status")
+    @appier.ensure(token = "admin.status", context = "admin")
     def list_counters(self):
         collection = self._counters()
         counters = collection.find()
@@ -1020,7 +1020,7 @@ class AdminPart(
             counters = counters
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def list_events_csv(self):
         object = appier.get_object(
             alias = True,
@@ -1046,14 +1046,14 @@ class AdminPart(
         self.content_type("text/csv")
         return result
 
-    @appier.ensure(token = "admin.database")
+    @appier.ensure(token = "admin.database", context = "admin")
     def database(self):
         return self.template(
             "database.html.tpl",
             section = "database"
         )
 
-    @appier.ensure(token = "admin.database")
+    @appier.ensure(token = "admin.database", context = "admin")
     def database_export(self):
         adapter = self.get_adapter()
         file = appier.legacy.BytesIO()
@@ -1075,14 +1075,14 @@ class AdminPart(
 
         return file.getvalue()
 
-    @appier.ensure(token = "admin.database")
+    @appier.ensure(token = "admin.database", context = "admin")
     def database_import(self):
         return self.template(
             "database/import.html.tpl",
             section = "database"
         )
 
-    @appier.ensure(token = "admin.database")
+    @appier.ensure(token = "admin.database", context = "admin")
     def database_import_do(self):
         # tries to retrieve the reference to the import file tuple
         # and in case it's not found raises an error to the template
@@ -1116,7 +1116,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin.database")
+    @appier.ensure(token = "admin.database", context = "admin")
     def database_reset(self):
         adapter = self.get_adapter()
         adapter.drop_db()
@@ -1127,7 +1127,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def search(self):
         object = appier.get_object(
             alias = True,
@@ -1138,14 +1138,14 @@ class AdminPart(
         indexes = models.Search.find(map = True, **object)
         return indexes
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def list_models(self):
         return self.template(
             "models/list.html.tpl",
             section = "admin"
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_model(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1166,7 +1166,7 @@ class AdminPart(
             entities = entities
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_model_json(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", False, cast = bool)
@@ -1181,7 +1181,7 @@ class AdminPart(
         )
         return entities
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_model_csv(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", False, cast = bool)
@@ -1198,7 +1198,7 @@ class AdminPart(
         self.content_type("text/csv")
         return result
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def link_model(self, model, link):
         # ensures that the proper token is available so that the
         # operation may be executed under the current context
@@ -1262,7 +1262,7 @@ class AdminPart(
         # result string (and URL) value
         return self.redirect(result)
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def operation_model(self, model, operation):
         # ensures that the proper token is available so that the
         # operation may be executed under the current context
@@ -1354,7 +1354,7 @@ class AdminPart(
             message = "Operation %s completed with success" % operation_s
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def view_model(self, model, view):
         appier.ensure_login(self, token = "admin.models." + model)
 
@@ -1409,7 +1409,7 @@ class AdminPart(
             is_global = is_global
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def new_entity(self, model):
         model = self.get_model(model)
         return self.template(
@@ -1420,7 +1420,7 @@ class AdminPart(
             model = model
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def create_entity(self, model):
         model = self.get_model(model)
         entity = model.new(safe = False)
@@ -1438,7 +1438,7 @@ class AdminPart(
             self.url_for("admin.show_model", model = model._under())
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1457,7 +1457,7 @@ class AdminPart(
             next_url = next_url
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_entity_json(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", True, cast = bool)
@@ -1473,7 +1473,7 @@ class AdminPart(
         )
         return entity
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def edit_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1490,7 +1490,7 @@ class AdminPart(
             model = model
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def update_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1518,7 +1518,7 @@ class AdminPart(
             )
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def delete_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1832,7 +1832,7 @@ class AdminPart(
            next or self.url_for(self.owner.admin_login_redirect)
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_log(self):
         memory_handler = self.owner.handler_memory
         count = self.field("count", 100, cast = int)
@@ -1841,7 +1841,7 @@ class AdminPart(
             messages = memory_handler.get_latest(count = count, level = level)
         )
 
-    @appier.ensure(token = "admin")
+    @appier.ensure(token = "admin", context = "admin")
     def show_configs(self):
         return appier.config.CONFIGS
 
@@ -1886,7 +1886,7 @@ class AdminPart(
             tokens = account.tokens()
         )
 
-    @appier.ensure()
+    @appier.ensure(context = "admin")
     def me_account_api(self):
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(map = True)
