@@ -853,7 +853,8 @@ class AdminPart(
             token_type = "bearer",
             expires_in = oauth_token.expires_in,
             refresh_token = oauth_token.refresh_token,
-            scope = oauth_token.scope
+            scope = oauth_token.scope,
+            tokens = oauth_token.tokens
         )
 
     def oauth_login(self):
