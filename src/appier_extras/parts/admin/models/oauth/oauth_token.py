@@ -149,7 +149,7 @@ class OAuthToken(base.Base):
         ),
         immutable = True
     )
-    """ The reference to the oauth client that has been used
+    """ The reference to the OAuth client that has been used
     for the generation of this token """
 
     @classmethod
@@ -186,7 +186,7 @@ class OAuthToken(base.Base):
         # retrieves the current account from session and then
         # normalizes the provided scope list to convert it to
         # tokens (filters on account permissions) then tries to
-        # retrieve an already existing compatible oauth token
+        # retrieve an already existing compatible OAuth token
         account = account or owner.admin_part.account_c.from_session()
         tokens = cls._filter_scope_g(scope, account = account)
         oauth_token = cls.get_e(
@@ -203,7 +203,7 @@ class OAuthToken(base.Base):
         # control flow immediately with an invalid value
         if not oauth_token: return False, tokens, oauth_token
 
-        # in case there's an already existing oauth token that
+        # in case there's an already existing OAuth token that
         # has the same requirements (scope, client, redirect URL)
         # of the one being requested, then a new authorization code
         # is generated and the user agent is redirected immediately
@@ -211,7 +211,7 @@ class OAuthToken(base.Base):
         oauth_token.set_code_s()
 
         # returns a valid result indicating both the retrieved tokens
-        # and the oauth token that can be used for re-usage
+        # and the OAuth token that can be used for re-usage
         return True, tokens, oauth_token
 
     @classmethod
@@ -309,7 +309,7 @@ class OAuthToken(base.Base):
     def touch_expired(self, delete = True):
         """
         Method to be called upon the token usage so that the
-        expiration for the oauth token may be checked.
+        expiration for the OAuth token may be checked.
 
         If the verification fails it's possible to have the
         current token removed from the data source

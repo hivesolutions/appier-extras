@@ -142,14 +142,14 @@ class OAuthClient(base.Base):
     @appier.operation(name = "Invalidate Tokens", level = 2)
     def invalidate_s(self):
         """
-        Operation that invalidates the complete set of oauth (access)
-        tokens associated with the current oauth client.
+        Operation that invalidates the complete set of OAuth (access)
+        tokens associated with the current OAuth client.
 
         This is a serious operation that should be used carefully to
         avoid unwanted behavior and loss of availability.
         """
 
-        # retrieves the complete set of oauth (access) tokens for the
+        # retrieves the complete set of OAuth (access) tokens for the
         # current client and runs the delete operation (removing them)
         tokens = self.get_tokens()
         for token in tokens: token.delete()
