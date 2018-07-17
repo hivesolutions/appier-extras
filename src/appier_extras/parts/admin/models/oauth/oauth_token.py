@@ -51,7 +51,7 @@ class OAuthToken(base.Base):
     """
 
     DEFAULT_DURATION = 3600
-    """ The default duration of the oauth token, this
+    """ The default duration of the OAuth token, this
     value should not be too long to avoid security issues """
 
     CODE_DURATION = 600
@@ -97,14 +97,14 @@ class OAuthToken(base.Base):
         immutable = True
     )
     """ The name of the user that is authorized this
-    access token, will be used for custom acl creation """
+    access token, will be used for custom ACL creation """
 
     scope = appier.field(
         type = list,
         private = True,
         immutable = True
     )
-    """ The oauth based scope string that "created" this
+    """ The OAuth based scope string that "created" this
     token with its values sorted alphabetically """
 
     expires_in = appier.field(
@@ -140,7 +140,7 @@ class OAuthToken(base.Base):
         private = True,
         immutable = True
     )
-    """ The acl tokens associated with this access token """
+    """ The ACL tokens associated with this access token """
 
     client = appier.field(
         type = appier.reference(
@@ -248,7 +248,7 @@ class OAuthToken(base.Base):
         owner = owner or appier.get_app()
 
         # builds the list that is going to be used to store the
-        # result of the scope filtering (acl verification)
+        # result of the scope filtering (ACL verification)
         result = []
 
         # retrieves the complete set of tokens from the account
@@ -258,7 +258,7 @@ class OAuthToken(base.Base):
         tokens_m = appier.to_tokens_m(tokens)
 
         # iterates over each token of the scope to validate it
-        # according to the acl of the associated account
+        # according to the ACL of the associated account
         for token in scope:
             valid = appier.check_token(None, token, tokens_m = tokens_m)
             if not valid: continue
