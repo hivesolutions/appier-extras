@@ -847,7 +847,9 @@ class AdminPart(
         oauth_token.unset_code_s()
 
         # returns the final map based response containing the complete
-        # set of elements to the client to be used
+        # set of elements to the client to be used, notice that both
+        # the scope and the tokens are also returned so that the OAuth
+        # client is able to modify experience taking that into account
         return dict(
             access_token = oauth_token.access_token,
             token_type = "bearer",
