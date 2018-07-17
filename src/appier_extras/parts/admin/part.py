@@ -883,7 +883,7 @@ class AdminPart(
         # values to correctly authenticate the user
         oauth_token._set_session()
 
-        # retrieves the session identifier (sid) for the currently
+        # retrieves the session identifier (SID) for the currently
         # assigned session, this is going to be used in the next
         # requests to refer to the proper session
         sid = self.session.sid
@@ -1876,7 +1876,7 @@ class AdminPart(
         # values to correctly authenticate the user
         account._set_session()
 
-        # retrieves the session identifier (sid) for the currently
+        # retrieves the session identifier (SID) for the currently
         # assigned session, this is going to be used in the next
         # requests to refer to the proper session
         sid = self.session.sid
