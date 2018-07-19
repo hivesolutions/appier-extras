@@ -328,7 +328,7 @@
     </div>
 {%- endmacro %}
 
-{% macro paging_listers(items, model, page, names = None, id_name = "_id", selection = False) -%}
+{% macro paging_listers(items, model, page, view = None, names = None, id_name = "_id", selection = False) -%}
     {% set names = names or model.list_names() %}
     {% set _caller = caller %}
     <div class="listers">
@@ -336,7 +336,8 @@
             {{ _caller(item, name, mode = "card") }}
         {% endcall %}
         <table class="filter lister {% if selection %}bulk{% endif %}" data-no_input="1"
-               data-size="{{ page.size }}" data-total="{{ page.total }}" data-pages="{{ page.count }}">
+               data-size="{{ page.size }}" data-total="{{ page.total }}" data-pages="{{ page.count }}"
+               data-view="{{ view|default('', True) }}">
             {{ paging_header(request, model, page, names = names, selection = selection) }}
             {% call(item, name) paging_body(items, names = names, id_name = id_name, selection = selection) %}
                 {{ _caller(item, name, mode = "cell") }}

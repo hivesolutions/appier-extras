@@ -107,6 +107,7 @@
         entities,
         target,
         page,
+        view = view,
         names = names,
         selection = True
     ) %}
