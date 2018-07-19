@@ -2172,7 +2172,10 @@ class AdminPart(
         method_kw = appier.legacy.getargspec(method)[2]
         result = method(**parameters_kw) if method_kw else method(*parameters, **kwargs)
 
-        appier.verify(not cls or result["model"] == cls)
+        # ensures that the model type in the result from the view apply
+        # is the expected one (if entity class is provided) this is relevant
+        # to avoid issues with bad filtering methods
+        appier.verify(not cls or result["model"].is_equal(cls))
 
         kwargs = result["kwargs"]
         return kwargs
