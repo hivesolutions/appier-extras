@@ -42,6 +42,10 @@ value carefully to avoid unwanted results (defaults to `False`)
 * `ADMIN_SOCIAL_LIBS` (`list`) - List of social agents that should have their libraries ensured to be installed (using `pip`) at loading,
 note that this should be an expensive on load operation (defaults to `[]`)
 
+### OAuth
+
+* `OAUTH_DURATION` (`int`) - The default duration (in seconds) of the access token until it has to be refreshed (defaults to `3600`)
+
 ### Email
 
 * `BULK_EMAIL` (`bool`) - If the sent email should be marked as bulk by default (defaults to `False`)

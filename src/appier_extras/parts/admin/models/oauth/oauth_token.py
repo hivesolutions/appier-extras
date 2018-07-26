@@ -280,11 +280,12 @@ class OAuthToken(base.Base):
         base.Base.pre_create(self)
 
         cls = self.__class__
+        duration = appier.conf("OAUTH_DURATION", cls.DEFAULT_DURATION, cast = int)
         self.access_token = appier.gen_token()
         self.client_secret = appier.gen_token()
         self.authorization_code = appier.gen_token()
         self.authorization_code_date = time.time()
-        self.expires_in = cls.DEFAULT_DURATION
+        self.expires_in = duration
         self.refresh_token = appier.gen_token()
         self.tokens = self._filter_scope(self.scope)
         self.name = self.access_token[:8]
