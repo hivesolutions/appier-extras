@@ -499,6 +499,38 @@ class Account(base.Base, authenticable.Authenticable):
         return account
 
     @classmethod
+    @appier.operation(
+        name = "Import CSV",
+        parameters = (
+            ("CSV File", "file", "file"),
+            ("Empty source", "empty", bool, False)
+        )
+    )
+    def import_csv_s(cls, file, empty):
+
+        def callback(line):
+            username,\
+            password,\
+            email,\
+            type = line
+
+            if type and type == "admin": type = cls.ADMIN_TYPE
+            else: type = cls.USER_TYPE
+
+            account = cls(
+                enabled = True,
+                username = username,
+                email = email,
+                password = password,
+                password_confirm = password,
+                type = type
+            )
+            account.save()
+
+        if empty: cls.delete_c()
+        cls._csv_import(file, callback)
+
+    @classmethod
     def _build(cls, model, map):
         super(Account, cls)._build(model, map)
         username = model["username"]
