@@ -171,30 +171,49 @@ class Event(base.Base):
             absolute = absolute
         )
 
+    @classmethod
+    def _retry(cls, callable, count = 3):
+        result = None
+        while True:
+            try:
+                result = callable()
+            except:
+                count -= 1
+                if count == 0: raise
+                else: continue
+            break
+        return result
+
     def notify_http(self, arguments = {}):
+        cls = self.__class__
         url = arguments.get("url", None)
+        retries = arguments.get("retries", 3)
         logger = appier.get_logger()
         logger.debug("Running HTTP notification for '%s' ..." % url)
-        return appier.post(url, data_j = arguments)
+        return cls._retry(lambda: appier.post(url, data_j = arguments), count = retries)
 
     def notify_mailme(self, arguments = {}):
+        cls = self.__class__
         appier.ensure_pip("mailme", package = "mailme_api")
         import mailme
+        retries = arguments.get("retries", 3)
         logger = appier.get_logger()
         logger.debug("Running Mailme notification ...")
         api = mailme.API()
-        return api.send(arguments)
+        return cls._retry(lambda: api.send(arguments), count = retries)
 
     def notify_nexmo(self, arguments = {}):
+        cls = self.__class__
         appier.ensure_pip("nexmo", package = "nexmo_api")
         import nexmo
         sender = arguments["sender"]
         receiver = arguments["receiver"]
         text = arguments["text"]
+        retries = arguments.get("retries", 3)
         logger = appier.get_logger()
         logger.debug("Running Nexmo notification for '%s' ..." % receiver)
         api = nexmo.API()
-        return api.send_sms(sender, receiver, text)
+        return cls._retry(lambda: api.send_sms(sender, receiver, text), count = retries)
 
     @appier.operation(name = "Duplicate", factory = True)
     def duplicate_s(self):
