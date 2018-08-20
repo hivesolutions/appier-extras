@@ -241,7 +241,8 @@ class DiagPart(appier.Part):
     def _get_loggly_api(self):
         if self._loggly_api: return self._loggly_api
         try: loggly = appier.import_pip("loggly", package = "loggly_api_python")
-        except: return None
+        except: loggly = None
+        if not loggly: return None
         self._loggly_api = loggly.API(delayer = self.owner.delay)
         return self._loggly_api
 

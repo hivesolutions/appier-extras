@@ -102,6 +102,7 @@ class LogglyPart(appier.Part):
     def _get_api(self):
         if self._api: return self._api
         try: loggly = appier.import_pip("loggly", package = "loggly_api_python")
-        except: return None
+        except: loggly = None
+        if not loggly: return None
         self._api = loggly.API()
         return self._api
