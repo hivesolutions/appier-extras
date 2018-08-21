@@ -134,6 +134,7 @@ class Prismic(object):
         self,
         key,
         default = None,
+        cast = None,
         locale = None,
         timeout = 86400,
         verify = False,
@@ -149,6 +150,10 @@ class Prismic(object):
         # fails uses the locale associated with the current request
         # as a fallback (optimistic approach)
         locale = locale or self.request.locale
+
+        # in case the cast value is set, tries to resolve it into the appropriate
+        # cast operation using the default cast methods in the configuration module
+        if cast: cast = appier.config._cast_r(cast)
 
         # in case e the locale value is provided it must be normalized
         # into the format expected by prismic api
@@ -171,7 +176,10 @@ class Prismic(object):
         # (singleton instance) and verifies if the key exists in it, returning
         # immediately the value if that's the case
         prismic_cache = cls._get_prismic_cache()
-        if cache_key in prismic_cache: return prismic_cache[cache_key]
+        if cache_key in prismic_cache:
+            value = prismic_cache[cache_key]
+            if cast and not value == None: value = cast(value)
+            return value
 
         # determines if the provided key references a specific field/value on an
         # object or if it instead tries to retrieve the complete object specification
@@ -183,6 +191,10 @@ class Prismic(object):
         # to avoid further retrievals later on
         value = method(key, default = default, verify = verify, *args, **kwargs)
         prismic_cache.set_item(cache_key, value, expires = time.time() + timeout)
+
+        # runs the casting operation if required and then returns the final
+        # value to the caller method
+        if cast and not value == None: value = cast(value)
         return value
 
     def prismic_markdown(

@@ -151,6 +151,7 @@ class Contentful(object):
         self,
         key,
         default = None,
+        cast = None,
         locale = None,
         timeout = 86400,
         verify = False,
@@ -165,6 +166,10 @@ class Contentful(object):
         # fails uses the locale associated with the current request
         # as a fallback (optimistic approach)
         locale = locale or self.request.locale
+
+        # in case the cast value is set, tries to resolve it into the appropriate
+        # cast operation using the default cast methods in the configuration module
+        if cast: cast = appier.config._cast_r(cast)
 
         # in case e the locale value is provided it must be normalized
         # into the format expected by contentful api
@@ -187,12 +192,19 @@ class Contentful(object):
         # (singleton instance) and verifies if the key exists in it, returning
         # immediately the value if that's the case
         contentful_cache = cls._get_contentful_cache()
-        if cache_key in contentful_cache: return contentful_cache[cache_key]
+        if cache_key in contentful_cache:
+            value = contentful_cache[cache_key]
+            if cast and not value == None: value = cast(value)
+            return value
 
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
         value = self._contentful_value(key, default = default, verify = verify, *args, **kwargs)
         contentful_cache.set_item(cache_key, value, expires = time.time() + timeout)
+
+        # runs the casting operation if required and then returns the final
+        # value to the caller method
+        if cast and not value == None: value = cast(value)
         return value
 
     def contentful_markdown(
