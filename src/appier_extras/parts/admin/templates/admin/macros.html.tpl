@@ -1,4 +1,5 @@
 {% macro out(entity, name, boolean = True, default = "-") -%}
+    {% set entity, name = entity._res_entity(name, rules = False, meta = True) %}
     {% set cls = entity.__class__ %}
     {% set meta_name = name + "_meta" %}
     {% set value = entity[meta_name]|default(default) %}
@@ -9,6 +10,7 @@
 {%- endmacro %}
 
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
+    {% set entity, name = entity._res_entity(name, rules = False, meta = True) %}
     {% set cls = entity.__class__ %}
     {% set info = cls[name]|default({}, True) %}
     {% set default = info.get("initial", "") if create else "" %}
