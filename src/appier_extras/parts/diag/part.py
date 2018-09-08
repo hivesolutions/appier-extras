@@ -62,6 +62,7 @@ class DiagPart(appier.Part):
         self.logstash = kwargs.get("logstash", False)
         self.output = kwargs.get("output", True)
         self.geo = kwargs.get("geo", True)
+        self.level = kwargs.get("level", "normal")
         self.verbose = kwargs.get("verbose", False)
         self.minimal = kwargs.get("minimal", False)
         self.format = kwargs.get("format", "combined")
@@ -72,6 +73,7 @@ class DiagPart(appier.Part):
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
         self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
+        self.level = appier.conf("DIAG_LEVEL", self.level)
         self.verbose = appier.conf("DIAG_VERBOSE", self.verbose, cast = bool)
         self.minimal = appier.conf("DIAG_MINIMAL", self.minimal, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
@@ -79,6 +81,12 @@ class DiagPart(appier.Part):
         self._loggly_api = None
         self._logstash_api = None
         self._hostname_s = None
+
+        # normalizes the verbosity level values and sets the extra values (verbose
+        # and minimal) in case the values have been provided
+        self.level = self.level.lower()
+        if self.verbose: self.level = "verbose"
+        if self.minimal: self.level = "minimal"
 
     def version(self):
         return base.VERSION
@@ -232,11 +240,9 @@ class DiagPart(appier.Part):
         diag_request.save()
 
     def _loggly_log(self):
-        if self.minimal: item = self._get_item_minimal()
-        elif self.verbose: item = self._get_item_verbose()
-        else: item = self._get_item_normal()
         api = self._get_loggly_api()
         if not api: return
+        item = self._get_item(format = self.level)
         api.log_buffer(item)
 
     def _loggly_flush(self):
@@ -245,11 +251,9 @@ class DiagPart(appier.Part):
         api.log_flush()
 
     def _logstash_log(self):
-        if self.minimal: item = self._get_item_minimal()
-        elif self.verbose: item = self._get_item_verbose()
-        else: item = self._get_item_normal()
         api = self._get_logstash_api()
         if not api: return
+        item = self._get_item(format = self.level)
         api.log_buffer(item)
 
     def _logstash_flush(self):
@@ -313,6 +317,15 @@ class DiagPart(appier.Part):
 
     def _get_item_verbose(self):
         item = self._get_item_normal()
+        item.update(
+            browser_info = self.request.browser_info,
+            meta_info = self._meta_info,
+            geo_info = self._geo_info
+        )
+        return item
+
+    def _get_item_debug(self):
+        item = self._get_item_verbose()
         item.update(
             info_dict = self.owner.info_dict()
         )
