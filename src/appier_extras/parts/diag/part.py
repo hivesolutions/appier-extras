@@ -67,8 +67,8 @@ class DiagPart(appier.Part):
         self.format = kwargs.get("format", "combined")
         self.empty = kwargs.get("empty", False)
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
-        self.logstash = appier.conf("DIAG_LOGSTASH", self.loggly, cast = bool)
         self.loggly = appier.conf("DIAG_LOGGLY", self.loggly, cast = bool)
+        self.logstash = appier.conf("DIAG_LOGSTASH", self.loggly, cast = bool)
         self.output = appier.conf("DIAG_OUTPUT", self.output, cast = bool)
         self.output = appier.conf("DIAG_STDOUT", self.output, cast = bool)
         self.geo = appier.conf("DIAG_GEO", self.geo, cast = bool)
@@ -76,8 +76,8 @@ class DiagPart(appier.Part):
         self.minimal = appier.conf("DIAG_MINIMAL", self.minimal, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self.empty = appier.conf("DIAG_EMPTY", self.empty, cast = bool)
-        self._logstash_api = None
         self._loggly_api = None
+        self._logstash_api = None
         self._hostname_s = None
 
     def version(self):
@@ -87,8 +87,8 @@ class DiagPart(appier.Part):
         info = appier.Part.info(self)
         info.update(
             store = self.store,
-            logstash = self.logstash,
             loggly = self.loggly,
+            logstash = self.logstash,
             output = self.output,
             format = self.format
         )
@@ -140,8 +140,8 @@ class DiagPart(appier.Part):
         try:
             if self.output: self._output_log()
             if self.store: self._store_log()
-            if self.logstash: self._logstash_log()
             if self.loggly: self._loggly_log()
+            if self.logstash: self._logstash_log()
         except BaseException as exception:
             self.owner.log_error(
                 exception,
@@ -149,8 +149,8 @@ class DiagPart(appier.Part):
             )
 
     def flush_all(self):
-        self._logstash_flush()
         self._loggly_flush()
+        self._logstash_flush()
 
     @appier.ensure(token = "admin.status")
     def list_requests(self):
@@ -231,19 +231,6 @@ class DiagPart(appier.Part):
         )
         diag_request.save()
 
-    def _logstash_log(self):
-        if self.minimal: item = self._get_item_minimal()
-        elif self.verbose: item = self._get_item_verbose()
-        else: item = self._get_item_normal()
-        api = self._get_logstash_api()
-        if not api: return
-        api.log_buffer(item)
-
-    def _logstash_flush(self):
-        if not self._logstash_api: return
-        api = self._get_logstash_api()
-        api.log_flush()
-
     def _loggly_log(self):
         if self.minimal: item = self._get_item_minimal()
         elif self.verbose: item = self._get_item_verbose()
@@ -257,13 +244,18 @@ class DiagPart(appier.Part):
         api = self._get_loggly_api()
         api.log_flush()
 
-    def _get_logstash_api(self):
-        if self._logstash_api: return self._logstash_api
-        try: logstash = appier.import_pip("logstash", package = "logstash_api")
-        except: logstash = None
-        if not logstash: return None
-        self._logstash_api = logstash.API(delayer = self.owner.delay)
-        return self._logstash_api
+    def _logstash_log(self):
+        if self.minimal: item = self._get_item_minimal()
+        elif self.verbose: item = self._get_item_verbose()
+        else: item = self._get_item_normal()
+        api = self._get_logstash_api()
+        if not api: return
+        api.log_buffer(item)
+
+    def _logstash_flush(self):
+        if not self._logstash_api: return
+        api = self._get_logstash_api()
+        api.log_flush()
 
     def _get_loggly_api(self):
         if self._loggly_api: return self._loggly_api
@@ -272,6 +264,14 @@ class DiagPart(appier.Part):
         if not loggly: return None
         self._loggly_api = loggly.API(delayer = self.owner.delay)
         return self._loggly_api
+
+    def _get_logstash_api(self):
+        if self._logstash_api: return self._logstash_api
+        try: logstash = appier.import_pip("logstash", package = "logstash_api")
+        except: logstash = None
+        if not logstash: return None
+        self._logstash_api = logstash.API(delayer = self.owner.delay)
+        return self._logstash_api
 
     def _get_item(self, format = "normal"):
         method = getattr(self, "_get_item_" + format)

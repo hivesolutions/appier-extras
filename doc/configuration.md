@@ -20,8 +20,8 @@ should be changed carefully to avoid unwanted changes (defaults to `current`)
 ### Diag
 
 * `DIAG_STORE` (`bool`) - If the multiple HTTP requests in diagnostics should be store in the data source (defaults to `False`)
-* `DIAG_LOGSTASH` (`bool`) - If the Logstash based logging should be used (defaults to `False`)
 * `DIAG_LOGGLY` (`bool`) - If the Loggly based logging should be used (defaults to `False`)
+* `DIAG_LOGSTASH` (`bool`) - If the Logstash based logging should be used (defaults to `False`)
 * `DIAG_OUTPUT` (`bool`) - If each of the HTTP requests should be printed to the stdout (defaults to `True`)
 * `DIAG_STDOUT` (`bool`) - Same as `DIAG_OUTPUT`
 * `DIAG_GEO`(`bool`) - If the Geo IP resolution process should take place (extra CPU usage) for the processing of geographic information taken
