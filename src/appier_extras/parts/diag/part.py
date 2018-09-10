@@ -322,6 +322,15 @@ class DiagPart(appier.Part):
             meta_info = self._meta_info,
             geo_info = self._geo_info
         )
+        if self.request.exception:
+            exception = self.request.exception
+            item["exception"] = dict(
+                name = exception.__class__.__name__,
+                uid = exception.uid if hasattr(exception, "uid") else None,
+                message = exception.message if hasattr(exception, "message") else None
+            )
+        if self.request.stacktrace:
+            item["stacktrace"] = self.request.stacktrace
         return item
 
     def _get_item_debug(self):
