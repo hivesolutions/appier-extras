@@ -449,7 +449,10 @@ class Base(appier.Model):
     def _inlinify_premailer(cls, data, *args, **kwargs):
         premailer = appier.import_pip("premailer")
         keep_style_tags = kwargs.get("keep_style_tags", True)
-        logging_level = logging.INFO if appier.is_devel() else logging.ERROR
+        logging_level = kwargs.get(
+            "logging_level",
+            logging.INFO if appier.is_devel() else logging.ERROR
+        )
         inliner = premailer.Premailer(
             data,
             keep_style_tags = keep_style_tags,
@@ -461,6 +464,11 @@ class Base(appier.Model):
     def _inlinify_toronado(cls, data, *args, **kwargs):
         toronado = appier.import_pip("toronado")
         encoding = kwargs.get("encoding", "utf-8")
+        logging_level = kwargs.get(
+            "logging_level",
+            logging.INFO if appier.is_devel() else logging.ERROR
+        )
+        toronado.logger.setLevel(logging_level)
         result = toronado.from_string(data)
         if appier.legacy.is_bytes(result):
             result = result.decode(encoding)
