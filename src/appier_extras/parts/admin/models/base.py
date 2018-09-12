@@ -43,6 +43,7 @@ import time
 import random
 import string
 import hashlib
+import logging
 import datetime
 import collections
 
@@ -448,7 +449,12 @@ class Base(appier.Model):
     def _inlinify_premailer(cls, data, *args, **kwargs):
         premailer = appier.import_pip("premailer")
         keep_style_tags = kwargs.get("keep_style_tags", True)
-        inliner = premailer.Premailer(data, keep_style_tags = keep_style_tags)
+        logging_level = logging.INFO if appier.is_devel() else logging.ERROR
+        inliner = premailer.Premailer(
+            data,
+            keep_style_tags = keep_style_tags,
+            cssutils_logging_level = logging_level
+        )
         return inliner.transform(data)
 
     @classmethod
