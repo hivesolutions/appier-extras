@@ -278,6 +278,7 @@ class Base(appier.Model):
         unsubscribe = kwargs.pop("unsubscribe", unsubscribe)
         logo = kwargs.pop("logo", logo)
         inline = kwargs.pop("inline", inline)
+        engine = kwargs.pop("engine", None)
         settings = dict(
             bulk = bulk,
             unsubscribe = unsubscribe,
@@ -287,7 +288,7 @@ class Base(appier.Model):
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
         if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
-        html_handler = cls._inlinify
+        html_handler = lambda data: cls._inlinify(data, engine = engine) if engine else cls._inlinify
         html_handler = html_handler if inline else None
         owner.email(
             sender = sender,
