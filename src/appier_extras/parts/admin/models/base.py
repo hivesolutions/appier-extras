@@ -454,7 +454,11 @@ class Base(appier.Model):
     @classmethod
     def _inlinify_toronado(cls, data, *args, **kwargs):
         toronado = appier.import_pip("toronado")
-        return toronado.from_string(data)
+        encoding = kwargs.get("encoding", "utf-8")
+        result = toronado.from_string(data)
+        if appier.legacy.is_bytes(result):
+            result = result.decode(encoding)
+        return result
 
     def pre_create(self):
         appier.Model.pre_create(self)
