@@ -1927,7 +1927,7 @@ class AdminPart(
             ),
             encoding = encoding
         )
-        return appier.legacy.str(
+        return appier.legacy.u(
             value,
             encoding = encoding,
             force = True
