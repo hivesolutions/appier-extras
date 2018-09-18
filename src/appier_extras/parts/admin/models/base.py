@@ -480,13 +480,13 @@ class Base(appier.Model):
         appier.Model.pre_create(self)
 
         if not hasattr(self, "enabled"): self.enabled = True
-        self.created = time.time()
-        self.modified = time.time()
+        self.created = int(time.time())
+        self.modified = int(time.time())
 
     def pre_update(self):
         appier.Model.pre_update(self)
 
-        self.modified = time.time()
+        self.modified = int(time.time())
         self.build_snapshot()
 
     def pre_delete(self):
