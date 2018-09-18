@@ -756,7 +756,7 @@ class Account(base.Base, authenticable.Authenticable):
 
         # updates the last login of the account with the current timestamp
         # and saves the account so that this value is persisted
-        self.last_login = time.time()
+        self.last_login = int(time.time())
         self.save()
 
         # triggers the global event indicating that a new account has been
