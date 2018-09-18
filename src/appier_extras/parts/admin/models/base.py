@@ -658,6 +658,13 @@ class Base(appier.Model):
         self = self.reload(rules = False)
         self.touch_s()
 
+    @appier.operation(name = "Datefix", devel = True)
+    def op_datefix_s(self):
+        self = self.reload(rules = False)
+        self.created = int(self.created)
+        self.modified = int(self.modified)
+        self.save(immutables_a = False)
+
     @property
     def created_d(self):
         return datetime.datetime.fromtimestamp(self.created)
