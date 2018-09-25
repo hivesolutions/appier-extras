@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,24 +37,30 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import admin
-from . import captcha
-from . import contentful
-from . import csfr
-from . import diag
-from . import loggly
-from . import opbeat
-from . import preflight
-from . import prismic
-from . import sematext
+import appier
 
-from .admin import AdminPart
-from .captcha import CaptchaPart
-from .contentful import Contentful
-from .csfr import CSFRPart, csfr_protect, csfr_ensure
-from .diag import DiagPart
-from .loggly import LogglyHandler, LogglyPart
-from .opbeat import OpbeatPart
-from .preflight import PreflightPart
-from .prismic import Prismic
-from .sematext import SematextHandler, SematextPart
+from appier_extras import base
+
+class PreflightPart(appier.Part):
+
+    def __init__(self, *args, **kwargs):
+        appier.Part.__init__(self, *args, **kwargs)
+        self.data = appier.conf("PREFLIGHT_DATA", "")
+        self.data_b = appier.legacy.bytes(self.data, force = True)
+
+    def version(self):
+        return base.VERSION
+
+    def load(self):
+        appier.Part.load(self)
+
+        self.owner.bind("before_request", self._handler)
+
+    def unload(self):
+        appier.Part.unload(self)
+
+        self.owner.bind("before_request", self._handler)
+
+    def _handler(self):
+        if not self.owner.request.method == "OPTIONS": return
+        self.owner.request.handle(self.data_b)

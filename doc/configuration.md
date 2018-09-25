@@ -67,3 +67,7 @@ note that this should be an expensive on load operation (defaults to `[]`)
 * `SEMATEXT_LOG` (`bool`) - If the Sematext based logging handler should be activated on part load (defaults to `False`)
 * `SEMATEXT_BUFFER_SIZE` (`int`) - The size of the buffer (in number of entries) until the buffer is flushed (defaults to `128`)
 * `SEMATEXT_TIMEOUT` (`int`) - The timeout in seconds in seconds until the buffer is flushed (defaults to `30`)
+
+### Preflight
+
+* `PREFLIGHT_DATA` (`str`) - Teh default data for the response to be returned to the `OPTIONS` request (defaults to ``)
