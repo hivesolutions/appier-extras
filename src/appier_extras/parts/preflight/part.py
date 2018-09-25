@@ -63,4 +63,5 @@ class PreflightPart(appier.Part):
 
     def _handler(self):
         if not self.owner.request.method == "OPTIONS": return
+        if self.owner.request.handled: return
         self.owner.request.handle(self.data_b)
