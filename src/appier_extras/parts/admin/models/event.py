@@ -136,7 +136,7 @@ class Event(base.Base):
         arguments_m = cls.format(arguments_m)
         kwargs = dict(arguments = arguments_m)
         if delay: self.owner.delay(method, kwargs = kwargs)
-        else: method(arguments, **kwargs)
+        else: method(**kwargs)
 
     @classmethod
     @appier.operation(
