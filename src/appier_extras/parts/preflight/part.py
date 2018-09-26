@@ -64,4 +64,6 @@ class PreflightPart(appier.Part):
     def _handler(self):
         if not self.owner.request.method == "OPTIONS": return
         if self.owner.request.handled: return
+        allow_headers = self.request.get_header("Access-Control-Request-Headers", None)
+        if allow_headers: self.request.set_header("Access-Control-Allow-Headers", allow_headers)
         self.owner.request.handle(self.data_b)
