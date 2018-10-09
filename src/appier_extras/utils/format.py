@@ -39,14 +39,19 @@ __license__ = "Apache License, Version 2.0"
 
 import string
 
+import appier
+
 class SafeFormatter(string.Formatter):
 
     def __init__(self, fallback = ""):
-        string.Formatter.__init__(self)
         self.fallback = fallback
 
     def get_field(self, field_name, args, kwargs):
-        first, rest = field_name._formatter_field_name_split()
+        if appier.legacy.PYTHON_3:
+            import _string
+            first, rest = _string.formatter_field_name_split(field_name)
+        else:
+            first, rest = field_name._formatter_field_name_split()
 
         try:
             obj = self.get_value(first, args, kwargs)
