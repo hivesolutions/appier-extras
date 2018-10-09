@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,10 +37,34 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import format
-from . import markdown
-from . import net
+import string
 
-from .format import SafeFormatter
-from .markdown import MarkdownParser, MarkdownGenerator, MarkdownHTML
-from .net import size_round_unit
+class SafeFormatter(string.Formatter):
+
+    def __init__(self, fallback = ""):
+        string.Formatter.__init__(self)
+        self.fallback = fallback
+
+    def get_field(self, field_name, args, kwargs):
+        first, rest = field_name._formatter_field_name_split()
+
+        try:
+            obj = self.get_value(first, args, kwargs)
+        except:
+            return self.fallback, first
+
+        for is_attr, key in rest:
+            if is_attr:
+                try:
+                    obj = getattr(obj, key)
+                except:
+                    obj = self.fallback
+                    break
+            else:
+                try:
+                    obj = obj[key]
+                except:
+                    obj = self.fallback
+                    break
+
+        return obj, first

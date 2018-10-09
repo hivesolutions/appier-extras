@@ -41,6 +41,7 @@ import json
 
 import appier
 
+from appier_extras import utils
 from appier_extras.parts.admin.models import base
 
 class Event(base.Base):
@@ -102,10 +103,11 @@ class Event(base.Base):
 
     @classmethod
     def format(cls, arguments, all = False):
+        formatter = utils.SafeFormatter()
         arguments = dict(arguments)
         for key, value in appier.legacy.items(arguments):
             if not appier.legacy.is_string(value, all = all): continue
-            try: value = value.format(**arguments)
+            try: value = formatter.format(value, **arguments)
             except: value = value
             arguments[key] = value
         return arguments

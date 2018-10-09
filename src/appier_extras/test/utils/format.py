@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,10 +37,32 @@ __copyright__ = "Copyright (c) 2008-2018 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import format
-from . import markdown
-from . import net
+import unittest
 
-from .format import SafeFormatter
-from .markdown import MarkdownParser, MarkdownGenerator, MarkdownHTML
-from .net import size_round_unit
+import appier_extras
+
+class FormatTest(unittest.TestCase):
+
+    def test_safe_formatter(self):
+        formatter = appier_extras.SafeFormatter()
+
+        result = formatter.format("{name}", name = "john")
+        self.assertEqual(result, "john")
+
+        result = formatter.format("{person[name]}", person = dict(name = "john"))
+        self.assertEqual(result, "john")
+
+        result = formatter.format("{person[age]}", person = dict(name = "john"))
+        self.assertEqual(result, "")
+
+        result = formatter.format("{person[age]}", person = dict(name = "john", age = 21))
+        self.assertEqual(result, "21")
+
+    def test_safe_formatter_fallback(self):
+        formatter = appier_extras.SafeFormatter(fallback = "-")
+
+        result = formatter.format("{name}", name = "john")
+        self.assertEqual(result, "john")
+
+        result = formatter.format("{person[age]}", person = dict(name = "john"))
+        self.assertEqual(result, "-")

@@ -71,6 +71,10 @@ setuptools.setup(
         "appier_extras.parts.prismic.partials",
         "appier_extras.parts.sematext",
         "appier_extras.test",
+        "appier_extras.test.admin",
+        "appier_extras.test.admin.models",
+        "appier_extras.test.csfr",
+        "appier_extras.test.utils",
         "appier_extras.utils"
     ],
     test_suite = "appier_extras.test",
