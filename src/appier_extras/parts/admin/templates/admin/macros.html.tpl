@@ -144,7 +144,7 @@
              data-error="{{ error }}" data-display_attribute="name"
              data-value_attribute="internal" data-number_options="-1">
             <input name="{{ name }}" type="hidden" class="hidden-field"
-                   value="{{ value|default('', False) }}" />
+                   value="{{ value|string if value in (True, False) else value|default('', True) }}" />
             <ul class="data-source" data-type="local">
                 {% for key, value in enum.items() %}
                     {% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
