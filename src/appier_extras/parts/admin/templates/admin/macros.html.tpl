@@ -141,10 +141,10 @@
         {% set info = cls[name] %}
         {% set enum = info.enum %}
         <div class="drop-field drop-field-select {{ disabled_s|safe }}"
-               data-error="{{ error }}" data-display_attribute="name"
-               data-value_attribute="internal" data-number_options="-1">
+             data-error="{{ error }}" data-display_attribute="name"
+             data-value_attribute="internal" data-number_options="-1">
             <input name="{{ name }}" type="hidden" class="hidden-field"
-                   value="{{ value|default('', True) }}" />
+                   value="{{ value|default('', False) }}" />
             <ul class="data-source" data-type="local">
                 {% for key, value in enum.items() %}
                     {% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
