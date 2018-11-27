@@ -9,6 +9,7 @@
     {% set parts_c = own.info_dict().parts|length %}
     {% set libaries_c = own.info_dict().libraries|length %}
     {% set sessions_c = request.session_c.count() %}
+    {% set peers_c = own._peers|length %}
     {% set counters_c = own._counters().count() %}
     <div class="show-panel">
         <div class="panel-header">
@@ -84,6 +85,12 @@
                     <dt>Session count</dt>
                     <dd>
                         <a href="{{ url_for('admin.list_sessions') }}">{{ sessions_c }} {% if sessions_c == 1 %}session{% else %}sessions{% endif %}</a>
+                    </dd>
+                </div>
+                <div class="item">
+                    <dt>Peers</dt>
+                    <dd>
+                        <a href="{{ url_for('admin.list_peers') }}">{{ peers_c }} {% if peers_c == 1 %}peer{% else %}peers{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">
