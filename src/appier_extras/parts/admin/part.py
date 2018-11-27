@@ -179,6 +179,10 @@ class AdminPart(
         appier.Part.unload(self)
 
         self.account_c.unbind_g("touch_login", self._on_touch_login)
+
+        self.unload_operations()
+        self.unload_settings()
+
         self.owner.remove_filter("markdown")
 
     def routes(self):
@@ -319,6 +323,12 @@ class AdminPart(
             current = getattr(self, name)
             value = settings.get(name, current)
             setattr(self, name, value)
+
+    def unload_settings(self):
+        settings = self.owner.get_preference(self.name() + ":settings")
+        if not settings: return
+        for name in self.settings_l:
+            delattr(self, name)
 
     def dump_settings(self):
         settings = dict()
