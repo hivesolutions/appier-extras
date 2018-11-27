@@ -103,6 +103,7 @@ class AdminPart(
         self._last_login = None
         self._login_count = 0
         self._sections = appier.OrderedDict()
+        self._operations = appier.OrderedDict()
 
     def version(self):
         return base.VERSION
@@ -170,6 +171,7 @@ class AdminPart(
             method()
 
         self.load_settings()
+        self.load_operations()
 
         self.account_c.bind_g("touch_login", self._on_touch_login)
 
@@ -328,6 +330,38 @@ class AdminPart(
     def flush_settings(self):
         self.dump_settings()
 
+    def load_operations(self):
+        self.add_operation(
+            "build_index", "admin.build_index",
+            description = "Build search index",
+            message = "Are you really sure you want to re-build the search index?",
+            note = "Re-building the complete search index, may take some time",
+            level = 3
+        )
+        self.add_operation(
+            "build_index_db", "admin.build_index_db",
+            description = "Build database index",
+            message = "Are you really sure you want to re-build the database index?",
+            note = "Re-building the complete database index, may take some time",
+            level = 3
+        )
+        self.add_operation(
+            "test_email", "admin.test_email",
+            description = "Send test email",
+            note = "Sending this email is going to use loaded SMTP configuration"
+        )
+        self.add_operation(
+            "test_event", "admin.test_event",
+            description = "Trigger test event",
+            note = "All handlers for the event are going to be triggered"
+        )
+
+    def unload_operations(self):
+        self.remove_operation("build_index")
+        self.remove_operation("build_index_db")
+        self.remove_operation("test_email")
+        self.remove_operation("test_event")
+
     def add_section(self, name):
         self._sections[name] = appier.OrderedDict()
 
@@ -343,6 +377,31 @@ class AdminPart(
         del self._sections[section][name]
         if self._sections[section]: return
         del self._sections[section]
+
+    def add_operation(
+        self,
+        name,
+        route,
+        description = None,
+        message = None,
+        note = None,
+        level = 1,
+        args = [],
+        kwargs = {}
+    ):
+        self._operations[name] = dict(
+            name = name,
+            route = route,
+            description = description,
+            message = message,
+            note = note,
+            level = level,
+            args = args,
+            kwargs = kwargs
+        )
+
+    def remove_operation(self, name):
+        del self._operations[name]
 
     def index(self):
         return self.list_models()
