@@ -17,7 +17,7 @@
                     <td class="text-left">
                         <strong>{{ uid }}</strong>
                     </td>
-                    <td class="text-left">{{ peer.hostname }}</td>
+                    <td class="text-left">{{ peer.data.hostname }}</td>
                     <td class="text-left">{{ peer.ping }}</td>
                 </tr>
             {% endfor %}
