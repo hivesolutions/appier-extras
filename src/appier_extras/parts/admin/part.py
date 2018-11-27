@@ -223,6 +223,7 @@ class AdminPart(
             (("GET",), "/admin/sessions/me/delete", self.delete_session_me),
             (("GET",), "/admin/sessions/<str:sid>", self.show_session),
             (("GET",), "/admin/sessions/<str:sid>/delete", self.delete_session),
+            (("GET",), "/admin/peers", self.list_peers),
             (("GET",), "/admin/counters", self.list_counters),
             (("GET",), "/admin/events.csv", self.list_events_csv),
             (("GET",), "/admin/database", self.database),
@@ -1088,6 +1089,16 @@ class AdminPart(
                 "admin.list_sessions",
                 message = "Session deleted with success"
             )
+        )
+
+    @appier.ensure(token = "admin.status", context = "admin")
+    def list_peers(self):
+        peers = appier.legacy.items(self.owner._peers)
+        peers.sort()
+        return self.template(
+            "peers.html.tpl",
+            section = "status",
+            peers = peers
         )
 
     @appier.ensure(token = "admin.status", context = "admin")
