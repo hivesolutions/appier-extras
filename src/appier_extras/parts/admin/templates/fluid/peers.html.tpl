@@ -8,6 +8,8 @@
             <tr class="table-row table-header">
                 <th class="text-left">Identifier</th>
                 <th class="text-left">Hostname</th>
+                <th class="text-left">Name</th>
+                <th class="text-left">Instance</th>
                 <th class="text-left">Timestamp</th>
             </tr>
         </thead>
@@ -17,8 +19,10 @@
                     <td class="text-left">
                         <strong>{{ uid }}</strong>
                     </td>
-                    <td class="text-left">{{ peer.data.hostname }}</td>
-                    <td class="text-left">{{ peer.ping }}</td>
+                    <td class="text-left">{{ peer.data.hostname|default("-", True) }}</td>
+                    <td class="text-left">{{ peer.data.name|default("-", True) }}</td>
+                    <td class="text-left">{{ peer.data.instance|default("-", True) }}</td>
+                    <td class="text-left">{{ peer.ping|default("-", True) }}</td>
                 </tr>
             {% endfor %}
         </tbody>
