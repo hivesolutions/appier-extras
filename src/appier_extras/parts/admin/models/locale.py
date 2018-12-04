@@ -48,6 +48,10 @@ class Locale(base.Base):
         default = True
     )
 
+    context = appier.field(
+        index = "all"
+    )
+
     data_j = appier.field(
         type = dict,
         private = True,
@@ -73,7 +77,6 @@ class Locale(base.Base):
             appier.not_null("locale"),
             appier.not_empty("locale"),
             appier.is_regex("locale", "^[a-z]{2}(?:_[a-z]{2}(?:_[a-z]+)?)?$"),
-            appier.not_duplicate("locale", cls._name()),
 
             appier.not_null("data_j"),
             appier.not_empty("data_j")
@@ -81,27 +84,29 @@ class Locale(base.Base):
 
     @classmethod
     def list_names(cls):
-        return ["locale", "description", "count_l"]
+        return ["locale", "context", "description", "count_l"]
 
     @classmethod
     def bundles_d(cls, locale = None):
         locales = cls.find_e(rules = False)
-        return dict([(locale.locale, locale.data_u) for locale in locales])
+        return dict([((locale.locale, locale.context or None), locale.data_u) for locale in locales])
 
     @classmethod
     @appier.operation(
         name = "Import Bundle",
         parameters = (
             ("JSON File", "file", "file"),
-            ("Locale", "locale", str)
+            ("Locale", "locale", str),
+            ("Context", "context", str)
         ),
         factory = True
     )
-    def import_bundle_s(cls, file, locale, strict = False):
+    def import_bundle_s(cls, file, locale, context = None, strict = False):
+        context = context or None
         data_j = cls._json_read(file)
-        locale_e = cls.get(locale = locale, rules = False, raise_e = False)
+        locale_e = cls.get(locale = locale, context = context, rules = False, raise_e = False)
         if locale_e: locale_e.data_j.update(data_j)
-        else: locale_e = cls(locale = locale, data_j = data_j)
+        else: locale_e = cls(locale = locale, context = context, data_j = data_j)
         locale_e.save()
         return locale_e
 
@@ -137,8 +142,8 @@ class Locale(base.Base):
 
         # iterates over the complete set of locale data pairs
         # in the bundles dictionary to set these bundles (locales)
-        for locale, data_j in appier.legacy.iteritems(bundles_d):
-            appier.get_app()._register_bundle(data_j, locale)
+        for (locale, context), data_j in appier.legacy.iteritems(bundles_d):
+            appier.get_app()._register_bundle(data_j, locale, context = context)
 
     @classmethod
     def _escape(cls, data_j, target = ".", sequence = "::"):
