@@ -1144,8 +1144,13 @@ class AdminPart(
         locale = models.Locale.get(id = id, rules = False)
         name = name or locale.context or "global"
         file_name = "%s.%s.json" % (name, locale.locale)
-        self.content_disposition("filename=\"%s\"" % file_name) 
-        return self.json(locale.data_j, sort_keys = True)
+        self.content_disposition("filename=\"%s\"" % file_name)
+        return self.json(
+            locale.data_j,
+            sort_keys = True,
+            indent = 4,
+            separators = (",", ": ")
+        )
 
     @appier.ensure(token = "admin.database", context = "admin")
     def database(self):
@@ -1169,7 +1174,7 @@ class AdminPart(
         file_name = "%s_%s.dat" % (self.owner.name, date_time_s)
 
         self.content_type("application/octet-stream")
-        self.content_disposition("attachment; filename=\"%s\"" % file_name) 
+        self.content_disposition("attachment; filename=\"%s\"" % file_name)
 
         return file.getvalue()
 
