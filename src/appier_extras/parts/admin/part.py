@@ -226,6 +226,7 @@ class AdminPart(
             (("GET",), "/admin/peers", self.list_peers),
             (("GET",), "/admin/counters", self.list_counters),
             (("GET",), "/admin/events.csv", self.list_events_csv),
+            (("GET",), "/admin/locales/<int:id>/bundle.json", self.bundle_locale_json, None, True),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
             (("GET",), "/admin/database/import", self.database_import),
@@ -1137,6 +1138,15 @@ class AdminPart(
         self.content_type("text/csv")
         return result
 
+    @appier.ensure(token = "admin", context = "admin")
+    def bundle_locale_json(self, id):
+        name = self.field("name", None)
+        locale = models.Locale.get(id = id, rules = False)
+        name = name or locale.context or "global"
+        file_name = "%s.%s.json" % (name, locale.locale)
+        self.content_disposition("filename=\"%s\"" % file_name) 
+        return self.json(locale.data_j, sort_keys = True)
+
     @appier.ensure(token = "admin.database", context = "admin")
     def database(self):
         return self.template(
@@ -1159,10 +1169,7 @@ class AdminPart(
         file_name = "%s_%s.dat" % (self.owner.name, date_time_s)
 
         self.content_type("application/octet-stream")
-        self.request.set_header(
-            "Content-Disposition",
-            "attachment; filename=\"%s\"" % file_name
-        )
+        self.content_disposition("attachment; filename=\"%s\"" % file_name) 
 
         return file.getvalue()
 

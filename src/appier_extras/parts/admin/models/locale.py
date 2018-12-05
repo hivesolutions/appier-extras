@@ -191,6 +191,14 @@ class Locale(base.Base):
         base.Base.post_delete(self)
         self.owner.trigger_bus("locale/reload")
 
+    @appier.link(name = "Export Bundle")
+    def bundle_url(self, absolute = False):
+        return appier.get_app().url_for(
+            "admin.bundle_locale_json",
+            id = self.id,
+            absolute = absolute
+        )
+
     @property
     def data_u(self):
         cls = self.__class__
