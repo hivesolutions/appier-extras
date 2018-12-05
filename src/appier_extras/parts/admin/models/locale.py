@@ -104,7 +104,8 @@ class Locale(base.Base):
     def import_bundle_s(cls, file, locale, context = None, strict = False):
         context = context or None
         data_j = cls._json_read(file)
-        locale_e = cls.get(locale = locale, context = context, rules = False, raise_e = False)
+        conditions = cls._conditions(locale, context = context)
+        locale_e = cls.get(rules = False, raise_e = False, **{"$and" : conditions})
         if locale_e: locale_e.data_j.update(data_j)
         else: locale_e = cls(locale = locale, context = context, data_j = data_j)
         locale_e.save()
@@ -129,7 +130,8 @@ class Locale(base.Base):
                 result[locale_n] = locale_m
 
         for locale, data_j in appier.legacy.iteritems(result):
-            locale_e = cls.get(locale = locale, rules = False, raise_e = False)
+            conditions = cls._conditions(locale)
+            locale_e = cls.get(rules = False, raise_e = False,  **{"$and" : conditions})
             if locale_e: locale_e.data_j.update(data_j)
             else: locale_e = cls(locale = locale, data_j = data_j)
             locale_e.save()
@@ -158,6 +160,14 @@ class Locale(base.Base):
     @classmethod
     def _unescape(cls, data_j, target = ".", sequence = "::"):
         return cls._escape(data_j, target = sequence, sequence = target)
+
+    @classmethod
+    def _conditions(cls, locale, context = None):
+        conditions = []
+        conditions.append(dict(locale = locale))
+        if context: conditions.append(dict(context = context))
+        else: conditions.append({"$or" : [dict(context = ""), dict(context = None)]})
+        return conditions
 
     def pre_create(self):
         base.Base.pre_create(self)
