@@ -397,6 +397,7 @@ class AdminPart(
         description = None,
         message = None,
         note = None,
+        parameters = (),
         level = 1,
         args = [],
         kwargs = {}
@@ -407,6 +408,7 @@ class AdminPart(
             description = description,
             message = message,
             note = note,
+            parameters = parameters,
             level = level,
             args = args,
             kwargs = kwargs
