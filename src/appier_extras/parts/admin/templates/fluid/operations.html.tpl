@@ -33,7 +33,7 @@
             <li>
                 <div class="name">
                 	{% if value.parameters %}
-                	   <a class="button" data-window_open="#window-{{ value.name }}">{{ value.description }}</a>
+                	   <a class="button button-no-style" data-window_open="#window-{{ value.name }}">{{ value.description }}</a>
                 	{% else %}
                         <a class="link {% if value.message %}link-confirm{% endif %} {% if value.level > 1 %}warning{% endif %}" href="{{ url_for(value.route, context = 'global', next = location) }}"
                             data-message="{{ value.message }}">{{ value.description }}
