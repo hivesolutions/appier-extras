@@ -63,13 +63,15 @@ class MarkdownParser(object):
     def __init__(self):
         newline = r"(?P<newline>(\n\n)|(\r\n\r\n))"
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
-        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-] (?P<list_value>[^\r\n]+))"
-        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\. (?P<listo_value>[^\r\n]+))"
+        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-](?P<list_value>[^\r\n]*))"
+        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\.(?P<listo_value>[^\r\n]*))"
         blockquote = r"(?P<blockquote>^[\>][ \t]*(?P<blockquote_value>[^\r\n]*))"
         image = r"(?P<image>\!(?P<image_label>\[.+?\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[.+?\])(?P<link_value>\([^ !]+\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
+        table_header = r"(?P<table_header>(?P<table_header_value>\|[ \-]{3,999})+\|)"
+        table_line = r"(?P<table_line>(?P<table_line_value>\|[^\n]*)\|)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
         code_line = r"(?P<code_line>^(    |\t)(?P<code_line_value>[^\r\n]+))"
         code_single = r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
@@ -85,6 +87,8 @@ class MarkdownParser(object):
                 link,
                 bold,
                 italic,
+                table_header,
+                table_line,
                 code,
                 code_line,
                 code_single
@@ -161,6 +165,7 @@ class MarkdownParser(object):
     def parse_list(self, parts):
         index = parts["list_index"]
         value = parts["list_value"]
+        value = value.strip()
         value = self.parse(value, regex = self.simple)
 
         node = dict(
@@ -174,6 +179,7 @@ class MarkdownParser(object):
         index = parts["listo_index"]
         number = parts["listo_number"]
         value = parts["listo_value"]
+        value = value.strip()
         value = self.parse(value, regex = self.simple)
 
         node = dict(
@@ -245,6 +251,29 @@ class MarkdownParser(object):
         node = dict(
             type = "italic",
             value = value
+        )
+        return node
+
+    def parse_table_header(self, parts):
+        value = parts["table_header_value"]
+        value = value.strip("|")
+        values = [item.strip() for item in value.split("|")]
+
+        node = dict(
+            type = "table_header",
+            values = values,
+        )
+        return node
+
+    def parse_table_line(self, parts):
+        value = parts["table_line_value"]
+        value = value.strip("|")
+        values = [item.strip() for item in value.split("|")]
+        values = [self.parse(value, regex = self.simple) for value in values]
+
+        node = dict(
+            type = "table_line",
+            values = values,
         )
         return node
 
@@ -415,6 +444,8 @@ class MarkdownHTML(MarkdownGenerator):
         MarkdownGenerator.reset(self)
         self.depth = 0
         self.paragraph = False
+        self.table = False
+        self.table_head = False
         self.code = False
         self.blockquote = False
         self.list_item = False
@@ -488,6 +519,23 @@ class MarkdownHTML(MarkdownGenerator):
         self._generate(value)
         self.close("</em>")
 
+    def generate_table_header(self, node):
+        if not self.table_head: return
+        self.close("</thead>")
+        self.open("<tbody>")
+        self.table_head = False
+
+    def generate_table_line(self, node):
+        values = node["values"]
+        self._ensure_table()
+        tag = "th" if self.table_head else "td"
+        self.emit("<tr>")
+        for value in values:
+            self.emit("<%s>" % tag)
+            self._generate(value)
+            self.emit("</%s>" % tag)
+        self.emit("</tr>")
+
     def generate_code(self, node):
         value = node["value"]
         name = node.get("name", "undefined")
@@ -510,6 +558,13 @@ class MarkdownHTML(MarkdownGenerator):
 
     def is_absolute(self, url):
         return url.startswith(("http://", "https://"))
+
+    def _ensure_table(self):
+        if self.table: return
+        self.open("<table>")
+        self.open("<thead>")
+        self.table = True
+        self.table_head = True
 
     def _ensure_code(self, tag, name):
         if self.code: return
@@ -541,6 +596,7 @@ class MarkdownHTML(MarkdownGenerator):
         if not "listo" in exceptions: self._close_listo()
         if not "list" in exceptions: self._close_list()
         if not "blockquote" in exceptions: self._close_blockquote()
+        if not "table" in exceptions: self._close_table()
         if not "code" in exceptions: self._close_code()
         if not "paragraph" in exceptions: self._close_paragraph()
 
@@ -548,6 +604,14 @@ class MarkdownHTML(MarkdownGenerator):
         if not self.paragraph: return
         self.close("</p>")
         self.paragraph = False
+
+    def _close_table(self):
+        if not self.table: return
+        if self.table_head: self.close("</thead>")
+        else: self.close("</tbody>")
+        self.close("</table>")
+        self.table = False
+        self.table_head = False
 
     def _close_code(self, tag = "pre"):
         if not self.code: return
