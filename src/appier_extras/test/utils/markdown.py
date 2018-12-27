@@ -41,7 +41,7 @@ import unittest
 
 import appier_extras
 
-class MarkdownTest(unittest.TestCase):
+class MarkdownDebugTest(unittest.TestCase):
 
     def test_simple(self):
         result = appier_extras.MarkdownDebug.process_str("hello")
@@ -104,3 +104,15 @@ class MarkdownTest(unittest.TestCase):
             options = dict(extended = True)
         )
         self.assertEqual(result, b"link(value=http://example.com/page)")
+
+class MarkdownHTMLTest(unittest.TestCase):
+
+    def test_simple(self):
+        result = appier_extras.MarkdownHTML.process_str("hello")
+        self.assertEqual(result, b"<p>hello</p>")
+
+        result = appier_extras.MarkdownHTML.process_str("**hello**")
+        self.assertEqual(result, b"<strong>hello</strong>")
+
+        result = appier_extras.MarkdownHTML.process_str("hello **world**")
+        self.assertEqual(result, b"<p>hello <strong>world</strong></p>")
