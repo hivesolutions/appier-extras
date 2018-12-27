@@ -44,6 +44,9 @@ import xml.sax.saxutils
 
 import appier
 
+try: import regex
+except: regex = None
+
 class MarkdownParser(object):
     """
     Parser object for the md (Markdown) format, should be able to
@@ -67,7 +70,7 @@ class MarkdownParser(object):
         listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\.(?P<listo_value>[^\r\n]*))"
         blockquote = r"(?P<blockquote>^[\>][ \t]*(?P<blockquote_value>[^\r\n]*))"
         image = r"(?P<image>\!(?P<image_label>\[.+\])(?P<image_value>\(.+?\)))"
-        link = r"(?P<link>(?P<link_label>\[.+\])(?P<link_value>\(.+?\)))"
+        link = r"(?P<link>(?P<link_label>\[(?:(?:\!.+)|(?:[^\]]+))\])(?P<link_value>\(.+?\)))"
         bold = r"(?P<bold>\*\*(?P<bold_value>[^\0]+?)\*\*)"
         italic = r"(?P<italic>\*(?P<italic_value>[^\0]+?)\*)"
         table_header = r"(?P<table_header>(?P<table_header_value>\|[ \-]{3,999})+\|)"
@@ -76,7 +79,13 @@ class MarkdownParser(object):
         code_line = r"(?P<code_line>^(    |\t)(?P<code_line_value>[^\r\n]+))"
         code_single = r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
-        self.master = re.compile(
+        if regex:
+            image = r"(?P<image>\!(?P<image_label>\[.+\])(?P<image_value>\((?>[^()]|(?P>image_value))+\)))"
+            link = r"(?P<link>(?P<link_label>\[(?:(?:\!.+)|(?:[^\]]+))\])(?P<link_value>\((?>[^()]|(?P>link_value))+\)))"
+
+        rex = regex or re
+
+        self.master = rex.compile(
             "|".join([
                 newline,
                 header,
@@ -93,9 +102,9 @@ class MarkdownParser(object):
                 code_line,
                 code_single
             ]),
-            re.MULTILINE | re.UNICODE
+            rex.MULTILINE | rex.UNICODE
         )
-        self.simple = re.compile(
+        self.simple = rex.compile(
             "|".join([
                 image,
                 link,
@@ -103,7 +112,7 @@ class MarkdownParser(object):
                 italic,
                 code_single
             ]),
-            re.MULTILINE | re.UNICODE
+            rex.MULTILINE | rex.UNICODE
         )
         self.ids = []
 
@@ -218,12 +227,8 @@ class MarkdownParser(object):
         label = parts["link_label"]
         value = parts["link_value"]
 
-        original = label + value
-        reversed = original[::-1]
-        last = reversed.index("(")
-
-        label = original[1:(last + 2) * -1]
-        value = original[last * -1:-1]
+        label = label[1:-1]
+        value = value[1:-1]
 
         label = self.parse(label, regex = self.simple)
 
