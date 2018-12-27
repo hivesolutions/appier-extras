@@ -66,8 +66,8 @@ class MarkdownParser(object):
     def __init__(self):
         newline = r"(?P<newline>(\n\n)|(\r\n\r\n))"
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
-        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-](?P<list_value>[^\r\n]*))"
-        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\.(?P<listo_value>[^\r\n]*))"
+        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-][ \t]+(?P<list_value>[^\r\n]*))"
+        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\.[ \t]+(?P<listo_value>[^\r\n]*))"
         blockquote = r"(?P<blockquote>^[\>][ \t]*(?P<blockquote_value>[^\r\n]*))"
         image = r"(?P<image>\!(?P<image_label>\[.+\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[(?:(?:\!.+)|(?:[^\]]+))\])(?P<link_value>\(.+?\)))"
@@ -408,6 +408,65 @@ class MarkdownGenerator(object):
             _type = node["type"] if is_map else "normal"
             method = getattr(self, "generate_" + _type)
             method(node)
+
+class MarkdownDebug(MarkdownGenerator):
+
+    def __init__(self, file = None, options = dict(), encoding = "utf-8"):
+        MarkdownGenerator.__init__(
+            self,
+            file = file,
+            encoding = encoding,
+            options = options
+        )
+        self.first = True
+
+    def emit(self, value):
+        value = ("" if self.first else ",") + value
+        self.first = False
+        MarkdownGenerator.emit(self, value)
+
+    def reset(self):
+        MarkdownGenerator.reset(self)
+        self.first = True
+
+    def generate_newline(self, node):
+        self.emit("newline")
+
+    def generate_header(self, node):
+        self.emit("header")
+
+    def generate_list(self, node):
+        self.emit("list")
+
+    def generate_listo(self, node):
+        self.emit("listo")
+
+    def generate_image(self, node):
+        self.emit("image")
+
+    def generate_link(self, node):
+        self.emit("link")
+
+    def generate_bold(self, node):
+        self.emit("bold")
+
+    def generate_italic(self, node):
+        self.emit("italic")
+
+    def generate_table_header(self, node):
+        self.emit("table_header")
+
+    def generate_table_line(self, node):
+        self.emit("table_line")
+
+    def generate_code(self, node):
+        self.emit("code")
+
+    def generate_blockquote(self, node):
+        self.emit("blockquote")
+
+    def generate_normal(self, node):
+        self.emit("normal")
 
 class MarkdownHTML(MarkdownGenerator):
 
