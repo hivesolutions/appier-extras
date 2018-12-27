@@ -66,6 +66,16 @@ class MarkdownTest(unittest.TestCase):
         result = appier_extras.MarkdownDebug.process_str("1. hello\n2. world")
         self.assertEqual(result, b"listo,normal,listo")
 
+    def test_image(self):
+        result = appier_extras.MarkdownDebug.process_str("![Hello Image](image.jpg)")
+        self.assertEqual(result, b"image")
+
+        result = appier_extras.MarkdownDebug.process_str(
+            "![Hello Image](image.jpg)",
+            options = dict(extended = True)
+        )
+        self.assertEqual(result, b"image(value=image.jpg)")
+
     def test_link(self):
         result = appier_extras.MarkdownDebug.process_str("[hello](http://example.com)")
         self.assertEqual(result, b"link")
@@ -88,3 +98,9 @@ class MarkdownTest(unittest.TestCase):
             options = dict(extended = True)
         )
         self.assertEqual(result, b"normal,link(value=http://example.com/page),normal")
+
+        result = appier_extras.MarkdownDebug.process_str(
+            "[![Hello Image](image.jpg)](http://example.com/page)",
+            options = dict(extended = True)
+        )
+        self.assertEqual(result, b"link(value=http://example.com/page)")
