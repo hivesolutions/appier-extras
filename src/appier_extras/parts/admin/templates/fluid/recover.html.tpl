@@ -15,7 +15,10 @@
                        value="{{ identifier }}" placeholder="username or email" />
             </div>
             <div class="buttons">
-                <span class="button medium button-color button-blue" data-submit="true">Recover</span>
+                <span class="button medium button-color button-blue" data-submit="true">
+                    <span class="base">Recover</span>
+                    <span class="locked">Recovering...</span>
+                </span>
             </div>
             <div class="new">
                 <span>or</span>
