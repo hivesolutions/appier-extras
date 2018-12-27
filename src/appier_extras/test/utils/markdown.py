@@ -93,11 +93,11 @@ class MarkdownDebugTest(unittest.TestCase):
         self.assertEqual(result, b"link(value=http://example.com)")
 
         result = appier_extras.MarkdownDebug.process_str(
-            "[hello](http://example.com/page(with_paratenses))",
+            "[hello](http://example.com/page(with_parentheses))",
             options = dict(extended = True)
         )
-        if appier_extras.has_regex(): self.assertEqual(result, b"link(value=http://example.com/page(with_paratenses))")
-        else: self.assertEqual(result, b"link(value=http://example.com/page(with_paratenses),normal")
+        if appier_extras.has_regex(): self.assertEqual(result, b"link(value=http://example.com/page(with_parentheses))")
+        else: self.assertEqual(result, b"link(value=http://example.com/page(with_parentheses),normal")
 
         result = appier_extras.MarkdownDebug.process_str(
             "([hello](http://example.com/page))",
