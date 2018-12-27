@@ -65,3 +65,19 @@ class MarkdownTest(unittest.TestCase):
 
         result = appier_extras.MarkdownDebug.process_str("1. hello\n2. world")
         self.assertEqual(result, b"listo,normal,listo")
+
+    def test_link(self):
+        result = appier_extras.MarkdownDebug.process_str("[hello](http://example.com)")
+        self.assertEqual(result, b"link")
+
+        result = appier_extras.MarkdownDebug.process_str(
+            "[hello](http://example.com)",
+            options = dict(extended = True)
+        )
+        self.assertEqual(result, b"link(value=http://example.com)")
+
+        result = appier_extras.MarkdownDebug.process_str(
+            "[hello](http://example.com/page(with_paratenses))",
+            options = dict(extended = True)
+        )
+        self.assertEqual(result, b"link(value=http://example.com/page(with_paratenses))")

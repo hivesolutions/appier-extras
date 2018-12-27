@@ -411,7 +411,12 @@ class MarkdownGenerator(object):
 
 class MarkdownDebug(MarkdownGenerator):
 
-    def __init__(self, file = None, options = dict(), encoding = "utf-8"):
+    def __init__(
+        self,
+        file = None,
+        options = dict(extended = False),
+        encoding = "utf-8"
+    ):
         MarkdownGenerator.__init__(
             self,
             file = file,
@@ -419,6 +424,7 @@ class MarkdownDebug(MarkdownGenerator):
             options = options
         )
         self.first = True
+        self.extended = self.options.get("extended", False)
 
     def emit(self, value):
         value = ("" if self.first else ",") + value
@@ -442,10 +448,12 @@ class MarkdownDebug(MarkdownGenerator):
         self.emit("listo")
 
     def generate_image(self, node):
-        self.emit("image")
+        if self.extended: self.emit("image(value=%s)" % node["value"])
+        else: self.emit("image")
 
     def generate_link(self, node):
-        self.emit("link")
+        if self.extended: self.emit("link(value=%s)" % node["value"])
+        else: self.emit("link")
 
     def generate_bold(self, node):
         self.emit("bold")
