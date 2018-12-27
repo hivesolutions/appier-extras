@@ -43,7 +43,7 @@ import appier_extras
 
 class MarkdownDebugTest(unittest.TestCase):
 
-    def test_simple(self):
+    def test_basic(self):
         result = appier_extras.MarkdownDebug.process_str("hello")
         self.assertEqual(result, b"normal")
 
@@ -107,7 +107,7 @@ class MarkdownDebugTest(unittest.TestCase):
 
 class MarkdownHTMLTest(unittest.TestCase):
 
-    def test_simple(self):
+    def test_basic(self):
         result = appier_extras.MarkdownHTML.process_str("hello")
         self.assertEqual(result, b"<p>hello</p>")
 
