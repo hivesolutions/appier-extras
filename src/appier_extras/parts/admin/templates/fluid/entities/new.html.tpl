@@ -30,7 +30,10 @@
         </div>
         <div class="separator strong"></div>
         <div class="buttons">
-            <span class="button button-color button-green" data-submit="true">Create</span>
+            <span class="button button-color button-green" data-submit="true">
+                <span class="base">Create</span>
+                <span class="locked">Creating</span>
+            </span>
             <span class="or">or</span>
             <span class="button button-color button-grey"
                   data-link="{{ url_for('admin.show_model', model = model._under()) }}">Cancel</span>
