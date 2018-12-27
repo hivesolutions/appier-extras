@@ -16,6 +16,9 @@
             <img class="image square no-border" src="{{ own.logo_square_url or url_for('admin', filename = 'images/logo_96.png') }}" />
             <div class="details">
                 <h2>{{ owner.description }}</h2>
+                {% if owner.observations %}
+                    <h3>{{ owner.observations }}</h3>
+                {% endif %}
             </div>
             <div class="buttons">
                 {{ self.buttons() }}
