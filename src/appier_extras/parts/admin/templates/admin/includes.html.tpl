@@ -21,7 +21,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('admin', filename = 'css/layout.css') }}" />
 
 <!-- favicon inclusion -->
-<link rel="shortcut icon" href="{{ url_for('admin', filename = 'images/favicon.ico') }}" />
+<link rel="shortcut icon" href="{{ owner.favicon_url or url_for('admin', filename = 'images/favicon.ico') }}" />
 
 <!-- javascript inclusion -->
 {% if libs_r == "legacy" %}
