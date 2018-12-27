@@ -105,6 +105,23 @@ class OAuthClient(base.Base):
         return ["name", "client_id", "redirect_uri"]
 
     @classmethod
+    @appier.operation(
+        name = "Create",
+        parameters = (
+            ("Name", "name", str),
+            ("Redirect URI", "redirect_uri", str, "http://example.com/oauth")
+        ),
+        factory = True
+    )
+    def create_s(cls, name, redirect_uri):
+        oauth_client = cls(
+            name = name,
+            redirect_uri = redirect_uri
+        )
+        oauth_client.save()
+        return oauth_client
+
+    @classmethod
     def _underscore(cls, plural = True):
         return "oauth_clients" if plural else "oauth_client"
 
