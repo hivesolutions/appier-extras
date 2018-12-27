@@ -76,7 +76,7 @@ class MarkdownParser(object):
         table_header = r"(?P<table_header>(?P<table_header_value>\|[ \-]{3,999})+\|)"
         table_line = r"(?P<table_line>(?P<table_line_value>\|[^\n]*)\|)"
         code = r"(?P<code>```(?P<code_name>.*)(?P<code_value>[^\0]+?)```)"
-        code_line = r"(?P<code_line>^(    |\t)(?P<code_line_value>[^\r\n]+))"
+        code_line = r"(?P<code_line>^(?:    |\t)(?P<code_line_value>[^\r\n]+))"
         code_single = r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
         if regex:
