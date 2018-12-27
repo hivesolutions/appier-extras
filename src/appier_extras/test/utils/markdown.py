@@ -80,4 +80,6 @@ class MarkdownTest(unittest.TestCase):
             "[hello](http://example.com/page(with_paratenses))",
             options = dict(extended = True)
         )
-        self.assertEqual(result, b"link(value=http://example.com/page(with_paratenses))")
+
+        if appier_extras.has_regex(): self.assertEqual(result, b"link(value=http://example.com/page(with_paratenses))")
+        else: self.assertEqual(result, b"link(value=http://example.com/page(with_paratenses),normal")

@@ -714,6 +714,9 @@ class MarkdownHTML(MarkdownGenerator):
         escaped = xml.sax.saxutils.escape(value_s)
         return escaped if appier.legacy.PYTHON_3 else escaped.decode(encoding)
 
+def has_regex():
+    return True if regex else False
+
 def run():
     if len(sys.argv) < 3:
         print("Invalid number of arguments")

@@ -39,5 +39,5 @@ from . import markdown
 from . import net
 
 from .format import SafeFormatter
-from .markdown import MarkdownParser, MarkdownGenerator, MarkdownDebug, MarkdownHTML
+from .markdown import MarkdownParser, MarkdownGenerator, MarkdownDebug, MarkdownHTML, has_regex
 from .net import size_round_unit
