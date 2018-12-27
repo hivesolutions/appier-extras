@@ -45,23 +45,23 @@ class MarkdownTest(unittest.TestCase):
 
     def test_simple(self):
         result = appier_extras.MarkdownDebug.process_str("hello")
-        self.assertEqual(result, "normal")
+        self.assertEqual(result, b"normal")
 
         result = appier_extras.MarkdownDebug.process_str("**hello**")
-        self.assertEqual(result, "bold")
+        self.assertEqual(result, b"bold")
 
         result = appier_extras.MarkdownDebug.process_str("hello **world**")
-        self.assertEqual(result, "normal,bold")
+        self.assertEqual(result, b"normal,bold")
 
     def test_list(self):
         result = appier_extras.MarkdownDebug.process_str("* hello")
-        self.assertEqual(result, "list")
+        self.assertEqual(result, b"list")
 
         result = appier_extras.MarkdownDebug.process_str("* hello\n* world")
-        self.assertEqual(result, "list,normal,list")
+        self.assertEqual(result, b"list,normal,list")
 
         result = appier_extras.MarkdownDebug.process_str("1. hello")
-        self.assertEqual(result, "listo")
+        self.assertEqual(result, b"listo")
 
         result = appier_extras.MarkdownDebug.process_str("1. hello\n2. world")
-        self.assertEqual(result, "listo,normal,listo")
+        self.assertEqual(result, b"listo,normal,listo")
