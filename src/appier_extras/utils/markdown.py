@@ -66,8 +66,8 @@ class MarkdownParser(object):
     def __init__(self):
         newline = r"(?P<newline>(\n\n)|(\r\n\r\n))"
         header = r"(?P<header>^(?P<header_index>#+) (?P<header_value>.+)$)"
-        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-][ \t]+(?P<list_value>[^\r\n]*))"
-        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\.[ \t]+(?P<listo_value>[^\r\n]*))"
+        list = r"(?P<list>^(?P<list_index>[ \t]*)[\*\+\-](?:(?:[ \t]+(?P<list_value>[^\r\n]*))|(?:[ \t]*$)))"
+        listo = r"(?P<listo>^(?P<listo_index>[ \t]*)(?P<listo_number>\d+)\.(?:(?:[ \t]+(?P<listo_value>[^\r\n]*))|(?:[ \t]*$)))"
         blockquote = r"(?P<blockquote>^[\>][ \t]*(?P<blockquote_value>[^\r\n]*))"
         image = r"(?P<image>\!(?P<image_label>\[.+\])(?P<image_value>\(.+?\)))"
         link = r"(?P<link>(?P<link_label>\[(?:(?:\!.+)|(?:[^\]]+))\])(?P<link_value>\(.+?\)))"
@@ -173,7 +173,7 @@ class MarkdownParser(object):
 
     def parse_list(self, parts):
         index = parts["list_index"]
-        value = parts["list_value"]
+        value = parts["list_value"] or ""
         value = value.strip()
         value = self.parse(value, regex = self.simple)
 
@@ -187,8 +187,7 @@ class MarkdownParser(object):
     def parse_listo(self, parts):
         index = parts["listo_index"]
         number = parts["listo_number"]
-        value = parts["listo_value"]
-        value = value.strip()
+        value = parts["listo_value"] or ""
         value = self.parse(value, regex = self.simple)
 
         node = dict(

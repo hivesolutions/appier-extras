@@ -66,6 +66,12 @@ class MarkdownDebugTest(unittest.TestCase):
         result = appier_extras.MarkdownDebug.process_str("1. hello\n2. world")
         self.assertEqual(result, b"listo,normal,listo")
 
+        result = appier_extras.MarkdownDebug.process_str("*\n*\n")
+        self.assertEqual(result, b"list,normal,list,normal")
+
+        result = appier_extras.MarkdownDebug.process_str("1.\n2.\n")
+        self.assertEqual(result, b"listo,normal,listo,normal")
+
     def test_image(self):
         result = appier_extras.MarkdownDebug.process_str("![Hello Image](image.jpg)")
         self.assertEqual(result, b"image")
@@ -126,6 +132,25 @@ class MarkdownHTMLTest(unittest.TestCase):
 
         result = appier_extras.MarkdownHTML.process_str("hello **world**")
         self.assertEqual(result, b"<p>hello <strong>world</strong></p>")
+
+    def test_list(self):
+        result = appier_extras.MarkdownHTML.process_str("* hello")
+        self.assertEqual(result, b"<ul><li>hello</li></ul>")
+
+        result = appier_extras.MarkdownHTML.process_str("* hello\n* world")
+        self.assertEqual(result, b"<ul><li>hello </li><li>world</li></ul>")
+
+        result = appier_extras.MarkdownHTML.process_str("1. hello")
+        self.assertEqual(result, b"<ol><li>hello</li></ol>")
+
+        result = appier_extras.MarkdownHTML.process_str("1. hello\n2. world")
+        self.assertEqual(result, b"<ol><li>hello </li><li>world</li></ol>")
+
+        result = appier_extras.MarkdownHTML.process_str("*\n*\n")
+        self.assertEqual(result, b"<ul><li> </li><li> </li></ul>")
+
+        result = appier_extras.MarkdownHTML.process_str("1.\n2.\n")
+        self.assertEqual(result, b"<ol><li> </li><li> </li></ol>")
 
     def test_code(self):
         result = appier_extras.MarkdownHTML.process_str("\thello")
