@@ -105,6 +105,16 @@ class MarkdownDebugTest(unittest.TestCase):
         )
         self.assertEqual(result, b"link(value=http://example.com/page)")
 
+    def test_code(self):
+        result = appier_extras.MarkdownDebug.process_str("\thello")
+        self.assertEqual(result, b"code")
+
+        result = appier_extras.MarkdownDebug.process_str("    hello")
+        self.assertEqual(result, b"code")
+
+        result = appier_extras.MarkdownDebug.process_str("    hello\n\tworld")
+        self.assertEqual(result, b"code,normal,code")
+
 class MarkdownHTMLTest(unittest.TestCase):
 
     def test_basic(self):
@@ -116,3 +126,13 @@ class MarkdownHTMLTest(unittest.TestCase):
 
         result = appier_extras.MarkdownHTML.process_str("hello **world**")
         self.assertEqual(result, b"<p>hello <strong>world</strong></p>")
+
+    def test_code(self):
+        result = appier_extras.MarkdownHTML.process_str("\thello")
+        self.assertEqual(result, b"<pre class=\"code language-undefined\">hello</pre>")
+
+        result = appier_extras.MarkdownHTML.process_str("    hello")
+        self.assertEqual(result, b"<pre class=\"code language-undefined\">hello</pre>")
+
+        result = appier_extras.MarkdownHTML.process_str("    hello\n\tworld")
+        self.assertEqual(result, b"<pre class=\"code language-undefined\">hello\nworld</pre>")
