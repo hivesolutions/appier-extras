@@ -25,7 +25,10 @@
                 <a href="{{ url_for('admin.recover') }}">Forgot your password?</a>
             </div>
             <div class="buttons">
-                <span class="button medium button-color button-blue" data-submit="true">Login</span>
+                <span class="button medium button-color button-blue" data-submit="true">
+                    <span class="base">Login</span>
+                    <span class="locked">Logging in...</span>
+                </span>
             </div>
             {% if owner.admin_open %}
                 <div class="new">
