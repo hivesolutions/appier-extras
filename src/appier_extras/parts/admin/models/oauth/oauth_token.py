@@ -140,7 +140,8 @@ class OAuthToken(base.Base):
         private = True,
         immutable = True
     )
-    """ The ACL tokens associated with this access token """
+    """ The ACL tokens associated with this access token, should
+    be created taking into account the token scope """
 
     client = appier.field(
         type = appier.reference(
