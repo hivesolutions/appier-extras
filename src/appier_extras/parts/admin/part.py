@@ -1710,7 +1710,7 @@ class AdminPart(
             message = "Invalid OAuth response (%s)" % error,
             exception = appier.OperationalError
         )
-        context, next = state.split(":", 1)
+        context, next = state.split(":", 1) if state else (state, None)
         api = self.get_facebook_api()
         access_token = api.oauth_access(code)
         if context == "login":
@@ -1773,7 +1773,7 @@ class AdminPart(
             message = "Invalid OAuth response (%s)" % error,
             exception = appier.OperationalError
         )
-        context, next = state.split(":", 1)
+        context, next = state.split(":", 1) if state else (state, None)
         api = self.get_github_api()
         access_token = api.oauth_access(code)
         if context == "login":
@@ -1843,7 +1843,7 @@ class AdminPart(
             message = "Invalid OAuth response (%s)" % error,
             exception = appier.OperationalError
         )
-        context, next = state.split(":", 1)
+        context, next = state.split(":", 1) if state else (state, None)
         api = self.get_google_api()
         access_token = api.oauth_access(code)
         if context == "login":
@@ -1914,7 +1914,7 @@ class AdminPart(
             message = "Invalid OAuth response (%s)" % error,
             exception = appier.OperationalError
         )
-        context, next = state.split(":", 1)
+        context, next = state.split(":", 1) if state else (state, None)
         api = self.get_live_api()
         access_token = api.oauth_access(code)
         if context == "login":
@@ -1974,7 +1974,7 @@ class AdminPart(
             exception = appier.OperationalError
         )
         state = self.field("state")
-        context, next = state.split(":", 1)
+        context, next = state.split(":", 1) if state else (state, None)
         api = self.get_twitter_api()
         oauth_token, oauth_token_secret = api.oauth_access(oauth_verifier)
         if context == "login":
