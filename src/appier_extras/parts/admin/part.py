@@ -1704,6 +1704,12 @@ class AdminPart(
         )
         code = self.field("code")
         state = self.field("state")
+        error = self.field("error")
+        appier.verify(
+            not error,
+            message = "Invalid OAuth response (%s)" % error,
+            exception = appier.OperationalError
+        )
         context, next = state.split(":", 1)
         api = self.get_facebook_api()
         access_token = api.oauth_access(code)
@@ -1761,6 +1767,12 @@ class AdminPart(
         )
         code = self.field("code")
         state = self.field("state")
+        error = self.field("error")
+        appier.verify(
+            not error,
+            message = "Invalid OAuth response (%s)" % error,
+            exception = appier.OperationalError
+        )
         context, next = state.split(":", 1)
         api = self.get_github_api()
         access_token = api.oauth_access(code)
@@ -1825,6 +1837,12 @@ class AdminPart(
         )
         code = self.field("code")
         state = self.field("state")
+        error = self.field("error")
+        appier.verify(
+            not error,
+            message = "Invalid OAuth response (%s)" % error,
+            exception = appier.OperationalError
+        )
         context, next = state.split(":", 1)
         api = self.get_google_api()
         access_token = api.oauth_access(code)
@@ -1890,6 +1908,12 @@ class AdminPart(
         )
         code = self.field("code")
         state = self.field("state")
+        error = self.field("error")
+        appier.verify(
+            not error,
+            message = "Invalid OAuth response (%s)" % error,
+            exception = appier.OperationalError
+        )
         context, next = state.split(":", 1)
         api = self.get_live_api()
         access_token = api.oauth_access(code)
@@ -1944,6 +1968,11 @@ class AdminPart(
             message = "Administration not available"
         )
         oauth_verifier = self.field("oauth_verifier")
+        appier.verify(
+            oauth_verifier,
+            message = "Invalid OAuth response",
+            exception = appier.OperationalError
+        )
         state = self.field("state")
         context, next = state.split(":", 1)
         api = self.get_twitter_api()
