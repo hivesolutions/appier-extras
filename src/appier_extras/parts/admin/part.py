@@ -50,6 +50,15 @@ from appier_extras import utils
 from appier_extras.parts.admin import models
 from appier_extras.parts.admin import social
 
+OAUTH_ERROR_CODES = {
+    400 : "invalid_request",
+    403 : "access_denied",
+    500 : "server_error"
+}
+""" Dictionary that maps the typical HTTP error codes into
+the string based OAuth error codes to be returned to the
+redirect URI on the authorize call (in case of error) """
+
 class AdminPart(
     appier.Part,
     social.Facebook,
@@ -778,68 +787,79 @@ class AdminPart(
 
     @appier.ensure(context = "admin")
     def oauth_authorize(self):
-        # verifies if the oauth system is allowed if that's not
-        # the case raises an exception indicating so
-        if not self.owner.admin_oauth: raise appier.SecurityError(
-            message = "OAuth not allowed"
-        )
-
-        # retrieves the complete set of fields that are going
-        # to be used on the initial authorize state of oauth
-        client_id = self.field("client_id", mandatory = True)
-        redirect_uri = self.field("redirect_uri", mandatory = True)
-        scope = self.field("scope", mandatory = True)
-        response_type = self.field("response_type", "code")
-        state = self.field("state", None)
-
-        # verifies/ensures that the response type to be received
-        # is the code, as that's the only one supported
-        appier.verify("response_type", "code")
-
-        # normalizes the scope value to the list representation
-        # and then sorts it in the normal manner (normalization)
-        scope_l = scope.split(" ")
-        scope_l.sort()
-
-        # runs the mandatory retrieval of the oauth client associated
-        # with the provided client id, notice that the redirect URI is
-        # used as part of the search filter (security measures)
-        oauth_client = models.OAuthClient.get_e(
-            client_id = client_id,
-            redirect_uri = redirect_uri
-        )
-
-        # asserts that the requested scope is valid for the associated
-        # OAuth client meaning that they overlap
-        oauth_client.assert_scope(scope_l)
-
-        # tries to re-use an already authorized token that is considered
-        # equivalent to the current one, if the re-usage operation is a
-        # success then redirects the user agent immediately
-        result, tokens, oauth_token = models.OAuthToken.reuse_s(
-            redirect_uri, scope_l, oauth_client
-        )
-        if result: return self.redirect(
-            redirect_uri,
-            params = dict(
-                code = oauth_token.authorization_code,
-                scope = " ".join(oauth_token.tokens),
-                tokens = oauth_token.tokens,
+        try:
+            # verifies if the oauth system is allowed if that's not
+            # the case raises an exception indicating so
+            if not self.owner.admin_oauth: raise appier.SecurityError(
+                message = "OAuth not allowed"
             )
-        )
 
-        # runs the template rendering for the oauth authorize panel
-        # it should prompt the final user for permission agreement
-        return self.template(
-            "oauth/authorize.html.tpl",
-            client_id = client_id,
-            redirect_uri = redirect_uri,
-            scope = scope,
-            response_type = response_type,
-            state = state,
-            oauth_client = oauth_client,
-            tokens = tokens
-        )
+            # retrieves the complete set of fields that are going
+            # to be used on the initial authorize state of oauth
+            client_id = self.field("client_id", mandatory = True)
+            redirect_uri = self.field("redirect_uri", mandatory = True)
+            scope = self.field("scope", mandatory = True)
+            response_type = self.field("response_type", "code")
+            state = self.field("state", None)
+
+            # verifies/ensures that the response type to be received
+            # is the code, as that's the only one supported
+            appier.verify("response_type", "code")
+
+            # normalizes the scope value to the list representation
+            # and then sorts it in the normal manner (normalization)
+            scope_l = scope.split(" ")
+            scope_l.sort()
+
+            # runs the mandatory retrieval of the oauth client associated
+            # with the provided client id, notice that the redirect URI is
+            # used as part of the search filter (security measures)
+            oauth_client = models.OAuthClient.get_e(
+                client_id = client_id,
+                redirect_uri = redirect_uri
+            )
+
+            # asserts that the requested scope is valid for the associated
+            # OAuth client meaning that they overlap
+            oauth_client.assert_scope(scope_l)
+
+            # tries to re-use an already authorized token that is considered
+            # equivalent to the current one, if the re-usage operation is a
+            # success then redirects the user agent immediately
+            result, tokens, oauth_token = models.OAuthToken.reuse_s(
+                redirect_uri, scope_l, oauth_client
+            )
+            if result: return self.redirect(
+                redirect_uri,
+                params = dict(
+                    code = oauth_token.authorization_code,
+                    scope = " ".join(oauth_token.tokens),
+                    tokens = oauth_token.tokens,
+                )
+            )
+
+            # runs the template rendering for the oauth authorize panel
+            # it should prompt the final user for permission agreement
+            return self.template(
+                "oauth/authorize.html.tpl",
+                client_id = client_id,
+                redirect_uri = redirect_uri,
+                scope = scope,
+                response_type = response_type,
+                state = state,
+                oauth_client = oauth_client,
+                tokens = tokens
+            )
+        except BaseException as exception:
+            redirect_uri = self.field("redirect_uri", None)
+            state = self.field("state", None)
+            if not redirect_uri: raise
+            code = exception.code if hasattr(exception, "code") else None
+            error_message = exception.message if hasattr(exception, "message") else None
+            error_code = OAUTH_ERROR_CODES.get(code, "server_error")
+            kwargs = dict(error = error_code, error_description = error_message)
+            if state: kwargs["state"] = state
+            return self.redirect(redirect_uri, **kwargs)
 
     @appier.ensure(context = "admin")
     def do_oauth_authorize(self):
