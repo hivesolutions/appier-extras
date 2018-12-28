@@ -65,15 +65,24 @@ class OAuthToken(base.Base):
         immutable = True
     )
     """ Simplified name value, created from the first few
-    characters of the access token value """
+    characters of the (original) access token value """
 
     access_token = appier.field(
         index = "hashed",
-        safe = True,
-        immutable = True
+        safe = True
     )
     """ The actual string representing an authorization
-    issued to the client """
+    issued to the client, this is not an immutable value
+    as the refresh token may be used to generate a new one """
+
+    access_token_date = appier.field(
+        type = float,
+        safe = True,
+        private = True,
+        meta = "datetime"
+    )
+    """ The date when the access token was last generated, multiple
+    access token may be generated using the refresh token"""
 
     authorization_code = appier.field(
         index = "hashed",
@@ -201,8 +210,10 @@ class OAuthToken(base.Base):
         )
 
         # in case there's no valid equivalent token, returns the
-        # control flow immediately with an invalid value
-        if not oauth_token: return False, tokens, oauth_token
+        # control flow immediately with an invalid value also when
+        # there's a valid token but it is expired also returns invalid
+        if not oauth_token: return False, tokens, None
+        if oauth_token.is_expired(): return False, tokens, None
 
         # in case there's an already existing OAuth token that
         # has the same requirements (scope, client, redirect URL)
@@ -283,6 +294,7 @@ class OAuthToken(base.Base):
         cls = self.__class__
         duration = appier.conf("OAUTH_DURATION", cls.DEFAULT_DURATION, cast = int)
         self.access_token = appier.gen_token()
+        self.access_token_date = time.time()
         self.client_secret = appier.gen_token()
         self.authorization_code = appier.gen_token()
         self.authorization_code_date = time.time()
@@ -303,18 +315,33 @@ class OAuthToken(base.Base):
         self.authorization_code_date = None
         self.save()
 
+    def set_access_token_s(self):
+        self.access_token = appier.gen_token()
+        self.access_token_date = time.time()
+        self.save()
+
+    def unset_access_token_s(self):
+        self.access_token = None
+        self.access_token_date = None
+        self.save()
+
     def get_account(self):
         return self.owner.admin_part.account_c.get(
             username = self.username
         )
 
-    def touch_expired(self, delete = True):
+    def is_expired(self):
+        access_token_date = self.access_token_date or self.created
+        return time.time() > access_token_date + self.expires_in
+
+    def touch_expired(self, delete = None):
         """
         Method to be called upon the token usage so that the
         expiration for the OAuth token may be checked.
 
         If the verification fails it's possible to have the
-        current token removed from the data source
+        current token removed from the data source if there's
+        no refresh token defined.
 
         :type delete: bool
         :param delete: If the token should be automatically
@@ -325,6 +352,7 @@ class OAuthToken(base.Base):
         try:
             self.verify_expired()
         except:
+            if delete == None: delete = False if self.refresh_token else True
             if delete: self.delete()
             raise
 
@@ -336,8 +364,19 @@ class OAuthToken(base.Base):
         appier.verify(time.time() - self.authorization_code_date < cls.CODE_DURATION)
         appier.verify(grant_type, "authorization_code")
 
+    def verify_refresh(self, refresh_token, grant_type = "refresh_token"):
+        appier.verify(not self.refresh_token == None)
+        appier.verify(not self.refresh_token == None)
+        appier.verify(self.refresh_token == refresh_token)
+        appier.verify(grant_type, "refresh_token")
+
     def verify_expired(self):
-        appier.verify(time.time() < self.created + self.expires_in)
+        appier.verify(
+            not self.is_expired(),
+            message = "OAuth access token is expired",
+            code = 403,
+            exception = appier.OperationalError
+        )
 
     def _verify(self):
         self._verify_scope()

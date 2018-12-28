@@ -788,14 +788,14 @@ class AdminPart(
     @appier.ensure(context = "admin")
     def oauth_authorize(self):
         try:
-            # verifies if the oauth system is allowed if that's not
+            # verifies if the OAuth system is allowed if that's not
             # the case raises an exception indicating so
             if not self.owner.admin_oauth: raise appier.SecurityError(
                 message = "OAuth not allowed"
             )
 
             # retrieves the complete set of fields that are going
-            # to be used on the initial authorize state of oauth
+            # to be used on the initial authorize state of OAuth
             client_id = self.field("client_id", mandatory = True)
             redirect_uri = self.field("redirect_uri", mandatory = True)
             scope = self.field("scope", mandatory = True)
@@ -811,7 +811,7 @@ class AdminPart(
             scope_l = scope.split(" ")
             scope_l.sort()
 
-            # runs the mandatory retrieval of the oauth client associated
+            # runs the mandatory retrieval of the OAuth client associated
             # with the provided client id, notice that the redirect URI is
             # used as part of the search filter (security measures)
             oauth_client = models.OAuthClient.get_e(
@@ -838,7 +838,7 @@ class AdminPart(
                 )
             )
 
-            # runs the template rendering for the oauth authorize panel
+            # runs the template rendering for the OAuth authorize panel
             # it should prompt the final user for permission agreement
             return self.template(
                 "oauth/authorize.html.tpl",
@@ -914,7 +914,7 @@ class AdminPart(
         )
 
     def oauth_access_token(self):
-        # verifies if the oauth system is allowed if that's not
+        # verifies if the OAuth system is allowed if that's not
         # the case raises an exception indicating so
         if not self.owner.admin_oauth: raise appier.SecurityError(
             message = "OAuth not allowed"
@@ -926,28 +926,54 @@ class AdminPart(
         client_id = self.field("client_id", mandatory = True)
         client_secret = self.field("client_secret", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
-        code = self.field("code", mandatory = True)
+        code = self.field("code", None)
+        refresh_token = self.field("refresh_token", None)
         grant_type = self.field("grant_type", "authorization_code")
 
-        # tries to retrieve the oauth client associated with the
-        # provided client id and secret and then uses the value to
-        # retrieve the associated oauth token via association
+        # tries to retrieve the OAuth client associated with the
+        # provided client id and secret (client for authentication)
         oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
             client_secret = client_secret,
             redirect_uri = redirect_uri
         )
-        oauth_token = models.OAuthToken.get_e(
-            authorization_code = code,
-            client = oauth_client.id,
-            rules = False
-        )
 
-        # verifies that the authorization code is the expected
-        # one and then unsets it from the oauth token, so that
-        # it's no longer going to be used
-        oauth_token.verify_code(code, grant_type = grant_type)
-        oauth_token.unset_code_s()
+        if grant_type == "authorization_code":
+            # uses the retrieved OAuth client together with the
+            # authorization code to try to retrieve the target token
+            oauth_token = models.OAuthToken.get_e(
+                authorization_code = code,
+                client = oauth_client.id,
+                rules = False
+            )
+            
+            # verifies that the authorization code is the expected
+            # one and then unsets it from the OAuth token, so that
+            # it's no longer going to be used
+            oauth_token.verify_code(code, grant_type = grant_type)
+            oauth_token.unset_code_s()
+
+        elif grant_type == "refresh_token":
+            # uses the retrieved OAuth client together with the
+            # refresh token to try to retrieve the target token
+            oauth_token = models.OAuthToken.get_e(
+                refresh_token = refresh_token,
+                client = oauth_client.id,
+                rules = False
+            )
+            
+            # verifies that the refresh token contains the expected
+            # value and then if that's the case re-generates a new
+            # access token value to be used
+            oauth_token.verify_refresh(refresh_token, grant_type = grant_type)
+            oauth_token.set_access_token_s()
+
+        else:
+            # raises a security error as no valid grant type was
+            # received (as expected)
+            raise appier.SecurityError(
+                message = "Invalid 'grant_type'"
+            )
 
         # returns the final map based response containing the complete
         # set of elements to the client to be used, notice that both
@@ -969,7 +995,7 @@ class AdminPart(
             message = "Administration not available"
         )
 
-        # verifies if the oauth system is allowed if that's not
+        # verifies if the OAuth system is allowed if that's not
         # the case raises an exception indicating so
         if not self.owner.admin_oauth: raise appier.SecurityError(
             message = "OAuth not allowed"
