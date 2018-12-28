@@ -802,11 +802,16 @@ class AdminPart(
         scope_l.sort()
 
         # runs the mandatory retrieval of the oauth client associated
-        # with the provided client id
+        # with the provided client id, notice that the redirect URI is
+        # used as part of the search filter (security measures)
         oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
             redirect_uri = redirect_uri
         )
+
+        # asserts that the requested scope is valid for the associated
+        # OAuth client meaning that they overlap
+        oauth_client.assert_scope(scope_l)
 
         # tries to re-use an already authorized token that is considered
         # equivalent to the current one, if the re-usage operation is a
