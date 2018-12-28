@@ -106,6 +106,19 @@ class MarkdownDebugTest(unittest.TestCase):
         self.assertEqual(result, b"normal,link(value=http://example.com/page),normal")
 
         result = appier_extras.MarkdownDebug.process_str(
+            "[hello[with_parentheses]](http://example.com/page)",
+            options = dict(extended = True)
+        )
+        if appier_extras.has_regex(): self.assertEqual(result, b"link(value=http://example.com/page)")
+        else: self.assertEqual(result, b"normal")
+
+        result = appier_extras.MarkdownDebug.process_str(
+            "([hellowith_parentheses]](http://example.com/page))",
+            options = dict(extended = True)
+        )
+        self.assertEqual(result, b"normal")
+
+        result = appier_extras.MarkdownDebug.process_str(
             "[![Hello Image](image.jpg)](http://example.com/page)",
             options = dict(extended = True)
         )

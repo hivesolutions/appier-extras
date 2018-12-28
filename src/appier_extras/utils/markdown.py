@@ -80,8 +80,8 @@ class MarkdownParser(object):
         code_single = r"(?P<code_single>`?`(?P<code_single_value>[^`]+)``?)"
 
         if regex:
-            image = r"(?P<image>\!(?P<image_label>\[.+\])(?P<image_value>\((?>[^()]|(?P>image_value))+\)))"
-            link = r"(?P<link>(?P<link_label>\[(?:(?:\!.+)|(?:[^\]]+))\])(?P<link_value>\((?>[^()]|(?P>link_value))+\)))"
+            image = r"(?P<image>\!(?P<image_label>\[(?>[^\[\]]|(?P>image_label))+\])(?P<image_value>\((?>[^()]|(?P>image_value))+\)))"
+            link = r"(?P<link>(?P<link_label>\[(?>[^\[\]]|(?P>link_label))+\])(?P<link_value>\((?>[^()]|(?P>link_value))+\)))"
 
         rex = regex or re
 
