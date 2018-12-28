@@ -85,6 +85,13 @@ class OAuthClient(base.Base):
     """ The redirect uri where to redirect, the user agent
     after a successful token request operation """
 
+    scope = appier.field(
+        type = list
+    )
+    """ The sequence of scope values allowed for the current
+    client, if not set all of the scope values are considered
+    to be allowed """
+
     @classmethod
     def validate(cls):
         return super(OAuthClient, cls).validate() + [
@@ -134,6 +141,24 @@ class OAuthClient(base.Base):
 
         self.client_id = appier.gen_token(hash = hashlib.md5)
         self.client_secret = appier.gen_token()
+
+    def assert_redirect_uri(self, redirect_uri):
+        appier.verify(
+            redirect_uri == self.redirect_uri,
+            message = "The provided redirect URI is not valid",
+            exception = appier.SecurityError,
+            code = 403
+        )
+
+    def assert_scope(self, scope):
+        if not self.scope: return
+        invalid = [token for token in scope if not token in self.scope]
+        appier.verify(
+            not invalid,
+            message = "The provided scope is not valid",
+            exception = appier.SecurityError,
+            code = 403
+        )
 
     def get_tokens(self):
         return oauth_token.OAuthToken.find(client = self.id)
