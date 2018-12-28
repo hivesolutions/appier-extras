@@ -834,7 +834,7 @@ class AdminPart(
                 params = dict(
                     code = oauth_token.authorization_code,
                     scope = " ".join(oauth_token.tokens),
-                    tokens = oauth_token.tokens,
+                    state = state
                 )
             )
 
@@ -857,9 +857,14 @@ class AdminPart(
             code = exception.code if hasattr(exception, "code") else None
             error_message = exception.message if hasattr(exception, "message") else None
             error_code = OAUTH_ERROR_CODES.get(code, "server_error")
-            kwargs = dict(error = error_code, error_description = error_message)
-            if state: kwargs["state"] = state
-            return self.redirect(redirect_uri, **kwargs)
+            return self.redirect(
+                redirect_uri,
+                params = dict(
+                    error = error_code,
+                    error_description = error_message,
+                    state = state
+                )
+            )
 
     @appier.ensure(context = "admin")
     def do_oauth_authorize(self):
@@ -890,7 +895,7 @@ class AdminPart(
             params = dict(
                 code = oauth_token.authorization_code,
                 scope = " ".join(oauth_token.tokens),
-                state = state,
+                state = state
             )
         )
 
