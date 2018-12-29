@@ -216,7 +216,7 @@ class OAuthToken(base.Base):
         # in case the access token contained in the object is already
         # expired then refreshes the access token so that it can live
         # one more time for this request (refreshed re-usage scenario)
-        if oauth_token.is_expired(): oauth_token.set_access_token_s()
+        if oauth_token.is_expired(): oauth_token.refresh_access_token_s()
 
         # in case there's an already existing OAuth token that
         # has the same requirements (scope, client, redirect URL)
@@ -327,6 +327,9 @@ class OAuthToken(base.Base):
         self.access_token = None
         self.access_token_date = None
         self.save()
+
+    def refresh_access_token_s(self):
+        self.set_access_token_s()
 
     def get_account(self):
         return self.owner.admin_part.account_c.get(
