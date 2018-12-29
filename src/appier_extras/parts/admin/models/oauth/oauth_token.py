@@ -210,10 +210,13 @@ class OAuthToken(base.Base):
         )
 
         # in case there's no valid equivalent token, returns the
-        # control flow immediately with an invalid value also when
-        # there's a valid token but it is expired also returns invalid
+        # control flow immediately with an invalid value
         if not oauth_token: return False, tokens, None
-        if oauth_token.is_expired(): return False, tokens, None
+
+        # in case the access token contained in the object is already
+        # expired then refreshes the access token so that it can live
+        # one more time for this request (refreshed re-usage scenario)
+        if oauth_token.is_expired(): oauth_token.set_access_token_s()
 
         # in case there's an already existing OAuth token that
         # has the same requirements (scope, client, redirect URL)

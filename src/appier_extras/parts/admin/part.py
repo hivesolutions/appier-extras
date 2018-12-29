@@ -946,7 +946,7 @@ class AdminPart(
                 client = oauth_client.id,
                 rules = False
             )
-            
+
             # verifies that the authorization code is the expected
             # one and then unsets it from the OAuth token, so that
             # it's no longer going to be used
@@ -961,7 +961,7 @@ class AdminPart(
                 client = oauth_client.id,
                 rules = False
             )
-            
+
             # verifies that the refresh token contains the expected
             # value and then if that's the case re-generates a new
             # access token value to be used
