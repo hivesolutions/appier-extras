@@ -56,12 +56,12 @@
     <div class="show-panel">
         <div class="panel-header">
             <img class="image no-border" src="{{ url_for('admin.avatar_account', username = session.username) }}" />
+            <div class="buttons">
+                {{ self.buttons() }}
+            </div>
             <div class="details">
                 <h2>{{ account.username }}</h2>
                 <h3>{{ account.email }}</h3>
-            </div>
-            <div class="buttons">
-                {{ self.buttons() }}
             </div>
         </div>
         <div class="panel-contents">
