@@ -32,7 +32,7 @@
                     {% block logo %}
                         {% if owner.logo_url %}
                             <div class="logo" style="text-align:center;">
-                                <img src="{{ owner.logo_url }}" alt="logo" style="max-width:144px;" />
+                                <img src="{{ owner.logo_url|absolute_url }}" alt="logo" style="max-width:144px;" />
                             </div>
                         {% endif %}
                     {% endblock %}
