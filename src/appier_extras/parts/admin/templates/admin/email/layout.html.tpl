@@ -4,8 +4,10 @@
 {% block font_color %}#4d4d4d{% endblock %}
 {% block font_size %}14px{% endblock %}
 {% block font_family %}-apple-system,'BlinkMacSystemFont','Segoe UI','Open Sans',Helvetica,Arial,sans-serif{% endblock %}
+{% block border %}1px solid #d9d9d9{% endblock %}
 {% block line_height %}22px{% endblock %}
 {% block content_width %}520px{% endblock %}
+{% block extra_css %}{% endblock %}
 {% block html %}
     <!DOCTYPE html>
     <html lang="{{ self.language() }}">
@@ -28,7 +30,7 @@
         {% block metadata %}{% endblock %}
         {% block container %}
             <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">
-                <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
+                <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:{{ self.border() }};{{ self.extra_css() }}">
                     {% block logo %}
                         {% set logo_url = owner.logo_raster_url or owner.logo_url %}
                         {% if logo_url %}

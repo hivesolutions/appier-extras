@@ -1,4 +1,4 @@
-{% extends "admin/email/layout.html.tpl" %}
+{% extends owner.admin_email_layout %}
 {% block title %}{{ title|default(subject, True)|default("Confirm account", True) }}{% endblock %}
 {% block content %}
     {% set account = account if account else {} %}

@@ -155,6 +155,8 @@ class AdminPart(
         self.owner.admin_oauth = self.oauth
         self.owner.admin_avatar_default = self.avatar_default
 
+        self.owner.admin_email_layout = "admin/email/layout.app.html.tpl"
+
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
         self.owner.lib_loaders["netius"] = self._netius_loader
         self.owner.lib_loaders["pconvert"] = self._pconvert_loader
