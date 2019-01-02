@@ -1,4 +1,4 @@
-{% extends "admin/layout.fluid.html.tpl" %}
+{% extends owner.admin_layout_fluid %}
 {% block htitle %}{{ owner.description }} / {% block title %}{% endblock %}{% endblock %}
 {% block links %}
     <h3>Settings</h3>
