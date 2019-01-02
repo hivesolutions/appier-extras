@@ -297,9 +297,9 @@ class AdminPart(
         if not self.available: return None
         return models
 
-    def template(self, template, layout = None, *args, **kwargs):
-        layout = self.session.get("layout", self.layout)
-        template = "%s/%s" % (layout, template)
+    def template(self, template, layout = True, *args, **kwargs):
+        layout = self.session.get("layout", self.layout) if layout else None
+        template = "%s/%s" % (layout, template) if layout else template
         return appier.Part.template(
             self,
             template,
@@ -1063,12 +1063,20 @@ class AdminPart(
         receiver = appier.conf("TEST_EMAIL", None)
         receiver = self.field("email", receiver)
         receiver = self.field("receiver", receiver)
+        template = self.field("template", "test")
+        render = self.field("render", False, cast = bool)
+        if render: return self.template(
+            "admin/email/%s.html.tpl" % template,
+            layout = False,
+            subject = "Test email",
+            title = "Test email"
+        )
         if not receiver: raise appier.OperationalError(
             message = "No test email defined"
         )
         models.Base.send_email_g(
             self.owner,
-            "admin/email/test.html.tpl",
+            "admin/email/%s.html.tpl" % template,
             receivers = [receiver],
             subject = "Test email",
             title = "Test email"
