@@ -27,10 +27,10 @@
     <body style="font-family:{{ self.font_family() }};font-size:{{ self.font_size() }};line-height:{{ self.line_height() }};color:{{ self.font_color() }};text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;" bgcolor="{{ self.background_color() }}">
         {% block metadata %}{% endblock %}
         {% block container %}
-            {% set logo_url = owner.logo_raster_url or owner.logo_url %}
             <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">
                 <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:1px solid #d9d9d9;">
                     {% block logo %}
+                        {% set logo_url = owner.logo_raster_url or owner.logo_url %}
                         {% if logo_url %}
                             <div class="logo" style="text-align:center;">
                                 <img src="{{ logo_url|absolute_url }}" alt="logo" style="max-width:144px;" />
@@ -39,6 +39,7 @@
                     {% endblock %}
                     {% block content_base %}
                         <div class="content">
+                            {% set logo_url = owner.logo_raster_url or owner.logo_url %}
                             {% set margin_top = "18px" if logo_url else "38px" %}
                             {{ h1(self.title(), margin_top = margin_top) }}
                             {% block content %}{% endblock %}

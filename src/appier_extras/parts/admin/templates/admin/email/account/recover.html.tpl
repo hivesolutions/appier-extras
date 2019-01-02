@@ -1,6 +1,7 @@
 {% extends "admin/email/layout.html.tpl" %}
 {% block title %}{{ title|default(subject, True)|default("Reset account", True) }}{% endblock %}
 {% block content %}
+    {% set account = account if account else {} %}
     <p>Hello <strong>{{ account.username }}</strong>,</p>
     <p>
         You're receiving this email because someone requested a
