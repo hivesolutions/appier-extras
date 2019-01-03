@@ -629,18 +629,6 @@ class Account(base.Base, authenticable.Authenticable):
         self.reset_token = None
         self.save()
 
-    def add_role_s(self, name):
-        _role = role.Role.get(name = name)
-        if _role in self.roles_l: return
-        self.roles_l.append(_role)
-        self.save()
-
-    def remove_role_s(self, name):
-        _role = role.Role.get(name = name)
-        if not _role in self.roles_l: return
-        self.roles_l.remove(_role)
-        self.save()
-
     def tokens(self):
         """
         Retrieves the complete set of ACL tokens for the current use
@@ -821,6 +809,26 @@ class Account(base.Base, authenticable.Authenticable):
         cls = self.__class__
         if not avatar: return
         self.avatar = cls.avatar.type(avatar)
+        self.save()
+
+    @appier.operation(
+        name = "Add Role",
+        parameters = (("Name", "name", str),)
+    )
+    def add_role_s(self, name):
+        _role = role.Role.get(name = name)
+        if _role in self.roles_l: return
+        self.roles_l.append(_role)
+        self.save()
+
+    @appier.operation(
+        name = "Remove Role",
+        parameters = (("Name", "name", str),)
+    )
+    def remove_role_s(self, name):
+        _role = role.Role.get(name = name)
+        if not _role in self.roles_l: return
+        self.roles_l.remove(_role)
         self.save()
 
     @appier.link(name = "View Avatar", devel = True)
