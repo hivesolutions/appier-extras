@@ -346,6 +346,7 @@ class Base(appier.Model):
         callback_header = None,
         strict = False,
         named = False,
+        header = True,
         delimiter = ",",
         quotechar = "\"",
         quoting = csv.QUOTE_MINIMAL,
@@ -364,7 +365,8 @@ class Base(appier.Model):
         args, _varargs, kwargs = appier.legacy.getargspec(callback)[:3]
         has_header = True if "header" in args or kwargs else False
         has_map = True if "map" in args or kwargs else False
-        header = next(csv_reader)
+        if header: header = next(csv_reader)
+        else: header = []
         if not is_unicode: header = [value.decode(encoding) for value in header]
         if callback_header: callback_header(header)
         if named: tuple_t = collections.namedtuple("csv_tuple", header)
