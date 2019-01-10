@@ -131,7 +131,7 @@ class Locale(base.Base):
 
         for locale, data_j in appier.legacy.iteritems(result):
             conditions = cls._conditions(locale)
-            locale_e = cls.get(rules = False, raise_e = False,  **{"$and" : conditions})
+            locale_e = cls.get(rules = False, raise_e = False, **{"$and" : conditions})
             if locale_e: locale_e.data_j.update(data_j)
             else: locale_e = cls(locale = locale, data_j = data_j)
             locale_e.save()
