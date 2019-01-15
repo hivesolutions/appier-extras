@@ -18,7 +18,7 @@
                 {{ self.buttons() }}
             </div>
             <div class="details">
-                <h2>{{ owner.description }}</h2>
+                <h2>{{ owner.description }}{% if owner.version %} {{ owner.version }}{% endif %}</h2>
                 {% if owner.observations %}
                     <h3>{{ owner.observations }}</h3>
                 {% endif %}
