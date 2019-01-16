@@ -226,6 +226,7 @@ class AdminPart(
             (("GET",), "/admin/oauth/deny", self.oauth_deny),
             (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token, None, True),
             (("GET", "POST"), "/admin/oauth/login", self.oauth_login, None, True),
+            (("GET",), "/admin/operations/restart_app", self.restart_app),
             (("GET",), "/admin/operations/build_index", self.build_index),
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
             (("GET",), "/admin/operations/test_email", self.test_email),
@@ -357,6 +358,13 @@ class AdminPart(
 
     def load_operations(self):
         self.add_operation(
+            "restart_app", "admin.restart_app",
+            description = "Restart application",
+            message = "Are you really sure you want to re-start the application?",
+            note = "Re-starting the application, may delete the system state",
+            level = 3
+        )
+        self.add_operation(
             "build_index", "admin.build_index",
             description = "Build search index",
             message = "Are you really sure you want to re-build the search index?",
@@ -382,6 +390,7 @@ class AdminPart(
         )
 
     def unload_operations(self):
+        self.remove_operation("restart_app")
         self.remove_operation("build_index")
         self.remove_operation("build_index_db")
         self.remove_operation("test_email")
@@ -1028,6 +1037,16 @@ class AdminPart(
             session_id = sid,
             username = oauth_token.username,
             tokens = oauth_token.tokens
+        )
+
+    @appier.ensure(token = "admin", context = "admin")
+    def restart_app(self):
+        self.owner.trigger_bus("restart")
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Application restart triggered"
+            )
         )
 
     @appier.ensure(token = "admin", context = "admin")
