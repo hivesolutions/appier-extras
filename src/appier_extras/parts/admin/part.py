@@ -837,7 +837,7 @@ class AdminPart(
             oauth_client.assert_scope(scope_l)
 
             # tries to reuse an already authorized token that is considered
-            # equivalent to the current one, if the re-usage operation is a
+            # equivalent to the current one, if the reusage operation is a
             # success then redirects the user agent immediately
             result, tokens, oauth_token = models.OAuthToken.reuse_s(
                 redirect_uri, scope_l, oauth_client
