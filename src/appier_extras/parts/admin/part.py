@@ -360,22 +360,22 @@ class AdminPart(
         self.add_operation(
             "restart_app", "admin.restart_app",
             description = "Restart application",
-            message = "Are you really sure you want to re-start the application?",
-            note = "Re-starting the application, may delete the system state",
+            message = "Are you really sure you want to restart the application?",
+            note = "Restarting the application, may delete the system state",
             level = 3
         )
         self.add_operation(
             "build_index", "admin.build_index",
             description = "Build search index",
-            message = "Are you really sure you want to re-build the search index?",
-            note = "Re-building the complete search index, may take some time",
+            message = "Are you really sure you want to rebuild the search index?",
+            note = "Rebuilding the complete search index, may take some time",
             level = 3
         )
         self.add_operation(
             "build_index_db", "admin.build_index_db",
             description = "Build database index",
-            message = "Are you really sure you want to re-build the database index?",
-            note = "Re-building the complete database index, may take some time",
+            message = "Are you really sure you want to rebuild the database index?",
+            note = "Rebuilding the complete database index, may take some time",
             level = 3
         )
         self.add_operation(
@@ -836,7 +836,7 @@ class AdminPart(
             # OAuth client meaning that they overlap
             oauth_client.assert_scope(scope_l)
 
-            # tries to re-use an already authorized token that is considered
+            # tries to reuse an already authorized token that is considered
             # equivalent to the current one, if the re-usage operation is a
             # success then redirects the user agent immediately
             result, tokens, oauth_token = models.OAuthToken.reuse_s(
