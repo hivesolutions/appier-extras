@@ -462,7 +462,7 @@ class Base(appier.Model):
             strip_important = strip_important,
             cssutils_logging_level = logging_level
         )
-        return inliner.transform(data)
+        return inliner.transform()
 
     @classmethod
     def _inlinify_toronado(cls, data, *args, **kwargs):
