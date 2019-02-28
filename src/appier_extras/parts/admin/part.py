@@ -798,14 +798,14 @@ class AdminPart(
             libraries = libraries
         )
 
-    @appier.ensure(context = "admin")
     def oauth_authorize(self):
         try:
             # verifies if the OAuth system is allowed if that's not
             # the case raises an exception indicating so
-            if not self.owner.admin_oauth: raise appier.SecurityError(
-                message = "OAuth not allowed"
-            )
+            if not self.owner.admin_oauth:
+                raise appier.SecurityError(
+                    message = "OAuth not allowed"
+                )
 
             # retrieves the complete set of fields that are going
             # to be used on the initial authorize state of OAuth
@@ -813,7 +813,7 @@ class AdminPart(
             redirect_uri = self.field("redirect_uri", mandatory = True)
             scope = self.field("scope", mandatory = True)
             response_type = self.field("response_type", "code")
-            state = self.field("state", None)
+            state = self.field("state", "")
 
             # verifies/ensures that the response type to be received
             # is the code, as that's the only one supported
@@ -835,34 +835,6 @@ class AdminPart(
             # asserts that the requested scope is valid for the associated
             # OAuth client meaning that they overlap
             oauth_client.assert_scope(scope_l)
-
-            # tries to reuse an already authorized token that is considered
-            # equivalent to the current one, if the reusage operation is a
-            # success then redirects the user agent immediately
-            result, tokens, oauth_token = models.OAuthToken.reuse_s(
-                redirect_uri, scope_l, oauth_client
-            )
-            if result: return self.redirect(
-                redirect_uri,
-                params = dict(
-                    code = oauth_token.authorization_code,
-                    scope = " ".join(oauth_token.tokens),
-                    state = state
-                )
-            )
-
-            # runs the template rendering for the OAuth authorize panel
-            # it should prompt the final user for permission agreement
-            return self.template(
-                "oauth/authorize.html.tpl",
-                client_id = client_id,
-                redirect_uri = redirect_uri,
-                scope = scope,
-                response_type = response_type,
-                state = state,
-                oauth_client = oauth_client,
-                tokens = tokens
-            )
         except BaseException as exception:
             redirect_uri = self.field("redirect_uri", None)
             state = self.field("state", None)
@@ -878,6 +850,38 @@ class AdminPart(
                     state = state
                 )
             )
+
+        # ensures that that a valid login is provided, this is required
+        # so that it's possible to infer proper authorization
+        appier.ensure_login(self, context = "admin")
+
+        # tries to reuse an already authorized token that is considered
+        # equivalent to the current one, if the reusage operation is a
+        # success then redirects the user agent immediately
+        result, tokens, oauth_token = models.OAuthToken.reuse_s(
+            redirect_uri, scope_l, oauth_client
+        )
+        if result: return self.redirect(
+            redirect_uri,
+            params = dict(
+                code = oauth_token.authorization_code,
+                scope = " ".join(oauth_token.tokens),
+                state = state
+            )
+        )
+
+        # runs the template rendering for the OAuth authorize panel
+        # it should prompt the final user for permission agreement
+        return self.template(
+            "oauth/authorize.html.tpl",
+            client_id = client_id,
+            redirect_uri = redirect_uri,
+            scope = scope,
+            response_type = response_type,
+            state = state,
+            oauth_client = oauth_client,
+            tokens = tokens
+        )
 
     @appier.ensure(context = "admin")
     def do_oauth_authorize(self):
