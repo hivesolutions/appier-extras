@@ -131,7 +131,7 @@ class AdminPart(
         self.logger.debug("Registering pre request handler ...")
         appier.App.add_custom("before_request", self.before_request)
         appier.App.add_exception(
-            BaseException,
+            Exception,
             self.exception_handler,
             scope = AdminPart
         )

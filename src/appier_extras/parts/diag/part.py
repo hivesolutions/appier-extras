@@ -148,8 +148,8 @@ class DiagPart(appier.Part):
         try:
             if self.output: self._output_log()
             if self.store: self._store_log()
-            #if self.loggly: self._loggly_log()
-            #if self.logstash: self._logstash_log()
+            if self.loggly: self._loggly_log()
+            if self.logstash: self._logstash_log()
         except Exception as exception:
             self.owner.log_error(
                 exception,
