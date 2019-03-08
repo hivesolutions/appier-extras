@@ -240,10 +240,13 @@ class DiagPart(appier.Part):
         diag_request.save()
 
     def _loggly_log(self):
+        print("VAI sacar API")
         api = self._get_loggly_api()
         if not api: return
         item = self._get_item(format = self.level)
+        print("VAI logar buffer")
         api.log_buffer(item)
+        print("ACAOU logar buffer")
 
     def _loggly_flush(self):
         if not self._loggly_api: return
