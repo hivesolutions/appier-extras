@@ -375,7 +375,7 @@ body.mobile-s .pages > .page.other {
     font-weight: 600;
     position: fixed;
     right: 32px;
-    z-index: 30;
+    z-index: 10;
 }
 
 .header-message.invisible .message-contents {
