@@ -108,7 +108,7 @@ class Event(base.Base):
         for key, value in appier.legacy.items(arguments):
             if not appier.legacy.is_string(value, all = all): continue
             try: value = formatter.format(value, **arguments)
-            except: value = value
+            except Exception: value = value
             arguments[key] = value
         return arguments
 
@@ -179,7 +179,7 @@ class Event(base.Base):
         while True:
             try:
                 result = callable()
-            except:
+            except Exception:
                 count -= 1
                 if count == 0: raise
                 else: continue

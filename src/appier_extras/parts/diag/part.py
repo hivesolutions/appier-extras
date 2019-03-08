@@ -264,7 +264,7 @@ class DiagPart(appier.Part):
     def _get_loggly_api(self):
         if self._loggly_api: return self._loggly_api
         try: loggly = appier.import_pip("loggly", package = "loggly_api_python")
-        except: loggly = None
+        except Exception: loggly = None
         if not loggly: return None
         self._loggly_api = loggly.API(delayer = self.owner.delay)
         return self._loggly_api
@@ -272,7 +272,7 @@ class DiagPart(appier.Part):
     def _get_logstash_api(self):
         if self._logstash_api: return self._logstash_api
         try: logstash = appier.import_pip("logstash", package = "logstash_api")
-        except: logstash = None
+        except Exception: logstash = None
         if not logstash: return None
         self._logstash_api = logstash.API(delayer = self.owner.delay)
         return self._logstash_api

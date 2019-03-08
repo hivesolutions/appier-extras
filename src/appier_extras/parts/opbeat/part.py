@@ -144,6 +144,6 @@ class OpbeatPart(appier.Part):
     def _get_api(self):
         if self._api: return self._api
         try: import opbeat
-        except: return None
+        except Exception: return None
         self._api = opbeat.API()
         return self._api

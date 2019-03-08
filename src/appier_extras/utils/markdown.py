@@ -45,7 +45,7 @@ import xml.sax.saxutils
 import appier
 
 try: import regex
-except: regex = None
+except ImportError: regex = None
 
 class MarkdownParser(object):
     """

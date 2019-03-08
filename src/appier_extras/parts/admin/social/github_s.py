@@ -46,7 +46,7 @@ class Github(object):
 
     def has_github(self):
         try: import github
-        except: github = None
+        except Exception: github = None
         if not github: return False
         if not appier.conf("GITHUB_ID"): return False
         if not appier.conf("GITHUB_SECRET"): return False

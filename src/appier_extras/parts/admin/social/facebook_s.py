@@ -46,7 +46,7 @@ class Facebook(object):
 
     def has_facebook(self):
         try: import facebook
-        except: facebook = None
+        except Exception: facebook = None
         if not facebook: return False
         if not appier.conf("FB_ID"): return False
         if not appier.conf("FB_SECRET"): return False

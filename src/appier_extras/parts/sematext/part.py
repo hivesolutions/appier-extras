@@ -102,7 +102,7 @@ class SematextPart(appier.Part):
     def _get_api(self):
         if self._api: return self._api
         try: sematext = appier.import_pip("sematext", package = "sematext_api")
-        except: sematext = None
+        except Exception: sematext = None
         if not sematext: return None
         self._api = sematext.API()
         return self._api

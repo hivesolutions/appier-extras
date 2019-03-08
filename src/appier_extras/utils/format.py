@@ -55,20 +55,20 @@ class SafeFormatter(string.Formatter):
 
         try:
             obj = self.get_value(first, args, kwargs)
-        except:
+        except Exception:
             return self.fallback, first
 
         for is_attr, key in rest:
             if is_attr:
                 try:
                     obj = getattr(obj, key)
-                except:
+                except Exception:
                     obj = self.fallback
                     break
             else:
                 try:
                     obj = obj[key]
-                except:
+                except Exception:
                     obj = self.fallback
                     break
 

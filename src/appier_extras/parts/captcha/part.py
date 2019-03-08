@@ -48,7 +48,7 @@ try:
     import PIL.Image
     import PIL.ImageDraw
     import PIL.ImageFont
-except:
+except ImportError:
     pass
 
 class CaptchaPart(appier.Part):

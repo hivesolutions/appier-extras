@@ -357,7 +357,7 @@ class OAuthToken(base.Base):
 
         try:
             self.verify_expired()
-        except:
+        except Exception:
             if delete == None: delete = False if self.refresh_token else True
             if delete: self.delete()
             raise

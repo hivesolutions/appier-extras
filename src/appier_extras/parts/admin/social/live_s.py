@@ -46,7 +46,7 @@ class Live(object):
 
     def has_live(self):
         try: import live
-        except: live = None
+        except Exception: live = None
         if not live: return False
         if not appier.conf("LIVE_ID"): return False
         if not appier.conf("LIVE_SECRET"): return False

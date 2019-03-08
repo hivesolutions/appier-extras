@@ -46,7 +46,7 @@ class Google(object):
 
     def has_google(self):
         try: import google
-        except: google = None
+        except Exception: google = None
         if not google: return False
         if not appier.conf("GOOGLE_ID"): return False
         if not appier.conf("GOOGLE_SECRET"): return False

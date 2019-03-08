@@ -46,7 +46,7 @@ class Twitter(object):
 
     def has_twitter(self):
         try: import twitter
-        except: twitter = None
+        except Exception: twitter = None
         if not twitter: return False
         if not appier.conf("TWITTER_KEY"): return False
         if not appier.conf("TWITTER_SECRET"): return False

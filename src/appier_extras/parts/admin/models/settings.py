@@ -136,7 +136,7 @@ class Settings(base.Base):
 
     def get_facebook_api(self):
         try: import facebook
-        except: return None
+        except Exception: return None
         if not self.facebook_token: return None
         redirect_url = self.owner.url_for("admin.oauth_facebook", absolute = True)
         access_token = self.facebook_token
@@ -149,7 +149,7 @@ class Settings(base.Base):
 
     def get_github_api(self):
         try: import github
-        except: return None
+        except Exception: return None
         if not self.github_token: return None
         redirect_url = self.owner.url_for("admin.oauth_github", absolute = True)
         access_token = self.github_token
@@ -162,7 +162,7 @@ class Settings(base.Base):
 
     def get_google_api(self):
         try: import google
-        except: return None
+        except Exception: return None
         if not self.google_token: return None
         cls = self.__class__
         redirect_url = self.owner.url_for("admin.oauth_google", absolute = True)
@@ -180,7 +180,7 @@ class Settings(base.Base):
 
     def get_live_api(self):
         try: import live
-        except: return None
+        except Exception: return None
         if not self.live_token: return None
         redirect_url = self.owner.url_for("admin.oauth_live", absolute = True)
         access_token = self.live_token
@@ -193,7 +193,7 @@ class Settings(base.Base):
 
     def get_twitter_api(self):
         try: import twitter
-        except: return None
+        except Exception: return None
         if not self.twitter_token: return None
         if not self.twitter_token_secret: return None
         redirect_url = self.owner.url_for("admin.oauth_twitter", absolute = True)
