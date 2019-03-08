@@ -145,7 +145,6 @@ class DiagPart(appier.Part):
         pass
 
     def after_request(self):
-        return 
         try:
             if self.output: self._output_log()
             if self.store: self._store_log()
