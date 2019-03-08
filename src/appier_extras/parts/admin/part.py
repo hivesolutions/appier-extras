@@ -835,7 +835,7 @@ class AdminPart(
             # asserts that the requested scope is valid for the associated
             # OAuth client meaning that they overlap
             oauth_client.assert_scope(scope_l)
-        except BaseException as exception:
+        except Exception as exception:
             redirect_uri = self.field("redirect_uri", None)
             state = self.field("state", None)
             if not redirect_uri: raise

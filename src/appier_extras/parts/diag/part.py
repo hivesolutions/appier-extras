@@ -150,7 +150,7 @@ class DiagPart(appier.Part):
             if self.store: self._store_log()
             if self.loggly: self._loggly_log()
             if self.logstash: self._logstash_log()
-        except BaseException as exception:
+        except Exception as exception:
             self.owner.log_error(
                 exception,
                 message = "Problem running diag logging: %s"

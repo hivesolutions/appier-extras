@@ -277,7 +277,7 @@ class Contentful(object):
                 *args,
                 **kwargs
             ) or dict()
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.warning("Problem while accessing Contentful: %s" % exception)
             return default
 

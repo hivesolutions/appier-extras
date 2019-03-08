@@ -283,7 +283,7 @@ class Prismic(object):
                 *args,
                 **kwargs
             ) or []
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.warning("Problem while accessing prismic: %s" % exception)
             return default
 
@@ -361,7 +361,7 @@ class Prismic(object):
                 *args,
                 **kwargs
             ) or []
-        except BaseException as exception:
+        except Exception as exception:
             self.logger.warning("Problem while accessing prismic: %s" % exception)
             return default
 
