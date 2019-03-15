@@ -66,7 +66,7 @@
     	{% set info = cls.definition_n(name) %}
     	{% set label = info.get("label", value) %}
         {% if is_default %}
-            <span>{{ label }}</span>
+            <span>{{ value }}</span>
         {% else %}
             <a href="{{ value }}" target="_blank">{{ label }}</a>
         {% endif %}
