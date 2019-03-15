@@ -2,8 +2,9 @@
     {% set entity, name = entity._res_entity(name, rules = False, meta = True) %}
     {% set cls = entity.__class__ %}
     {% set meta_name = name + "_meta" %}
+    {% set meta_name = meta_name if meta_name in entity else name %}
     {% set value = entity[meta_name]|default(default) %}
-    {% set is_default = not meta_name in entity %}
+    {% set is_default = not meta_name in entity and not meta_name in entity.__dict__ and not meta_name in entity.__class__.__dict__ %}
     {% set is_default = is_default or (boolean and value in (None, "")) %}
     {% if is_default %}{% set value = default %}{% endif %}
     {{ tag_out(cls, name, value, entity, default, is_default = is_default) }}
@@ -12,7 +13,7 @@
 {% macro input(entity, name, placeholder = None, boolean = True, create = False) -%}
     {% set entity, name = entity._res_entity(name, rules = False, meta = True) %}
     {% set cls = entity.__class__ %}
-    {% set info = cls[name]|default({}, True) %}
+    {% set info = cls.definition_n(name) %}
     {% set default = info.get("initial", "") if create else "" %}
     {% set disabled = info.get("immutable", False) and not create %}
     {% set value = entity[name]|default(default) %}
@@ -24,7 +25,7 @@
 {% macro tag_out(cls, name, value, entity, default, is_default = False, acl_prefix = "admin.models" ) -%}
     {% set meta = cls._solve(name) %}
     {% if meta == "reference" %}
-        {% set info = cls[name] %}
+        {% set info = cls.definition_n(name) %}
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _value = entity[name] %}
@@ -56,16 +57,18 @@
             <span>{{ default }}</span>
         {% endif %}
     {% elif meta == "enum" %}
-        {% set info = cls[name] %}
+        {% set info = cls.definition_n(name) %}
         {% set colors = info.get("colors", {}) %}
         {% set color = colors.get(value, "") %}
         {% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
         <span class="tag {{ value }} {{ color }}">{{ value_r }}</span>
     {% elif meta == "url" %}
+    	{% set info = cls.definition_n(name) %}
+    	{% set label = info.get("label", value) %}
         {% if is_default %}
-            <span>{{ value }}</span>
+            <span>{{ label }}</span>
         {% else %}
-            <a href="{{ value }}" target="_blank">{{ value }}</a>
+            <a href="{{ value }}" target="_blank">{{ label }}</a>
         {% endif %}
     {% elif meta == "email" %}
         {% if is_default %}
@@ -102,7 +105,7 @@
     {% set meta = cls._solve(name) %}
     {% set disabled_s = "\" data-disabled=\"1" if disabled else "" %}
     {% if meta == "reference" %}
-        {% set info = cls[name] %}
+        {% set info = cls.definition_n(name) %}
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _name = type._name %}
@@ -116,7 +119,7 @@
                  data-url="{{ url_for('admin.show_model_json', model = target._under() ) }}"></div>
         </div>
     {% elif meta == "references" %}
-        {% set info = cls[name] %}
+        {% set info = cls.definition_n(name) %}
         {% set type = info.type %}
         {% set target = type._target() %}
         {% set _name = type._name %}
@@ -138,7 +141,7 @@
                  data-url="{{ url_for('admin.show_model_json', model = target._under() ) }}"></div>
         </div>
     {% elif meta == "enum" %}
-        {% set info = cls[name] %}
+        {% set info = cls.definition_n(name) %}
         {% set enum = info.enum %}
         <div class="drop-field drop-field-select {{ disabled_s|safe }}"
              data-error="{{ error }}" data-display_attribute="name"
