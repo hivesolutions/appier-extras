@@ -836,8 +836,8 @@ class AdminPart(
             # OAuth client meaning that they overlap
             oauth_client.assert_scope(scope_l)
         except Exception as exception:
-            redirect_uri = self.field("redirect_uri", None)
-            state = self.field("state", None)
+            redirect_uri = self.field("redirect_uri", mandatory = True)
+            state = self.field("state", "")
             if not redirect_uri: raise
             code = exception.code if hasattr(exception, "code") else None
             error_message = exception.message if hasattr(exception, "message") else None
