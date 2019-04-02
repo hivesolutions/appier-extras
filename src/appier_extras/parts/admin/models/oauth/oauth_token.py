@@ -129,7 +129,7 @@ class OAuthToken(base.Base):
         meta = "url",
         description = "Redirect URI"
     )
-    """ An absolute uri to which the authorization server
+    """ An absolute URI to which the authorization server
     will redirect the user-agent to when the end-user
     authorization step is completed """
 
