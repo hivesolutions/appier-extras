@@ -63,8 +63,8 @@
         {% set value_r = appier.underscore_to_readable(value, capitalize = True) %}
         <span class="tag {{ value }} {{ color }}">{{ value_r }}</span>
     {% elif meta == "url" %}
-    	{% set info = cls.definition_n(name) %}
-    	{% set label = info.get("label", value) %}
+        {% set info = cls.definition_n(name) %}
+        {% set label = info.get("label", value) %}
         {% if is_default %}
             <span>{{ value }}</span>
         {% else %}
