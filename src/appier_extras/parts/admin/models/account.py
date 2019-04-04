@@ -479,19 +479,19 @@ class Account(base.Base, authenticable.Authenticable):
     @classmethod
     @appier.operation(
         name = "Create",
-        description = """Create a new account woth the provided
+        description = """Create a new account with the provided
         username, email and password, in case no password is
         provided a random new one is generated""",
         parameters = (
             ("Username", "username", str),
             ("Email", "email", str),
-            ("Password", "password", str, None),
+            ("Password", "password", str, ""),
             ("Send Email", "send_email", bool, False)
         ),
         factory = True
     )
-    def create_s(cls, username, email, password = None, send_email = False):
-        if password == None: password = appier.gen_token(limit = 16)
+    def create_s(cls, username, email, password = "", send_email = False):
+        if not password: password = appier.gen_token(limit = 16)
         account = cls(
             username = username,
             email = email,
