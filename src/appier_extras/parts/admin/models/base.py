@@ -42,6 +42,7 @@ import json
 import time
 import random
 import string
+import inspect
 import hashlib
 import logging
 import datetime
@@ -325,6 +326,8 @@ class Base(appier.Model):
             if appier.legacy.is_str(view):
                 view_cls = owner.get_model(view)
                 view = view_cls.view_r
+            is_class = inspect.isclass(view)
+            if is_class: view = view.view_r
             is_callable = hasattr(view, "__call__")
             if is_callable: view = view(target = cls, owner = owner)
             object.update(view)
