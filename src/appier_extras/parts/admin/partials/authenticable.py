@@ -47,7 +47,12 @@ class Authenticable(appier.Observable):
         _cls = session.get("cls", None)
         if _cls: cls = appier.get_model(_cls)
         cls._unset_session(prefixes = prefixes, safes = safes, method = method)
-        Authenticable.trigger_g("unset_account")
+        Authenticable.trigger_g(
+            "unset_account",
+            prefixes = prefixes,
+            safes = safes,
+            method = method
+        )
 
     @classmethod
     def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
@@ -56,7 +61,13 @@ class Authenticable(appier.Observable):
     def _set_account(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
         self._set_session(unset = unset, safes = safes, method = method)
-        Authenticable.trigger_g("set_account", self)
+        Authenticable.trigger_g(
+            "set_account",
+            self,
+            unset = unset,
+            safes = safes,
+            method = method
+        )
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         pass
