@@ -327,9 +327,12 @@ class Base(appier.Model):
                 view_cls = owner.get_model(view)
                 view = view_cls.view_r
             is_class = inspect.isclass(view)
-            if is_class: view = view.view_r
+            if is_class:
+                view = view.view_r
             is_callable = hasattr(view, "__call__")
-            if is_callable: view = view(target = cls, owner = owner)
+            if is_callable:
+                view = view(target = cls, owner = owner)
+            if not view: continue
             object.update(view)
 
         # returns the final object to the caller method so that it can be
