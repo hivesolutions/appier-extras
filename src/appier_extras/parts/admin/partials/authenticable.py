@@ -39,7 +39,7 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-class Authenticable(object):
+class Authenticable(appier.Observable):
 
     @classmethod
     def _unset_account(cls, prefixes = None, safes = [], method = "delete"):
@@ -47,10 +47,16 @@ class Authenticable(object):
         _cls = session.get("cls", None)
         if _cls: cls = appier.get_model(_cls)
         cls._unset_session(prefixes = prefixes, safes = safes, method = method)
+        Authenticable.trigger_g("unset_account")
 
     @classmethod
     def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
         pass
+
+    def _set_account(self, unset = True, safes = [], method = "set"):
+        cls = self.__class__
+        self._set_session(unset = unset, safes = safes, method = method)
+        Authenticable.trigger_g("set_account", self)
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         pass

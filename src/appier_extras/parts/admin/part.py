@@ -319,7 +319,7 @@ class AdminPart(
         if not key: return
         try: account = self.account_c.login_key(key)
         except appier.OperationalError: pass
-        else: account._set_session(method = "set_t")
+        else: account._set_account(method = "set_t")
 
     def exception_handler(self, error):
         import traceback
@@ -479,7 +479,7 @@ class AdminPart(
 
         # updates the current session with the proper
         # values to correctly authenticate the user
-        account._set_session()
+        account._set_account()
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
@@ -1027,7 +1027,7 @@ class AdminPart(
 
         # updates the current session with the proper
         # values to correctly authenticate the user
-        oauth_token._set_session()
+        oauth_token._set_account()
 
         # retrieves the session identifier (SID) for the currently
         # assigned session, this is going to be used in the next
@@ -2095,7 +2095,7 @@ class AdminPart(
 
         # updates the current session with the proper
         # values to correctly authenticate the user
-        account._set_session()
+        account._set_account()
 
         # retrieves the session identifier (SID) for the currently
         # assigned session, this is going to be used in the next

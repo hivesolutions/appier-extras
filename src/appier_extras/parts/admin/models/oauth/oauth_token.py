@@ -42,8 +42,9 @@ import time
 import appier
 
 from appier_extras.parts.admin.models import base
+from appier_extras.parts.admin.partials import authenticable
 
-class OAuthToken(base.Base):
+class OAuthToken(base.Base, authenticable.Authenticable):
     """
     Model class that represent an OAuth 2.0 access token
     that as been in created for a specific user context

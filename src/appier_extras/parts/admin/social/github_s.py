@@ -99,7 +99,7 @@ class Github(object):
             account.save()
 
         account.touch_login_s()
-        account._set_session()
+        account._set_account()
 
         return account
 
