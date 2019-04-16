@@ -685,6 +685,22 @@ class Account(base.Base, authenticable.Authenticable):
             views.append(view_m)
         return views
 
+    def meta_m(self):
+        """
+        Merges the metadata dictionary of the current account to the ones
+        defined in the complete set of associated roles.
+
+        :rtype: Dictionary
+        :return: The final meta-data dictionary that contains the "merged"
+        view of the metadata for the account according to the associated
+        set of roles.
+        """
+
+        meta = dict(self.meta)
+        for role in self.roles_l:
+            meta.update(role.meta)
+        return meta
+
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
         type_s = type_s.capitalize() if capitalize else type_s
