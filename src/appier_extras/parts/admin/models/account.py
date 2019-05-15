@@ -685,11 +685,14 @@ class Account(base.Base, authenticable.Authenticable):
             views.append(view_m)
         return views
 
-    def meta_m(self):
+    def meta_m(self, join = False):
         """
         Merges the metadata dictionary of the current account to the ones
         defined in the complete set of associated roles.
 
+        :type join: bool
+        :param join: If the overlapping values between the operations
+        should be merged as sequences.
         :rtype: Dictionary
         :return: The final meta-data dictionary that contains the "merged"
         view of the metadata for the account according to the associated
@@ -698,7 +701,19 @@ class Account(base.Base, authenticable.Authenticable):
 
         meta = dict(self.meta)
         for role in self.roles_l:
-            meta.update(role.meta)
+            if join:
+                for key, value in appier.legacy.iteritems(role.meta):
+                    if key in meta:
+                        previous = meta[key]
+                        if not type(previous) == list:
+                            previous = [previous]
+                        if not value in previous:
+                            value = previous + [value]
+                        else:
+                            value = previous
+                    meta[key] = value
+            else:
+                meta.update(role.meta)
         return meta
 
     def type_s(self, capitalize = False):
