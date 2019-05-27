@@ -46,6 +46,7 @@ class PreflightPart(appier.Part):
     def __init__(self, *args, **kwargs):
         appier.Part.__init__(self, *args, **kwargs)
         self.data = appier.conf("PREFLIGHT_DATA", "")
+        self.max_age = appier.conf("PREFLIGHT_MAX_AGE", 86400, cast = int)
         self.data_b = appier.legacy.bytes(self.data, force = True)
 
     def version(self):
@@ -66,4 +67,5 @@ class PreflightPart(appier.Part):
         if self.owner.request.handled: return
         allow_headers = self.request.get_header("Access-Control-Request-Headers", None)
         if allow_headers: self.request.set_header("Access-Control-Allow-Headers", allow_headers)
+        self.request.set_cache_control("public, max-age=%d" % self.max_age)
         self.owner.request.handle(self.data_b)

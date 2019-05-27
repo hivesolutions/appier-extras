@@ -85,3 +85,4 @@ The following are reserved configuration variables that modify Appier Extras beh
 | Name | Type | Description |
 | ----- | ----- | ----- |
 | **PREFLIGHT_DATA** | `str` | The default data for the response to be returned to the `OPTIONS` request (defaults to ``). |
+| **PREFLIGHT_MAX_AGE** | `int` | The number of seconds to be used in cache infvalication for the `Cache-Control` headers to be returned to the `OPTIONS` request (defaults to `86400`). |
