@@ -106,3 +106,20 @@ class Role(base.Base):
 
     def view_m(self, context = None):
         return self.view
+
+    @appier.operation(
+        name = "Duplicate",
+        description = """Create a new account with exactly the
+        same specification as the current one""",
+        parameters = (("Suffix", "suffix", str, "-new"),),
+        factory = True
+    )
+    def duplicate_s(self, suffix = "-new"):
+        cls = self.__class__
+        role = cls(
+            name = self.name + suffix,
+            tokens = self.tokens,
+            view = self.view
+        )
+        role.save()
+        return role
