@@ -117,6 +117,8 @@ class Role(base.Base):
     def duplicate_s(self, suffix = "-new"):
         cls = self.__class__
         role = cls(
+            description = self.description,
+            meta = self.meta,
             name = self.name + suffix,
             tokens = self.tokens,
             view = self.view
