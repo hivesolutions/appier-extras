@@ -163,12 +163,23 @@ class Role(base.Base):
         return role
 
     @appier.operation(
+        name = "Set Parent",
+        parameters = (("Name", "name", str),)
+    )
+    def set_parent_s(self, name):
+        cls = self.__class__
+        parent = cls.get(name = name)
+        if self in parent.children: return
+        parent.children.append(self)
+        parent.save()
+
+    @appier.operation(
         name = "Add Child",
         parameters = (("Name", "name", str),)
     )
     def add_child_s(self, name):
         cls = self.__class__
-        role = cls.get(name = name)
-        if role in self.children: return
-        self.children.append(role)
+        child = cls.get(name = name)
+        if child in self.children: return
+        self.children.append(child)
         self.save()
