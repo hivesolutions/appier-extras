@@ -115,10 +115,6 @@ class Role(base.Base):
         return ["name", "description"]
 
     def view_m(self, context = None):
-        appier.verify(
-            not self.children,
-            message = "Not possible to use views an child roles"
-        )
         return self.view
 
     @property
