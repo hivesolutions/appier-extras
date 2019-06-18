@@ -656,7 +656,7 @@ class Account(base.Base, authenticable.Authenticable):
             tokens.update(["base", "user"])
 
         for role in self.roles_l:
-            tokens.update(role.tokens)
+            tokens.update(role.tokens_a)
 
         if "*" in tokens: tokens = ["*"]
 
@@ -702,7 +702,7 @@ class Account(base.Base, authenticable.Authenticable):
         meta = dict(self.meta)
         for role in self.roles_l:
             if join:
-                for key, value in appier.legacy.iteritems(role.meta):
+                for key, value in appier.legacy.iteritems(role.meta_a):
                     if key in meta:
                         previous = meta[key]
                         if not type(previous) == list:
@@ -713,7 +713,7 @@ class Account(base.Base, authenticable.Authenticable):
                             value = previous
                     meta[key] = value
             else:
-                meta.update(role.meta)
+                meta.update(role.meta_a)
         return meta
 
     def type_s(self, capitalize = False):

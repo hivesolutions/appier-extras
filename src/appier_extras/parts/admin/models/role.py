@@ -62,6 +62,16 @@ class Role(base.Base):
     """ The filtered view that is going to be applied for
     every filtered operation (data source access) """
 
+    children = appier.field(
+        type = appier.references(
+            "Role",
+            name = "id"
+        )
+    )
+    """ The complete set of child roles that are associated
+    with this role, this role should inherit all og the characteristics
+    of the child roles (expected behaviour) """
+
     @classmethod
     def setup(cls):
         super(Role, cls).setup()
@@ -105,7 +115,33 @@ class Role(base.Base):
         return ["name", "description"]
 
     def view_m(self, context = None):
+        appier.verify(
+            not self.children,
+            message = "Not possible to use views an child roles"
+        )
         return self.view
+
+    @property
+    def tokens_a(self):
+        tokens = set(self.tokens)
+        for child in self.children: tokens.update(child.tokens_a)
+        return tokens
+
+    @property
+    def meta_a(self):
+        meta = dict(self.meta)
+        for child in self.children:
+            for key, value in appier.legacy.iteritems(child.meta):
+                if key in meta:
+                    previous = meta[key]
+                    if not type(previous) == list:
+                        previous = [previous]
+                    if not value in previous:
+                        value = previous + [value]
+                    else:
+                        value = previous
+                meta[key] = value
+        return meta
 
     @appier.operation(
         name = "Duplicate",
@@ -125,3 +161,14 @@ class Role(base.Base):
         )
         role.save()
         return role
+
+    @appier.operation(
+        name = "Add Child",
+        parameters = (("Name", "name", str),)
+    )
+    def add_child_s(self, name):
+        cls = self.__class__
+        role = cls.get(name = name)
+        if role in self.children: return
+        self.children.append(role)
+        self.save()
