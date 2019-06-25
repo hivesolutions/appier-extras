@@ -504,6 +504,46 @@ class Account(base.Base, authenticable.Authenticable):
 
     @classmethod
     @appier.operation(
+        name = "Import JSON",
+        parameters = (
+            ("JSON File", "file", "file"),
+            ("Empty source", "empty", bool, False)
+        )
+    )
+    def import_json_s(cls, file, empty):
+
+        def callback(item):
+
+            enabled = item["enabled"]
+            username = item["username"]
+            type = item["type"]
+            password = item.get("password", None)
+            email = item.get("email", None)
+            key = item.get("key", None)
+            description = item.get("description", None)
+            last_login = item.get("last_login", None)
+            avatar = item.get("avatar", None)
+            roles = item.get("roles", [])
+            account = cls(
+                enabled = enabled,
+                username = username,
+                type = type,
+                password = password,
+                password_confirm = password,
+                email = email,
+                key = key,
+                description = description,
+                last_login = last_login,
+                avatar = avatar,
+                roles = roles
+            )
+            account.save()
+
+        if empty: cls.delete_c()
+        cls._json_import(file, callback)
+
+    @classmethod
+    @appier.operation(
         name = "Import CSV",
         parameters = (
             ("CSV File", "file", "file"),
@@ -600,8 +640,11 @@ class Account(base.Base, authenticable.Authenticable):
 
     def pre_create(self):
         base.Base.pre_create(self)
-        self.key = self.secret()
-        self.confirmation_token = self.secret()
+        if not hasattr(self, "key") or not self.key:
+            self.key = self.secret()
+        if not hasattr(self, "confirmation_token") or\
+            not self.confirmation_token:
+            self.confirmation_token = self.secret()
         if not hasattr(self, "avatar") or not self.avatar:
             self._set_avatar_d()
 
@@ -874,6 +917,16 @@ class Account(base.Base, authenticable.Authenticable):
             "admin.avatar_account",
             username = self.username,
             cls = model,
+            absolute = absolute
+        )
+
+    @classmethod
+    @appier.link(name = "Export JSON", context = True)
+    def export_url(cls, view = None, context = None, absolute = False):
+        return appier.get_app().url_for(
+            "admin.export_accounts_json",
+            view = view,
+            context = context,
             absolute = absolute
         )
 

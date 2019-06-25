@@ -250,6 +250,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/new", self.new_account),
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/me", self.me_account),
+            (("GET",), "/admin/accounts/export.json", self.export_accounts_json, None, True),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
@@ -622,6 +623,21 @@ class AdminPart(
         return self.template(
             "account/show.html.tpl",
             account = account
+        )
+
+    @appier.ensure(context = "admin")
+    def export_accounts_json(self):
+        account_c = self._get_cls(self.account_c)
+        object = appier.get_object(
+            alias = True,
+            find = True,
+            limit = 0
+        )
+        return self.admin_part._find_view(
+            account_c,
+            map = True,
+            rules = False,
+            **object
         )
 
     @appier.ensure(token = "admin.accounts", context = "admin")
