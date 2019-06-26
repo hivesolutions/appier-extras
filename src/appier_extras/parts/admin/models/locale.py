@@ -137,6 +137,16 @@ class Locale(base.Base):
             locale_e.save()
 
     @classmethod
+    @appier.link(name = "Export CSV", context = True)
+    def list_csv_url(cls, view = None, context = None, absolute = False):
+        return appier.get_app().url_for(
+            "admin.list_locales_csv",
+            view = view,
+            context = context,
+            absolute = absolute
+        )
+
+    @classmethod
     @appier.view(
         name = "Explorer",
         parameters = (("Context", "context", str),)

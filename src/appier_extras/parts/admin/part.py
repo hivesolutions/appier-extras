@@ -240,6 +240,7 @@ class AdminPart(
             (("GET",), "/admin/peers", self.list_peers),
             (("GET",), "/admin/counters", self.list_counters),
             (("GET",), "/admin/events.csv", self.list_events_csv),
+            (("GET",), "/admin/locale.csv", self.list_locales_csv),
             (("GET",), "/admin/locales/<int:id>/bundle.json", self.bundle_locale_json, None, True),
             (("GET",), "/admin/database", self.database),
             (("GET",), "/admin/database/export", self.database_export),
@@ -1244,6 +1245,27 @@ class AdminPart(
             events_s.append(event_s)
 
         result = appier.serialize_csv(events_s, delimiter = ",")
+        self.content_type("text/csv")
+        return result
+
+    @appier.ensure(token = "admin", context = "admin")
+    def list_locales_csv(self):
+        object = appier.get_object(alias = True, find = True, limit = 0)
+        locales = self.admin_part._find_view(models.Locale, **object)
+
+        header = ["name"]
+        locales_s = [header]
+
+        #@odo must first create the reverse data model to be able
+        # to then write to the CSV
+
+        for locale in locales:
+            header.append(locale.locale)
+
+        for locale in locales:
+            pass
+
+        result = appier.serialize_csv(locales_s, delimiter = ",")
         self.content_type("text/csv")
         return result
 
