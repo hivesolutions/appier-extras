@@ -125,6 +125,7 @@ class Locale(base.Base):
         for line in csv_reader:
             name, locales_v = line[0], line[1:]
             for locale_n, locale_v in zip(locales_n, locales_v):
+                if not locale_v: continue
                 locale_m = result.get(locale_n, {})
                 locale_m[name] = locale_v
                 result[locale_n] = locale_m

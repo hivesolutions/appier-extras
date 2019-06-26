@@ -1251,19 +1251,25 @@ class AdminPart(
     @appier.ensure(token = "admin", context = "admin")
     def list_locales_csv(self):
         object = appier.get_object(alias = True, find = True, limit = 0)
-        locales = self.admin_part._find_view(models.Locale, **object)
+        locales = self.admin_part._find_view(models.Locale, rules = False, **object)
 
         header = ["name"]
         locales_s = [header]
 
-        #@odo must first create the reverse data model to be able
-        # to then write to the CSV
-
         for locale in locales:
             header.append(locale.locale)
 
+        names = set()
+
         for locale in locales:
-            pass
+            names.update(appier.legacy.keys(locale.data_j))
+
+        for name in names:
+            line = [name]
+            for locale in locales:
+                value = locale.data_j.get(name, "")
+                line.append(value)
+            locales_s.append(line)
 
         result = appier.serialize_csv(locales_s, delimiter = ",")
         self.content_type("text/csv")
