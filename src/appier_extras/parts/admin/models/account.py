@@ -808,12 +808,6 @@ class Account(base.Base, authenticable.Authenticable):
             owner = self.owner
         )
 
-    @property
-    def email_f(self):
-        if not self.email: return self.email
-        if not self.username: return self.email
-        return "%s <%s>" % (self.username, self.email)
-
     @appier.operation(name = "Touch Login")
     def touch_login_s(self):
         # retrieves the global reference to the account class so that
@@ -933,6 +927,12 @@ class Account(base.Base, authenticable.Authenticable):
     @property
     def confirmed(self):
         return self.enabled
+
+    @property
+    def email_f(self):
+        if not self.email: return self.email
+        if not self.username: return self.email
+        return "%s <%s>" % (self.username, self.email)
 
     @property
     def roles_l(self):
