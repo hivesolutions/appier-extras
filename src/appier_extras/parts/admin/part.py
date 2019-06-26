@@ -1264,7 +1264,7 @@ class AdminPart(
         for locale in locales:
             names.update(appier.legacy.keys(locale.data_j))
 
-        for name in names:
+        for name in sorted(names):
             line = [name]
             for locale in locales:
                 value = locale.data_j.get(name, "")
