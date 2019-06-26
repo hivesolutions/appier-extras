@@ -137,6 +137,21 @@ class Locale(base.Base):
             locale_e.save()
 
     @classmethod
+    @appier.view(
+        name = "Explorer",
+        parameters = (("Context", "context", str),)
+    )
+    def explorer_v(cls, context, *args, **kwargs):
+        kwargs["sort"] = kwargs.get("sort", [("id", -1)])
+        if context: kwargs.update(context = context)
+        return appier.lazy_dict(
+            model = cls,
+            kwargs = kwargs,
+            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
+        )
+
+    @classmethod
     def _flush(cls):
         # retrieves the dictionary of bundles currently
         # enabled in the data source
