@@ -673,6 +673,16 @@ class Base(appier.Model):
         self.modified = int(self.modified)
         self.save(immutables_a = False)
 
+    @appier.operation(
+        name = "Set Metadata",
+        description = """Sets the "extra" metadata information on the current
+        entity, such value should be compliant with the JSON specification""",
+        parameters = (("Metadata", "meta", "longmap"),)
+    )
+    def set_metadata_s(self, meta):
+        self.meta = meta
+        self.save()
+
     @property
     def created_d(self):
         return datetime.datetime.fromtimestamp(self.created)
