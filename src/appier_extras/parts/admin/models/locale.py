@@ -193,7 +193,7 @@ class Locale(base.Base):
 
     @appier.operation(
         name = "Set Context",
-        parameters = (("Context", "context", "str"),)
+        parameters = (("Context", "context", str),)
     )
     def set_context_s(self, context):
         self.context = context
