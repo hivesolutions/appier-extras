@@ -4,7 +4,8 @@
 {% block windows %}
     {{ super() }}
     {% for key, value in own.admin_part._operations %}
-        {% if owner.is_devel() or not value.devel %}
+        {% set operation_valid = not value.devel or owner.is_devel() %}
+        {% if operation_valid %}
             {% if value.parameters %}
                 <div id="window-{{ value.name }}" class="window window-operation">
                     <h1>{{ value.description }}</h1>
@@ -17,7 +18,7 @@
                             {% set label, name, data_type = parameter[:3] %}
                             {% set default = parameter[3] if parameter|length > 3 else "" %}
                             <label>{{ label }}</label>
-                            {{ tag_input_b("parameters", value = default, type = data_type) }}
+                            {{ tag_input_b(name, value = default, type = data_type) }}
                         {% endfor %}
                         <div class="window-buttons">
                             <span class="button button-cancel close-button">Cancel</span>
@@ -32,7 +33,8 @@
 {% block content %}
     <ul class="sections-list">
         {% for key, value in own.admin_part._operations %}
-            {% if owner.is_devel() or not value.devel %}
+            {% set operation_valid = not value.devel or owner.is_devel() %}
+            {% if operation_valid %}
                 <li>
                     <div class="name">
                         {% if value.parameters %}

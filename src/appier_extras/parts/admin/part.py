@@ -226,12 +226,12 @@ class AdminPart(
             (("GET",), "/admin/oauth/deny", self.oauth_deny),
             (("GET", "POST"), "/admin/oauth/access_token", self.oauth_access_token, None, True),
             (("GET", "POST"), "/admin/oauth/login", self.oauth_login, None, True),
-            (("GET",), "/admin/operations/restart_app", self.restart_app),
-            (("GET",), "/admin/operations/build_index", self.build_index),
-            (("GET",), "/admin/operations/build_index_db", self.build_index_db),
-            (("GET",), "/admin/operations/test_email", self.test_email),
-            (("GET",), "/admin/operations/test_event", self.test_event),
-            (("GET",), "/admin/operations/set_date", self.set_date),
+            (("GET", "POST"), "/admin/operations/restart_app", self.restart_app),
+            (("GET", "POST"), "/admin/operations/build_index", self.build_index),
+            (("GET", "POST"), "/admin/operations/build_index_db", self.build_index_db),
+            (("GET", "POST"), "/admin/operations/test_email", self.test_email),
+            (("GET", "POST"), "/admin/operations/test_event", self.test_event),
+            (("GET", "POST"), "/admin/operations/set_date", self.set_date),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/me", self.show_session_me),
@@ -384,6 +384,7 @@ class AdminPart(
         self.add_operation(
             "test_email", "admin.test_email",
             description = "Send test email",
+            parameters = (("Email", "email", appier.conf("TEST_EMAIL", "")),),
             note = "Sending this email is going to use loaded SMTP configuration"
         )
         self.add_operation(
@@ -1114,7 +1115,7 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin", context = "admin")
-    def test_email(self):
+    def test_email(self, email = None):
         receiver = appier.conf("TEST_EMAIL", None)
         receiver = self.field("email", receiver)
         receiver = self.field("receiver", receiver)
