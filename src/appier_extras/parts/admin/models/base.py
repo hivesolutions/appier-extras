@@ -668,11 +668,17 @@ class Base(appier.Model):
         self = self.reload(rules = False)
         self.touch_s()
 
-    @appier.operation(name = "Datefix", devel = True)
-    def op_datefix_s(self):
+    @appier.operation(
+        name = "Datefix",
+        parameters = (("Force", "force", bool),),
+        devel = True
+    )
+    def op_datefix_s(self, force = False):
         self = self.reload(rules = False)
-        self.created = int(self.created)
-        self.modified = int(self.modified)
+        if force or not hasattr(self, "created") or self.created == None:
+            self.created = int(self.created)
+        if force or not hasattr(self, "modified") or self.modified == None:
+            self.modified = int(self.modified)
         self.save(immutables_a = False)
 
     @appier.operation(
