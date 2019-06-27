@@ -1567,12 +1567,15 @@ class AdminPart(
         parameters = definition.cast(parameters)
         parameters_kw = definition.cast(parameters, keyword = True)
 
+        # retrieves the initial kwargs to be sent to the find operation
+        # taking into account the operation definition
+        kwargs = definition.get("kwargs", None) or dict()
+
         # determines the filter information that is going to be passed
         # to the find operations and retrieves the associated entities
         # that are going to be the target for the operations, note that
         # if this is a global operation classes are used instead
-        if ids: kwargs = dict(_id = {"$in" : ids})
-        else: kwargs = dict()
+        if ids: kwargs.update(_id = {"$in" : ids})
         kwargs = self._apply_view(view, kwargs = kwargs, cls = model)
         if is_global: entities = (model,)
         else: entities = model.find_v(**kwargs)
