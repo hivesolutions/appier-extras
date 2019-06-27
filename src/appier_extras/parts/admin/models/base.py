@@ -487,8 +487,10 @@ class Base(appier.Model):
     def pre_create(self):
         appier.Model.pre_create(self)
 
-        if not hasattr(self, "enabled"): self.enabled = True
-        if not hasattr(self, "created"): self.created = int(time.time())
+        if not hasattr(self, "enabled") or self.enabled == None:
+            self.enabled = True
+        if not hasattr(self, "created") or self.created == None:
+            self.created = int(time.time())
         self.modified = int(time.time())
 
     def pre_update(self):
