@@ -345,6 +345,38 @@ class Base(appier.Model):
         cls.delete_c()
 
     @classmethod
+    @appier.link(name = "Json")
+    def json_collection(cls):
+        return appier.get_app().url_for(
+            "admin.show_model_json",
+            model = cls.__name__.lower()
+        )
+
+    @classmethod
+    @appier.link(name = "Json Zip")
+    def json_collection_zip(cls):
+        return appier.get_app().url_for(
+            "admin.zip_model_json",
+            model = cls.__name__.lower()
+        )
+
+    @appier.link(name = "Json")
+    def json(self):
+        return appier.get_app().url_for(
+            "admin.show_entity_json",
+            model = self.__class__.__name__.lower(),
+            _id = self._id
+        )
+
+    @appier.link(name = "Json Zip")
+    def json_zip(self):
+        return appier.get_app().url_for(
+            "admin.zip_show_entity_json",
+            model = self.__class__.__name__.lower(),
+            _id = self._id
+        )
+
+    @classmethod
     def _csv_import(
         cls,
         file,

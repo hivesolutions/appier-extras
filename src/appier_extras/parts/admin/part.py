@@ -40,6 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import os
 import json
 import time
+import zipfile
 import datetime
 import tempfile
 
@@ -200,6 +201,8 @@ class AdminPart(
 
     def routes(self):
         return [
+            (("GET",), "/admin/json", self.json),
+            (("GET",), "/admin/json_collection", self.json_collection),
             (("GET",), "/admin", self.index),
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
@@ -258,6 +261,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
+            (("GET",), "/admin/models/<str:model>.zip", self.zip_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
             (("GET", "POST"), "/admin/models/<str:model>/links/<str:link>", self.link_model),
@@ -825,6 +829,14 @@ class AdminPart(
             section = "status",
             libraries = libraries
         )
+
+    @appier.ensure(token = "admin")
+    def json_collection(self):
+        pass
+
+    @appier.ensure(token = "admin")
+    def json(self):
+        pass
 
     def oauth_authorize(self):
         try:
@@ -1453,6 +1465,23 @@ class AdminPart(
         return entities
 
     @appier.ensure(token = "admin", context = "admin")
+    def zip_model_json(self, model):
+        model_json = self.show_model_json(model)
+
+        _zip_handle, zip_path = tempfile.mkstemp()
+        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
+
+        prefix = "%s_%s" % (self.info_dict()["name"], model)
+
+        try:
+            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
+        finally: zip_file.close()
+        return self.send_path(
+            zip_path,
+            name = "%s_json.zip" % prefix
+        )
+
+    @appier.ensure(token = "admin", context = "admin")
     def show_model_csv(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
         eager_l = self.field("eager_l", False, cast = bool)
@@ -1743,6 +1772,22 @@ class AdminPart(
             _id = self.get_adapter().object_id(_id)
         )
         return entity
+
+    @appier.ensure(token = "admin", context = "admin")
+    def zip_entity_json(self, model, _id):
+        model_json = self.show_entity_json(model, _id)
+
+        _zip_handle, zip_path = tempfile.mkstemp()
+        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
+        prefix = "%s_%s_%s" % (self.info_dict()["name"], model, _id)
+
+        try:
+            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
+        finally: zip_file.close()
+        return self.send_path(
+            zip_path,
+            name = "%s_json.zip" % prefix
+        )
 
     @appier.ensure(token = "admin", context = "admin")
     def edit_entity(self, model, _id):
