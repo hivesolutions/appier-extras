@@ -675,10 +675,23 @@ class Base(appier.Model):
     )
     def op_datefix_s(self, force = False):
         self = self.reload(rules = False)
-        if force or not hasattr(self, "created") or self.created == None:
+        if force or (hasattr(self, "created") and not self.created == None):
             self.created = int(self.created)
-        if force or not hasattr(self, "modified") or self.modified == None:
+        if force or (hasattr(self, "modified") and not self.modified == None):
             self.modified = int(self.modified)
+        self.save(immutables_a = False)
+
+    @appier.operation(
+        name = "Dateset",
+        parameters = (("Force", "force", bool),),
+        devel = True
+    )
+    def op_dateset_s(self, force = False):
+        self = self.reload(rules = False)
+        if force or not hasattr(self, "created") or self.created == None:
+            self.created = int(time.time())
+        if force or not hasattr(self, "modified") or self.modified == None:
+            self.modified = int(time.time())
         self.save(immutables_a = False)
 
     @appier.operation(
