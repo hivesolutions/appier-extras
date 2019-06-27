@@ -684,6 +684,7 @@ class Base(appier.Model):
     @appier.operation(
         name = "Dateset",
         parameters = (("Force", "force", bool),),
+        level = 2,
         devel = True
     )
     def op_dateset_s(self, force = False):
