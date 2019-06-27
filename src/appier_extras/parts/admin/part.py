@@ -231,6 +231,7 @@ class AdminPart(
             (("GET",), "/admin/operations/build_index_db", self.build_index_db),
             (("GET",), "/admin/operations/test_email", self.test_email),
             (("GET",), "/admin/operations/test_event", self.test_event),
+            (("GET",), "/admin/operations/set_date", self.set_date),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
             (("GET",), "/admin/sessions/me", self.show_session_me),
@@ -390,6 +391,13 @@ class AdminPart(
             description = "Trigger test event",
             note = "All handlers for the event are going to be triggered"
         )
+        self.add_operation(
+            "set_date", "admin.set_date",
+            description = "Set date (created & modified)",
+            note = "Updates the created and modified date values if their not set",
+            level = 3,
+            devel = True
+        )
 
     def unload_operations(self):
         self.remove_operation("restart_app")
@@ -397,6 +405,7 @@ class AdminPart(
         self.remove_operation("build_index_db")
         self.remove_operation("test_email")
         self.remove_operation("test_event")
+        self.remove_operation("set_date")
 
     def add_section(self, name):
         self._sections[name] = appier.OrderedDict()
@@ -423,6 +432,7 @@ class AdminPart(
         note = None,
         parameters = (),
         level = 1,
+        devel = False,
         args = [],
         kwargs = {}
     ):
@@ -434,6 +444,7 @@ class AdminPart(
             note = note,
             parameters = parameters,
             level = level,
+            devel = devel,
             args = args,
             kwargs = kwargs
         )
@@ -1142,6 +1153,26 @@ class AdminPart(
             self.url_for(
                 "admin.operations",
                 message = "Test event triggered"
+            )
+        )
+
+    @appier.ensure(token = "admin", context = "admin")
+    def set_date(self):
+        set_c = 0
+
+        for model_c in self._available(self.owner.models_r):
+            created_e = model_c.find(created = None)
+            for entity in created_e: entity.op_dateset_s()
+            set_c += len(created_e)
+
+            modified_e = model_c.find(modified = None)
+            for entity in modified_e: entity.op_dateset_s()
+            set_c += len(modified_e)
+
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Date set in %d models" % set_c
             )
         )
 
