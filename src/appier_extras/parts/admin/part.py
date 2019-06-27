@@ -1162,11 +1162,11 @@ class AdminPart(
         set_c = 0
 
         for model_c in self._available(self.owner.models_r):
-            created_e = model_c.find(created = None)
+            created_e = model_c.find(created = None, rules = False)
             for entity in created_e: entity.op_dateset_s()
             set_c += len(created_e)
 
-            modified_e = model_c.find(modified = None)
+            modified_e = model_c.find(modified = None, rules = False)
             for entity in modified_e: entity.op_dateset_s()
             set_c += len(modified_e)
 
