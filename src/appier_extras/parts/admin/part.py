@@ -201,8 +201,6 @@ class AdminPart(
 
     def routes(self):
         return [
-            (("GET",), "/admin/json", self.json),
-            (("GET",), "/admin/json_collection", self.json_collection),
             (("GET",), "/admin", self.index),
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
@@ -270,6 +268,7 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, True),
+            (("GET",), "/admin/models/<str:model>/<str:_id>.zip", self.zip_entity_json, None, True),
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
@@ -829,14 +828,6 @@ class AdminPart(
             section = "status",
             libraries = libraries
         )
-
-    @appier.ensure(token = "admin")
-    def json_collection(self):
-        pass
-
-    @appier.ensure(token = "admin")
-    def json(self):
-        pass
 
     def oauth_authorize(self):
         try:
