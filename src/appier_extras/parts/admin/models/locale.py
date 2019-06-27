@@ -219,12 +219,12 @@ class Locale(base.Base):
 
     @appier.operation(
         name = "Set Context",
-        parameters = (("Context", "context", str),),
-        kwargs = dict(rules = False)
+        parameters = (("Context", "context", str),)
     )
     def set_context_s(self, context):
-        self.context = context
-        self.save()
+        locale = self.reload(rules = False)
+        locale.context = context
+        locale.save()
 
     @appier.link(name = "Export Bundle")
     def bundle_url(self, absolute = False):
