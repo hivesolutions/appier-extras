@@ -384,7 +384,7 @@ class AdminPart(
         self.add_operation(
             "test_email", "admin.test_email",
             description = "Send test email",
-            parameters = (("Email", "email", appier.conf("TEST_EMAIL", "")),),
+            parameters = (("Email", "email", str, appier.conf("TEST_EMAIL", "")),),
             note = "Sending this email is going to use loaded SMTP configuration"
         )
         self.add_operation(
