@@ -281,12 +281,12 @@ class Base(appier.Model):
         logo = kwargs.pop("logo", logo)
         inline = kwargs.pop("inline", inline)
         engine = kwargs.pop("engine", None)
+        headers = kwargs.pop("headers", {})
         settings = dict(
             bulk = bulk,
             unsubscribe = unsubscribe,
             logo = logo
         )
-        headers = dict()
         if bulk: headers["Auto-Submitted"] = "auto-generated"
         if bulk: headers["Precedence"] = "bulk"
         if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
