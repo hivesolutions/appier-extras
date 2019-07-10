@@ -483,7 +483,8 @@ class MarkdownHTML(MarkdownGenerator):
         encoding = "utf-8",
         options = dict(
             anchors = True,
-            blank = False
+            blank = False,
+            escape = True
         ),
         base_url = ""
     ):
@@ -623,8 +624,9 @@ class MarkdownHTML(MarkdownGenerator):
         self._generate(value)
 
     def generate_normal(self, node):
+        escape = self.options.get("escape", True)
         if self.code: self.emit("\n"); return
-        if self.is_open(): self.emit(node, escape = True)
+        if self.is_open(): self.emit(node, escape = escape)
         else: self.generate_newline(node); self.emit(node.lstrip())
 
     def is_absolute(self, url):

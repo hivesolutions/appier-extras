@@ -2217,13 +2217,15 @@ class AdminPart(
         value,
         anchors = False,
         blank = True,
+        escape = True,
         encoding = "utf-8"
     ):
         value = utils.MarkdownHTML.process_str(
             value,
             options = dict(
                 anchors = anchors,
-                blank = blank
+                blank = blank,
+                escape = escape
             ),
             encoding = encoding
         )
