@@ -47,6 +47,16 @@ import appier
 try: import regex
 except ImportError: regex = None
 
+HTML_ESCAPE_TABLE = {
+    "&": "&amp;",
+    '"': "&quot;",
+    "'": "&apos;",
+    ">": "&gt;",
+    "<": "&lt;"
+}
+""" The escape table to be used to escape strings to be safely
+inserted into an HTML document """
+
 class MarkdownParser(object):
     """
     Parser object for the md (Markdown) format, should be able to
@@ -539,9 +549,9 @@ class MarkdownHTML(MarkdownGenerator):
         value = node["value"]
         achors = self.options.get("anchors", True)
         self._close_all()
-        self.open("<h%d id=\"%s\">" % (level, hash))
+        self.open("<h%d id=\"%s\">" % (level, self._escape_html(hash)))
         self._generate(value)
-        if achors: self.emit("<a class=\"anchor\" href=\"#%s\">&para;</a>" % hash)
+        if achors: self.emit("<a class=\"anchor\" href=\"#%s\">&para;</a>" % self._escape_html(hash))
         self.close("</h%d>" % level)
 
     def generate_list(self, node):
@@ -567,7 +577,10 @@ class MarkdownHTML(MarkdownGenerator):
     def generate_image(self, node):
         label = node["label"]
         value = node["value"]
-        self.emit("<img src=\"%s\" alt=\"%s\" />" % (value, label))
+        self.emit(
+            "<img src=\"%s\" alt=\"%s\" />" %\
+            (self._escape_html(value), self._escape_html(label))
+        )
 
     def generate_link(self, node):
         label = node["label"]
@@ -575,7 +588,10 @@ class MarkdownHTML(MarkdownGenerator):
         value = value if self.is_absolute(value) else self.base_url + value
         blank = self.options.get("blank", False)
         target = "_blank" if blank else "_self"
-        self.open("<a href=\"%s\" target=\"%s\">" % (value, target))
+        self.open(
+            "<a href=\"%s\" target=\"%s\">" %\
+            (self._escape_html(value), self._escape_html(target))
+        )
         self._generate(label)
         self.close("</a>")
 
@@ -710,10 +726,16 @@ class MarkdownHTML(MarkdownGenerator):
         self.listo_level -= count
         self.list_item = False
 
+    def _escape_html(self, value):
+        return "".join(HTML_ESCAPE_TABLE.get(char, char) for char in value)
+
     def _escape_xml(self, value, encoding = "utf-8"):
         value_s = value if appier.legacy.PYTHON_3 else value.encode(encoding)
         escaped = xml.sax.saxutils.escape(value_s)
         return escaped if appier.legacy.PYTHON_3 else escaped.decode(encoding)
+
+    def _escape_quote(self, value):
+        return value.replace("\"", "\\\"")
 
 def has_regex():
     return True if regex else False
