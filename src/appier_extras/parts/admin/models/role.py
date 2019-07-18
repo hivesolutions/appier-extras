@@ -40,6 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import appier
 
 from appier_extras.parts.admin.models import base
+from appier_extras.parts.admin.models import account
 
 class Role(base.Base):
 
@@ -56,8 +57,9 @@ class Role(base.Base):
     """ The set of ACL token that are going to be used to
     control the permission of accounts that use this role """
 
-    view = appier.field(
-        type = dict
+    view_ = appier.field(
+        type = dict,
+        description = "View"
     )
     """ The filtered view that is going to be applied for
     every filtered operation (data source access) """
@@ -69,7 +71,7 @@ class Role(base.Base):
         )
     )
     """ The complete set of child roles that are associated
-    with this role, this role should inherit all og the characteristics
+    with this role, this role should inherit all of the characteristics
     of the child roles (expected behaviour) """
 
     @classmethod
@@ -114,7 +116,7 @@ class Role(base.Base):
         return ["name", "description"]
 
     def view_m(self, context = None):
-        return self.view
+        return self.view_
 
     @property
     def tokens_a(self):
@@ -160,7 +162,7 @@ class Role(base.Base):
             meta = self.meta,
             name = self.name + suffix,
             tokens = self.tokens,
-            view = self.view
+            view = self.view_
         )
         role.save()
         return role
@@ -186,3 +188,15 @@ class Role(base.Base):
         if child in self.children: return
         self.children.append(child)
         self.save()
+
+    @appier.view(name = "Accounts")
+    def accounts_v(self, *args, **kwargs):
+        cls = account.Account
+        kwargs["sort"] = kwargs.get("sort", [("id", -1)])
+        kwargs.update(roles = {"$in" : [self.id]})
+        return appier.lazy_dict(
+            model = cls,
+            kwargs = kwargs,
+            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
+        )
