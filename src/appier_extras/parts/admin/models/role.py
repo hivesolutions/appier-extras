@@ -127,17 +127,24 @@ class Role(base.Base):
     def meta_a(self):
         meta = dict(self.meta)
         for child in self.children:
-            for key, value in appier.legacy.iteritems(child.meta):
-                if key in meta:
-                    previous = meta[key]
-                    if not type(previous) == list:
+            self._join_m(child.meta_a, meta)
+        return meta
+
+    def _join_m(self, origin, target):
+        for key, value in appier.legacy.iteritems(origin):
+            if key in target:
+                previous = target[key]
+                if isinstance(previous, dict):
+                    value = self._join_m(value, previous)
+                else:
+                    if not isinstance(previous, list):
                         previous = [previous]
                     if not value in previous:
                         value = previous + [value]
                     else:
                         value = previous
-                meta[key] = value
-        return meta
+            target[key] = value
+        return target
 
     @appier.operation(
         name = "Duplicate",
