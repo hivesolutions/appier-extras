@@ -891,23 +891,27 @@ class Account(base.Base, authenticable.Authenticable):
         self.save()
 
     @appier.operation(
-        name = "Add Role",
+        name = "Add Role(s)",
         parameters = (("Name", "name", str),)
     )
     def add_role_s(self, name):
-        _role = role.Role.get(name = name)
-        if _role in self.roles_l: return
-        self.roles_l.append(_role)
+        names = [name.strip() for name in name.strip().split(",")]
+        for name in names:
+            _role = role.Role.get(name = name)
+            if _role in self.roles_l: continue
+            self.roles_l.append(_role)
         self.save()
 
     @appier.operation(
-        name = "Remove Role",
+        name = "Remove Role(s)",
         parameters = (("Name", "name", str),)
     )
     def remove_role_s(self, name):
-        _role = role.Role.get(name = name)
-        if not _role in self.roles_l: return
-        self.roles_l.remove(_role)
+        names = [name.strip() for name in name.strip().split(",")]
+        for name in names:
+            _role = role.Role.get(name = name)
+            if not _role in self.roles_l: continue
+            self.roles_l.remove(_role)
         self.save()
 
     @appier.link(name = "View Avatar", devel = True)
