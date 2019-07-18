@@ -106,8 +106,7 @@ class Role(base.Base):
             appier.string_lt("name", 64),
             appier.not_duplicate("name", cls._name()),
 
-            appier.not_null("tokens"),
-            appier.not_empty("tokens")
+            appier.not_null("tokens")
         ]
 
     @classmethod
@@ -120,7 +119,8 @@ class Role(base.Base):
     @property
     def tokens_a(self):
         tokens = set(self.tokens)
-        for child in self.children: tokens.update(child.tokens_a)
+        for child in self.children:
+            tokens.update(child.tokens_a)
         return tokens
 
     @property
