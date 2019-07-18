@@ -40,7 +40,6 @@ __license__ = "Apache License, Version 2.0"
 import appier
 
 from appier_extras.parts.admin.models import base
-from appier_extras.parts.admin.models import account
 
 class Role(base.Base):
 
@@ -191,6 +190,7 @@ class Role(base.Base):
 
     @appier.view(name = "Accounts")
     def accounts_v(self, *args, **kwargs):
+        from appier_extras.parts.admin.models import account
         cls = account.Account
         kwargs["sort"] = kwargs.get("sort", [("id", -1)])
         kwargs.update(roles = {"$in" : [self.id]})
