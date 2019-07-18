@@ -745,16 +745,7 @@ class Account(base.Base, authenticable.Authenticable):
         meta = dict(self.meta)
         for role in self.roles_l:
             if join:
-                for key, value in appier.legacy.iteritems(role.meta_a):
-                    if key in meta:
-                        previous = meta[key]
-                        if not type(previous) == list:
-                            previous = [previous]
-                        if not value in previous:
-                            value = previous + [value]
-                        else:
-                            value = previous
-                    meta[key] = value
+                self._join_m(role.meta_a, meta)
             else:
                 meta.update(role.meta_a)
         return meta
@@ -807,6 +798,22 @@ class Account(base.Base, authenticable.Authenticable):
             absolute = absolute,
             owner = self.owner
         )
+
+    def _join_m(self, origin, target):
+        for key, value in appier.legacy.iteritems(origin):
+            if key in target:
+                previous = target[key]
+                if isinstance(previous, dict):
+                    value = self._join_m(value, previous)
+                else:
+                    if not isinstance(previous, list):
+                        previous = [previous]
+                    if not value in previous:
+                        value = previous + [value]
+                    else:
+                        value = previous
+            target[key] = value
+        return target
 
     @appier.operation(name = "Touch Login")
     def touch_login_s(self):

@@ -282,3 +282,33 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(account.type, appier_extras.admin.Account.ROLE_TYPE)
         self.assertEqual(len(account.roles), 2)
         self.assertEqual(tokens, ["advanced", "base", "user"])
+
+    def test__join_m(self):
+        account = appier_extras.admin.Account()
+
+        result = account._join_m(
+            {
+                "name" : "brands-origin",
+                "brand" : "nike",
+                "ctx" : {
+                    "brand" : "nike"
+                }
+            }, {
+                "name" : "brands-target",
+                "brand" : "adidas",
+                "ctx" : {
+                    "brand" : "adidas"
+                }
+            }
+        )
+
+        self.assertEqual(
+            result,
+            {
+                "name" : ["brands-target", "brands-origin"],
+                "brand" : ["adidas", "nike"],
+                "ctx" : {
+                    "brand" : ["adidas", "nike"]
+                }
+            }
+        )
