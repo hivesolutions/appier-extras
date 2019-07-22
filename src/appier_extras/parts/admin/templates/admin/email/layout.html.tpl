@@ -7,6 +7,7 @@
 {% block border %}1px solid #d9d9d9{% endblock %}
 {% block line_height %}22px{% endblock %}
 {% block content_width %}520px{% endblock %}
+{% block body_css %}{% endblock %}
 {% block extra_css %}{% endblock %}
 {% block html %}
     <!DOCTYPE html>
@@ -26,7 +27,7 @@
             </style>
         {% endblock %}
     </head>
-    <body style="font-family:{{ self.font_family() }};font-size:{{ self.font_size() }};line-height:{{ self.line_height() }};color:{{ self.font_color() }};text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;" bgcolor="{{ self.background_color() }}">
+    <body style="font-family:{{ self.font_family() }};font-size:{{ self.font_size() }};line-height:{{ self.line_height() }};color:{{ self.font_color() }};text-align:left;padding:0px 0px 0px 0px;margin:0px 0px 0px 0px;{{ self.body_css() }}" bgcolor="{{ self.background_color() }}">
         {% block metadata %}{% endblock %}
         {% block container %}
             <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">

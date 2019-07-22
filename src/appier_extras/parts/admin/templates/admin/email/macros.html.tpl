@@ -6,7 +6,9 @@
     weight = "normal",
     color = "#2d2d2d"
 ) -%}
-    <h1 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h1>
+    {% if contents %}
+        <h1 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h1>
+    {% endif %}
 {%- endmacro %}
 
 {% macro h2(
@@ -17,7 +19,9 @@
     weight = "normal",
     color = "#2d2d2d"
 ) -%}
-    <h2 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h2>
+    {% if contents %}
+        <h2 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h2>
+    {% endif %}
 {%- endmacro %}
 
 {% macro h3(
@@ -28,7 +32,9 @@
     weight = "normal",
     color = "#2d2d2d"
 ) -%}
-    <h3 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
+    {% if contents %}
+        <h3 style="margin-top:{{ margin_top }};margin-bottom:{{ margin_bottom }};font-size:{{ size }};font-weight:{{ weight }};color:{{ color }};">{{ contents }}</h3>
+    {% endif %}
 {%- endmacro %}
 
 {% macro highlight(
@@ -40,7 +46,9 @@
     background_color = "#f4f4f4",
     text_align = "center"
 ) -%}
-    <p style="display:{{ display }};padding:{{ padding }};font-weight:{{ font_weight }};color:{{ color }};background-color:{{ background_color }};text-align:{{ text_align }};">{{ contents }}</p>
+    {% if contents %}
+        <p style="display:{{ display }};padding:{{ padding }};font-weight:{{ font_weight }};color:{{ color }};background-color:{{ background_color }};text-align:{{ text_align }};">{{ contents }}</p>
+    {% endif %}
 {%- endmacro %}
 
 {% macro button(
@@ -56,7 +64,9 @@
     text_decoration = "none"
 ) -%}
     {% if base %}{% set href = base_url|default("", True) + href %}{% endif %}
-    <a href="{{ href }}" style="display:{{ display }};padding:{{ padding }};border-radius:{{ border_radius }};min-width:{{ min_width }};color:{{ color }};background-color:{{ background_color }};text-decoration:{{ text_decoration }};">{{ contents }}</a>
+    {% if contents %}
+        <a href="{{ href }}" style="display:{{ display }};padding:{{ padding }};border-radius:{{ border_radius }};min-width:{{ min_width }};color:{{ color }};background-color:{{ background_color }};text-decoration:{{ text_decoration }};">{{ contents }}</a>
+    {% endif %}
 {%- endmacro %}
 
 {% macro link(href, contents, base = True, simple = False, color = "#4769cc") -%}{% if base %}{% set href = base_url|default("", True) + href %}{% endif %}{% if simple %}<a href="{{ href }}">{{ contents }}</a>{% else %}<a href="{{ href }}" style="color:{{ color }};text-decoration:none;padding-bottom:1px;">{{ contents }}</a>{% endif %}{%- endmacro %}
