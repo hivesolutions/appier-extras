@@ -3,6 +3,7 @@
 {% block background_color %}#edece4{% endblock %}
 {% block font_color %}#4d4d4d{% endblock %}
 {% block font_size %}14px{% endblock %}
+{% block font_size_mobile %}{{ self.font_size_mobile() }}{% endblock %}
 {% block font_family %}-apple-system,'BlinkMacSystemFont','Segoe UI','Open Sans',Helvetica,Arial,sans-serif{% endblock %}
 {% block border %}1px solid #d9d9d9{% endblock %}
 {% block line_height %}22px{% endblock %}
@@ -16,13 +17,37 @@
         {% block head %}
             <title>{% block title %}{% endblock %}</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-            <style>
+            <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+            <style rel="stylesheet" type="text/css">
                 p {
                     color: {{ self.font_color() }};
                     font-family: {{ self.font_family() }};
                     font-size: {{ self.font_size() }};
                     line-height: {{ self.line_height() }};
                     margin: 14px 0px 14px 0px;
+                }
+
+                @media (max-width: 480px) {
+                    body {
+                        font-size: {{ self.font_size_mobile() }} !important;
+                        background: #ffffff !important;
+                        width: 100% !important;
+                    }
+
+                    p {
+                        font-size: {{ self.font_size_mobile() }} !important;
+                    }
+
+                    .container {
+                        padding: 0px 0px 0px 0px !important;
+                    }
+
+                    .block {
+                        box-shadow: none !important;
+                        box-sizing: border-box !important;
+                        padding: 24px 12px 24px 12px !important;
+                        width: 100% !important;
+                    }
                 }
             </style>
         {% endblock %}
@@ -31,7 +56,7 @@
         {% block metadata %}{% endblock %}
         {% block container %}
             <div class="container" style="background-color:{{ self.background_color() }};margin:0px auto 0px auto;padding:48px 0px 48px 0px;" bgcolor="{{ self.background_color() }}">
-                <div style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:{{ self.border() }};{{ self.extra_css() }}">
+                <div class="block" style="background-color:#ffffff;width:{{ self.content_width() }};margin:0px auto 0px auto;padding:42px 72px 42px 72px;border:{{ self.border() }};{{ self.extra_css() }}">
                     {% block logo %}
                         {% set logo_url = owner.logo_raster_url or owner.logo_url %}
                         {% if logo_url %}
