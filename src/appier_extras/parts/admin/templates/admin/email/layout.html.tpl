@@ -19,36 +19,38 @@
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1" />
             <style rel="stylesheet" type="text/css">
-                p {
-                    color: {{ self.font_color() }};
-                    font-family: {{ self.font_family() }};
-                    font-size: {{ self.font_size() }};
-                    line-height: {{ self.line_height() }};
-                    margin: 14px 0px 14px 0px;
-                }
-
-                @media (max-width: 480px) {
-                    body {
-                        font-size: {{ self.font_size_mobile() }} !important;
-                        background: #ffffff !important;
-                        width: 100% !important;
-                    }
-
+                {% block style %}
                     p {
-                        font-size: {{ self.font_size_mobile() }} !important;
+                        color: {{ self.font_color() }};
+                        font-family: {{ self.font_family() }};
+                        font-size: {{ self.font_size() }};
+                        line-height: {{ self.line_height() }};
+                        margin: 14px 0px 14px 0px;
                     }
 
-                    .container {
-                        padding: 0px 0px 0px 0px !important;
-                    }
+                    @media (max-width: 480px) {
+                        body {
+                            font-size: {{ self.font_size_mobile() }} !important;
+                            background: #ffffff !important;
+                            width: 100% !important;
+                        }
 
-                    .block {
-                        box-shadow: none !important;
-                        box-sizing: border-box !important;
-                        padding: 24px 12px 24px 12px !important;
-                        width: 100% !important;
+                        p {
+                            font-size: {{ self.font_size_mobile() }} !important;
+                        }
+
+                        .container {
+                            padding: 0px 0px 0px 0px !important;
+                        }
+
+                        .block {
+                            box-shadow: none !important;
+                            box-sizing: border-box !important;
+                            padding: 24px 12px 24px 12px !important;
+                            width: 100% !important;
+                        }
                     }
-                }
+                {% endblock %}
             </style>
         {% endblock %}
     </head>
