@@ -3,7 +3,7 @@
 {% block background_color %}#edece4{% endblock %}
 {% block font_color %}#4d4d4d{% endblock %}
 {% block font_size %}14px{% endblock %}
-{% block font_size_mobile %}{{ self.font_size_mobile() }}{% endblock %}
+{% block font_size_mobile %}{{ self.font_size() }}{% endblock %}
 {% block font_family %}-apple-system,'BlinkMacSystemFont','Segoe UI','Open Sans',Helvetica,Arial,sans-serif{% endblock %}
 {% block border %}1px solid #d9d9d9{% endblock %}
 {% block line_height %}22px{% endblock %}
