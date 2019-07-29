@@ -68,41 +68,6 @@ class ExportPart(appier.Part):
             (("GET",), "/json/<str:model>/<str:_id>.zip", self.zip_entity_json, None, True)
         ]
 
-    @appier.ensure(token = "admin", context = "admin")
-    def zip_model_json(self, model):
-        model_json = self.admin_part.show_model_json(model)
-
-        _zip_handle, zip_path = tempfile.mkstemp()
-        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
-
-        prefix = "%s_%s" % (self.info_dict()["name"], model)
-
-        try:
-            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
-        finally:
-            zip_file.close()
-
-        return self.send_path(
-            zip_path,
-            name = "%s_json.zip" % prefix
-        )
-
-    @appier.ensure(token = "admin", context = "admin")
-    def zip_entity_json(self, model, _id):
-        model_json = self.admin_part.show_entity_json(model, _id)
-
-        _zip_handle, zip_path = tempfile.mkstemp()
-        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
-        prefix = "%s_%s_%s" % (self.info_dict()["name"], model, _id)
-
-        try:
-            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
-        finally: zip_file.close()
-        return self.send_path(
-            zip_path,
-            name = "%s_json.zip" % prefix
-        )
-
     @classmethod
     @appier.link(name = "JSON Global")
     def json_collection(cls, model_cls):
@@ -175,6 +140,41 @@ class ExportPart(appier.Part):
             for name in open_zip.namelist():
                 content = open_zip.read(name)
                 model_cls.import_json(content, False)
+
+    @appier.ensure(token = "admin", context = "admin")
+    def zip_model_json(self, model):
+        model_json = self.admin_part.show_model_json(model)
+
+        _zip_handle, zip_path = tempfile.mkstemp()
+        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
+
+        prefix = "%s_%s" % (self.info_dict()["name"], model)
+
+        try:
+            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
+        finally:
+            zip_file.close()
+
+        return self.send_path(
+            zip_path,
+            name = "%s_json.zip" % prefix
+        )
+
+    @appier.ensure(token = "admin", context = "admin")
+    def zip_entity_json(self, model, _id):
+        model_json = self.admin_part.show_entity_json(model, _id)
+
+        _zip_handle, zip_path = tempfile.mkstemp()
+        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
+        prefix = "%s_%s_%s" % (self.info_dict()["name"], model, _id)
+
+        try:
+            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
+        finally: zip_file.close()
+        return self.send_path(
+            zip_path,
+            name = "%s_json.zip" % prefix
+        )
 
     @appier.link(name = "JSON")
     def json(self):
