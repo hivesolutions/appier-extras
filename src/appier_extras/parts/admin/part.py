@@ -297,8 +297,8 @@ class AdminPart(
             (("GET", "POST"), "/api/admin/oauth/access_token", self.oauth_access_token_api, None, True),
             (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
             (("GET",), "/api/admin/accounts/me", self.me_account_api, None, True),
-            (("GET",), "/api/admin/models/<str:model>", self.show_model_json, None, True),
-            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_json, None, True)
+            (("GET",), "/api/admin/models/<str:model>", self.show_model_api, None, True),
+            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_api, None, True)
         ]
 
     def models(self):
@@ -2195,6 +2195,14 @@ class AdminPart(
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(map = True)
         return account
+
+    @appier.ensure(context = "admin")
+    def show_model_api(self, model):
+        return self.show_model_json(model)
+
+    @appier.ensure(context = "admin")
+    def show_entity_api(self, model, _id):
+        return self.show_entity_json(model, _id)
 
     def socials(self):
         socials = []
