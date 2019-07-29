@@ -70,18 +70,18 @@ class ExportPart(appier.Part):
 
     @classmethod
     @appier.link(name = "JSON Global")
-    def json_collection(cls, model_cls):
+    def json_collection(cls):
         return appier.get_app().url_for(
             "admin.show_model_json",
-            model = model_cls._under()
+            model = cls._under()
         )
 
     @classmethod
     @appier.link(name = "JSON Zip Global")
-    def json_collection_zip(cls, model_cls):
+    def json_collection_zip(cls):
         return appier.get_app().url_for(
             "export.zip_model_json",
-            model = model_cls._under()
+            model = cls._under()
         )
 
     @classmethod
@@ -116,13 +116,13 @@ class ExportPart(appier.Part):
             ("Empty source", "empty", bool, False)
         )
     )
-    def import_json_file(cls, model_cls, file, empty):
+    def import_json_file(cls, file, empty):
         def callback(model_d):
             model = cls(model_d)
             model.save()
 
-        if empty: model_cls.delete_c()
-        model_cls._json_import(file, callback)
+        if empty: cls.delete_c()
+        cls._json_import(file, callback)
 
     @classmethod
     @appier.operation(
@@ -132,14 +132,14 @@ class ExportPart(appier.Part):
                 ("Empty source", "empty", bool, False)
         )
     )
-    def import_json_zip(cls, model_cls, file, empty):
-        if empty: model_cls.delete_c()
+    def import_json_zip(cls, file, empty):
+        if empty: cls.delete_c()
 
         _file_name, _mime_type, data = file
         with zipfile.ZipFile(appier.legacy.BytesIO(data), "r") as open_zip:
             for name in open_zip.namelist():
                 content = open_zip.read(name)
-                model_cls.import_json(content, False)
+                cls.import_json(content, False)
 
     @appier.ensure(token = "admin", context = "admin")
     def zip_model_json(self, model):
@@ -239,8 +239,16 @@ class ExportPart(appier.Part):
             # iterates over the complete set of class methods to add to the current
             # model class, then instantiates them and set the as attributes
             for class_method in class_methods:
-                bound_method = types.MethodType(class_method, model)
+                bound_method = types.MethodType(class_method.__func__, model)
                 setattr(model, class_method.__name__, bound_method)
+
+            # iterates over the "special" instance methods to be added and schedules
+            # them to be bounded once the model instance is created, this is done
+            # by adding them to the extra methods sequence of the model class
+            for instance_method in instance_methods:
+                model._extra_methods.append(
+                    (instance_method.__name__, instance_method.__func__)
+                )
 
             # invalidates the methods cache in the model class, so that the
             # next retrieval already includes the newly added methods
