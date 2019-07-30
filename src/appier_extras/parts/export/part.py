@@ -72,7 +72,7 @@ class ExportPart(appier.Part):
         ]
 
     @classmethod
-    @appier.link(name = "JSON (Global)", context = True)
+    @appier.link(name = "JSON (Export)", context = True)
     def json_global(cls, view = None, context = None, absolute = False):
         return appier.get_app().url_for(
             "export.model_json",
@@ -83,7 +83,7 @@ class ExportPart(appier.Part):
         )
 
     @classmethod
-    @appier.link(name = "ZIP (Global)", context = True)
+    @appier.link(name = "ZIP (Export)", context = True)
     def zip_global(cls, view = None, context = None, absolute = False):
         return appier.get_app().url_for(
             "export.model_zip",
@@ -95,7 +95,7 @@ class ExportPart(appier.Part):
 
     @classmethod
     @appier.operation(
-        name = "Import JSON",
+        name = "Import JSON (Export)",
         parameters = (
             ("JSON File", "file", "file"),
             ("Empty source", "empty", bool, False)
@@ -103,15 +103,16 @@ class ExportPart(appier.Part):
     )
     def import_json(cls, file, empty):
         def callback(model_d):
+            if "_id" in model_d: del model_d["_id"]
             model = cls(model_d)
-            model.save()
+            model.save(validate = False, verify = False)
 
         if empty: cls.delete_c()
         cls._json_import(file, callback)
 
     @classmethod
     @appier.operation(
-        name = "Import ZIP",
+        name = "Import ZIP (Export)",
         parameters = (
                 ("ZIP File", "file", "file"),
                 ("Empty source", "empty", bool, False)
