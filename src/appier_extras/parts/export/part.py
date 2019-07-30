@@ -40,7 +40,6 @@ __license__ = "Apache License, Version 2.0"
 import json
 import types
 import zipfile
-import tempfile
 
 import appier
 
@@ -50,6 +49,9 @@ class ExportPart(appier.Part):
     """
     Modular part class that provides an infra-structure for the individual
     export of models using a JSON exporting format.
+
+    This parts uses a monkey patching approach so that the model classes
+    are changed adding the new export links.
     """
 
     def __init__(self, *args, **kwargs):
@@ -64,59 +66,42 @@ class ExportPart(appier.Part):
 
     def routes(self):
         return [
-            (("GET",), "/json/<str:model>.zip", self.zip_model_json, None, True),
-            (("GET",), "/json/<str:model>/<str:_id>.zip", self.zip_entity_json, None, True)
+            (("GET",), "/export/<str:model>.json", self.model_json, None, True),
+            (("GET",), "/export/<str:model>.zip", self.model_zip, None, True),
+            (("GET",), "/export/<str:model>/<str:_id>.json", self.entity_json, None, True)
         ]
 
     @classmethod
-    @appier.link(name = "JSON Global")
-    def json_collection(cls):
+    @appier.link(name = "JSON (Global)", context = True)
+    def json_global(cls, view = None, context = None, absolute = False):
         return appier.get_app().url_for(
-            "admin.show_model_json",
-            model = cls._under()
+            "export.model_json",
+            model = cls._under(),
+            view = view,
+            context = context,
+            absolute = absolute
         )
 
     @classmethod
-    @appier.link(name = "JSON Zip Global")
-    def json_collection_zip(cls):
+    @appier.link(name = "ZIP (Global)", context = True)
+    def zip_global(cls, view = None, context = None, absolute = False):
         return appier.get_app().url_for(
-            "export.zip_model_json",
-            model = cls._under()
+            "export.model_zip",
+            model = cls._under(),
+            view = view,
+            context = context,
+            absolute = absolute
         )
 
     @classmethod
     @appier.operation(
         name = "Import JSON",
-        description = "Imports a JSON representing this entity.",
-        parameters = (
-            ("Contents", "contents", "text"),
-            ("Empty source", "empty", bool, False)
-        )
-    )
-    def import_json(cls, contents, empty):
-        appier.verify(not contents == None, "Contents must be defined.")
-
-        if empty: cls.delete_c()
-
-        if appier.legacy.is_bytes(contents):
-            contents = contents.decode("utf-8")
-
-        models = json.loads(contents)
-        if not isinstance(models, list): models = [models]
-        for model_d in models:
-            del model_d["_id"]
-            model = cls(model_d)
-            model.save()
-
-    @classmethod
-    @appier.operation(
-        name = "Import JSON File",
         parameters = (
             ("JSON File", "file", "file"),
             ("Empty source", "empty", bool, False)
         )
     )
-    def import_json_file(cls, file, empty):
+    def import_json(cls, file, empty):
         def callback(model_d):
             model = cls(model_d)
             model.save()
@@ -126,69 +111,93 @@ class ExportPart(appier.Part):
 
     @classmethod
     @appier.operation(
-        name = "Import JSON Zip File",
+        name = "Import ZIP",
         parameters = (
-                ("JSON Zip File", "file", "file"),
+                ("ZIP File", "file", "file"),
                 ("Empty source", "empty", bool, False)
         )
     )
-    def import_json_zip(cls, file, empty):
+    def import_zip(cls, file, empty):
         if empty: cls.delete_c()
 
-        _file_name, _mime_type, data = file
-        with zipfile.ZipFile(appier.legacy.BytesIO(data), "r") as open_zip:
+        with zipfile.ZipFile(file, "r") as open_zip:
             for name in open_zip.namelist():
                 content = open_zip.read(name)
                 cls.import_json(content, False)
 
     @appier.ensure(token = "admin", context = "admin")
-    def zip_model_json(self, model):
-        model_json = self.admin_part.show_model_json(model)
-
-        _zip_handle, zip_path = tempfile.mkstemp()
-        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
-
-        prefix = "%s_%s" % (self.info_dict()["name"], model)
-
-        try:
-            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
-        finally:
-            zip_file.close()
-
-        return self.send_path(
-            zip_path,
-            name = "%s_json.zip" % prefix
+    def model_json(self, model):
+        model_c = self.owner.get_model(model)
+        object = appier.get_object(
+            alias = True,
+            find = True,
+            limit = 0
         )
+        models = self.owner.admin_part._find_view(
+            model_c,
+            map = True,
+            rules = False,
+            **object
+        )
+        return models
 
     @appier.ensure(token = "admin", context = "admin")
-    def zip_entity_json(self, model, _id):
-        model_json = self.admin_part.show_entity_json(model, _id)
+    def model_zip(self, model):
+        encoding = self.field("encoding", default = "utf-8")
 
-        _zip_handle, zip_path = tempfile.mkstemp()
-        zip_file = zipfile.ZipFile(zip_path, mode = "w", allowZip64 = True)
-        prefix = "%s_%s_%s" % (self.info_dict()["name"], model, _id)
+        model_c = self.owner.get_model(model)
+        object = appier.get_object(
+            alias = True,
+            find = True,
+            limit = 0
+        )
+        models = self.owner.admin_part._find_view(
+            model_c,
+            map = True,
+            rules = False,
+            **object
+        )
+
+        prefix = "%s-%s" % (self.owner.name, model)
+
+        # creates the in memory file that is going to be used for the storage
+        # of the ZIP file that is going to be created
+        zip_io = appier.legacy.BytesIO()
 
         try:
-            zip_file.writestr("%s.json" % prefix, json.dumps(model_json))
-        finally: zip_file.close()
-        return self.send_path(
-            zip_path,
-            name = "%s_json.zip" % prefix
+            # creates the ZIP file using the in memory file and then dumps the
+            # JSON based data into the associated directory, notice that a proper
+            # encoding operation may be required to have a bytes object
+            models_s = json.dumps(models)
+            if not appier.legacy.is_bytes(models_s): models_s = models_s.encode(encoding)
+            zip_file = zipfile.ZipFile(zip_io, mode = "w", allowZip64 = True)
+            try: zip_file.writestr("%s.json" % prefix, models_s)
+            finally: zip_file.close()
+
+            # seeks the in memory file back to the initial position
+            # and then reads the complete set of contents from it
+            zip_io.seek(0)
+            data = zip_io.read()
+        finally:
+            zip_io.close()
+
+        return data
+
+    @appier.ensure(token = "admin", context = "admin")
+    def entity_json(self, model, _id):
+        model_c = self.owner.get_model(model)
+        entity = model_c.get(
+             map = True,
+             rules = False,
+            _id = self.get_adapter().object_id(_id)
         )
+        return entity
 
     @appier.link(name = "JSON")
     def json(self):
         return appier.get_app().url_for(
-            "admin.show_entity_json",
-            model = self.__class__.__name__.lower(),
-            _id = self._id
-        )
-
-    @appier.link(name = "JSON Zip")
-    def json_zip(self):
-        return appier.get_app().url_for(
-            "export.zip_entity_json",
-            model = self.__class__.__name__.lower(),
+            "export.entity_json",
+            model = self.__class__._under(),
             _id = self._id
         )
 
@@ -204,19 +213,22 @@ class ExportPart(appier.Part):
         # registers in the current application should be patched
         models = models or list(self.owner.models_l)
 
+        # runs the default operation on the base class so that if no value is provided
+        # the default (parent) Appier class is used as the root of the monkey patch
         base_cls = base_cls or appier.Model
 
+        # runs the defaulting on the class methods, these methods are considered the
+        # recommended ones to be used in the initial monkey patching
         class_methods = class_methods or (
-            ExportPart.json_collection,
-            ExportPart.json_collection_zip,
+            ExportPart.json_global,
+            ExportPart.zip_global,
             ExportPart.import_json,
-            ExportPart.import_json_file,
-            ExportPart.import_json_zip
+            ExportPart.import_zip
         )
 
+        # defaults the instance method so that the required ones are used
         instance_methods = instance_methods or (
             ExportPart.json,
-            ExportPart.json_zip
         )
 
         # adds both the class and the instance method names to the sequence of ordered
@@ -247,7 +259,10 @@ class ExportPart(appier.Part):
             # by adding them to the extra methods sequence of the model class
             for instance_method in instance_methods:
                 model._extra_methods.append(
-                    (instance_method.__name__, instance_method.__func__)
+                    (
+                        instance_method.__name__,
+                        instance_method.__func__ if hasattr(instance_method, "__func__") else instance_method
+                    )
                 )
 
             # invalidates the methods cache in the model class, so that the
