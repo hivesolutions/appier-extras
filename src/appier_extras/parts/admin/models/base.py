@@ -350,6 +350,7 @@ class Base(appier.Model):
         file,
         callback,
         callback_header = None,
+        mime_type = None,
         strict = False,
         named = False,
         header = True,
@@ -361,6 +362,7 @@ class Base(appier.Model):
         is_unicode = appier.legacy.PYTHON_3
         csv_reader = cls._csv_read(
             file,
+            mime_type = mime_type,
             strict = strict,
             named = named,
             delimiter = delimiter,
@@ -388,6 +390,7 @@ class Base(appier.Model):
     def _csv_read(
         cls,
         file,
+        mime_type = None,
         strict = False,
         named = False,
         delimiter = ",",
@@ -396,7 +399,8 @@ class Base(appier.Model):
         encoding = "utf-8"
     ):
         is_unicode = appier.legacy.PYTHON_3
-        _file_name, mime_type, data = file
+        if appier.legacy.is_bytes(file): mime_type, data = mime_type, file
+        else: _file_name, mime_type, data = file
         is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
         if not is_csv and strict:
             raise appier.OperationalError(
@@ -421,10 +425,16 @@ class Base(appier.Model):
         file,
         callback,
         callback_header = None,
+        mime_type = None,
         strict = False,
         encoding = "utf-8"
     ):
-        json_data = cls._json_read(file, strict = strict, encoding = encoding)
+        json_data = cls._json_read(
+            file,
+            mime_type = mime_type,
+            strict = strict,
+            encoding = encoding
+        )
         header = appier.legacy.keys(json_data[0]) if json_data else []
         if callback_header: callback_header(header)
         for item in json_data: callback(item)
@@ -433,10 +443,12 @@ class Base(appier.Model):
     def _json_read(
         cls,
         file,
+        mime_type = None,
         strict = False,
         encoding = "utf-8"
     ):
-        _file_name, mime_type, data = file
+        if appier.legacy.is_bytes(file): mime_type, data = mime_type, file
+        else: _file_name, mime_type, data = file
         is_json = mime_type in ("text/json", "application/json")
         if not is_json and strict:
             raise appier.OperationalError(
