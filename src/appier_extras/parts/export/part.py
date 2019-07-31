@@ -227,15 +227,17 @@ class ExportPart(appier.Part):
             ExportPart.import_zip
         )
 
-        # defaults the instance method so that the required ones are used
+        # defaults the instance methods so that the required ones are used for the
+        # monkey patching operation (as expected)
         instance_methods = instance_methods or (
             ExportPart.json,
         )
 
-        # adds both the class and the instance method names to the sequence of ordered
-        # values to be computed by the base class (new methods added)
-        base_cls._ordered += [class_method.__name__ for class_method in class_methods]
-        base_cls._ordered += [instance_method.__name__ for instance_method in instance_methods]
+        # iterates over the complete set of class methods to add to the base
+        # model class, then instantiates them and set the as attributes
+        for class_method in class_methods:
+            bound_method = classmethod(class_method.__func__)
+            setattr(base_cls, class_method.__name__, bound_method)
 
         # iterates over the "special" instance methods to be added and changes
         # them to comply with the new instance intrinsics
@@ -248,12 +250,6 @@ class ExportPart(appier.Part):
             # in case the model is not a sub class of the base class for
             # the current operation (nothing to be done) continues the loop
             if not issubclass(model, base_cls): continue
-
-            # iterates over the complete set of class methods to add to the current
-            # model class, then instantiates them and set the as attributes
-            for class_method in class_methods:
-                bound_method = types.MethodType(class_method.__func__, model)
-                setattr(model, class_method.__name__, bound_method)
 
             # iterates over the "special" instance methods to be added and schedules
             # them to be bounded once the model instance is created, this is done
