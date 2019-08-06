@@ -114,8 +114,8 @@ class ExportPart(appier.Part):
     @appier.operation(
         name = "Import ZIP (Export)",
         parameters = (
-                ("ZIP File", "file", "file"),
-                ("Empty source", "empty", bool, False)
+            ("ZIP File", "file", "file"),
+            ("Empty source", "empty", bool, False)
         )
     )
     def import_zip(cls, file, empty):
