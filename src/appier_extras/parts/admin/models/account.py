@@ -213,7 +213,9 @@ class Account(base.Base, authenticable.Authenticable):
             enabled = True,
             username = cls.ROOT_USERNAME,
             email = cls.ROOT_EMAIL,
-            password = cls.generate(cls.ROOT_PASSWORD),
+            password = cls.generate(
+                appier.conf("ADMIN_PASSWORD", cls.ROOT_PASSWORD)
+            ),
             type = cls.ADMIN_TYPE
         )
         account.save(validate = False)
