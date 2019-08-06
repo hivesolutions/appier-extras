@@ -65,9 +65,10 @@ class ExportPart(appier.Part):
 
     def routes(self):
         return [
-            (("GET",), "/export/<str:model>.json", self.model_json, None, True),
-            (("GET",), "/export/<str:model>.zip", self.model_zip, None, True),
-            (("GET",), "/export/<str:model>/<str:_id>.json", self.entity_json, None, True)
+            (("GET",), "/export/models/<str:model>.json", self.model_json, None, True),
+            (("GET",), "/export/models/<str:model>.zip", self.model_zip, None, True),
+            (("GET",), "/export/models/<str:model>/<str:_id>.json", self.entity_json, None, True),
+            (("POST",), "/api/export/models/<str:model>", self.model_import_api, None, True)
         ]
 
     @classmethod
@@ -192,6 +193,16 @@ class ExportPart(appier.Part):
             _id = self.get_adapter().object_id(_id)
         )
         return entity
+
+    @appier.ensure(token = "admin", context = "admin")
+    def model_import_api(self, model):
+        object = appier.get_object()
+        model_c = self.owner.get_model(model)
+        items = object.get("items", [])
+        for model_d in items:
+            if "_id" in model_d: del model_d["_id"]
+            model = model_c(model_d)
+            model.save(validate = False, verify = False)
 
     @appier.link(name = "JSON")
     def json(self):
