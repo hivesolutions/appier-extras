@@ -296,6 +296,7 @@ class AdminPart(
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
             (("GET", "POST"), "/api/admin/oauth/access_token", self.oauth_access_token_api, None, True),
             (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
+            (("POST",), "/api/admin/database/reset", self.database_reset_api, None, True),
             (("GET",), "/api/admin/accounts/me", self.me_account_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_api, None, True),
             (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_api, None, True)
@@ -2157,6 +2158,11 @@ class AdminPart(
 
     def oauth_login_api(self):
         return self.oauth_login()
+
+    def database_reset_api(self):
+        adapter = self.get_adapter()
+        adapter.drop_db()
+        return True
 
     def login_api(self):
         # verifies if the current administration interface is
