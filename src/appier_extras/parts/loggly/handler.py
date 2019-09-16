@@ -68,7 +68,7 @@ class LogglyHandler(logging.Handler):
         # retrieves the current date time value as an utc value
         # and then formats it according to the provided format string
         now = datetime.datetime.utcnow()
-        now_s = now.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        now_s = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
         # creates the log record structure that is going to be sent
         # to the loggly infra-structure, this should represent a

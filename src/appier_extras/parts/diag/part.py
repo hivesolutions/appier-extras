@@ -342,7 +342,7 @@ class DiagPart(appier.Part):
         return item
 
     @property
-    def _timestamp(self, format = "%Y-%m-%dT%H:%M:%S.%f"):
+    def _timestamp(self, format = "%Y-%m-%dT%H:%M:%S.%fZ"):
         now = datetime.datetime.utcnow()
         return now.strftime(format)
 
