@@ -68,7 +68,7 @@ class SematextHandler(logging.Handler):
         # retrieves the current date time value as an utc value
         # and then formats it according to the provided format string
         now = datetime.datetime.utcnow()
-        now_s = now.strftime("%Y-%m-%dT%H:%M:%S")
+        now_s = now.strftime("%Y-%m-%dT%H:%M:%S.%f")
 
         # creates the log record structure that is going to be sent
         # to the sematext infra-structure, this should represent a
@@ -81,6 +81,7 @@ class SematextHandler(logging.Handler):
             "path" : record.pathname,
             "lineno" : record.lineno,
             "host" : socket.gethostname(),
+            "hostname" : socket.gethostname(),
             "tid" : threading.current_thread().ident,
             "pid" : os.getpid() if hasattr(os, "getpid") else -1,
         }
