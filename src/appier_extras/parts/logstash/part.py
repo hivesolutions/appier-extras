@@ -61,14 +61,14 @@ class LogstashPart(appier.Part):
         self.log = kwargs.get("log", False)
         self.buffer_size = kwargs.get("buffer_size", 128)
         self.timeout = kwargs.get("timeout", 30)
-        self.log = appier.conf("LOGGLY_LOG", self.log, cast = bool)
+        self.log = appier.conf("LOGSTASH_LOG", self.log, cast = bool)
         self.buffer_size = appier.conf(
-            "LOGGLY_BUFFER_SIZE",
+            "LOGSTASH_BUFFER_SIZE",
             self.buffer_size,
             cast = int
         )
         self.timeout = appier.conf(
-            "LOGGLY_TIMEOUT",
+            "LOGSTASH_TIMEOUT",
             self.timeout,
             cast = int
         )
