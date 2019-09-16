@@ -66,6 +66,7 @@ setuptools.setup(
         "appier_extras.parts.diag.models",
         "appier_extras.parts.export",
         "appier_extras.parts.loggly",
+        "appier_extras.parts.logstash",
         "appier_extras.parts.opbeat",
         "appier_extras.parts.preflight",
         "appier_extras.parts.prismic",
