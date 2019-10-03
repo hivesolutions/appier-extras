@@ -231,6 +231,7 @@ class DiagPart(appier.Part):
             code = self.request.code,
             protocol = self.request.protocol,
             duration = self.request.duration,
+            length = self.request.result_l,
             browser = self._browser,
             headers = self.request.in_headers,
             browser_info = self.request.browser_info,
@@ -302,6 +303,7 @@ class DiagPart(appier.Part):
         item.update(
             protocol = self.request.protocol,
             duration = self.request.duration,
+            length = self.request.result_l,
             browser = self._browser,
             in_headers = self.request.in_headers,
             out_headers = self.request.out_headers,

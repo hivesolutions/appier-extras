@@ -86,6 +86,12 @@ class DiagRequest(base.DiagBase):
         immutable = True
     )
 
+    length = appier.field(
+        type = int,
+        index = "all",
+        immutable = True
+    )
+
     browser = appier.field(
         index = "all",
         immutable = True
