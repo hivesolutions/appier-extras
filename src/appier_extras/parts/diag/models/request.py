@@ -86,7 +86,13 @@ class DiagRequest(base.DiagBase):
         immutable = True
     )
 
-    length = appier.field(
+    in_length = appier.field(
+        type = int,
+        index = "all",
+        immutable = True
+    )
+
+    out_length = appier.field(
         type = int,
         index = "all",
         immutable = True
