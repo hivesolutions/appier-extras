@@ -332,7 +332,9 @@ class DiagPart(appier.Part):
             item["exception"] = dict(
                 name = exception.__class__.__name__,
                 uid = exception.uid if hasattr(exception, "uid") else None,
-                message = exception.message if hasattr(exception, "message") else None
+                message = exception.message if hasattr(exception, "message") else None,
+                code = exception.code if hasattr(exception, "code") else None,
+                meta = exception.meta if hasattr(exception, "meta") else None
             )
         if self.request.stacktrace:
             item["stacktrace"] = self.request.stacktrace
