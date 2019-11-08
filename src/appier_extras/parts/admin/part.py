@@ -859,7 +859,12 @@ class AdminPart(
             # used as part of the search filter (security measures)
             oauth_client = models.OAuthClient.get_e(
                 client_id = client_id,
-                redirect_uri = redirect_uri
+                **{
+                    "$or": [
+                        dict(redirect_uri = redirect_uri),
+                        dict(redirect_uri = "http://*")
+                    ]
+                }
             )
 
             # asserts that the requested scope is valid for the associated
@@ -915,9 +920,10 @@ class AdminPart(
 
     @appier.ensure(context = "admin")
     def do_oauth_authorize(self):
-        if not self.owner.admin_oauth: raise appier.SecurityError(
-            message = "OAuth not allowed"
-        )
+        if not self.owner.admin_oauth:
+            raise appier.SecurityError(
+                message = "OAuth not allowed"
+            )
 
         client_id = self.field("client_id", mandatory = True)
         redirect_uri = self.field("redirect_uri", mandatory = True)
@@ -930,10 +936,16 @@ class AdminPart(
         account = self.account_c.from_session()
         oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
-            redirect_uri = redirect_uri
+            **{
+                "$or": [
+                    dict(redirect_uri = redirect_uri),
+                    dict(redirect_uri = "http://*")
+                ]
+            }
         )
         oauth_token = oauth_client.build_token_s(
             username = account.username,
+            redirect_uri = redirect_uri,
             scope = scope_l
         )
 
@@ -982,7 +994,12 @@ class AdminPart(
         oauth_client = models.OAuthClient.get_e(
             client_id = client_id,
             client_secret = client_secret,
-            redirect_uri = redirect_uri
+            **{
+                "$or": [
+                    dict(redirect_uri = redirect_uri),
+                    dict(redirect_uri = "http://*")
+                ]
+            }
         )
 
         if grant_type == "authorization_code":
