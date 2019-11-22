@@ -69,10 +69,12 @@ class ReCaptchaPart(appier.Part):
         return self.owner.escape_template(
             "<input type=\"hidden\" id=\"recaptcha-token\" name=\"%s\" />" % name +
             "<script src=\"https://www.google.com/recaptcha/api.js?render=%s\"></script>" % recaptcha_key +
-            "<script>grecaptcha.ready(function() {" +
+            "<script>window.genRecaptcha = function() { grecaptcha.ready(function() {" +
             "grecaptcha.execute(\"%s\", {action: \"%s\"}).then(function(token) {" % (recaptcha_key, action) +
-            "document.getElementById(\"recaptcha-token\").value = token;"
+            "document.getElementById(\"recaptcha-token\").value = token;" +
             "});" +
             "});" +
+            "};" +
+            "window.genRecaptcha();"
             "</script>"
         )
