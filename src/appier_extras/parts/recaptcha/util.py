@@ -41,20 +41,20 @@ import functools
 
 import appier
 
-def recaptcha_protect():
+def recaptcha_protect(scope = "homepage"):
 
     def decorator(function):
 
         @functools.wraps(function)
         def interceptor(self, *args, **kwargs):
             token = self.field("recaptcha_token", None)
-            recaptcha_ensure(self, token)
+            recaptcha_ensure(self, token, scope = scope)
             return appier.call_safe(function, self, *args, **kwargs)
         return interceptor
 
     return decorator
 
-def recaptcha_ensure(self, token):
+def recaptcha_ensure(self, token, scope = "homepage"):
     secret = appier.conf("RECAPTCHA_SECRET",  None)
     min_score = appier.conf("RECAPTCHA_MIN", 0.5)
     result = appier.post(
