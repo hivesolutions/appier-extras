@@ -54,7 +54,8 @@ def recaptcha_protect(action = "homepage"):
 
     return decorator
 
-def recaptcha_ensure(self, token, action = "homepage"):
+def recaptcha_ensure(self, token, action = "homepage", force = False):
+    if not _recaptcha_available() and not force: return
     secret = appier.conf("RECAPTCHA_SECRET",  None)
     min_score = appier.conf("RECAPTCHA_MIN", 0.5)
     result = appier.post(
@@ -70,3 +71,8 @@ def recaptcha_ensure(self, token, action = "homepage"):
         message = "Invalid reCAPTCHA score",
         code = 403
     )
+
+def _recaptcha_available():
+    key = appier.conf("RECAPTCHA_KEY",  None)
+    secret = appier.conf("RECAPTCHA_SECRET",  None)
+    return True if key and secret else False

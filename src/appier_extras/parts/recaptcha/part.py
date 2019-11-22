@@ -41,6 +41,8 @@ import appier
 
 from appier_extras import base
 
+from . import util
+
 class ReCaptchaPart(appier.Part):
     """
     Modular part class that provides the required infra-structure
@@ -60,7 +62,8 @@ class ReCaptchaPart(appier.Part):
 
         self.owner.context["recaptcha"] = self.recaptcha
 
-    def recaptcha(self, action = "homepage", name = "recaptcha_token"):
+    def recaptcha(self, action = "homepage", name = "recaptcha_token", force = False):
+        if not util._recaptcha_available() and not force: return ""
         recaptcha_key = appier.conf("RECAPTCHA_KEY", None)
         appier.verify(recaptcha_key, message = "No reCAPTCHA site key provided")
         return self.owner.escape_template(
