@@ -34,30 +34,8 @@ __copyright__ = "Copyright (c) 2008-2019 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import admin
-from . import captcha
-from . import contentful
-from . import csfr
-from . import diag
-from . import export
-from . import loggly
-from . import logstash
-from . import opbeat
-from . import preflight
-from . import prismic
-from . import recaptcha
-from . import sematext
+from . import part
+from . import util
 
-from .admin import AdminPart
-from .captcha import CaptchaPart
-from .contentful import Contentful
-from .csfr import CSFRPart, csfr_protect, csfr_ensure
-from .diag import DiagPart
-from .export import ExportPart
-from .loggly import LogglyHandler, LogglyPart
-from .logstash import LogstashHandler, LogstashPart
-from .opbeat import OpbeatPart
-from .preflight import PreflightPart
-from .prismic import Prismic
-from .recaptcha import ReCaptchaPart, recaptcha_protect, recaptcha_ensure
-from .sematext import SematextHandler, SematextPart
+from .part import ReCaptchaPart
+from .util import recaptcha_protect, recaptcha_ensure

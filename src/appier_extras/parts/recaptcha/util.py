@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,30 +37,35 @@ __copyright__ = "Copyright (c) 2008-2019 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import admin
-from . import captcha
-from . import contentful
-from . import csfr
-from . import diag
-from . import export
-from . import loggly
-from . import logstash
-from . import opbeat
-from . import preflight
-from . import prismic
-from . import recaptcha
-from . import sematext
+import functools
 
-from .admin import AdminPart
-from .captcha import CaptchaPart
-from .contentful import Contentful
-from .csfr import CSFRPart, csfr_protect, csfr_ensure
-from .diag import DiagPart
-from .export import ExportPart
-from .loggly import LogglyHandler, LogglyPart
-from .logstash import LogstashHandler, LogstashPart
-from .opbeat import OpbeatPart
-from .preflight import PreflightPart
-from .prismic import Prismic
-from .recaptcha import ReCaptchaPart, recaptcha_protect, recaptcha_ensure
-from .sematext import SematextHandler, SematextPart
+import appier
+
+def recaptcha_protect():
+
+    def decorator(function):
+
+        @functools.wraps(function)
+        def interceptor(self, *args, **kwargs):
+            token = self.field("recaptcha_token", None)
+            recaptcha_ensure(self, token)
+            return appier.call_safe(function, self, *args, **kwargs)
+        return interceptor
+
+    return decorator
+
+def recaptcha_ensure(self, token):
+    secret = appier.conf("RECAPTCHA_SECRET",  None)
+    min_score = appier.conf("RECAPTCHA_MIN", 0.5)
+    result = appier.post(
+        "https://www.google.com/recaptcha/api/siteverify",
+        params = dict(
+            secret = secret,
+            response = token
+        )
+    )
+    if result["score"] >= min_score: return token
+    raise appier.AppierException(
+        message = "Invalid reCAPTCHA score",
+        code = 403
+    )
