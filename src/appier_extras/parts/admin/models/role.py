@@ -188,6 +188,17 @@ class Role(base.Base):
         self.children.append(child)
         self.save()
 
+    @appier.operation(
+        name = "Remove Child",
+        parameters = (("Name", "name", str),)
+    )
+    def remove_child_s(self, name):
+        cls = self.__class__
+        child = cls.get(name = name)
+        if not child in self.children: return
+        self.children.remove(child)
+        self.save()
+
     @appier.view(name = "Accounts")
     def accounts_v(self, *args, **kwargs):
         from appier_extras.parts.admin.models import account
