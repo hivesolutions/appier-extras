@@ -61,20 +61,43 @@ class ReCaptchaPart(appier.Part):
         appier.Part.load(self)
 
         self.owner.context["recaptcha"] = self.recaptcha
+        self.owner.context["recaptcha_input"] = self.recaptcha_input
+        self.owner.context["recaptcha_script"] = self.recaptcha_script
+        self.owner.context["recaptcha_available"] = self.recaptcha_available
 
-    def recaptcha(self, action = "homepage", name = "recaptcha_token", force = False):
+    def recaptcha(self, action = "default", name = "recaptcha_token", force = False):
         if not util._recaptcha_available() and not force: return ""
+        return self.owner.escape_template(
+            self._build_input(name) + self._build_script(action)
+        )
+
+    def recaptcha_input(self, name = "recaptcha_token", force = False):
+        if not util._recaptcha_available() and not force: return ""
+        return self.owner.escape_template(
+            self._build_input(name)
+        )
+
+    def recaptcha_script(self, action = "default", force = False):
+        if not util._recaptcha_available() and not force: return ""
+        return self.owner.escape_template(
+            self._build_script(action)
+        )
+
+    def recaptcha_available(self):
+        return util._recaptcha_available()
+
+    def _build_input(self, name):
+        return "<input type=\"hidden\" id=\"recaptcha-token\" name=\"%s\" />" % name
+
+    def _build_script(self, action, element_id):
         recaptcha_key = appier.conf("RECAPTCHA_KEY", None)
         appier.verify(recaptcha_key, message = "No reCAPTCHA site key provided")
-        return self.owner.escape_template(
-            "<input type=\"hidden\" id=\"recaptcha-token\" name=\"%s\" />" % name +
-            "<script src=\"https://www.google.com/recaptcha/api.js?render=%s\"></script>" % recaptcha_key +
-            "<script>window.genRecaptcha = function() { grecaptcha.ready(function() {" +
-            "grecaptcha.execute(\"%s\", {action: \"%s\"}).then(function(token) {" % (recaptcha_key, action) +
-            "document.getElementById(\"recaptcha-token\").value = token;" +
-            "});" +
-            "});" +
-            "};" +
-            "window.genRecaptcha();"
+        return "<script type=\"application/javascript\" src=\"https://www.google.com/recaptcha/api.js?render=%s\"></script>" % recaptcha_key +\
+            "<script type=\"application/javascript\">window.genRecaptcha = function() { document.getElementById(\"recaptcha-token\") && grecaptcha.ready(function() {" +\
+            "grecaptcha.execute(\"%s\", {action: \"%s\"}).then(function(token) {" % (recaptcha_key, action) +\
+            "document.getElementById(\"recaptcha-token\").value = token;" +\
+            "});" +\
+            "});" +\
+            "};" +\
+            "window.genRecaptcha();" +\
             "</script>"
-        )

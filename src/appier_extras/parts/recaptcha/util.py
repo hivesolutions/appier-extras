@@ -41,20 +41,20 @@ import functools
 
 import appier
 
-def recaptcha_protect(action = "homepage"):
+def recaptcha_protect(action = "default", name = "recaptcha_token"):
 
     def decorator(function):
 
         @functools.wraps(function)
         def interceptor(self, *args, **kwargs):
-            token = self.field("recaptcha_token", None)
+            token = self.field(name, None)
             recaptcha_ensure(self, token, action = action)
             return appier.call_safe(function, self, *args, **kwargs)
         return interceptor
 
     return decorator
 
-def recaptcha_ensure(self, token, action = "homepage", force = False):
+def recaptcha_ensure(self, token, action = "default", force = False):
     if not _recaptcha_available() and not force: return
     secret = appier.conf("RECAPTCHA_SECRET",  None)
     min_score = appier.conf("RECAPTCHA_MIN", 0.5)
@@ -68,7 +68,7 @@ def recaptcha_ensure(self, token, action = "homepage", force = False):
     if result.get("score", 0) >= min_score and\
         result.get("action", None) == action: return token
     raise appier.AppierException(
-        message = "Invalid reCAPTCHA score",
+        message = "Invalid reCAPTCHA score or action",
         code = 403
     )
 
