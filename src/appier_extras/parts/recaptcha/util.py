@@ -65,8 +65,8 @@ def recaptcha_ensure(self, token, action = "homepage", force = False):
             response = token
         )
     )
-    if result["score"] >= min_score and\
-        result["action"] == action: return token
+    if result.get("score", 0) >= min_score and\
+        result.get("action", None) == action: return token
     raise appier.AppierException(
         message = "Invalid reCAPTCHA score",
         code = 403
