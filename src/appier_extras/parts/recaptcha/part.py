@@ -93,8 +93,8 @@ class ReCaptchaPart(appier.Part):
         recaptcha_key = appier.conf("RECAPTCHA_KEY", None)
         appier.verify(recaptcha_key, message = "No reCAPTCHA site key provided")
         return "<script type=\"application/javascript\" src=\"https://www.google.com/recaptcha/api.js?render=%s\"></script>" % recaptcha_key +\
-            "<script type=\"application/javascript\">window.genRecaptcha = function() { document.getElementById(\"recaptcha-token\") && grecaptcha.ready(function() {" +\
-            "grecaptcha.execute(\"%s\", {action: \"%s\"}).then(function(token) {" % (recaptcha_key, action) +\
+            "<script type=\"application/javascript\">window.genRecaptcha = function() { grecaptcha.ready(function() {" +\
+            "document.getElementById(\"recaptcha-token\") && grecaptcha.execute(\"%s\", {action: \"%s\"}).then(function(token) {" % (recaptcha_key, action) +\
             "document.getElementById(\"recaptcha-token\").value = token;" +\
             "});" +\
             "});" +\
