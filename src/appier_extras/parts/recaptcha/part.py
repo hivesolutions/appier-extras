@@ -89,7 +89,7 @@ class ReCaptchaPart(appier.Part):
     def _build_input(self, name):
         return "<input type=\"hidden\" id=\"recaptcha-token\" name=\"%s\" />" % name
 
-    def _build_script(self, action, element_id):
+    def _build_script(self, action):
         recaptcha_key = appier.conf("RECAPTCHA_KEY", None)
         appier.verify(recaptcha_key, message = "No reCAPTCHA site key provided")
         return "<script type=\"application/javascript\" src=\"https://www.google.com/recaptcha/api.js?render=%s\"></script>" % recaptcha_key +\
