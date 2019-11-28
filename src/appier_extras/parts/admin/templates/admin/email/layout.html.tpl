@@ -18,7 +18,7 @@
             <title>{% block title %}{% endblock %}</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, minimum-scale=1, maximum-scale=1" />
-            <style rel="stylesheet" type="text/css">
+            <style type="text/css">
                 {% block style %}
                     p {
                         color: {{ self.font_color() }};
