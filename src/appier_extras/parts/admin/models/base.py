@@ -468,8 +468,10 @@ class Base(appier.Model):
     @classmethod
     def _inlinify_premailer(cls, data, *args, **kwargs):
         premailer = appier.import_pip("premailer")
-        keep_style_tags = kwargs.get("keep_style_tags", True)
-        strip_important = kwargs.get("strip_important", False)
+        keep_style_tags = appier.conf("PREMAILER_KEEP_TAGS", True)
+        strip_important = appier.conf("PREMAILER_STRIP_IMPORTANT", False)
+        keep_style_tags = kwargs.get("keep_style_tags", keep_style_tags)
+        strip_important = kwargs.get("strip_important", strip_important)
         logging_level = kwargs.get(
             "logging_level",
             logging.INFO if appier.is_devel() else logging.ERROR

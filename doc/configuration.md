@@ -65,6 +65,13 @@ The following are reserved configuration variables that modify Appier Extras beh
 | **INLINE_EMAIL** | `bool` | If by default the HTML of the email should be inlined (defaults to `False`). |
 | **INLINER_ENGINE** | `str` | The name of the engine (eg: `premailer`, `toronado`, etc.) that is going to be used to inline CSS directives into HTML (defaults to `None`). |
 
+### Premailer
+
+| Name | Type | Description |
+| ----- | ----- | ----- |
+| **PREMAILER_KEEP_TAGS** | `bool` | If the style tags should be kept after inlining (defaults to `True`). |
+| **PREMAILER_STRIP_IMPORTANT** | `bool` | If the important marked rules should be removed on parse (defaults to `False`). |
+
 ### Loggly
 
 | Name | Type | Description |
