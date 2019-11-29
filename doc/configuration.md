@@ -71,6 +71,7 @@ The following are reserved configuration variables that modify Appier Extras beh
 | ----- | ----- | ----- |
 | **PREMAILER_KEEP_TAGS** | `bool` | If the style tags should be kept after inlining (defaults to `True`). |
 | **PREMAILER_STRIP_IMPORTANT** | `bool` | If the important marked rules should be removed on parse (defaults to `False`). |
+| **PREMAILER_CACHE_CSS** | `bool` | If the parsing of the CSS should be "cached" (defaults to `False`). |
 
 ### Loggly
 
