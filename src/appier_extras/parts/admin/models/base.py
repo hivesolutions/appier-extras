@@ -471,6 +471,7 @@ class Base(appier.Model):
         keep_style_tags = appier.conf("PREMAILER_KEEP_TAGS", True, cast = bool)
         strip_important = appier.conf("PREMAILER_STRIP_IMPORTANT", False, cast = bool)
         cache_css = appier.conf("PREMAILER_CACHE_CSS", False, cast = bool)
+        validate_css = appier.conf("PREMAILER_VALIDATE_CSS", False, cast = bool)
         keep_style_tags = kwargs.get("keep_style_tags", keep_style_tags)
         strip_important = kwargs.get("strip_important", strip_important)
         logging_level = kwargs.get(
@@ -482,6 +483,7 @@ class Base(appier.Model):
             keep_style_tags = keep_style_tags,
             strip_important = strip_important,
             cache_css_parsing = cache_css,
+            disable_validation = not validate_css,
             cssutils_logging_level = logging_level
         )
         return inliner.transform()
