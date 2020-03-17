@@ -81,6 +81,9 @@ class Prismic(object):
         if type == "Text":
             return values
 
+        if type == "Boolean":
+            return values
+
         if type == "Number":
             return values
 
