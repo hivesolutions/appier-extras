@@ -61,7 +61,7 @@ class SematextHandler(logging.Handler):
         self._schedule(timeout = timeout)
 
     def emit(self, record):
-        # verifies if the api structure is defined and set and if
+        # verifies if the API structure is defined and set and if
         # that's not the case returns immediately
         if not self.api: return
 
@@ -97,7 +97,7 @@ class SematextHandler(logging.Handler):
     def flush(self, force = False):
         logging.Handler.flush(self)
 
-        # verifies if the api structure is defined and set and if
+        # verifies if the API structure is defined and set and if
         # that's not the case returns immediately
         if not self.api: return
 
