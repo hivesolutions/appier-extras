@@ -82,7 +82,7 @@ class OAuthClient(base.Base):
         meta = "url",
         description = "Redirect URI"
     )
-    """ The redirect uri where to redirect, the user agent
+    """ The redirect URI where to redirect, the user agent
     after a successful token request operation """
 
     scope = appier.field(
