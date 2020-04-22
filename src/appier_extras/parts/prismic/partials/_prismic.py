@@ -162,7 +162,7 @@ class Prismic(object):
         if cast: cast = appier.config._cast_r(cast)
 
         # in case e the locale value is provided it must be normalized
-        # into the format expected by prismic api
+        # into the format expected by prismic API
         if locale:
             language, territory = locale.split("_", 1)
             locale = language + "-" + territory.upper()
