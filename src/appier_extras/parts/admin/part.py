@@ -862,7 +862,9 @@ class AdminPart(
                 **{
                     "$or": [
                         dict(redirect_uri = redirect_uri),
-                        dict(redirect_uri = "http://*")
+                        dict(redirect_uri = "http://*"),
+                        dict(redirect_uri = "https://*"),
+                        dict(redirect_uri = "file://*")
                     ]
                 }
             )
