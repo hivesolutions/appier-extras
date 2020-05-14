@@ -304,6 +304,25 @@ class Base(appier.Model):
 
     @classmethod
     def apply_views(cls, object, owner = None):
+        """
+        Applies the complete set of views (object, class or callables)
+        to the current "query like" object so that it can be used to
+        filter the query context according to session.
+
+        This operation does not change the query object passed as parameter
+        as a copy is created for the mutation.
+
+        :type object: Dictionary
+        :param object: The query object to be changed according to the
+        set of views defined in session.
+        :type owner: App
+        :param owner: The owner application to be used in the retrieval
+        of the session, if not provided the global static app is used.
+        :rtype: Dictionary
+        :return: The final mutated object ready to be used for view like
+        queries.
+        """
+        
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
