@@ -207,7 +207,7 @@
     {% endif %}
 {%- endmacro %}
 
-{% macro tag_input_b(name, value = "", error = "", type = None, disabled = False) -%}
+{% macro tag_input_b(name, value = "", placeholder = "", error = "", type = None, disabled = False) -%}
     {% set disabled_s = "\" data-disabled=\"1" if disabled else "" %}
     {% set type_s = own.admin_part._to_meta(type) %}
     {% if type_s == "reference" %}
@@ -226,18 +226,20 @@
         <a data-name="{{ name }}" class="uploader" data-error="{{ error }}">Select file</a>
     {% elif type_s == "date" %}
         <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
-               data-type="date" data-error="{{ error }}" />
+               placeholder="{{ placeholder }}" data-type="date" data-error="{{ error }}" />
     {% elif type_s == "datetime" %}
         <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
-               data-type="date" data-error="{{ error }}" />
+               placeholder="{{ placeholder }}" data-type="date" data-error="{{ error }}" />
     {% elif type_s == "longtext" %}
-        <textarea class="text-area" name="{{ name }}" data-error="{{ error }}"></textarea>
+        <textarea class="text-area" name="{{ name }}" data-error="{{ error }}">{{ value }}</textarea>
     {% elif type_s == "list" %}
         <input type="text" class="text-field" name="{{ name }}"
-               value="{{ value|dumps if value else '[]' }}" data-error="{{ error }}" />
+               value="{{ value|dumps if value else '[]' }}" placeholder="{{ placeholder }}"
+               data-error="{{ error }}" />
     {% elif type_s == "map" %}
         <input type="text" class="text-field" name="{{ name }}"
-               value="{{ value|dumps if value else '{}' }}" data-error="{{ error }}" />
+               value="{{ value|dumps if value else '{}' }}" placeholder="{{ placeholder }}"
+               data-error="{{ error }}" />
     {% elif type_s == "longmap" %}
         <textarea class="text-area" name="{{ name }}"
                   data-error="{{ error }}">{{ value|dumps if value else "{}" }}</textarea>
@@ -256,7 +258,7 @@
         {% endif %}
     {% else %}
         <input type="text" class="text-field" name="{{ name }}" value="{{ value }}"
-               data-error="{{ error }}" />
+               placeholder="{{ placeholder }}" data-error="{{ error }}" />
     {% endif %}
 {%- endmacro %}
 

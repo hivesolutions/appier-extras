@@ -17,8 +17,9 @@
                         {% for parameter in value.parameters %}
                             {% set label, name, data_type = parameter[:3] %}
                             {% set default = parameter[3] if parameter|length > 3 else "" %}
+                            {% set placeholder = parameter[4] if parameter|length > 4 else "" %}
                             <label>{{ label }}</label>
-                            {{ tag_input_b(name, value = default, type = data_type) }}
+                            {{ tag_input_b(name, value = default, placeholder = placeholder, type = data_type) }}
                         {% endfor %}
                         <div class="window-buttons">
                             <span class="button button-cancel close-button">Cancel</span>

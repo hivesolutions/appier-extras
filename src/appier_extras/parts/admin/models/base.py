@@ -322,7 +322,7 @@ class Base(appier.Model):
         :return: The final mutated object ready to be used for view like
         queries.
         """
-        
+
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
