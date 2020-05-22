@@ -303,7 +303,7 @@ class Base(appier.Model):
         )
 
     @classmethod
-    def apply_views(cls, object, owner = None):
+    def apply_views(cls, object, views = None, owner = None):
         """
         Applies the complete set of views (object, class or callables)
         to the current "query like" object so that it can be used to
@@ -315,6 +315,10 @@ class Base(appier.Model):
         :type object: Dictionary
         :param object: The query object to be changed according to the
         set of views defined in session.
+        :type views: List
+        :param views: The list of views to be used in the apply views
+        operation, if not provided the current set of views in sessions
+        are going to be used instead.
         :type owner: App
         :param owner: The owner application to be used in the retrieval
         of the session, if not provided the global static app is used.
@@ -327,12 +331,15 @@ class Base(appier.Model):
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
 
-        # verifies if there are any view defined under the current
-        # session if that's not the case returns immediately as there's
-        # nothing left to be filtered, otherwise retrieves the views to
-        # be used to filter the current object context
-        if not "views" in owner.session: return object
-        views = owner.session["views"]
+        # in case no views are explicitly provided via parameter, then
+        # the views must be retrieved from the current session
+        if views == None:
+            # verifies if there are any views defined under the current
+            # session if that's not the case returns immediately as there's
+            # nothing left to be filtered, otherwise retrieves the views to
+            # be used to filter the current object context
+            if not "views" in owner.session: return object
+            views = owner.session["views"]
 
         # creates a copy of the object so that it does not get modified
         # by the operation to be applied to it (avoids possible issues)
@@ -342,25 +349,9 @@ class Base(appier.Model):
         # session to be able to update the object accordingly, constraining
         # the context of resolution of that object (less results)
         for view in views:
-            # in case the value for the view is a string like
-            # value then it's considered to be the model from
-            # which the 'view_r' should be used to retrieve the
-            # concrete map based view
-            if appier.legacy.is_str(view):
-                view_cls = owner.get_model(view)
-                view = view_cls.view_r
-
-            # in case the view value is a class then the view is
-            # re-converted into the 'view_r' method, to be called
-            is_class = inspect.isclass(view)
-            if is_class:
-                view = view.view_r
-
-            # in case the view is a callable value then calls it
-            # to retrieve the concrete view (should be a map)
-            is_callable = hasattr(view, "__call__")
-            if is_callable:
-                view = view(target = cls, owner = owner)
+            # resolves the current view, obtaining the proper map
+            # object, ready to be used in the update process
+            view = cls._resolve_view(view)
 
             # in case there's no view (invalid value) then continues
             # the loop as no modification should be applied to object
@@ -375,9 +366,92 @@ class Base(appier.Model):
         return object
 
     @classmethod
+    def ensure_views(cls, object, ensure_set = True, views = None, owner = None):
+        # tries to retrieve the reference to the owner of the current
+        # context or uses the global one otherwise (fallback)
+        owner = owner or appier.get_app()
+
+        # in case no views are explicitly provided via parameter, then
+        # the views must be retrieved from the current session
+        if views == None:
+            # verifies if there are any views defined under the current
+            # session if that's not the case returns immediately as there's
+            # nothing left to be filtered, otherwise retrieves the views to
+            # be used to filter the current object context
+            if not "views" in owner.session: return object
+            views = owner.session["views"]
+
+        # iterates over the complete set of views defined under the current
+        # session to be able to update the object accordingly, validating
+        # the context of resolution of that object (less results)
+        for view in views:
+            # resolves the current view, obtaining the proper map
+            # object, ready to be used in the update process
+            view = cls._resolve_view(view)
+
+            # in case there's no view (invalid value) then continues
+            # the loop as no validation needed for the object
+            if not view: continue
+
+            # iterates over the complete set of views elements to
+            # make sure the associated model attributes are defined
+            # accordingly raising exceptions otherwise
+            for name, values in appier.legacy.iteritems(view):
+                # in case the element is not required to be set
+                # at the object and it's not set the skips the
+                # current iteration loop no verification needed
+                if not ensure_set and not name in object:
+                    continue
+
+                appier.verify(
+                    name in object,
+                    message = "Attribute '%s' not set in object" % name,
+                    exception = appier.SecurityError
+                )
+
+                if not isinstance(values, (list, tuple)):
+                    values = [values]
+
+                appier.verify(
+                    object[name] in values,
+                    message = "Attribute '%s' not valid according to view" % name,
+                    exception = appier.SecurityError
+                )
+
+    @classmethod
     @appier.operation(name = "Empty All", level = 2, devel = True)
     def op_empty_s(cls):
         cls.delete_c()
+
+    @classmethod
+    def _resolve_view(cls, view, owner = None):
+        # tries to retrieve the reference to the owner of the current
+        # context or uses the global one otherwise (fallback)
+        owner = owner or appier.get_app()
+
+        # in case the value for the view is a string like
+        # value then it's considered to be the model from
+        # which the 'view_r' should be used to retrieve the
+        # concrete map based view
+        if appier.legacy.is_str(view):
+            view_cls = owner.get_model(view)
+            view = view_cls.view_r
+
+        # in case the view value is a class then the view is
+        # re-converted into the 'view_r' method, to be called
+        is_class = inspect.isclass(view)
+        if is_class:
+            view = view.view_r
+
+        # in case the view is a callable value then calls it
+        # to retrieve the concrete view (should be a map)
+        is_callable = hasattr(view, "__call__")
+        if is_callable:
+            view = view(target = cls, owner = owner)
+
+        # returns the "final" view value after the complete
+        # resolution process has been finished
+        return view
 
     @classmethod
     def _csv_import(
@@ -566,6 +640,12 @@ class Base(appier.Model):
         appier.Model.post_delete(self)
 
         self.destroy_index()
+
+    def save_v(self, *args, **kwargs):
+        is_new = kwargs.get("is_new", None)
+        if is_new == None: is_new = self.is_new()
+        self.__class__.ensure_views(self.model, ensure_set = is_new)
+        appier.Model.save(self, *args, **kwargs)
 
     def previous(self, name = "id", raise_e = False, *args, **kwargs):
         kwargs[name] = {"$lt" : getattr(self, name)}

@@ -61,3 +61,33 @@ class BaseTest(unittest.TestCase):
 
         self.assertNotEqual(base.created, None)
         self.assertNotEqual(base.modified, None)
+
+    def test_ensure_view(self):
+        result = appier_extras.admin.Base.ensure_views(
+            dict(name = "Joseph", age = 21),
+            views = [dict(name = "Joseph")]
+        )
+        self.assertEqual(result, None)
+
+        self.assertRaises(
+            appier.SecurityError,
+            lambda: appier_extras.admin.Base.ensure_views(
+                dict(name = "Anthony", age = 21),
+                views = [dict(name = "Joseph")]
+            )
+        )
+
+        self.assertRaises(
+            appier.SecurityError,
+            lambda: appier_extras.admin.Base.ensure_views(
+                dict(age = 21),
+                views = [dict(name = "Joseph")]
+            )
+        )
+
+        result = appier_extras.admin.Base.ensure_views(
+            dict(age = 21),
+            views = [dict(name = "Joseph")],
+            ensure_set = False
+        )
+        self.assertEqual(result, None)
