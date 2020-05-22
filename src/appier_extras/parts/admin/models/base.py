@@ -342,16 +342,32 @@ class Base(appier.Model):
         # session to be able to update the object accordingly, constraining
         # the context of resolution of that object (less results)
         for view in views:
+            # in case the value for the view is a string like
+            # value then it's considered to be the model from
+            # which the 'view_r' should be used to retrieve the
+            # concrete map based view
             if appier.legacy.is_str(view):
                 view_cls = owner.get_model(view)
                 view = view_cls.view_r
+
+            # in case the view value is a class then the view is
+            # re-converted into the 'view_r' method, to be called
             is_class = inspect.isclass(view)
             if is_class:
                 view = view.view_r
+
+            # in case the view is a callable value then calls it
+            # to retrieve the concrete view (should be a map)
             is_callable = hasattr(view, "__call__")
             if is_callable:
                 view = view(target = cls, owner = owner)
+
+            # in case there's no view (invalid value) then continues
+            # the loop as no modification should be applied to object
             if not view: continue
+
+            # updates the (object) with the view map that has been
+            # resolved, effectively changing its behaviour
             object.update(view)
 
         # returns the final object to the caller method so that it can be
