@@ -435,13 +435,15 @@ class Base(appier.Model):
         # concrete map based view
         if appier.legacy.is_str(view):
             view_cls = owner.get_model(view)
-            view = getattr(view_cls, resolve_name)
+            view = getattr(view_cls, resolve_name) if\
+                hasattr(view_cls, resolve_name) else None
 
         # in case the view value is a class then the view is
         # re-converted with the resolver method, to be called
         is_class = inspect.isclass(view)
         if is_class:
-            view = getattr(view, resolve_name)
+            view = getattr(view, resolve_name) if\
+                hasattr(view, resolve_name) else None
 
         # in case the view is a callable value then calls it
         # to retrieve the concrete view (should be a map)

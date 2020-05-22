@@ -1719,7 +1719,7 @@ class AdminPart(
     def create_entity(self, model):
         model = self.get_model(model)
         entity = model.new(safe = False)
-        try: entity.save()
+        try: entity.save_v()
         except appier.ValidationError as error:
             return self.template(
                 "entities/new.html.tpl",
@@ -1795,7 +1795,7 @@ class AdminPart(
             _id = self.get_adapter().object_id(_id)
         )
         entity.apply(safe_a = False)
-        try: entity.save()
+        try: entity.save_v()
         except appier.ValidationError as error:
             return self.template(
                 "entities/edit.html.tpl",
