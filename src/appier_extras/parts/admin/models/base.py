@@ -351,7 +351,7 @@ class Base(appier.Model):
         for view in views:
             # resolves the current view, obtaining the proper map
             # object, ready to be used in the update process
-            view = cls._resolve_view(view)
+            view = cls._resolve_view(view, resolve_name = "view_r")
 
             # in case there's no view (invalid value) then continues
             # the loop as no modification should be applied to object
@@ -387,7 +387,7 @@ class Base(appier.Model):
         for view in views:
             # resolves the current view, obtaining the proper map
             # object, ready to be used in the update process
-            view = cls._resolve_view(view)
+            view = cls._resolve_view(view, resolve_name = "view_l")
 
             # in case there's no view (invalid value) then continues
             # the loop as no validation needed for the object
@@ -424,24 +424,24 @@ class Base(appier.Model):
         cls.delete_c()
 
     @classmethod
-    def _resolve_view(cls, view, owner = None):
+    def _resolve_view(cls, view, resolve_name = "view_r", owner = None):
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
 
         # in case the value for the view is a string like
         # value then it's considered to be the model from
-        # which the 'view_r' should be used to retrieve the
+        # which the view resolver should be used to retrieve the
         # concrete map based view
         if appier.legacy.is_str(view):
             view_cls = owner.get_model(view)
-            view = view_cls.view_r
+            view = getattr(view_cls, resolve_name)
 
         # in case the view value is a class then the view is
-        # re-converted into the 'view_r' method, to be called
+        # re-converted with the resolver method, to be called
         is_class = inspect.isclass(view)
         if is_class:
-            view = view.view_r
+            view = getattr(view, resolve_name)
 
         # in case the view is a callable value then calls it
         # to retrieve the concrete view (should be a map)
