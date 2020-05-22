@@ -643,8 +643,11 @@ class Base(appier.Model):
 
     def save_v(self, *args, **kwargs):
         is_new = kwargs.get("is_new", None)
+        before_callbacks = kwargs.get("before_callbacks", [])
         if is_new == None: is_new = self.is_new()
-        self.__class__.ensure_views(self.model, ensure_set = is_new)
+        ensure_callback = lambda instance, model: self.__class__.ensure_views(model)
+        before_callbacks.append(ensure_callback)
+        kwargs["before_callbacks"] = before_callbacks
         appier.Model.save(self, *args, **kwargs)
 
     def previous(self, name = "id", raise_e = False, *args, **kwargs):
