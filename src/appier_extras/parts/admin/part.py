@@ -2302,7 +2302,9 @@ class AdminPart(
         versions = []
         if hasattr(module, "VERSION"):
             versions.append(("PIL", module.VERSION))
-        if hasattr(module, "PILLOW_VERSION"):
+        if hasattr(module, "__version__"):
+            versions.append(("Pillow", module.__version__))
+        elif hasattr(module, "PILLOW_VERSION"):
             versions.append(("Pillow", module.PILLOW_VERSION))
         return versions
 
