@@ -845,8 +845,8 @@ class Base(appier.Model):
 
     @property
     def created_d(self):
-        return datetime.datetime.fromtimestamp(self.created)
+        return datetime.datetime.utcfromtimestamp(self.created)
 
     @property
     def modified_d(self):
-        return datetime.datetime.fromtimestamp(self.modified)
+        return datetime.datetime.utcfromtimestamp(self.modified)
