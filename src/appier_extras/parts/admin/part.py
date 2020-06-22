@@ -294,6 +294,7 @@ class AdminPart(
             (("GET",), "/admin/configs.json", self.show_configs, None, True),
             (("GET",), "/api/admin/ping", self.ping_api, None, True),
             (("GET", "POST"), "/api/admin/login", self.login_api, None, True),
+            (("GET", "POST"), "/api/admin/logout", self.logout_api, None, True),
             (("GET", "POST"), "/api/admin/oauth/access_token", self.oauth_access_token_api, None, True),
             (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
             (("POST",), "/api/admin/database/reset", self.database_reset_api, None, True),
@@ -2214,6 +2215,16 @@ class AdminPart(
             username = username,
             tokens = account.tokens()
         )
+
+    def logout_api(self):
+        # verifies the existence of the various account related session
+        # attributes and in case they exist removes them from session as
+        # the user is currently logging out from session
+        self.account_c._unset_account()
+
+        # returns a valid result indicating that the operation has been
+        # executed with proper success
+        return True
 
     @appier.ensure(context = "admin")
     def me_account_api(self):
