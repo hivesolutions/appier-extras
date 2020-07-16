@@ -13,11 +13,11 @@
             <input type="hidden" name="reset_token" value="{{ reset_token }}" />
             <div class="input">
                 <input type="password" class="text-field full focus" name="password"
-                       value="{{ password }}" placeholder="password" />
+                       autocomplete="new-password" value="{{ password }}" placeholder="password" />
             </div>
             <div class="input">
                 <input type="password" class="text-field full" name="password_confirm"
-                       value="{{ password_confirm }}" placeholder="confirm password" />
+                       autocomplete="new-password" value="{{ password_confirm }}" placeholder="confirm password" />
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Reset</span>
