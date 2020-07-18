@@ -24,11 +24,11 @@
             </div>
             <div class="input">
                 <input type="password" class="text-field full" name="password" placeholder="password"
-                        data-error="{{ errors.password }}" />
+                        autocomplete="new-password" data-error="{{ errors.password }}" />
             </div>
             <div class="input">
                 <input type="password" class="text-field full" name="password_confirm" placeholder="confirm password"
-                       data-error="{{ errors.password_confirm }}" />
+                       autocomplete="new-password" data-error="{{ errors.password_confirm }}" />
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">Sign up</span>

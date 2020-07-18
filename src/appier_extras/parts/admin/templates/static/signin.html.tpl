@@ -19,7 +19,8 @@
                        placeholder="username" />
             </div>
             <div class="input">
-                <input type="password" class="text-field full" name="password" placeholder="password" />
+                <input type="password" class="text-field full" name="password"
+                       autocomplete="current-password" placeholder="password" />
             </div>
             <div class="forgot">
                 <a href="{{ url_for('admin.recover') }}">Forgot your password?</a>
