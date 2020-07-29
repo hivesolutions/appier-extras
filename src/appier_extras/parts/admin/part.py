@@ -299,6 +299,8 @@ class AdminPart(
             (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
             (("POST",), "/api/admin/database/reset", self.database_reset_api, None, True),
             (("GET",), "/api/admin/accounts/me", self.me_account_api, None, True),
+            (("GET",), "/api/admin/sessions/me", self.show_session_me_api, None, True),
+            (("GET",), "/api/admin/sessions/<str:sid>", self.show_session_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_api, None, True),
             (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_api, None, True)
         ]
@@ -1225,6 +1227,7 @@ class AdminPart(
             session_s = self.request.session_c.get_s(sid)
         )
 
+    @appier.ensure(token = "admin.status", context = "admin")
     def delete_session_me(self):
         sid = self.session.sid
         self.request.session_c.expire(sid)
@@ -2231,6 +2234,18 @@ class AdminPart(
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(map = True)
         return account
+
+    @appier.ensure(context = "admin")
+    def show_session_me_api(self):
+        sid = self.session.sid
+        session_s = self.request.session_c.get_s(sid)
+        return dict(session_s.items())
+
+    @appier.ensure(context = "admin")
+    def show_session_api(self, sid):
+        sid = str(sid)
+        session_s = self.request.session_c.get_s(sid)
+        return dict(session_s.items())
 
     @appier.ensure(context = "admin")
     def show_model_api(self, model):
