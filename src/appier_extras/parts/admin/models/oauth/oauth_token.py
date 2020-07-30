@@ -240,6 +240,25 @@ class OAuthToken(base.Base, authenticable.Authenticable):
         return oauth_token
 
     @classmethod
+    @appier.view(
+        name = "Explorer",
+        parameters = (
+            ("Access Token", "access_token", str),
+            ("Refresh Token", "refresh_token", str)
+        )
+    )
+    def explorer_v(cls, access_token, refresh_token, *args, **kwargs):
+        kwargs["sort"] = kwargs.get("sort", [("id", -1)])
+        if access_token: kwargs.update(access_token = access_token)
+        if refresh_token: kwargs.update(refresh_token = refresh_token)
+        return appier.lazy_dict(
+            model = cls,
+            kwargs = kwargs,
+            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
+        )
+
+    @classmethod
     def _filter_scope_g(cls, scope, account = None, owner = None):
         """
         Filters the provided sequence of tokens for the scope, so
