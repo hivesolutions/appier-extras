@@ -373,6 +373,7 @@ class DiagPart(appier.Part):
     @property
     def _meta_info(self):
         return dict(
+            session_agent = self.request.get_session_agent(),
             is_mobile = self.request.is_mobile(),
             is_tablet = self.request.is_tablet(),
             is_browser = self.request.is_browser(),
