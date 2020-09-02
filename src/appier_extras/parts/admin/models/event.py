@@ -38,6 +38,8 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import json
+import datetime
+import re
 
 import appier
 
@@ -59,6 +61,8 @@ class Event(base.Base):
         type = dict,
         meta = "longmap"
     )
+
+    _producer = None
 
     @classmethod
     def validate(cls):
@@ -116,10 +120,16 @@ class Event(base.Base):
     def notify_g(cls, name, handlers = None, arguments = {}):
         logger = appier.get_logger()
         logger.debug("Triggering '%s' event ..." % name)
-        kwargs = dict(name = name)
+        kwargs = dict()
         if handlers: kwargs["handler"] = {"$in" : handlers}
         events = cls.find_e(**kwargs)
-        for event in events: event.notify(arguments = arguments)
+        # verifies if the event name matches the name
+        # provided, allowing for regular expressions
+        # to be used as event handlers
+        for event in events:
+            if re.search(event.name, name):
+                event.name = name
+                event.notify(arguments = arguments)
 
     @appier.operation(name = "Notify")
     def notify(self, arguments = {}, delay = True):
@@ -216,6 +226,41 @@ class Event(base.Base):
         logger.debug("Running Nexmo notification for '%s' ..." % receiver)
         api = nexmo.API()
         return cls._retry(lambda: api.send_sms(sender, receiver, text), count = retries)
+
+    @classmethod
+    def notify_kafka(cls, arguments = {}):
+        appier.ensure_pip("kafka", package = "kafka-python")
+        import kafka
+        if not cls._producer:
+            kafka_server = appier.conf("KAFKA_SERVER", "localhost:9092")
+            client_id = appier.conf("KAFKA_PRODUCER_CLIENT_ID", None)
+            compression_type = appier.conf("KAFKA_COMPRESSION_TYPE", None)
+            retries = appier.conf("KAFKA_RETRIES", 0)
+            batch_size = appier.conf("KAFKA_BATCH_SIZE", 16384)
+
+            # TODO: add more options
+            cls._producer = kafka.KafkaProducer(
+                bootstrap_servers=kafka_server,
+                client_id=client_id,
+                compression_type = compression_type,
+                retries = retries,
+                batch_size = batch_size
+            )
+        
+        topic = arguments["topic"] if arguments["topic"] else arguments["event"].split(".")[0]
+        name = arguments["event"]
+        origin = "ripe-core"
+        hostname = "ripe-core-1.platforme.com" # TODO: get this from somewhere else
+        order = arguments["params"]["order"]
+
+        cls._producer.send(topic, json.dumps(dict(
+            name = name,
+            origin = origin,
+            hostname = hostname,
+            datatype = "json",
+            timestamp = datetime.datetime.now(),
+            order = json.dumps(order).encode('utf-8')
+        )).encode('utf-8'))
 
     @appier.operation(name = "Duplicate", factory = True)
     def duplicate_s(self):
