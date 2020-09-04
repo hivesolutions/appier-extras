@@ -37,12 +37,12 @@ __copyright__ = "Copyright (c) 2008-2020 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-import json
 import datetime
-import re
+import fnmatch
+import json
+import socket
 
 import appier
-import socket
 
 from appier_extras import utils
 from appier_extras.parts.admin.models import base
@@ -126,7 +126,7 @@ class Event(base.Base):
         # verifies if the event name matches the name provided,
         # allowing for wildcards to be used in event handlers names
         for event in events:
-            if event.name == name or cls._match_wildcard(name, event.name):
+            if fnmatch.fnmatch(name, event.name):
                 event.name = name
                 event.notify(arguments=arguments)
 
@@ -281,18 +281,3 @@ class Event(base.Base):
         )
         event.save()
         return event
-
-    @classmethod
-    def _match_wildcard(cls, event_name, name):
-        # splits the provided events string into its parts,
-        # using namespaces defined around the dot character
-        event_l = event_name.split(".")
-        name_l = name.split(".")
-
-        # iterates over the set of parts in the event list
-        # to validate it against the event name using namespace
-        # and not complete string validation
-        for name_i, name_p in enumerate(name_l):
-            if name_p == "*": return True
-            if name_p == event_l[name_i]: continue
-            return False
