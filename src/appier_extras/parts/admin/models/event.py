@@ -42,6 +42,7 @@ import datetime
 import re
 
 import appier
+import socket
 
 from appier_extras import utils
 from appier_extras.parts.admin.models import base
@@ -259,7 +260,7 @@ class Event(base.Base):
         topic = arguments["topic"] if arguments["topic"] else arguments["event"].split(".")[0]
         name = arguments["event"]
         origin = "ripe-core"
-        hostname = "ripe-core-1.platforme.com" # TODO: get this from somewhere
+        hostname = socket.gethostname()
         order = arguments["params"]["order"]
 
         cls._producer.send(topic, json.dumps(dict(
