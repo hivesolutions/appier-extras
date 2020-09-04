@@ -237,20 +237,29 @@ class Event(base.Base):
             compression_type = appier.conf("KAFKA_COMPRESSION_TYPE", None)
             retries = appier.conf("KAFKA_RETRIES", 0)
             batch_size = appier.conf("KAFKA_BATCH_SIZE", 16384)
+            linger_ms = appier.conf("KAFKA_LINGER", 0)
+            connections_max_idle_ms = appier.conf("KAFKA_CONNECTIONS_MAX_IDLE", 540000)
+            max_request_size = appier.conf("KAFKA_MAX_REQUEST_SIZE", 1048576)
+            retry_backoff_ms = appier.conf("KAFKA_RETRY_BACKOFF", 100)
+            request_timeout_ms = appier.conf("KAFKA_REQUEST_TIMEOUT", 30000)
 
-            # TODO: add more options
             cls._producer = kafka.KafkaProducer(
                 bootstrap_servers=kafka_server,
                 client_id=client_id,
                 compression_type = compression_type,
                 retries = retries,
-                batch_size = batch_size
+                batch_size = batch_size,
+                linger_ms = linger_ms,
+                connections_max_idle_ms = connections_max_idle_ms,
+                max_request_size = max_request_size,
+                retry_backoff_ms = retry_backoff_ms,
+                request_timeout_ms = request_timeout_ms
             )
         
         topic = arguments["topic"] if arguments["topic"] else arguments["event"].split(".")[0]
         name = arguments["event"]
         origin = "ripe-core"
-        hostname = "ripe-core-1.platforme.com" # TODO: get this from somewhere else
+        hostname = "ripe-core-1.platforme.com" # TODO: get this from somewhere
         order = arguments["params"]["order"]
 
         cls._producer.send(topic, json.dumps(dict(
