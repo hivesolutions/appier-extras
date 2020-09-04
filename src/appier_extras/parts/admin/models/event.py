@@ -63,8 +63,6 @@ class Event(base.Base):
         meta = "longmap"
     )
 
-    _producer = None
-
     @classmethod
     def validate(cls):
         return super(Event, cls).validate() + [
@@ -124,13 +122,13 @@ class Event(base.Base):
         kwargs = dict()
         if handlers: kwargs["handler"] = {"$in" : handlers}
         events = cls.find_e(**kwargs)
-        # verifies if the event name matches the name
-        # provided, allowing for regular expressions
-        # to be used as event handlers
+
+        # verifies if the event name matches the name provided,
+        # allowing for wildcards to be used in event handlers names
         for event in events:
-            if re.search(event.name, name):
+            if event.name == name or cls._match_wildcard(name, event.name):
                 event.name = name
-                event.notify(arguments = arguments)
+                event.notify(arguments=arguments)
 
     @appier.operation(name = "Notify")
     def notify(self, arguments = {}, delay = True):
@@ -232,45 +230,46 @@ class Event(base.Base):
     def notify_kafka(cls, arguments = {}):
         appier.ensure_pip("kafka", package = "kafka-python")
         import kafka
-        if not cls._producer:
-            kafka_server = appier.conf("KAFKA_SERVER", "localhost:9092")
-            client_id = appier.conf("KAFKA_PRODUCER_CLIENT_ID", None)
-            compression_type = appier.conf("KAFKA_COMPRESSION_TYPE", None)
-            retries = appier.conf("KAFKA_RETRIES", 0)
-            batch_size = appier.conf("KAFKA_BATCH_SIZE", 16384)
-            linger_ms = appier.conf("KAFKA_LINGER", 0)
-            connections_max_idle_ms = appier.conf("KAFKA_CONNECTIONS_MAX_IDLE", 540000)
-            max_request_size = appier.conf("KAFKA_MAX_REQUEST_SIZE", 1048576)
-            retry_backoff_ms = appier.conf("KAFKA_RETRY_BACKOFF", 100)
-            request_timeout_ms = appier.conf("KAFKA_REQUEST_TIMEOUT", 30000)
+        kafka_server = appier.conf("KAFKA_SERVER", "localhost:9092")
+        client_id = appier.conf("KAFKA_PRODUCER_CLIENT_ID", None)
+        compression_type = appier.conf("KAFKA_COMPRESSION_TYPE", None)
+        retries = appier.conf("KAFKA_RETRIES", 0)
+        batch_size = appier.conf("KAFKA_BATCH_SIZE", 16384)
+        linger_ms = appier.conf("KAFKA_LINGER", 0)
+        connections_max_idle_ms = appier.conf(
+            "KAFKA_CONNECTIONS_MAX_IDLE", 540000)
+        max_request_size = appier.conf("KAFKA_MAX_REQUEST_SIZE", 1048576)
+        retry_backoff_ms = appier.conf("KAFKA_RETRY_BACKOFF", 100)
+        request_timeout_ms = appier.conf("KAFKA_REQUEST_TIMEOUT", 30000)
 
-            cls._producer = kafka.KafkaProducer(
-                bootstrap_servers=kafka_server,
-                client_id=client_id,
-                compression_type = compression_type,
-                retries = retries,
-                batch_size = batch_size,
-                linger_ms = linger_ms,
-                connections_max_idle_ms = connections_max_idle_ms,
-                max_request_size = max_request_size,
-                retry_backoff_ms = retry_backoff_ms,
-                request_timeout_ms = request_timeout_ms
-            )
-        
+        producer = kafka.KafkaProducer(
+            bootstrap_servers = kafka_server,
+            client_id = client_id,
+            compression_type = compression_type,
+            retries = retries,
+            batch_size = batch_size,
+            linger_ms = linger_ms,
+            connections_max_idle_ms = connections_max_idle_ms,
+            max_request_size = max_request_size,
+            retry_backoff_ms = retry_backoff_ms,
+            request_timeout_ms = request_timeout_ms
+        )
+
         topic = arguments["topic"] if arguments["topic"] else arguments["event"].split(".")[0]
         name = arguments["event"]
-        origin = "ripe-core"
+        origin = appier.get_name()
         hostname = socket.gethostname()
-        order = arguments["params"]["order"]
+        payload = arguments["params"].get("payload", dict())
 
-        cls._producer.send(topic, json.dumps(dict(
+        producer.send(topic, json.dumps(dict(
             name = name,
             origin = origin,
             hostname = hostname,
             datatype = "json",
             timestamp = datetime.datetime.now(),
-            order = json.dumps(order).encode('utf-8')
-        )).encode('utf-8'))
+            order = json.dumps(payload)
+        )).encode("utf-8"))
+        producer.flush()
 
     @appier.operation(name = "Duplicate", factory = True)
     def duplicate_s(self):
@@ -282,3 +281,18 @@ class Event(base.Base):
         )
         event.save()
         return event
+
+    @classmethod
+    def _match_wildcard(cls, event_name, name):
+        # splits the provided events string into its parts,
+        # using namespaces defined around the dot character
+        event_l = event_name.split(".")
+        name_l = name.split(".")
+
+        # iterates over the set of parts in the event list
+        # to validate it against the event name using namespace
+        # and not complete string validation
+        for name_i, name_p in enumerate(name_l):
+            if name_p == "*": return True
+            if name_p == event_l[name_i]: continue
+            return False
