@@ -267,7 +267,7 @@ class Event(base.Base):
             hostname = hostname,
             datatype = "json",
             timestamp = datetime.datetime.now(),
-            order = json.dumps(payload)
+            payload = json.dumps(payload)
         )).encode("utf-8"))
         producer.flush()
 
