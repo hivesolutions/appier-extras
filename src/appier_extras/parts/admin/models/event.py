@@ -115,21 +115,16 @@ class Event(base.Base):
         return arguments
 
     @classmethod
-    def notify_g(cls, name, handlers = None, arguments = {}):
+    def notify_g(cls, name, handlers = None, permutations = True, arguments = {}):
         logger = appier.get_logger()
         logger.debug("Triggering '%s' event ..." % name)
-
-        names = ["*"]
-        names_a = name.split(".")[:-1]
-        for name_i in range(len(names_a)):
-            name_join = ".".join([n for n in names_a[0:name_i + 1]])
-            names.append("%s.*" % name_join)
-
+        if permutations: names = cls._get_permutations(name)
+        else: names = (name,)
         kwargs = dict()
-        kwargs["name"] = { "$in": names }
+        kwargs["name"] = {"$in": names}
         if handlers: kwargs["handler"] = {"$in" : handlers}
         events = cls.find_e(**kwargs)
-        for event in events: 
+        for event in events:
             event.name = name
             event.notify(arguments = arguments)
 
@@ -298,3 +293,12 @@ class Event(base.Base):
         )
 
         return cls._kafka
+
+    @classmethod
+    def _get_permutations(cls, name, wildcard = "*"):
+        names = [wildcard]
+        names_a = name.split(".")[:-1]
+        for name_i in range(len(names_a)):
+            name_join = ".".join([n for n in names_a[0:name_i + 1]])
+            names.append("%s.%s" % (name_join, wildcard))
+        return names
