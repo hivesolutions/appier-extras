@@ -301,4 +301,5 @@ class Event(base.Base):
         for name_i in range(len(names_a)):
             name_join = ".".join([n for n in names_a[0:name_i + 1]])
             names.append("%s.%s" % (name_join, wildcard))
+        names.append(name)
         return names
