@@ -39,4 +39,3 @@ deploy:
     tags: true
     python: "2.7"
     condition: $ADAPTER = mongo
- 
