@@ -23,12 +23,12 @@ before_install:
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == pypy* ]]; then pip install "tinydb<4"; fi
   - pip install -r requirements.txt
-  - pip install coveralls
+  - if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then pip install coveralls; fi
 env:
   - ADAPTER=mongo
   - ADAPTER=tiny
-script: coverage run --source=appier_extras setup.py test
-after_success: coveralls
+script: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coverage run --source=appier_extras setup.py test; else python setup.py test; fi
+after_success: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coveralls; fi
 deploy:
   provider: pypi
   user: joamag
