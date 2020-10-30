@@ -55,6 +55,10 @@ class OAuthToken(base.Base, authenticable.Authenticable):
     """ The default duration of the OAuth token, this
     value should not be too long to avoid security issues """
 
+    DEFAULT_LONG_DURATION = 315360000
+    """ The default duration (in seconds) value to be used
+    in a long lived OAUth token (eg: 10 years) """
+
     CODE_DURATION = 600
     """ The authorization code duration (in seconds), to be
     used for proper authorization code validation """
@@ -120,6 +124,7 @@ class OAuthToken(base.Base, authenticable.Authenticable):
     expires_in = appier.field(
         type = int,
         index = "all",
+        safe = True,
         immutable = True
     )
     """ The duration in seconds of the access token lifetime """
@@ -316,6 +321,8 @@ class OAuthToken(base.Base, authenticable.Authenticable):
 
         cls = self.__class__
         duration = appier.conf("OAUTH_DURATION", cls.DEFAULT_DURATION, cast = int)
+        long_duration = appier.conf("OAUTH_LONG_DURATION", cls.DEFAULT_LONG_DURATION, cast = int)
+        if hasattr(self, "long") and self.long: duration = long_duration
         self.access_token = appier.gen_token()
         self.access_token_date = time.time()
         self.client_secret = appier.gen_token()

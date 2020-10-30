@@ -167,17 +167,19 @@ class OAuthClient(base.Base):
         name = "Build Token",
         parameters = (
              ("Username", "username", str),
-             ("Scope", "scope", list, []),
-             ("Redirect URI", "redirect_uri", str)
+             ("Scope", "scope", list, ["me", "account"]),
+             ("Redirect URI", "redirect_uri", str),
+             ("Long Lived", "long", bool, False)
         ),
         factory = True,
         level = 2
     )
-    def build_token_s(self, username, redirect_uri = None, scope = []):
+    def build_token_s(self, username = None, scope = [], redirect_uri = None, long = False):
         _oauth_token = oauth_token.OAuthToken()
-        _oauth_token.username = username
+        _oauth_token.username = username or self.session["username"]
         _oauth_token.scope = scope
         _oauth_token.redirect_uri = redirect_uri or self.redirect_uri
+        _oauth_token.long = long
         _oauth_token.client = self
         _oauth_token.save()
         return _oauth_token

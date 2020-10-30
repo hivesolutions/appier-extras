@@ -74,7 +74,7 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_client.name, "name")
         self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
 
-        oauth_token = oauth_client.build_token_s("username", scope = ["admin", "user"])
+        oauth_token = oauth_client.build_token_s(username = "username", scope = ["admin", "user"])
 
         self.assertNotEqual(oauth_token.id, None)
         self.assertNotEqual(oauth_token.access_token, None)
@@ -115,7 +115,7 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_client.name, "name")
         self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
 
-        oauth_token = oauth_client.build_token_s("username", scope = ["admin", "user"])
+        oauth_token = oauth_client.build_token_s(username = "username", scope = ["admin", "user"])
 
         self.assertNotEqual(oauth_token.id, None)
         self.assertNotEqual(oauth_token.access_token, None)
