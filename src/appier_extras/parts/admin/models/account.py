@@ -938,6 +938,16 @@ class Account(base.Base, authenticable.Authenticable):
             absolute = absolute
         )
 
+    @classmethod
+    @appier.link(name = "Duplicates Report JSON", context = True)
+    def duplicates_url(cls, view = None, context = None, absolute = False):
+        return appier.get_app().url_for(
+            "admin.duplicates_accounts_json",
+            view = view,
+            context = context,
+            absolute = absolute
+        )
+
     @property
     def confirmed(self):
         return self.enabled
