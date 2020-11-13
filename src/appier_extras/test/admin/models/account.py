@@ -283,6 +283,30 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(len(account.roles), 2)
         self.assertEqual(tokens, ["advanced", "base", "user"])
 
+    def test_duplicate_keys(self):
+        account = appier_extras.admin.Account()
+        account.username = "Username"
+        account.email = "USERNAME@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        account_duplicate = appier_extras.admin.Account()
+        account_duplicate.username = "Username2"
+        account_duplicate.email = "USERNAME2@domain.com"
+        account_duplicate.password = "password2"
+        account_duplicate.password_confirm = "password2"
+        account_duplicate.save()
+
+        account_duplicate.password = "password2"
+        account_duplicate.password_confirm = "password2"
+        account_duplicate.key = account.key
+
+        self.assertRaises(
+            appier.ValidationError,
+            lambda: account_duplicate.save()
+        )
+
     def test__join_m(self):
         account = appier_extras.admin.Account()
 
