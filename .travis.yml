@@ -29,13 +29,3 @@ env:
   - ADAPTER=tiny
 script: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coverage run --source=appier_extras setup.py test; else python setup.py test; fi
 after_success: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coveralls; fi
-deploy:
-  provider: pypi
-  user: joamag
-  password:
-    secure: dX8gMCc+zxVa+/IuaQPHg1mRv8jONcUONjkRJavAcfRwbAafnUB/BEFy7pG1c7HbeFkBlUAURj7n2bplps9Hel3/rvXDAwyesbIJ5N/lmelhSSQks1jKomESJDg3Ocepy+l45r5fTl+hMOGPuNOlYTBceevSs2bx9RtIfMSBS1A=
-  distributions: sdist bdist_wheel
-  on:
-    tags: true
-    python: "2.7"
-    condition: $ADAPTER = mongo
