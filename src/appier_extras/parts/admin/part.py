@@ -253,6 +253,7 @@ class AdminPart(
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/me", self.me_account),
             (("GET",), "/admin/accounts/export.json", self.export_accounts_json, None, True),
+            (("GET",), "/admin/accounts/duplicates.json", self.duplicates_accounts_json, None, True),
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
@@ -642,7 +643,7 @@ class AdminPart(
             account = account
         )
 
-    @appier.ensure(context = "admin")
+    @appier.ensure(token = "admin.accounts", context = "admin")
     def export_accounts_json(self):
         account_c = self._get_cls(self.account_c)
         object = appier.get_object(
@@ -656,6 +657,29 @@ class AdminPart(
             rules = False,
             **object
         )
+
+    @appier.ensure(token = "admin.accounts", context = "admin")
+    def duplicates_accounts_json(self):
+        account_c = self._get_cls(self.account_c)
+        object = appier.get_object(
+            alias = True,
+            find = True,
+            limit = 0
+        )
+        accounts = account_c.find(
+            account_c,
+            rules = False,
+            **object
+        )
+        keys_m = dict()
+        for account in accounts:
+            sequence = keys_m.get(account.key, [])
+            sequence.append(account.username)
+            keys_m[account.key] = sequence
+        for key, values in appier.legacy.items(keys_m):
+            if len(values) > 1: continue
+            del keys_m[key]
+        return dict(result = keys_m)
 
     @appier.ensure(token = "admin.accounts", context = "admin")
     def show_account(self, username):
