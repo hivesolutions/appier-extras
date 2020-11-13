@@ -209,13 +209,12 @@ class Account(base.Base, authenticable.Authenticable):
         # creates the structure to be used as the root account description
         # using the default value and then stores the account as it's going
         # to be used as the default root entity (for administration)
+        password = appier.conf("ADMIN_PASSWORD", cls.ROOT_PASSWORD)
         account = cls(
             enabled = True,
             username = cls.ROOT_USERNAME,
             email = cls.ROOT_EMAIL,
-            password = cls.generate(
-                appier.conf("ADMIN_PASSWORD", cls.ROOT_PASSWORD)
-            ),
+            password = cls.generate(password),
             type = cls.ADMIN_TYPE
         )
         account.save(validate = False)
@@ -224,7 +223,7 @@ class Account(base.Base, authenticable.Authenticable):
         # uses it to print information about the newly created account
         account = cls.get(id = account.id, rules = False)
         logger.info("Username: %s" % account.username)
-        logger.info("Password: %s" % cls.ROOT_PASSWORD)
+        logger.info("Password: %s" % password)
         logger.info("Secret Key: %s" % account.key)
 
     @classmethod
