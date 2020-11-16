@@ -414,8 +414,23 @@ class Base(appier.Model):
                 if not isinstance(values, (list, tuple)):
                     values = [values]
 
+                # determines if the target object value is valid (included
+                # within the range of view values)
+                is_valid = object[name] in values
+
+                # in case the development mode is enabled adds an extra level
+                # and the validation is not set adds some logging
+                if not is_valid and appier.is_devel():
+                    logger = appier.get_logger()
+                    logger.warn(
+                        "Attribute '%s' ('%s') not valid according to view ('%s')" %\
+                            (name, str(object[name]), str(values))
+                    )
+
+                # runs the verify operation that will raise a security error
+                # in case the attribute is not valid according to the view
                 appier.verify(
-                    object[name] in values,
+                    is_valid,
                     message = "Attribute '%s' not valid according to view" % name,
                     exception = appier.SecurityError
                 )
