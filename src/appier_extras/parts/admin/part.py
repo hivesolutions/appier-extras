@@ -324,10 +324,25 @@ class AdminPart(
         key = self.field("skey", None)
         key = self.field("secret_key", key)
         key = self.request.get_header("X-Secret-Key", key)
+
+        # in case there's no key set in request we can
+        # return the control flow immediately (nothing be done)
         if not key: return
-        try: account = self.account_c.login_key(key)
-        except appier.OperationalError: pass
-        else: account._set_account(method = "set_t")
+
+        try:
+            # tries to run the login with key operation validating
+            # the key against a series of pre-requirements, in case
+            # of failure the error is logged
+            account = self.account_c.login_key(key)
+        except Exception as exception:
+            self.logger.warn("Problem running key based login: %s" % exception)
+            return
+
+        # marks the current session as transient as we're going
+        # to use the session only for the handling of this request
+        # and then sets the account in session (ready to be used)
+        self.session.set_transient()
+        account._set_account()
 
     def exception_handler(self, error):
         import traceback

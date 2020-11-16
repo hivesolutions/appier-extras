@@ -409,6 +409,8 @@ class Base(appier.Model):
                     exception = appier.SecurityError
                 )
 
+                # in case the defined value for the view attribute is not
+                # a sequence converts it to be able to run normalized operations
                 if not isinstance(values, (list, tuple)):
                     values = [values]
 
