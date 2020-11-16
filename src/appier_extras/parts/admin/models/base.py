@@ -414,24 +414,22 @@ class Base(appier.Model):
                 if not isinstance(values, (list, tuple)):
                     values = [values]
 
-                # determines if the target object value is valid (included
-                # within the range of view values)
-                is_valid = object[name] in values
+                # computes the proper error message that is going to be sent
+                # as part of the security error to be raised
+                if appier.is_devel():
+                    message = "Attribute '%s' ('%s') not valid according to view ('%s')" %\
+                        (name, str(object[name]), str(values))
 
-                # in case the development mode is enabled adds an extra level
-                # and the validation is not set adds some logging
-                if not is_valid and appier.is_devel():
-                    logger = appier.get_logger()
-                    logger.warn(
-                        "Attribute '%s' ('%s') not valid according to view ('%s')" %\
-                            (name, str(object[name]), str(values))
-                    )
+                # in case the production mode is enable the message is defined
+                # as a simpler one, avoiding confidential data leak
+                else:
+                    message = "Attribute '%s' not valid according to view" % name
 
                 # runs the verify operation that will raise a security error
                 # in case the attribute is not valid according to the view
                 appier.verify(
-                    is_valid,
-                    message = "Attribute '%s' not valid according to view" % name,
+                    object[name] in values,
+                    message = message,
                     exception = appier.SecurityError
                 )
 
