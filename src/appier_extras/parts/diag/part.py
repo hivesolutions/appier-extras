@@ -67,6 +67,7 @@ class DiagPart(appier.Part):
         self.minimal = kwargs.get("minimal", False)
         self.format = kwargs.get("format", "combined")
         self.empty = kwargs.get("empty", False)
+        self.max_data_size = kwargs.get("max_data_size", 131072)
         self.store = appier.conf("DIAG_STORE", self.store, cast = bool)
         self.loggly = appier.conf("DIAG_LOGGLY", self.loggly, cast = bool)
         self.logstash = appier.conf("DIAG_LOGSTASH", self.loggly, cast = bool)
@@ -78,6 +79,11 @@ class DiagPart(appier.Part):
         self.minimal = appier.conf("DIAG_MINIMAL", self.minimal, cast = bool)
         self.format = appier.conf("DIAG_FORMAT", self.format)
         self.empty = appier.conf("DIAG_EMPTY", self.empty, cast = bool)
+        self.max_data_size = appier.conf(
+            "DIAG_MAX_DATA_SIZE",
+            self.max_data_size,
+            cast = int
+        )
         self._loggly_api = None
         self._logstash_api = None
         self._hostname_s = None
@@ -222,6 +228,8 @@ class DiagPart(appier.Part):
     def _store_log(self):
         browser_info = self.request.browser_info
         browser_info = browser_info or dict()
+        data = self.request.data if self.request.data and\
+            len(self.request.data) < self.max_data_size else None
         diag_request = models.DiagRequest(
             address = self.request.get_address(),
             url = self.request.get_url(),
@@ -230,6 +238,8 @@ class DiagPart(appier.Part):
             query = self.request.query,
             code = self.request.code,
             protocol = self.request.protocol,
+            content_type = self.request.content_type,
+            data = data,
             duration = self.request.duration,
             in_length = self.request.in_length,
             out_length = self.request.out_length,
@@ -295,13 +305,17 @@ class DiagPart(appier.Part):
             method = self.request.method,
             path = self.request.path,
             query = self.request.query,
-            code = self.request.code
+            code = self.request.code,
+            content_type = self.request.content_type
         )
         return item
 
     def _get_item_normal(self):
         item = self._get_item_minimal()
+        data = self.request.data if self.request.data and\
+            len(self.request.data) < self.max_data_size else None
         item.update(
+            data = data,
             protocol = self.request.protocol,
             duration = self.request.duration,
             in_length = self.request.in_length,

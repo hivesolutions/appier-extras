@@ -80,6 +80,15 @@ class DiagRequest(base.DiagBase):
         immutable = True
     )
 
+    content_type = appier.field(
+        index = "all",
+        immutable = True
+    )
+
+    data = appier.field(
+        immutable = True
+    )
+
     duration = appier.field(
         type = float,
         index = "all",
