@@ -21,19 +21,20 @@ The following are reserved configuration variables that modify Appier Extras beh
 
 ### Diag
 
-| Name              | Type   | Description                                                                                                                                                                  |
-| ----------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **DIAG_STORE**    | `bool` | If the multiple HTTP requests in diagnostics should be store in the data source (defaults to `False`).                                                                       |
-| **DIAG_LOGGLY**   | `bool` | If the Loggly based logging should be used (defaults to `False`).                                                                                                            |
-| **DIAG_LOGSTASH** | `bool` | If the Logstash based logging should be used (defaults to `False`).                                                                                                          |
-| **DIAG_OUTPUT**   | `bool` | If each of the HTTP requests should be printed to the stdout (defaults to `True`).                                                                                           |
-| **DIAG_STDOUT**   | `bool` | Same as `DIAG_OUTPUT`.                                                                                                                                                       |
-| **DIAG_GEO**      | `bool` | If the Geo IP resolution process should take place (extra CPU usage) for the processing of geographic information taken out of the IP address (defaults to `False`) .        |
-| **DIAG_LEVEL**    | `str`  | The level of verbosity to be used in the logging (eg: `minimal`, `normal`, `verbose` or `debug`) (defaults to `normal`).                                                     |
-| **DIAG_VERBOSE**  | `bool` | If the log output should be as verbose (extended) as possible (defaults to `False`).                                                                                         |
-| **DIAG_MINIMAL**  | `bool` | If the minimalistic version of the logging information should be used instead of the more verbose one (defaults to `False`).                                                 |
-| **DIAG_FORMAT**   | `str`  | The format to be used while outputting the HTTP request (defaults to `combined`).                                                                                            |
-| **DIAG_EMPTY**    | `bool` | If the complete set of stored request entities should be removed from the data store on part load, use this value carefully to avoid unwanted results (defaults to `False`). |
+| Name                   | Type   | Description                                                                                                                                                                  |
+| ---------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **DIAG_STORE**         | `bool` | If the multiple HTTP requests in diagnostics should be store in the data source (defaults to `False`).                                                                       |
+| **DIAG_LOGGLY**        | `bool` | If the Loggly based logging should be used (defaults to `False`).                                                                                                            |
+| **DIAG_LOGSTASH**      | `bool` | If the Logstash based logging should be used (defaults to `False`).                                                                                                          |
+| **DIAG_OUTPUT**        | `bool` | If each of the HTTP requests should be printed to the stdout (defaults to `True`).                                                                                           |
+| **DIAG_STDOUT**        | `bool` | Same as `DIAG_OUTPUT`.                                                                                                                                                       |
+| **DIAG_GEO**           | `bool` | If the Geo IP resolution process should take place (extra CPU usage) for the processing of geographic information taken out of the IP address (defaults to `False`) .        |
+| **DIAG_LEVEL**         | `str`  | The level of verbosity to be used in the logging (eg: `minimal`, `normal`, `verbose` or `debug`) (defaults to `normal`).                                                     |
+| **DIAG_VERBOSE**       | `bool` | If the log output should be as verbose (extended) as possible (defaults to `False`).                                                                                         |
+| **DIAG_MINIMAL**       | `bool` | If the minimalist version of the logging information should be used instead of the more verbose one (defaults to `False`).                                                   |
+| **DIAG_FORMAT**        | `str`  | The format to be used while outputting the HTTP request (defaults to `combined`).                                                                                            |
+| **DIAG_EMPTY**         | `bool` | If the complete set of stored request entities should be removed from the data store on part load, use this value carefully to avoid unwanted results (defaults to `False`). |
+| **DIAG_MAX_DATA_SIZE** | `int`  | The limit (in bytes) to be used to determine if HTTP payload should be store or not as part of a diagnostics (defaults to `131072`).                                         |
 
 ### CMS
 
