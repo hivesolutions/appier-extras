@@ -9,10 +9,12 @@
         Feel free to login with your account and explore all the features {{ owner.description }} has to offer.
     </p>
     {{ h2("Information") }}
-    <p>
-        You can view all the information about your account by clicking
-        {{ link(url_for("admin.show_entity", model = account.__class__._under(), _id = account._id, absolute = True), "here", False) }}.
-    </p>
+    {% if self.owner.admin_email_account_new_link %}
+        <p>
+            You can view all the information about your account by clicking
+            {{ link(url_for("admin.show_entity", model = account.__class__._under(), _id = account._id, absolute = True), "here", False) }}.
+        </p>
+    {% endif %}
     <p>
         <strong>Username:</strong> <span>{{ account.username }}</span><br/>
         <strong>E-mail:</strong> <span>{{ link("mailto:" + account.email, account.email, False) }}</span>

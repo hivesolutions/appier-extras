@@ -159,6 +159,8 @@ class AdminPart(
         self.owner.admin_layout_static = "admin/layout.static.html.tpl"
         self.owner.admin_email_layout = "admin/email/layout.html.tpl"
 
+        self.owner.admin_email_account_new_link = True
+
         self.owner.lib_loaders["appier_extras"] = self._appier_extras_loader
         self.owner.lib_loaders["netius"] = self._netius_loader
         self.owner.lib_loaders["pconvert"] = self._pconvert_loader
