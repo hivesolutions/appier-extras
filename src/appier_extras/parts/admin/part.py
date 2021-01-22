@@ -233,6 +233,7 @@ class AdminPart(
             (("GET", "POST"), "/admin/operations/build_index_db", self.build_index_db),
             (("GET", "POST"), "/admin/operations/test_email", self.test_email),
             (("GET", "POST"), "/admin/operations/test_event", self.test_event),
+            (("GET", "POST"), "/admin/operations/update_counter", self.update_counter),
             (("GET", "POST"), "/admin/operations/set_date", self.set_date),
             (("GET",), "/admin/sessions", self.list_sessions),
             (("GET",), "/admin/sessions/empty", self.empty_sessions),
@@ -415,6 +416,16 @@ class AdminPart(
             note = "All handlers for the event are going to be triggered"
         )
         self.add_operation(
+            "update_counter", "admin.update_counter",
+            description = "Update or create counter",
+            parameters = (
+                ("Counter", "counter", str),
+                ("value", "value", int)
+            ),
+            note = "Updating an internal counter is a very dangerous operation",
+            level = 3
+        )
+        self.add_operation(
             "set_date", "admin.set_date",
             description = "Set date (created & modified)",
             note = "Updates the created and modified date values if their not set",
@@ -428,6 +439,7 @@ class AdminPart(
         self.remove_operation("build_index_db")
         self.remove_operation("test_email")
         self.remove_operation("test_event")
+        self.remove_operation("update_counter")
         self.remove_operation("set_date")
 
     def add_section(self, name):
@@ -1218,6 +1230,30 @@ class AdminPart(
             self.url_for(
                 "admin.operations",
                 message = "Test event triggered"
+            )
+        )
+
+    @appier.ensure(token = "admin", context = "admin")
+    def update_counter(self):
+        counter = self.field("counter", mandatory = True)
+        value = self.field("value", cast = int, mandatory = True)
+        collection = self._counters()
+        value = collection.find_and_modify(
+            {
+                "_id" : counter
+            },
+            {
+                "$max" : {
+                    "seq" : value
+                }
+            },
+            new = True,
+            upsert = True
+        )
+        return self.redirect(
+            self.url_for(
+                "admin.operations",
+                message = "Counter '%s' updated" % counter
             )
         )
 

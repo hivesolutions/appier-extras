@@ -10,9 +10,9 @@
     </p>
     {{ h2("Information") }}
     {% if owner.admin_email_account_new_link %}
-    	{% set account_url = url_for("admin.show_entity", model = account.__class__._under(), _id = account._id, absolute = True) %}
-    	{% set account_url = config.conf("ACCOUNT_URL")|default(account_url, True) %}
-    	{% set account_url = config.conf("NEW_ACCOUNT_URL")|default(account_url, True) %}
+        {% set account_url = url_for("admin.show_entity", model = account.__class__._under(), _id = account._id, absolute = True) %}
+        {% set account_url = config.conf("ACCOUNT_URL")|default(account_url, True) %}
+        {% set account_url = config.conf("NEW_ACCOUNT_URL")|default(account_url, True) %}
         <p>
             You can view all the information about your account by clicking {{ link(account_url, "here", False) }}.
         </p>
