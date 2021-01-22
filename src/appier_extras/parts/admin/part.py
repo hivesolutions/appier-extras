@@ -420,7 +420,7 @@ class AdminPart(
             description = "Update or create counter",
             parameters = (
                 ("Counter", "counter", str),
-                ("value", "value", int)
+                ("Value", "value", int)
             ),
             note = "Updating an internal counter is a very dangerous operation",
             level = 3
