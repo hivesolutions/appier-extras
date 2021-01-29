@@ -239,7 +239,12 @@ class OAuthToken(base.Base, authenticable.Authenticable):
     def login(cls, access_token, rules = False):
         oauth_token = cls.get_e(
             access_token = access_token,
-            rules = rules
+            rules = rules,
+            raise_e = False
+        )
+        if not oauth_token: raise appier.SecurityError(
+            message = "OAuth token not found",
+            code = 403
         )
         oauth_token.touch_expired()
         return oauth_token
