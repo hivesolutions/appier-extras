@@ -338,7 +338,7 @@ class AdminPart(
             # of failure the error is logged
             account = self.account_c.login_key(key)
         except Exception as exception:
-            self.logger.warn("Problem running key based login: %s" % exception)
+            self.logger.warning("Problem running key based login: %s" % exception)
             return
 
         # marks the current session as transient as we're going
