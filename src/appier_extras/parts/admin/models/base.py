@@ -628,6 +628,13 @@ class Base(appier.Model):
             result = result.decode(encoding)
         return result
 
+    def pre_save(self):
+        appier.Model.pre_save(self)
+
+        if hasattr(self, "meta_extra") and self.meta_extra:
+            self.meta = self.meta or {}
+            self.meta.update(self.meta_extra)
+
     def pre_create(self):
         appier.Model.pre_create(self)
 
