@@ -119,7 +119,7 @@ class Role(base.Base):
 
     @property
     def children_s(self):
-        return [child for child in self.children if child and hasattr(child, "name")]
+        return [child for child in self.children if child and hasattr(child, "tokens_a")]
 
     @property
     def tokens_a(self):
@@ -201,6 +201,11 @@ class Role(base.Base):
         child = cls.get(name = name)
         if not child in self.children: return
         self.children.remove(child)
+        self.save()
+
+    @appier.operation(name = "Fix Children", level = 2)
+    def fix_children_s(self, name):
+        self.children = [child for child in self.children if child and hasattr(child, "tokens_a")]
         self.save()
 
     @appier.view(name = "Accounts")

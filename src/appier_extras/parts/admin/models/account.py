@@ -917,6 +917,11 @@ class Account(base.Base, authenticable.Authenticable):
             self.roles_l.remove(_role)
         self.save()
 
+    @appier.operation(name = "Fix Roles", level = 2)
+    def fix_children_s(self, name):
+        self.roles = [role for role in self.roles if role and hasattr(role, "tokens_a")]
+        self.save()
+
     @appier.link(name = "View Avatar", devel = True)
     def view_avatar_url(self, absolute = False):
         cls = self.__class__
@@ -964,7 +969,7 @@ class Account(base.Base, authenticable.Authenticable):
 
     @property
     def roles_s(self):
-        return [role for role in self.roles_l if role and hasattr(role, "name")]
+        return [role for role in self.roles_l if role and hasattr(role, "tokens_a")]
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__
