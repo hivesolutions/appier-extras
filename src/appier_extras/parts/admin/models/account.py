@@ -702,6 +702,8 @@ class Account(base.Base, authenticable.Authenticable):
             tokens.update(["base", "user"])
 
         for role in self.roles_l:
+            if not hasattr(role, "tokens_a"): continue
+            if not role.tokens_a: continue
             tokens.update(role.tokens_a)
 
         if "*" in tokens: tokens = ["*"]

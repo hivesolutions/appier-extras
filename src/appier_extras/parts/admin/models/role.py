@@ -121,6 +121,8 @@ class Role(base.Base):
     def tokens_a(self):
         tokens = set(self.tokens)
         for child in self.children:
+            if not hasattr(child, "tokens_a"): continue
+            if not child.tokens_a: continue
             tokens.update(child.tokens_a)
         return tokens
 
