@@ -918,7 +918,7 @@ class Account(base.Base, authenticable.Authenticable):
         self.save()
 
     @appier.operation(name = "Fix Roles", level = 2)
-    def fix_children_s(self, name):
+    def fix_children_s(self):
         self.roles = [role for role in self.roles if role and hasattr(role, "tokens_a")]
         self.save()
 

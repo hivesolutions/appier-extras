@@ -204,7 +204,7 @@ class Role(base.Base):
         self.save()
 
     @appier.operation(name = "Fix Children", level = 2)
-    def fix_children_s(self, name):
+    def fix_children_s(self):
         self.children = [child for child in self.children if child and hasattr(child, "tokens_a")]
         self.save()
 
