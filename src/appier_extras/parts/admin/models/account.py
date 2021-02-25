@@ -701,9 +701,7 @@ class Account(base.Base, authenticable.Authenticable):
         if self.type == Account.USER_TYPE:
             tokens.update(["base", "user"])
 
-        for role in self.roles_l:
-            if not hasattr(role, "tokens_a"): continue
-            if not role.tokens_a: continue
+        for role in self.roles_s:
             tokens.update(role.tokens_a)
 
         if "*" in tokens: tokens = ["*"]
@@ -727,7 +725,7 @@ class Account(base.Base, authenticable.Authenticable):
         """
 
         views = []
-        for role in self.roles_l:
+        for role in self.roles_s:
             view_m = role.view_m(context = self)
             if not view_m: continue
             views.append(view_m)
@@ -748,7 +746,7 @@ class Account(base.Base, authenticable.Authenticable):
         """
 
         meta = dict(self.meta)
-        for role in self.roles_l:
+        for role in self.roles_s:
             if join:
                 self._join_m(role.meta_a, meta)
             else:
@@ -963,6 +961,10 @@ class Account(base.Base, authenticable.Authenticable):
     @property
     def roles_l(self):
         return self.roles
+
+    @property
+    def roles_s(self):
+        return [role for role in self.roles_l if role and hasattr(role, "name")]
 
     def _set_session(self, unset = True, safes = [], method = "set"):
         cls = self.__class__

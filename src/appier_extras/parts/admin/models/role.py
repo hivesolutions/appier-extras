@@ -118,18 +118,20 @@ class Role(base.Base):
         return self.view_
 
     @property
+    def children_s(self):
+        return [child for child in self.children if child and hasattr(child, "name")]
+
+    @property
     def tokens_a(self):
         tokens = set(self.tokens)
-        for child in self.children:
-            if not hasattr(child, "tokens_a"): continue
-            if not child.tokens_a: continue
+        for child in self.children_s:
             tokens.update(child.tokens_a)
         return tokens
 
     @property
     def meta_a(self):
         meta = dict(self.meta)
-        for child in self.children:
+        for child in self.children_s:
             self._join_m(child.meta_a, meta)
         return meta
 
