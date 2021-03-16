@@ -139,6 +139,16 @@ class Base(appier.Model):
     the entity for unpredicted purposes, note that these values should not
     be used for search operation as they are not indexed """
 
+    secrets = appier.field(
+        type = dict,
+        safe = True,
+        private = True
+    )
+    """ Secrets based information to be stored within the entity the values
+    stored should follow a single level key/value approach and the value
+    should respect the encryption standard `$<strategy>:<value_base64>`
+    (eg: `$plain:aGVsbG8gd29ybGQ=`, `$rc4:aGVsbG8gd29ybGQ=") """
+
     def __str__(self):
         value = appier.Model.__str__(self)
         if not value: value = str(self.id)
@@ -865,6 +875,20 @@ class Base(appier.Model):
         self.meta = meta
         self.save()
 
+    @appier.operation(
+        name = "Add Secret",
+        description = """Adds a secret value to the current entity
+        using the provided strategy""",
+        parameters = (
+            ("Key", "key", str),
+            ("Value", "value", str),
+            ("Strategy", "strategy", str, "plain")
+        )
+    )
+    def add_secret_s(self, key, value, strategy = "plain"):
+        if strategy == "plain":
+            value_e = "%s:%s"
+
     @property
     def created_d(self):
         return datetime.datetime.utcfromtimestamp(self.created)
@@ -872,3 +896,12 @@ class Base(appier.Model):
     @property
     def modified_d(self):
         return datetime.datetime.utcfromtimestamp(self.modified)
+
+    def _encode_value(self, value, strategy = "plain"):
+        method = getattr(self, "_encode_%s" % strategy, None)
+        if not method:
+            raise appier.NotImplementedError("Strategy not available '%s'" % strategy)
+        return method(value)
+
+    def _encode_plain(self, value, strategy = "plain"):
+        value_e = "%s:%s"

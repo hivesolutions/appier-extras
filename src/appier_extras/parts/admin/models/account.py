@@ -753,6 +753,28 @@ class Account(base.Base, authenticable.Authenticable):
                 meta.update(role.meta_a)
         return meta
 
+    def secrets_m(self, join = False):
+        """
+        Merges the secrets dictionary of the current account to the ones
+        (secret) defined in the complete set of associated roles.
+
+        :type join: bool
+        :param join: If the overlapping values between the operations
+        should be merged as sequences.
+        :rtype: Dictionary
+        :return: The final secrets dictionary that contains the "merged"
+        view of the secrets for the account according to the associated
+        set of roles.
+        """
+
+        secrets = dict(self.secrets)
+        for role in self.roles_l:
+            if join:
+                self._join_m(role.secrets_a, secrets)
+            else:
+                secrets.update(role.secrets_a)
+        return secrets
+
     def type_s(self, capitalize = False):
         type_s = Account.ACCOUNT_S.get(self.type, None)
         type_s = type_s.capitalize() if capitalize else type_s

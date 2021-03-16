@@ -135,6 +135,13 @@ class Role(base.Base):
             self._join_m(child.meta_a, meta)
         return meta
 
+    @property
+    def secrets_a(self):
+        secrets = dict(self.secrets)
+        for child in self.children:
+            self._join_m(child.secrets_a, secrets)
+        return secrets
+
     def _join_m(self, origin, target):
         for key, value in appier.legacy.iteritems(origin):
             if key in target:
