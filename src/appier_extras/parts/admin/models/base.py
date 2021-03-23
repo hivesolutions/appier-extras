@@ -40,6 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import csv
 import json
 import time
+import base64
 import random
 import string
 import inspect
@@ -810,6 +811,11 @@ class Base(appier.Model):
         else: self.meta.update(meta)
         self.save()
 
+    def decode_secret(self, key):
+        self = self.reload(rules = False)
+        value_e = self.secrets[key]
+        return self._decode_value(value_e)
+
     def to_locale(self, *args, **kwargs):
         return self.owner.to_locale(*args, **kwargs)
 
@@ -886,8 +892,21 @@ class Base(appier.Model):
         )
     )
     def add_secret_s(self, key, value, strategy = "plain"):
-        if strategy == "plain":
-            value_e = "%s:%s"
+        # reloads the current instance so that it can be used
+        # for the updating of the secrets
+        self = self.reload(rules = False)
+
+        # encodes the provided value and creates the final
+        # value to be used in the data storage
+        value_e = self._encode_value(value, strategy = strategy)
+
+        # updates the structure of secrets in the instance with
+        # the newly created value that
+        self.secrets[key] = value_e
+
+        # update the current instance by saving its value into
+        # the current data source
+        self.save()
 
     @property
     def created_d(self):
@@ -901,7 +920,30 @@ class Base(appier.Model):
         method = getattr(self, "_encode_%s" % strategy, None)
         if not method:
             raise appier.NotImplementedError("Strategy not available '%s'" % strategy)
-        return method(value)
+        value_b = method(value)
+        return "$%s:%s" % (strategy, value_b)
 
-    def _encode_plain(self, value, strategy = "plain"):
-        value_e = "%s:%s"
+    def _decode_value(self, value_e):
+        strategy, value_b = value_e[1:].split(":", 1)
+        method = getattr(self, "_decode_%s" % strategy, None)
+        if not method:
+            raise appier.NotImplementedError("Strategy not available '%s'" % strategy)
+        return method(value_b)
+
+    def _encode_plain(self, value):
+        return value
+
+    def _encode_base64(self, value):
+        value = appier.legacy.bytes(value)
+        value = base64.b64encode(value)
+        value = appier.legacy.str(value)
+        return value
+
+    def _decode_plain(self, value):
+        return value
+
+    def _decode_base64(self, value):
+        value = appier.legacy.str(value)
+        value = base64.b64decode(value)
+        value = appier.legacy.str(value)
+        return value
