@@ -91,3 +91,23 @@ class BaseTest(unittest.TestCase):
             ensure_set = False
         )
         self.assertEqual(result, None)
+
+    def test_add_secret_s(self):
+        settings = appier_extras.admin.Settings()
+        settings.save()
+
+        settings.add_secret_s("hello", "world", strategy = "plain")
+        settings = settings.reload(rules = False)
+        self.assertNotEqual(settings.secrets, {})
+
+        settings = settings.reload()
+        result = settings.decode_secret("hello")
+        self.assertEqual(result, "world")
+
+        settings.add_secret_s("hello", "world", strategy = "base64")
+        settings = settings.reload(rules = False)
+        self.assertNotEqual(settings.secrets, {})
+
+        settings = settings.reload()
+        result = settings.decode_secret("hello")
+        self.assertEqual(result, "world")

@@ -40,6 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import csv
 import json
 import time
+import base64
 import random
 import string
 import inspect
@@ -138,6 +139,16 @@ class Base(appier.Model):
     """ Additional (unstructured) information to be stored together with
     the entity for unpredicted purposes, note that these values should not
     be used for search operation as they are not indexed """
+
+    secrets = appier.field(
+        type = dict,
+        safe = True,
+        private = True
+    )
+    """ Secrets based information to be stored within the entity the values
+    stored should follow a single level key/value approach and the value
+    should respect the encryption standard `$<strategy>:<value_base64>`
+    (eg: `$plain:aGVsbG8gd29ybGQ=`, `$rc4:aGVsbG8gd29ybGQ=") """
 
     def __str__(self):
         value = appier.Model.__str__(self)
@@ -800,6 +811,11 @@ class Base(appier.Model):
         else: self.meta.update(meta)
         self.save()
 
+    def decode_secret(self, key):
+        self = self.reload(rules = False)
+        value_e = self.secrets[key]
+        return self._decode_value(value_e)
+
     def to_locale(self, *args, **kwargs):
         return self.owner.to_locale(*args, **kwargs)
 
@@ -865,6 +881,33 @@ class Base(appier.Model):
         self.meta = meta
         self.save()
 
+    @appier.operation(
+        name = "Add Secret",
+        description = """Adds a secret value to the current entity
+        using the provided strategy""",
+        parameters = (
+            ("Key", "key", str),
+            ("Value", "value", str),
+            ("Strategy", "strategy", str, "plain")
+        )
+    )
+    def add_secret_s(self, key, value, strategy = "plain"):
+        # reloads the current instance so that it can be used
+        # for the updating of the secrets
+        self = self.reload(rules = False)
+
+        # encodes the provided value and creates the final
+        # value to be used in the data storage
+        value_e = self._encode_value(value, strategy = strategy)
+
+        # updates the structure of secrets in the instance with
+        # the newly created value that
+        self.secrets[key] = value_e
+
+        # update the current instance by saving its value into
+        # the current data source
+        self.save()
+
     @property
     def created_d(self):
         return datetime.datetime.utcfromtimestamp(self.created)
@@ -872,3 +915,35 @@ class Base(appier.Model):
     @property
     def modified_d(self):
         return datetime.datetime.utcfromtimestamp(self.modified)
+
+    def _encode_value(self, value, strategy = "plain"):
+        method = getattr(self, "_encode_%s" % strategy, None)
+        if not method:
+            raise appier.NotImplementedError("Strategy not available '%s'" % strategy)
+        value_b = method(value)
+        return "$%s:%s" % (strategy, value_b)
+
+    def _decode_value(self, value_e):
+        strategy, value_b = value_e[1:].split(":", 1)
+        method = getattr(self, "_decode_%s" % strategy, None)
+        if not method:
+            raise appier.NotImplementedError("Strategy not available '%s'" % strategy)
+        return method(value_b)
+
+    def _encode_plain(self, value):
+        return value
+
+    def _encode_base64(self, value):
+        value = appier.legacy.bytes(value)
+        value = base64.b64encode(value)
+        value = appier.legacy.str(value)
+        return value
+
+    def _decode_plain(self, value):
+        return value
+
+    def _decode_base64(self, value):
+        value = appier.legacy.str(value)
+        value = base64.b64decode(value)
+        value = appier.legacy.str(value)
+        return value
