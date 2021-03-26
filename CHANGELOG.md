@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* `get/find/count/paginate_ve` methods in `Base` model entity
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.23.6] - 2021-03-23
+
+### Added
+
+* `get/find/count/paginate_ve` methods in `Base` model entity
 
 ## [0.23.5] - 2021-03-23
 
