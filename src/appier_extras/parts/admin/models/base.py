@@ -212,6 +212,22 @@ class Base(appier.Model):
         return cls.paginate(*args, **kwargs)
 
     @classmethod
+    def get_ve(cls, *args, **kwargs):
+        return cls.get_v(enabled = True, *args, **kwargs)
+
+    @classmethod
+    def find_ve(cls, *args, **kwargs):
+        return cls.find_v(enabled = True, *args, **kwargs)
+
+    @classmethod
+    def count_ve(cls, *args, **kwargs):
+        return cls.count_v(enabled = True, *args, **kwargs)
+
+    @classmethod
+    def paginate_ve(cls, *args, **kwargs):
+        return cls.paginate_v(enabled = True, *args, **kwargs)
+
+    @classmethod
     def create_names(cls):
         names = super(Base, cls).create_names()
         names.remove("id")
