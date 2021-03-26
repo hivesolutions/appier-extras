@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-*
+* `get/find/count/paginate_ve` methods in `Base` model entity
 
 ### Changed
 
