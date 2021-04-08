@@ -261,6 +261,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
             (("GET",), "/admin/models", self.list_models),
+            (("GET",), "/admin/models.json", self.list_models_json, None, True),
             (("GET",), "/admin/models/<str:model>.json", self.show_model_json, None, True),
             (("GET",), "/admin/models/<str:model>.csv", self.show_model_csv),
             (("GET",), "/admin/models/<str:model>", self.show_model),
@@ -269,6 +270,7 @@ class AdminPart(
             (("GET", "POST"), "/admin/models/<str:model>/view/<str:view>", self.view_model),
             (("GET",), "/admin/models/<str:model>/new", self.new_entity),
             (("POST",), "/admin/models/<str:model>", self.create_entity),
+            (("POST",), "/admin/models/<str:model>.json", self.create_entity_json),
             (("GET",), "/admin/models/<str:model>/<str:_id>.json", self.show_entity_json, None, True),
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
@@ -303,10 +305,11 @@ class AdminPart(
             (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
             (("POST",), "/api/admin/database/reset", self.database_reset_api, None, True),
             (("GET",), "/api/admin/accounts/me", self.me_account_api, None, True),
-            (("GET",), "/api/admin/models", self.list_models_api, None, True),
             (("GET",), "/api/admin/sessions/me", self.show_session_me_api, None, True),
             (("GET",), "/api/admin/sessions/<str:sid>", self.show_session_api, None, True),
+            (("GET",), "/api/admin/models", self.list_models_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_api, None, True),
+            (("POST",), "/api/admin/models/<str:model>", self.create_entity_api, None, True),
             (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_api, None, True)
         ]
 
@@ -1520,6 +1523,15 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin", context = "admin")
+    def list_models_json(self):
+        models = []
+        for _section, models_c in self.admin_part.models_d.items():
+            models_c = self._available(models_c)
+            for model_c in models_c:
+                models.append(dict(name = model_c._under()))
+        return models
+
+    @appier.ensure(token = "admin", context = "admin")
     def show_model(self, model):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1814,6 +1826,14 @@ class AdminPart(
         return self.redirect(
             self.url_for("admin.show_model", model = model._under())
         )
+
+    @appier.ensure(token = "admin", context = "admin")
+    def create_entity_json(self, model):
+        model = self.get_model(model)
+        entity = model.new(safe = False)
+        entity.save()
+        entity = entity.map()
+        return entity
 
     @appier.ensure(token = "admin", context = "admin")
     def show_entity(self, model, _id):
@@ -2314,11 +2334,6 @@ class AdminPart(
         return account
 
     @appier.ensure(context = "admin")
-    def list_models_api(self):
-        models = [1, 2, 3]
-        return models
-
-    @appier.ensure(context = "admin")
     def show_session_me_api(self):
         sid = self.session.sid
         session_s = self.request.session_c.get_s(sid)
@@ -2331,8 +2346,16 @@ class AdminPart(
         return dict(session_s.items())
 
     @appier.ensure(context = "admin")
+    def list_models_api(self):
+        return self.list_models_json()
+
+    @appier.ensure(context = "admin")
     def show_model_api(self, model):
         return self.show_model_json(model)
+
+    @appier.ensure(context = "admin")
+    def create_entity_api(self, model):
+        return self.create_entity_json(model)
 
     @appier.ensure(context = "admin")
     def show_entity_api(self, model, _id):
