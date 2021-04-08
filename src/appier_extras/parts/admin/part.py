@@ -303,6 +303,7 @@ class AdminPart(
             (("GET", "POST"), "/api/admin/oauth/login", self.oauth_login_api, None, True),
             (("POST",), "/api/admin/database/reset", self.database_reset_api, None, True),
             (("GET",), "/api/admin/accounts/me", self.me_account_api, None, True),
+            (("GET",), "/api/admin/models", self.list_models_api, None, True),
             (("GET",), "/api/admin/sessions/me", self.show_session_me_api, None, True),
             (("GET",), "/api/admin/sessions/<str:sid>", self.show_session_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_api, None, True),
@@ -2311,6 +2312,11 @@ class AdminPart(
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(map = True)
         return account
+
+    @appier.ensure(context = "admin")
+    def list_models_api(self):
+        models = [1, 2, 3]
+        return models
 
     @appier.ensure(context = "admin")
     def show_session_me_api(self):
