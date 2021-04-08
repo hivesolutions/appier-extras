@@ -275,7 +275,9 @@ class AdminPart(
             (("GET",), "/admin/models/<str:model>/<str:_id>", self.show_entity),
             (("GET",), "/admin/models/<str:model>/<str:_id>/edit", self.edit_entity),
             (("POST",), "/admin/models/<str:model>/<str:_id>/edit", self.update_entity),
+            (("PUT",), "/admin/models/<str:model>/<str:_id>.json", self.update_entity_json),
             (("GET",), "/admin/models/<str:model>/<str:_id>/delete", self.delete_entity),
+            (("DELETE",), "/admin/models/<str:model>/<str:_id>.json", self.delete_entity_json),
             (("GET",), "/admin/facebook", self.facebook),
             (("GET",), "/admin/facebook/unlink", self.unlink_facebook),
             (("GET",), "/admin/facebook/unset", self.unset_facebook),
@@ -310,7 +312,9 @@ class AdminPart(
             (("GET",), "/api/admin/models", self.list_models_api, None, True),
             (("GET",), "/api/admin/models/<str:model>", self.show_model_api, None, True),
             (("POST",), "/api/admin/models/<str:model>", self.create_entity_api, None, True),
-            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_api, None, True)
+            (("GET",), "/api/admin/models/<str:model>/<str:_id>", self.show_entity_api, None, True),
+            (("PUT",), "/api/admin/models/<str:model>/<str:_id>", self.update_entity_api, None, True),
+            (("DELETE",), "/api/admin/models/<str:model>/<str:_id>", self.delete_entity_api, None, True)
         ]
 
     def models(self):
@@ -1916,6 +1920,19 @@ class AdminPart(
         )
 
     @appier.ensure(token = "admin", context = "admin")
+    def update_entity_json(self, model, _id):
+        model = self.get_model(model, raise_e = True)
+        entity = model.get_v(
+            rules = False,
+            meta = True,
+            _id = self.get_adapter().object_id(_id)
+        )
+        entity.apply()
+        entity.save()
+        entity = entity.map()
+        return entity
+
+    @appier.ensure(token = "admin", context = "admin")
     def delete_entity(self, model, _id):
         appier.ensure_login(self, token = "admin.models." + model)
         model = self.get_model(model, raise_e = True)
@@ -1927,6 +1944,13 @@ class AdminPart(
                 model = model._under()
             )
         )
+
+    @appier.ensure(token = "admin", context = "admin")
+    def delete_entity_json(self, model, _id):
+        appier.ensure_login(self, token = "admin.models." + model)
+        model = self.get_model(model, raise_e = True)
+        entity = model.get_v(_id = self.get_adapter().object_id(_id))
+        entity.delete()
 
     def facebook(self):
         next = self.field("next", "")
@@ -2360,6 +2384,14 @@ class AdminPart(
     @appier.ensure(context = "admin")
     def show_entity_api(self, model, _id):
         return self.show_entity_json(model, _id)
+
+    @appier.ensure(context = "admin")
+    def update_entity_api(self, model, _id):
+        return self.update_entity_json(model, _id)
+
+    @appier.ensure(context = "admin")
+    def delete_entity_api(self, model, _id):
+        return self.delete_entity_json(model, _id)
 
     def socials(self):
         socials = []
