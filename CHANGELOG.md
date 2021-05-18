@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Support for changing username of an account
+*
 
 ### Changed
 
@@ -18,6 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.23.8] - 2021-05-18
+
+### Added
+
+* Support for changing username of an account
+
+## [0.23.7] - 2021-04-08
+
+### Added
+
+* More API endpoints
 
 ## [0.23.6] - 2021-03-23
 
