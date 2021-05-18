@@ -944,6 +944,18 @@ class Account(base.Base, authenticable.Authenticable):
         self.roles = [role for role in self.roles if role and hasattr(role, "tokens_a")]
         self.save()
 
+    @appier.operation(
+        name = "Change Username",
+        description = """Changing the username of an account is
+        a dangerous operation that may break relations with the
+        target account""",
+        parameters = (("Username", "username", str),),
+        level = 2
+    )
+    def change_username_s(self, username):
+        self.username = username
+        self.save()
+
     @appier.link(name = "View Avatar", devel = True)
     def view_avatar_url(self, absolute = False):
         cls = self.__class__
