@@ -956,6 +956,18 @@ class Account(base.Base, authenticable.Authenticable):
         self.username = username
         self.save()
 
+    @appier.operation(
+        name = "Change Email",
+        description = """Changing the email of an account is
+        a dangerous operation that may break relations with the
+        target account""",
+        parameters = (("Email", "email", str),),
+        level = 2
+    )
+    def change_email_s(self, email):
+        self.email = email
+        self.save(immutables_a = False)
+
     @appier.link(name = "View Avatar", devel = True)
     def view_avatar_url(self, absolute = False):
         cls = self.__class__
