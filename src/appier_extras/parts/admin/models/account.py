@@ -912,8 +912,7 @@ class Account(base.Base, authenticable.Authenticable):
         level = 2
     )
     def impersonate(self):
-        impersonate = appier.conf("ADMIN_IMPERSONATE", False, cast = bool)
-        if not impersonate:
+        if not self.owner.admin_impersonate:
             raise appier.SecurityError(message = "Impersonation is not allowed")
         self._set_account()
 

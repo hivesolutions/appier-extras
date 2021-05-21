@@ -94,6 +94,7 @@ class AdminPart(
         self.available = kwargs.get("available", True)
         self.open = kwargs.get("open", False)
         self.oauth = kwargs.get("oauth", True)
+        self.impersonate = kwargs.get("impersonate", False)
         self.avatar_default = kwargs.get("avatar_default", False)
         self.layout = appier.conf("ADMIN_LAYOUT", self.layout)
         self.theme = appier.conf("ADMIN_THEME", self.theme)
@@ -103,6 +104,7 @@ class AdminPart(
         self.available = appier.conf("ADMIN_AVAILABLE", self.available, cast = bool)
         self.open = appier.conf("ADMIN_OPEN", self.open, cast = bool)
         self.oauth = appier.conf("ADMIN_OAUTH", self.oauth, cast = bool)
+        self.impersonate = appier.conf("ADMIN_IMPERSONATE", self.impersonate, cast = bool)
         self.avatar_default = appier.conf(
             "ADMIN_AVATAR_DEFAULT",
             self.avatar_default,
@@ -153,6 +155,7 @@ class AdminPart(
         self.owner.admin_available = self.available
         self.owner.admin_open = self.open
         self.owner.admin_oauth = self.oauth
+        self.owner.admin_impersonate = self.impersonate
         self.owner.admin_avatar_default = self.avatar_default
 
         self.owner.admin_layout_fluid = "admin/layout.fluid.html.tpl"
