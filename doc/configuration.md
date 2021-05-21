@@ -18,6 +18,7 @@ The following are reserved configuration variables that modify Appier Extras beh
 | **ADMIN_OPEN**           | `bool` | If the administration interface should be open (for registration) to end-users (defaults to `False`).                                                                             |
 | **ADMIN_OAUTH**          | `bool` | If OAuth 2.0 support should be enabled for the administration interface (defaults to `True`).                                                                                     |
 | **ADMIN_AVATAR_DEFAULT** | `bool` | If a new default image should be set for an account's avatar if none is set (defaults to `False`).                                                                                |
+| **ADMIN_IMPERSONATE**    | `bool` | If impersonation of an user by admin users is allowed, allowing this operation can pose serious security risks (default to `False`).                                              |
 
 ### Diag
 

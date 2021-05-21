@@ -1,6 +1,6 @@
 <div class="footer-container">
     {% set copyright = owner.copyright|default(copyright, True)|default("Hive Solutions", True) %}
-    {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2008-2020", True) %}
+    {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2008-2021", True) %}
     {% set copyright_url = owner.copyright_url|default(copyright_url, True)|default("http://hive.pt", True) %}
     &copy; Copyright {{ copyright_year }} by
     {% if copyright_url %}
