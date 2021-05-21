@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2020 Hive Solutions Lda.
+# Copyright (c) 2008-2021 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -31,7 +31,7 @@ __revision__ = "$LastChangedRevision$"
 __date__ = "$LastChangedDate$"
 """ The last change date of the module """
 
-__copyright__ = "Copyright (c) 2008-2020 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2021 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -904,6 +904,18 @@ class Account(base.Base, authenticable.Authenticable):
             title = "Recover account",
             account = account
         )
+
+    @appier.operation(
+        name = "Impersonate",
+        description = """Impersonating another account can be considered
+        illegal under some situation and should be used carefully""",
+        level = 2
+    )
+    def impersonate(self):
+        impersonate = appier.conf("ADMIN_IMPERSONATE", False, cast = bool)
+        if not impersonate:
+            raise appier.SecurityError(message = "Impersonation is not allowed")
+        self._set_account()
 
     @appier.operation(
         name = "Upload Avatar",
