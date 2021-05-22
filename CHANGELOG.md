@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
+## [0.24.1] - 2021-05-22
+
+### Added
+
+* Support for `OAuthToken` patching upon change of username
+
 ## [0.24.0] - 2021-05-21
 
 ### Added
