@@ -2692,10 +2692,14 @@ class AdminPart(
         self.flush_settings()
 
     def _on_change_username(self, account, username):
-        oauth_tokens = models.OAuthToken.find(username = username, limit = 0)
+        oauth_tokens = models.OAuthToken.find(
+            username = username,
+            rules = False,
+            limit = 0
+        )
         for oauth_token in oauth_tokens:
             oauth_token.username = account.username
-            oauth_token.save()
+            oauth_token.save(immutables_a = False)
 
     @property
     def _last_login_s(self, format = "%Y-%m-%d %H:%M:%S UTC"):

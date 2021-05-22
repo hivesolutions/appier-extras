@@ -147,3 +147,54 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_token.username, "username")
         self.assertEqual(oauth_token.scope, ["admin", "user"])
         self.assertEqual(oauth_token.tokens, ["user"])
+
+    def test_change_username(self):
+        account = appier_extras.admin.Account()
+        account.username = "username"
+        account.email = "username@domain.com"
+        account.password = "password"
+        account.password_confirm = "password"
+        account.save()
+
+        oauth_client = appier_extras.admin.OAuthClient()
+        oauth_client.name = "name"
+        oauth_client.redirect_uri = "http://localhost/oauth"
+        oauth_client.save()
+
+        self.assertNotEqual(oauth_client.id, None)
+        self.assertNotEqual(oauth_client.client_id, None)
+        self.assertNotEqual(oauth_client.client_secret, None)
+        self.assertEqual(oauth_client.name, "name")
+        self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
+
+        oauth_token = oauth_client.build_token_s(username = "username", scope = ["admin", "user"])
+
+        self.assertNotEqual(oauth_token.id, None)
+        self.assertNotEqual(oauth_token.access_token, None)
+        self.assertNotEqual(oauth_token.authorization_code, None)
+        self.assertNotEqual(oauth_token.authorization_code_date, None)
+        self.assertEqual(oauth_token.client.id, oauth_client.id)
+        self.assertEqual(oauth_token.username, "username")
+        self.assertEqual(oauth_token.scope, ["admin", "user"])
+        self.assertEqual(oauth_token.tokens, ["user"])
+
+        account = account.reload()
+        account.change_username_s("username_changed")
+
+        oauth_token_p = oauth_token
+        oauth_token = oauth_token.reload(rules = False)
+
+        self.assertNotEqual(oauth_token.id, None)
+        self.assertNotEqual(oauth_token.access_token, None)
+        self.assertNotEqual(oauth_token.authorization_code, None)
+        self.assertNotEqual(oauth_token.authorization_code_date, None)
+        self.assertEqual(oauth_token.client.id, oauth_client.id)
+        self.assertEqual(oauth_token.username, "username_changed")
+        self.assertEqual(oauth_token.scope, ["admin", "user"])
+        self.assertEqual(oauth_token.tokens, ["user"])
+
+        self.assertNotEqual(id(oauth_token), id(oauth_token_p))
+        self.assertEqual(oauth_token.id, oauth_token_p.id)
+        self.assertEqual(oauth_token.access_token, oauth_token_p.access_token)
+        self.assertEqual(oauth_token.authorization_code, oauth_token_p.authorization_code)
+        self.assertEqual(oauth_token.authorization_code_date, oauth_token_p.authorization_code_date)
