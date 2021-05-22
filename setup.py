@@ -76,6 +76,7 @@ setuptools.setup(
         "appier_extras.test",
         "appier_extras.test.admin",
         "appier_extras.test.admin.models",
+        "appier_extras.test.admin.models.oauth",
         "appier_extras.test.csfr",
         "appier_extras.test.utils",
         "appier_extras.utils"
