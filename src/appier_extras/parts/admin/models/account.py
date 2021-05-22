@@ -964,8 +964,22 @@ class Account(base.Base, authenticable.Authenticable):
         level = 2
     )
     def change_username_s(self, username):
+        # retrieves the global reference to the account class so that
+        # it can be used for the triggering of global operations
+        cls = self.__class__
+
+        # saves the previous username value as it's going to be used
+        # in the event payload once there's a trigger operation
+        username_p = self.username
+
+        # updates the account's username and then saves the instance
+        # so that it reflects the new username
         self.username = username
         self.save()
+
+        # triggers the event that indicates the change in the username
+        # so that any listener can act on it
+        cls.trigger_g("change_username", self, username_p)
 
     @appier.operation(
         name = "Change Email",

@@ -192,10 +192,12 @@ class AdminPart(
         self.load_operations()
 
         self.account_c.bind_g("touch_login", self._on_touch_login)
+        self.account_c.bind_g("change_username", self._on_change_username)
 
     def unload(self):
         appier.Part.unload(self)
 
+        self.account_c.unbind_g("change_username", self._on_change_username)
         self.account_c.unbind_g("touch_login", self._on_touch_login)
 
         self.unload_operations()
@@ -2688,6 +2690,12 @@ class AdminPart(
         self._last_login = time.time()
         self._login_count += 1
         self.flush_settings()
+
+    def _on_change_username(self, account, username):
+        oauth_tokens = models.OAuthToken.find(username = username, limit = 0)
+        for oauth_token in oauth_tokens:
+            oauth_token.username = account.username
+            oauth_token.save()
 
     @property
     def _last_login_s(self, format = "%Y-%m-%d %H:%M:%S UTC"):
