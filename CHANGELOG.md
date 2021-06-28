@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* RIPE Compose library version loader
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.24.2] - 2021-06-28
+
+### Added
+
+* RIPE Compose library version loader
 
 ## [0.24.1] - 2021-05-22
 
