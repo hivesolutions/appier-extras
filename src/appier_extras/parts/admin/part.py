@@ -170,6 +170,7 @@ class AdminPart(
         self.owner.lib_loaders["PIL"] = self._pil_loader
         self.owner.lib_loaders["pymongo"] = self._pymongo_loader
         self.owner.lib_loaders["redis"] = self._redis_loader
+        self.owner.lib_loaders["ripe_compose"] = self._ripe_compose_loader
         self.owner.lib_loaders["jinja2"] = self._jinja2_loader
         self.owner.lib_loaders["ssl"] = self._ssl_loader
 
@@ -2488,6 +2489,12 @@ class AdminPart(
         if hasattr(module, "VERSION"):
             version = ".".join([str(item) for item in module.VERSION])
             versions.append(("RedisPy", version))
+        return versions
+
+    def _ripe_compose_loader(self, module):
+        versions = []
+        if hasattr(module, "configurator") and hasattr(module.configurator, "VERSION"):
+            versions.append(("RIPE Compose", module.configurator.VERSION))
         return versions
 
     def _jinja2_loader(self, module):
