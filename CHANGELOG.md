@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Issue related with bad list merging in `_join_m`
 
 ## [0.24.2] - 2021-06-28
 

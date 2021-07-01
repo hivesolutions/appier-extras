@@ -833,10 +833,12 @@ class Account(base.Base, authenticable.Authenticable):
                 else:
                     if not isinstance(previous, list):
                         previous = [previous]
-                    if not value in previous:
-                        value = previous + [value]
-                    else:
-                        value = previous
+                    if not isinstance(value, list):
+                        value = [value]
+                    for item in value:
+                        if item in previous: continue
+                        previous.append(item)
+                    value = previous
             target[key] = value
         return target
 

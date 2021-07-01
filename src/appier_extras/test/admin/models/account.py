@@ -336,3 +336,30 @@ class AccountTest(unittest.TestCase):
                 }
             }
         )
+
+        result = account._join_m(
+            {
+                "name" : "brands-origin",
+                "brand" : "nike",
+                "ctx" : {
+                    "brand" : ["nike", "nifty"]
+                }
+            }, {
+                "name" : "brands-target",
+                "brand" : "adidas",
+                "ctx" : {
+                    "brand" : ["adidas", "amidas"]
+                }
+            }
+        )
+
+        self.assertEqual(
+            result,
+            {
+                "name" : ["brands-target", "brands-origin"],
+                "brand" : ["adidas", "nike"],
+                "ctx" : {
+                    "brand" : ["adidas", "amidas", "nike", "nifty"]
+                }
+            }
+        )
