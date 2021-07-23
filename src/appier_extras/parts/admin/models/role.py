@@ -189,25 +189,29 @@ class Role(base.Base):
         parent.save()
 
     @appier.operation(
-        name = "Add Child",
+        name = "Add Child(s)",
         parameters = (("Name", "name", str),)
     )
     def add_child_s(self, name):
         cls = self.__class__
-        child = cls.get(name = name)
-        if child in self.children: return
-        self.children.append(child)
+        names = [name.strip() for name in name.strip().split(",")]
+        for name in names:
+            child = cls.get(name = name)
+            if child in self.children: continue
+            self.children.append(child)
         self.save()
 
     @appier.operation(
-        name = "Remove Child",
+        name = "Remove Child(s)",
         parameters = (("Name", "name", str),)
     )
     def remove_child_s(self, name):
         cls = self.__class__
-        child = cls.get(name = name)
-        if not child in self.children: return
-        self.children.remove(child)
+        names = [name.strip() for name in name.strip().split(",")]
+        for name in names:
+            child = cls.get(name = name)
+            if not child in self.children: continue
+            self.children.remove(child)
         self.save()
 
     @appier.operation(name = "Fix Children", level = 2)
