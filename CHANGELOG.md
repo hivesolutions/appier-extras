@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Support for multiple child add and remove at the `Role` entity level
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.24.4] - 2021-07-23
+
+### Added
+
+* Support for multiple child add and remove at the `Role` entity level
 
 ## [0.24.3] - 2021-07-01
 
