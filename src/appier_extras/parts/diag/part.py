@@ -53,6 +53,13 @@ class DiagPart(appier.Part):
 
     Notice that most of the diagnostics is performed locally and is
     not optimized for proper asynchronous usage.
+
+    Buffer backed support exists for the following remote services:
+    loggly and logstaash, allowing almost async usage with minimal
+    impact in the main execution thread. The implementation of the
+    flush operation depends on the network library in use, meaning
+    that if a proper "delayer" method exists it may not even block
+    the main thread for the network operations.
     """
 
     def __init__(self, *args, **kwargs):
