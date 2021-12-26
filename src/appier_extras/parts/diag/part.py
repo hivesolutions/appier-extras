@@ -55,7 +55,7 @@ class DiagPart(appier.Part):
     not optimized for proper asynchronous usage.
 
     Buffer backed support exists for the following remote services:
-    loggly and logstaash, allowing almost async usage with minimal
+    loggly and logstash, allowing almost async usage with minimal
     impact in the main execution thread. The implementation of the
     flush operation depends on the network library in use, meaning
     that if a proper "delayer" method exists it may not even block

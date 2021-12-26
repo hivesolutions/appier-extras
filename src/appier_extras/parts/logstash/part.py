@@ -76,6 +76,15 @@ class LogstashPart(appier.Part):
     def version(self):
         return base.VERSION
 
+    def info(self):
+        info = appier.Part.info(self)
+        info.update(
+            log = self.log,
+            buffer_size = self.buffer_size,
+            timeout = self.timeout
+        )
+        return info
+
     def load(self):
         appier.Part.load(self)
 
