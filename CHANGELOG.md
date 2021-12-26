@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* More debug information to logstash and loggly parts
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.24.5] - 2021-12-26
+
+### Added
+
+* More debug information to logstash and loggly parts
 
 ## [0.24.4] - 2021-07-23
 
