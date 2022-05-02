@@ -78,7 +78,7 @@
                     {% block footer %}
                         <div class="footer" style="font-size:10px;line-height:16px;text-align:right;margin-top: 48px;">
                             {% set copyright = owner.copyright|default(copyright, True)|default("Hive Solutions", True) %}
-                            {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2008-2021", True) %}
+                            {% set copyright_year = owner.copyright_year|default(copyright_year, True)|default("2008-2022", True) %}
                             &copy; {{ copyright_year }} {{ copyright }} &middot; {{ "All rights reserved"|locale }}<br/>
                         </div>
                     {% endblock %}
