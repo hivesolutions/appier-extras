@@ -47,33 +47,38 @@ def resize_image(
     format = None,
     quality = None
 ):
-    import PIL.Image
+    def get_data():
+        import PIL.Image
 
-    input_stream = appier.legacy.BytesIO(data)
-    output_stream = appier.legacy.BytesIO()
+        input_stream = appier.legacy.BytesIO(data)
+        output_stream = appier.legacy.BytesIO()
 
-    image = PIL.Image.open(input_stream)
+        image = PIL.Image.open(input_stream)
 
-    try:
-        format = format if format else image.format
+        try:
+            target_width = width
+            target_height = width
+            target_format = format if format else image.format
 
-        image_width, image_height = image.size
-        if width: ratio = float(image_width) / float(width)
-        elif height: ratio = float(image_height) / float(height)
-        else: ratio = 1.0
+            image_width, image_height = image.size
+            if width: ratio = float(image_width) / float(width)
+            elif height: ratio = float(image_height) / float(height)
+            else: ratio = 1.0
 
-        if not width: width = int(image_width * ratio)
-        if not height: height = int(image_height * ratio)
+            if not target_width: target_width = int(image_width * ratio)
+            if not target_height: target_height = int(image_height * ratio)
 
-        image.thumbnail((width, height), PIL.Image.ANTIALIAS)
-        image.save(output_stream, format, quality = quality)
+            image.thumbnail((target_width, target_height), PIL.Image.ANTIALIAS)
+            image.save(output_stream, target_format, quality = quality)
 
-        output_data = output_stream.getvalue()
-    finally:
-        input_stream.close()
-        output_stream.close()
-        image.close()
+            output_data = output_stream.getvalue()
+        finally:
+            input_stream.close()
+            output_stream.close()
+            image.close()
+
+        return output_data
 
     etag = "%s-w%s-h%s" % (etag, str(width), str(height)) if etag else etag
 
-    return (output_data, etag)
+    return (get_data, etag)
