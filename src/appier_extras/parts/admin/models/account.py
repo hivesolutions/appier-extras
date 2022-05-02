@@ -38,9 +38,12 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import time
-import appier
 import hashlib
 import binascii
+
+import appier
+
+from appier_extras import utils
 
 from appier_extras.parts.admin.models import base
 from appier_extras.parts.admin.models import role
@@ -784,7 +787,14 @@ class Account(base.Base, authenticable.Authenticable):
         cls = self.__class__
         return cls.generate(value)
 
-    def _send_avatar(self, image = "avatar.png", strict = False, cache = False):
+    def _send_avatar(
+        self,
+        image = "avatar.png",
+        width = None,
+        height = None,
+        strict = False,
+        cache = False
+    ):
         admin_part = self.owner.admin_part
         avatar = self.avatar if hasattr(self, "avatar") else None
         if not avatar:
@@ -795,10 +805,17 @@ class Account(base.Base, authenticable.Authenticable):
                 "images/" + image,
                 static_path = admin_part.static_path
             )
-        return self.owner.send_file(
+        resized = bool(width or height)
+        avatar_data, avatar_etag = utils.resize_image(
             avatar.data,
-            content_type = avatar.mime,
             etag = avatar.etag,
+            width = width,
+            height = height
+        ) if resized else (avatar.data, avatar.etag)
+        return self.owner.send_file(
+            avatar_data,
+            content_type = avatar.mime,
+            etag = avatar_etag,
             cache = cache
         )
 

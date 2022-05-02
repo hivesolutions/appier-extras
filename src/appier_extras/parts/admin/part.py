@@ -741,6 +741,9 @@ class AdminPart(
         raise appier.NotImplementedError()
 
     def avatar_account(self, username):
+        size = self.field("size", None, cast = int)
+        width = self.field("width", None, cast = int)
+        height = self.field("height", None, cast = int)
         strict = self.field("strict", False, cast = bool)
         cache = self.field("cache", False, cast = bool)
         account_c = self._get_cls(self.account_c)
@@ -749,6 +752,8 @@ class AdminPart(
             rules = False
         )
         return account._send_avatar(
+            width = width or size,
+            height = height or size,
             strict = strict,
             cache = cache
         )

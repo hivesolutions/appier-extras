@@ -19,6 +19,9 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,12 +37,43 @@ __copyright__ = "Copyright (c) 2008-2021 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import format
-from . import image
-from . import markdown
-from . import net
+import appier
 
-from .format import SafeFormatter
-from .image import resize_image
-from .markdown import MarkdownParser, MarkdownGenerator, MarkdownDebug, MarkdownHTML, has_regex
-from .net import size_round_unit
+def resize_image(
+    data,
+    etag = None,
+    width = None,
+    height = None,
+    format = None,
+    quality = None
+):
+    import PIL.Image
+
+    input_stream = appier.legacy.BytesIO(data)
+    output_stream = appier.legacy.BytesIO()
+
+    image = PIL.Image.open(input_stream)
+
+    try:
+        format = format if format else image.format
+
+        image_width, image_height = image.size
+        if width: ratio = float(image_width) / float(width)
+        elif height: ratio = float(image_height) / float(height)
+        else: ratio = 1.0
+
+        if not width: width = int(image_width * ratio)
+        if not height: height = int(image_height * ratio)
+
+        image.thumbnail((width, height), PIL.Image.ANTIALIAS)
+        image.save(output_stream, format, quality = quality)
+
+        output_data = output_stream.getvalue()
+    finally:
+        input_stream.close()
+        output_stream.close()
+        image.close()
+
+    etag = "%s-w%s-h%s" % (etag, str(width), str(height)) if etag else etag
+
+    return (output_data, etag)
