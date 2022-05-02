@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Removed nightly build from `.travis.yml`
 
 ## [0.24.7] - 2022-05-02
 
