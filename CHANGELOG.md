@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Support for resizing in the avatar routes
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.24.6] - 2022-05-02
+
+### Added
+
+* Support for resizing in the avatar routes
 
 ## [0.24.5] - 2021-12-26
 
