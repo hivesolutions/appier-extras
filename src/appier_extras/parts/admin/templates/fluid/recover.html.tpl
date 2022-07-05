@@ -22,7 +22,7 @@
             </div>
             <div class="new">
                 <span>or</span>
-                <a href="{{ url_for('admin.login') }}">return to sign in</a>
+                <a href="javascript:history.back()">return to previous page</a>
             </div>
         </form>
     </div>

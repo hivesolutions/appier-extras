@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * Removed nightly build from `.travis.yml`
+* Recover password with link to return to the previous page instead of the sign in page
 
 ## [0.24.7] - 2022-05-02
 
