@@ -2,8 +2,8 @@
 {% block title %}Recover{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
-{% set param_next = request.args.get('next')[0] %}
-{% set url_signin = url_for('admin.login', next = param_next) if param_next else url_for('admin.login') %}
+{% set param_next = request.args.get("next")[0] %}
+{% set url_signin = url_for("admin.login", next = param_next) if param_next else url_for("admin.login") %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Recover password</h1>
         <h3>Use your username or email</h3>
