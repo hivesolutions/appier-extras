@@ -2,8 +2,7 @@
 {% block title %}Login{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
-{% set param_next = request.args.get("next")[0] %}
-{% set url_recover = url_for("admin.recover", next = param_next) if param_next else url_for("admin.recover") %}
+{% set next = request.args.get("next")[0] if request.args.get("next")[0] else None %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         {% if owner.logo_url %}
             <img class="login-logo" src="{{ owner.logo_url }}" />
@@ -25,7 +24,7 @@
                        autocomplete="current-password" placeholder="password" />
             </div>
             <div class="forgot">
-                <a href="{{ url_recover }}">Forgot your password?</a>
+                <a href="{{ url_for('admin.login', next=next) }}">Forgot your password?</a>
             </div>
             <div class="buttons">
                 <span class="button medium button-color button-blue" data-submit="true">
