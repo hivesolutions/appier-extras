@@ -566,7 +566,11 @@ class AdminPart(
         )
 
     def recover(self):
-        return self.template("recover.html.tpl")
+        next = self.field("next")
+        return self.template(
+            "recover.html.tpl",
+            next = next
+        )
 
     def recover_do(self):
         identifier = self.field("identifier")
