@@ -2,6 +2,7 @@
 {% block title %}Recover{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
+{% set next = request.args.get("next")[0] if request.args.get("next")[0] else None %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         <h1>Recover password</h1>
         <h3>Use your username or email</h3>
@@ -22,7 +23,7 @@
             </div>
             <div class="new">
                 <span>or</span>
-                <a href="{{ url_for('admin.login') }}">return to sign in</a>
+                <a href="{{ url_for("admin.login", next = next) }}">return to sign in</a>
             </div>
         </form>
     </div>
