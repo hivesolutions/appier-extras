@@ -173,6 +173,7 @@ class AdminPart(
         self.owner.lib_loaders["ripe_compose"] = self._ripe_compose_loader
         self.owner.lib_loaders["jinja2"] = self._jinja2_loader
         self.owner.lib_loaders["ssl"] = self._ssl_loader
+        self.owner.lib_loaders["emoji"] = self._emoji_loader
 
         self.owner.add_filter(self.markdown_jinja, "markdown")
 
@@ -2516,6 +2517,12 @@ class AdminPart(
         versions = []
         if hasattr(module, "OPENSSL_VERSION"):
             versions.append(("SSL", module.OPENSSL_VERSION))
+        return versions
+
+    def _emoji_loader(self, module):
+        versions = []
+        if hasattr(module, "__version__"):
+            versions.append(("Emoji", module.__version__))
         return versions
 
     def _attached(self, models):
