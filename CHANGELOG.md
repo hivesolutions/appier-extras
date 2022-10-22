@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.24.9] - 2022-10-22
+
+### Fixed
+
 * More flexible support for multiple recaptcha tokens
 
 ## [0.24.8] - 2022-08-02
