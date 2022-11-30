@@ -37,7 +37,7 @@ __copyright__ = "Copyright (c) 2008-2022 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-NAME = "appier_extras"
+NAME = "appier-extras"
 """ The name to be used to describe the library while working
 on its own environment, this is just a descriptive value """
 

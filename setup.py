@@ -41,14 +41,14 @@ import os
 import setuptools
 
 setuptools.setup(
-    name = "appier_extras",
+    name = "appier-extras",
     version = "0.24.9",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Appier Framework Extra Elements",
     license = "Apache License, Version 2.0",
     keywords = "appier extras framework web json",
-    url = "http://appier_extras.hive.pt",
+    url = "http://appier-extras.hive.pt",
     zip_safe = False,
     packages = [
         "appier_extras",
