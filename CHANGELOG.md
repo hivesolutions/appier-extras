@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * Renamed repository to `appier-extras`
+* New year naming 2023
 
 ### Fixed
 
