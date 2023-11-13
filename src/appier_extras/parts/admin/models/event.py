@@ -269,6 +269,10 @@ class Event(base.Base):
         import kafka
 
         kafka_server = appier.conf("KAFKA_SERVER", "localhost:9092")
+        security_protocol = appier.conf("KAFKA_SECURITY_PROTOCOL", "PLAINTEXT")
+        sasl_mechanism = appier.conf("KAFKA_SASL_MECHANISM", None)
+        sasl_plain_username = appier.conf("KAFKA_SASL_USERNAME", None)
+        sasl_plain_password = appier.conf("KAFKA_SASL_PASSWORD", None)
         client_id = appier.conf("KAFKA_PRODUCER_CLIENT_ID", None)
         compression_type = appier.conf("KAFKA_COMPRESSION_TYPE", None)
         retries = appier.conf("KAFKA_RETRIES", 0, cast = int)
@@ -281,6 +285,10 @@ class Event(base.Base):
 
         cls._kafka = kafka.KafkaProducer(
             bootstrap_servers = kafka_server,
+            security_protocol = security_protocol,
+            sasl_mechanism = sasl_mechanism,
+            sasl_plain_username = sasl_plain_username,
+            sasl_plain_password = sasl_plain_password,
             client_id = client_id,
             compression_type = compression_type,
             retries = retries,
