@@ -16,12 +16,7 @@ import appier_extras
 class HelloApp(appier.WebApp):
 
     def __init__(self):
-        appier.WebApp.__init__(
-            self,
-            parts = (
-                appier_extras.AdminPart,
-            )
-        )
+        appier.WebApp.__init__(self, parts=(appier_extras.AdminPart,))
 
 HelloApp().serve()
 ```
