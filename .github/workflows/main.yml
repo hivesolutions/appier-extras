@@ -55,4 +55,4 @@ jobs:
           pip install black
           black . --check
         if: matrix.python-version == '3.12'
-      - run: ADAPTER=tiny python setup.py test
+      - run: ADAPTER=tiny pypy setup.py test
