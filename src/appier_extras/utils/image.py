@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -39,14 +30,8 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-def resize_image(
-    data,
-    etag = None,
-    width = None,
-    height = None,
-    format = None,
-    quality = None
-):
+
+def resize_image(data, etag=None, width=None, height=None, format=None, quality=None):
     def get_data():
         import PIL.Image
 
@@ -61,15 +46,20 @@ def resize_image(
             target_format = format if format else image.format
 
             image_width, image_height = image.size
-            if width: ratio = float(image_width) / float(width)
-            elif height: ratio = float(image_height) / float(height)
-            else: ratio = 1.0
+            if width:
+                ratio = float(image_width) / float(width)
+            elif height:
+                ratio = float(image_height) / float(height)
+            else:
+                ratio = 1.0
 
-            if not target_width: target_width = int(image_width * ratio)
-            if not target_height: target_height = int(image_height * ratio)
+            if not target_width:
+                target_width = int(image_width * ratio)
+            if not target_height:
+                target_height = int(image_height * ratio)
 
             image.thumbnail((target_width, target_height), PIL.Image.ANTIALIAS)
-            image.save(output_stream, target_format, quality = quality)
+            image.save(output_stream, target_format, quality=quality)
 
             output_data = output_stream.getvalue()
         finally:

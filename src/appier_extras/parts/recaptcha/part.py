@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,6 +33,7 @@ import appier
 from appier_extras import base
 
 from . import util
+
 
 class ReCaptchaPart(appier.Part):
     """
@@ -65,46 +57,49 @@ class ReCaptchaPart(appier.Part):
         self.owner.context["recaptcha_script"] = self.recaptcha_script
         self.owner.context["recaptcha_available"] = self.recaptcha_available
 
-    def recaptcha(self, action = "default", name = "recaptcha_token", force = False):
-        if not util._recaptcha_available() and not force: return ""
+    def recaptcha(self, action="default", name="recaptcha_token", force=False):
+        if not util._recaptcha_available() and not force:
+            return ""
         return self.owner.escape_template(
             self._build_input(name) + self._build_script(action)
         )
 
-    def recaptcha_input(self, name = "recaptcha_token", force = False):
-        if not util._recaptcha_available() and not force: return ""
-        return self.owner.escape_template(
-            self._build_input(name)
-        )
+    def recaptcha_input(self, name="recaptcha_token", force=False):
+        if not util._recaptcha_available() and not force:
+            return ""
+        return self.owner.escape_template(self._build_input(name))
 
-    def recaptcha_script(self, action = "default", force = False):
-        if not util._recaptcha_available() and not force: return ""
-        return self.owner.escape_template(
-            self._build_script(action)
-        )
+    def recaptcha_script(self, action="default", force=False):
+        if not util._recaptcha_available() and not force:
+            return ""
+        return self.owner.escape_template(self._build_script(action))
 
     def recaptcha_available(self):
         return util._recaptcha_available()
 
     def _build_input(self, name):
-        return "<input type=\"hidden\" id=\"recaptcha-token\" name=\"%s\" />" % name
+        return '<input type="hidden" id="recaptcha-token" name="%s" />' % name
 
     def _build_script(self, action):
         recaptcha_key = appier.conf("RECAPTCHA_KEY", None)
-        appier.verify(recaptcha_key, message = "No reCAPTCHA site key provided")
-        return "<script type=\"application/javascript\" src=\"https://www.google.com/recaptcha/api.js?render=%s\"></script>" % recaptcha_key +\
-            "<script type=\"application/javascript\">window.genRecaptcha = function () {" +\
-            "grecaptcha.ready(function () {" +\
-            "var elements = document.querySelectorAll(\"[name=recaptcha_token], #recaptcha-token\");" +\
-            "for (var index = 0; index < elements.length; index++) {" +\
-            "(function () {" +\
-            "var element = elements[index];" +\
-            "grecaptcha.execute(\"%s\", {action: \"%s\"}).then(function (token) {" % (recaptcha_key, action) +\
-            "element.value = token;" +\
-            "});" +\
-            "})();" +\
-            "}" +\
-            "});"  +\
-            "};" +\
-            "window.genRecaptcha();" +\
-            "</script>"
+        appier.verify(recaptcha_key, message="No reCAPTCHA site key provided")
+        return (
+            '<script type="application/javascript" src="https://www.google.com/recaptcha/api.js?render=%s"></script>'
+            % recaptcha_key
+            + '<script type="application/javascript">window.genRecaptcha = function () {'
+            + "grecaptcha.ready(function () {"
+            + 'var elements = document.querySelectorAll("[name=recaptcha_token], #recaptcha-token");'
+            + "for (var index = 0; index < elements.length; index++) {"
+            + "(function () {"
+            + "var element = elements[index];"
+            + 'grecaptcha.execute("%s", {action: "%s"}).then(function (token) {'
+            % (recaptcha_key, action)
+            + "element.value = token;"
+            + "});"
+            + "})();"
+            + "}"
+            + "});"
+            + "};"
+            + "window.genRecaptcha();"
+            + "</script>"
+        )

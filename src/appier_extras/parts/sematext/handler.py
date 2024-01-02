@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -43,27 +34,23 @@ import logging
 import datetime
 import threading
 
-class SematextHandler(logging.Handler):
 
+class SematextHandler(logging.Handler):
     def __init__(
-        self,
-        level = logging.NOTSET,
-        owner = None,
-        api = None,
-        buffer_size = 128,
-        timeout = 30
+        self, level=logging.NOTSET, owner=None, api=None, buffer_size=128, timeout=30
     ):
-        logging.Handler.__init__(self, level = level)
+        logging.Handler.__init__(self, level=level)
         self.owner = owner
         self.api = api
         self.buffer_size = buffer_size
         self.buffer = []
-        self._schedule(timeout = timeout)
+        self._schedule(timeout=timeout)
 
     def emit(self, record):
         # verifies if the API structure is defined and set and if
         # that's not the case returns immediately
-        if not self.api: return
+        if not self.api:
+            return
 
         # retrieves the current date time value as an utc value
         # and then formats it according to the provided format string
@@ -74,16 +61,16 @@ class SematextHandler(logging.Handler):
         # to the sematext infra-structure, this should represent a
         # proper structure ready to be debugged
         log = {
-            "@timestamp" : now_s,
-            "logger" : record.name,
-            "message" : record.message,
-            "level" : record.levelname,
-            "path" : record.pathname,
-            "lineno" : record.lineno,
-            "host" : socket.gethostname(),
-            "hostname" : socket.gethostname(),
-            "tid" : threading.current_thread().ident,
-            "pid" : os.getpid() if hasattr(os, "getpid") else -1,
+            "@timestamp": now_s,
+            "logger": record.name,
+            "message": record.message,
+            "level": record.levelname,
+            "path": record.pathname,
+            "lineno": record.lineno,
+            "host": socket.gethostname(),
+            "hostname": socket.gethostname(),
+            "tid": threading.current_thread().ident,
+            "pid": os.getpid() if hasattr(os, "getpid") else -1,
         }
 
         # adds the new log item to the buffer so that it's properly
@@ -92,14 +79,16 @@ class SematextHandler(logging.Handler):
         # calling operations that should block the infra-structure
         self.buffer.append(log)
         should_flush = len(self.buffer) >= self.buffer_size
-        if should_flush: self.flush()
+        if should_flush:
+            self.flush()
 
-    def flush(self, force = False):
+    def flush(self, force=False):
         logging.Handler.flush(self)
 
         # verifies if the API structure is defined and set and if
         # that's not the case returns immediately
-        if not self.api: return
+        if not self.api:
+            return
 
         # retrieves some references from the current instance that
         # are going to be used in the flush operation
@@ -108,24 +97,25 @@ class SematextHandler(logging.Handler):
 
         # verifies if the buffer is empty and if that's the case and
         # the force flag is not set, returns immediately
-        if not buffer and not force: return
+        if not buffer and not force:
+            return
 
         # creates the lambda function that is going to be used for the
         # bulk flushing operation of the buffer, this is going to be
         # called on a delayed (async fashion) so that no blocking occurs
         # in the current logical flow
-        call_log = lambda: self.api.log_bulk(buffer, type = "default")
+        call_log = lambda: self.api.log_bulk(buffer, type="default")
 
         # schedules the call log operation and then empties the buffer
         # so that it's no longer going to be used (flushed)
         app.delay(call_log)
         self.buffer = []
 
-    def _schedule(self, timeout = 30):
+    def _schedule(self, timeout=30):
         app = self.owner.owner
 
         def tick():
             self.flush()
-            app.schedule(tick, timeout = timeout)
+            app.schedule(tick, timeout=timeout)
 
-        app.schedule(tick, timeout = timeout)
+        app.schedule(tick, timeout=timeout)

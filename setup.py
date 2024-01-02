@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,16 +32,16 @@ import os
 import setuptools
 
 setuptools.setup(
-    name = "appier-extras",
-    version = "0.24.9",
-    author = "Hive Solutions Lda.",
-    author_email = "development@hive.pt",
-    description = "Appier Framework Extra Elements",
-    license = "Apache License, Version 2.0",
-    keywords = "appier extras framework web json",
-    url = "http://appier-extras.hive.pt",
-    zip_safe = False,
-    packages = [
+    name="appier-extras",
+    version="0.24.9",
+    author="Hive Solutions Lda.",
+    author_email="development@hive.pt",
+    description="Appier Framework Extra Elements",
+    license="Apache License, Version 2.0",
+    keywords="appier extras framework web json",
+    url="http://appier-extras.hive.pt",
+    zip_safe=False,
+    packages=[
         "appier_extras",
         "appier_extras.parts",
         "appier_extras.parts.admin",
@@ -79,14 +70,12 @@ setuptools.setup(
         "appier_extras.test.admin.models.oauth",
         "appier_extras.test.csfr",
         "appier_extras.test.utils",
-        "appier_extras.utils"
+        "appier_extras.utils",
     ],
-    test_suite = "appier_extras.test",
-    package_dir = {
-        "" : os.path.normpath("src")
-    },
-    package_data = {
-        "appier_extras.parts.admin" : [
+    test_suite="appier_extras.test",
+    package_dir={"": os.path.normpath("src")},
+    package_data={
+        "appier_extras.parts.admin": [
             "static/css/*",
             "static/images/*",
             "static/js/*",
@@ -96,26 +85,14 @@ setuptools.setup(
             "templates/fluid/*",
             "templates/fluid/*/*",
             "templates/static/*",
-            "templates/static/*/*"
+            "templates/static/*/*",
         ],
-        "appier_extras.parts.captcha" : [
-            "static/fonts/*",
-            "static/patterns/*"
-        ],
-        "appier_extras.parts.diag" : [
-            "templates/*",
-            "templates/*/*"
-        ]
+        "appier_extras.parts.captcha": ["static/fonts/*", "static/patterns/*"],
+        "appier_extras.parts.diag": ["templates/*", "templates/*/*"],
     },
-    entry_points = {
-        "console_scripts" : [
-            "markdown = appier_extras.utils.markdown:run"
-        ]
-    },
-    install_requires = [
-        "appier"
-    ],
-    classifiers = [
+    entry_points={"console_scripts": ["markdown = appier_extras.utils.markdown:run"]},
+    install_requires=["appier"],
+    classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Utilities",
         "License :: OSI Approved :: Apache Software License",
@@ -130,6 +107,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7"
-    ]
+        "Programming Language :: Python :: 3.7",
+    ],
 )

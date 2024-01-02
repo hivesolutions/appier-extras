@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - run: python --version
       - run: |
           pip install -r requirements.txt
@@ -20,6 +20,10 @@ jobs:
       - run: |
           pip install -r requirements.py2.txt
         if: matrix.python-version == '2.7'
+      - run: |
+          pip install black
+          black . --check
+        if: matrix.python-version == '3.12'
       - run: ADAPTER=tiny python setup.py test
       - run: pip install twine wheel
       - run: python setup.py sdist bdist_wheel

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -44,6 +35,7 @@ import appier
 from appier_extras.parts.admin.models import base
 from appier_extras.parts.admin.models.oauth import oauth_token
 
+
 class OAuthClient(base.Base):
     """
     Represents an OAuth 2.0 API client and contains the
@@ -51,43 +43,27 @@ class OAuthClient(base.Base):
     able to generate access tokens.
     """
 
-    name = appier.field(
-        index = "hashed",
-        default = True,
-        immutable = True
-    )
+    name = appier.field(index="hashed", default=True, immutable=True)
     """ The name of the client, this should be used as primary
     identification to the end-user """
 
     client_id = appier.field(
-        index = "hashed",
-        safe = True,
-        immutable = True,
-        description = "Client ID"
+        index="hashed", safe=True, immutable=True, description="Client ID"
     )
     """ The client identifier issued to the client during the
     registration process (should be globally unique) """
 
     client_secret = appier.field(
-        index = "hashed",
-        safe = True,
-        private = True,
-        immutable = True
+        index="hashed", safe=True, private=True, immutable=True
     )
     """ The client secret issued to the client during the
     registration process (should be globally unique) """
 
-    redirect_uri = appier.field(
-        index = "hashed",
-        meta = "url",
-        description = "Redirect URI"
-    )
+    redirect_uri = appier.field(index="hashed", meta="url", description="Redirect URI")
     """ The redirect URI where to redirect, the user agent
     after a successful token request operation """
 
-    scope = appier.field(
-        type = list
-    )
+    scope = appier.field(type=list)
     """ The sequence of scope values allowed for the current
     client, if not set all of the scope values are considered
     to be allowed """
@@ -101,10 +77,9 @@ class OAuthClient(base.Base):
             appier.string_gt("name", 3),
             appier.string_lt("name", 64),
             appier.not_duplicate("name", cls._name()),
-
             appier.not_null("redirect_uri"),
             appier.not_empty("redirect_uri"),
-            appier.is_url("redirect_uri")
+            appier.is_url("redirect_uri"),
         ]
 
     @classmethod
@@ -113,68 +88,66 @@ class OAuthClient(base.Base):
 
     @classmethod
     @appier.operation(
-        name = "Create",
-        parameters = (
+        name="Create",
+        parameters=(
             ("Name", "name", str),
-            ("Redirect URI", "redirect_uri", str, "http://example.com/oauth")
+            ("Redirect URI", "redirect_uri", str, "http://example.com/oauth"),
         ),
-        factory = True
+        factory=True,
     )
     def create_s(cls, name, redirect_uri):
-        oauth_client = cls(
-            name = name,
-            redirect_uri = redirect_uri
-        )
+        oauth_client = cls(name=name, redirect_uri=redirect_uri)
         oauth_client.save()
         return oauth_client
 
     @classmethod
-    def _underscore(cls, plural = True):
+    def _underscore(cls, plural=True):
         return "oauth_clients" if plural else "oauth_client"
 
     @classmethod
-    def _readable(cls, plural = False):
+    def _readable(cls, plural=False):
         return "OAuth Clients" if plural else "OAuth Client"
 
     def pre_create(self):
         base.Base.pre_create(self)
 
-        self.client_id = appier.gen_token(hash = hashlib.md5)
+        self.client_id = appier.gen_token(hash=hashlib.md5)
         self.client_secret = appier.gen_token()
 
     def assert_redirect_uri(self, redirect_uri):
         appier.verify(
             redirect_uri == self.redirect_uri,
-            message = "The provided redirect URI is not valid",
-            exception = appier.SecurityError,
-            code = 403
+            message="The provided redirect URI is not valid",
+            exception=appier.SecurityError,
+            code=403,
         )
 
     def assert_scope(self, scope):
-        if not self.scope: return
+        if not self.scope:
+            return
         invalid = [token for token in scope if not token in self.scope]
         appier.verify(
             not invalid,
-            message = "The provided scope is not valid",
-            exception = appier.SecurityError,
-            code = 403
+            message="The provided scope is not valid",
+            exception=appier.SecurityError,
+            code=403,
         )
 
     def get_tokens(self):
-        return oauth_token.OAuthToken.find(client = self.id)
+        return oauth_token.OAuthToken.find(client=self.id)
 
     @appier.operation(
-        name = "Build Token",
-        parameters = (
-             ("Username", "username", str),
-             ("Scope", "scope", list, ["me", "account"]),
-             ("Redirect URI", "redirect_uri", str),
-             ("Long Lived", "long", bool, False)
+        name="Build Token",
+        parameters=(
+            ("Username", "username", str),
+            ("Scope", "scope", list, ["me", "account"]),
+            ("Redirect URI", "redirect_uri", str),
+            ("Long Lived", "long", bool, False),
         ),
-        factory = True,
-        level = 2
+        factory=True,
+        level=2,
     )
-    def build_token_s(self, username = None, scope = [], redirect_uri = None, long = False):
+    def build_token_s(self, username=None, scope=[], redirect_uri=None, long=False):
         _oauth_token = oauth_token.OAuthToken()
         _oauth_token.username = username or self.session["username"]
         _oauth_token.scope = scope
@@ -184,7 +157,7 @@ class OAuthClient(base.Base):
         _oauth_token.save()
         return _oauth_token
 
-    @appier.operation(name = "Invalidate Tokens", level = 2)
+    @appier.operation(name="Invalidate Tokens", level=2)
     def invalidate_s(self):
         """
         Operation that invalidates the complete set of OAuth (access)
@@ -197,16 +170,17 @@ class OAuthClient(base.Base):
         # retrieves the complete set of OAuth (access) tokens for the
         # current client and runs the delete operation (removing them)
         tokens = self.get_tokens()
-        for token in tokens: token.delete()
+        for token in tokens:
+            token.delete()
 
-    @appier.view(name = "Tokens")
+    @appier.view(name="Tokens")
     def tokens_v(self, *args, **kwargs):
         cls = oauth_token.OAuthToken
         kwargs["sort"] = kwargs.get("sort", [("id", -1)])
-        kwargs.update(client = self.id)
+        kwargs.update(client=self.id)
         return appier.lazy_dict(
-            model = cls,
-            kwargs = kwargs,
-            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
-            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
+            model=cls,
+            kwargs=kwargs,
+            entities=appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page=appier.lazy(lambda: cls.paginate(*args, **kwargs)),
         )

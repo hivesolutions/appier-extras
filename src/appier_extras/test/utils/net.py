@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,35 +32,35 @@ import unittest
 
 import appier_extras
 
-class NetTest(unittest.TestCase):
 
+class NetTest(unittest.TestCase):
     def test_size_round_unit(self):
-        result = appier_extras.size_round_unit(209715200, space = True)
+        result = appier_extras.size_round_unit(209715200, space=True)
         self.assertEqual(result, "200 MB")
 
-        result = appier_extras.size_round_unit(20480, space = True)
+        result = appier_extras.size_round_unit(20480, space=True)
         self.assertEqual(result, "20 KB")
 
-        result = appier_extras.size_round_unit(2048, reduce = False, space = True)
+        result = appier_extras.size_round_unit(2048, reduce=False, space=True)
         self.assertEqual(result, "2.00 KB")
 
-        result = appier_extras.size_round_unit(2500, space = True)
+        result = appier_extras.size_round_unit(2500, space=True)
         self.assertEqual(result, "2.44 KB")
 
-        result = appier_extras.size_round_unit(2500, reduce = False, space = True)
+        result = appier_extras.size_round_unit(2500, reduce=False, space=True)
         self.assertEqual(result, "2.44 KB")
 
         result = appier_extras.size_round_unit(1)
         self.assertEqual(result, "1B")
 
-        result = appier_extras.size_round_unit(2048, minimum = 2049, reduce = False)
+        result = appier_extras.size_round_unit(2048, minimum=2049, reduce=False)
         self.assertEqual(result, "2048B")
 
-        result = appier_extras.size_round_unit(2049, places = 4, reduce = False)
+        result = appier_extras.size_round_unit(2049, places=4, reduce=False)
         self.assertEqual(result, "2.001KB")
 
-        result = appier_extras.size_round_unit(2048, places = 0, reduce = False)
+        result = appier_extras.size_round_unit(2048, places=0, reduce=False)
         self.assertEqual(result, "2KB")
 
-        result = appier_extras.size_round_unit(2049, places = 0, reduce = False)
+        result = appier_extras.size_round_unit(2049, places=0, reduce=False)
         self.assertEqual(result, "2KB")

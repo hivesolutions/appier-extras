@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,34 +32,21 @@ import appier
 
 from appier_extras.parts.admin.models import base
 
-class Role(base.Base):
 
-    name = appier.field(
-        index = "all",
-        default = True
-    )
+class Role(base.Base):
+    name = appier.field(index="all", default=True)
     """ The common name to be used to identify this role,
     this is going to be the primary way of identifying it """
 
-    tokens = appier.field(
-        type = list
-    )
+    tokens = appier.field(type=list)
     """ The set of ACL token that are going to be used to
     control the permission of accounts that use this role """
 
-    view_ = appier.field(
-        type = dict,
-        description = "View"
-    )
+    view_ = appier.field(type=dict, description="View")
     """ The filtered view that is going to be applied for
     every filtered operation (data source access) """
 
-    children = appier.field(
-        type = appier.references(
-            "Role",
-            name = "id"
-        )
-    )
+    children = appier.field(type=appier.references("Role", name="id"))
     """ The complete set of child roles that are associated
     with this role, this role should inherit all of the characteristics
     of the child roles (expected behaviour) """
@@ -79,8 +57,9 @@ class Role(base.Base):
 
         # tries to find the owner role (default) in case it's not
         # found returns immediately nothing to be done
-        owner = cls.find(name = "owner")
-        if owner: return
+        owner = cls.find(name="owner")
+        if owner:
+            return
 
         # retrieves the reference to the global logger that is going
         # to be used (should be initialized) and then prints the initial
@@ -90,12 +69,8 @@ class Role(base.Base):
 
         # creates the structure to be used as the owner role description
         # using the default value and then stores the role
-        role = cls(
-            name = "owner",
-            description = "Super administrator role",
-            tokens = ["*"]
-        )
-        role.save(validate = False)
+        role = cls(name="owner", description="Super administrator role", tokens=["*"])
+        role.save(validate=False)
 
     @classmethod
     def validate(cls):
@@ -106,20 +81,21 @@ class Role(base.Base):
             appier.string_gt("name", 3),
             appier.string_lt("name", 64),
             appier.not_duplicate("name", cls._name()),
-
-            appier.not_null("tokens")
+            appier.not_null("tokens"),
         ]
 
     @classmethod
     def list_names(cls):
         return ["name", "description"]
 
-    def view_m(self, context = None):
+    def view_m(self, context=None):
         return self.view_
 
     @property
     def children_s(self):
-        return [child for child in self.children if child and hasattr(child, "tokens_a")]
+        return [
+            child for child in self.children if child and hasattr(child, "tokens_a")
+        ]
 
     @property
     def tokens_a(self):
@@ -159,75 +135,72 @@ class Role(base.Base):
         return target
 
     @appier.operation(
-        name = "Duplicate",
-        description = """Create a new account with exactly the
+        name="Duplicate",
+        description="""Create a new account with exactly the
         same specification as the current one""",
-        parameters = (("Suffix", "suffix", str, "-new"),),
-        factory = True
+        parameters=(("Suffix", "suffix", str, "-new"),),
+        factory=True,
     )
-    def duplicate_s(self, suffix = "-new"):
+    def duplicate_s(self, suffix="-new"):
         cls = self.__class__
         role = cls(
-            description = self.description,
-            meta = self.meta,
-            name = self.name + suffix,
-            tokens = self.tokens,
-            view = self.view_
+            description=self.description,
+            meta=self.meta,
+            name=self.name + suffix,
+            tokens=self.tokens,
+            view=self.view_,
         )
         role.save()
         return role
 
-    @appier.operation(
-        name = "Set Parent",
-        parameters = (("Name", "name", str),)
-    )
+    @appier.operation(name="Set Parent", parameters=(("Name", "name", str),))
     def set_parent_s(self, name):
         cls = self.__class__
-        parent = cls.get(name = name)
-        if self in parent.children: return
+        parent = cls.get(name=name)
+        if self in parent.children:
+            return
         parent.children.append(self)
         parent.save()
 
-    @appier.operation(
-        name = "Add Child(s)",
-        parameters = (("Name", "name", str),)
-    )
+    @appier.operation(name="Add Child(s)", parameters=(("Name", "name", str),))
     def add_child_s(self, name):
         cls = self.__class__
         names = [name.strip() for name in name.strip().split(",")]
         for name in names:
-            child = cls.get(name = name)
-            if child in self.children: continue
+            child = cls.get(name=name)
+            if child in self.children:
+                continue
             self.children.append(child)
         self.save()
 
-    @appier.operation(
-        name = "Remove Child(s)",
-        parameters = (("Name", "name", str),)
-    )
+    @appier.operation(name="Remove Child(s)", parameters=(("Name", "name", str),))
     def remove_child_s(self, name):
         cls = self.__class__
         names = [name.strip() for name in name.strip().split(",")]
         for name in names:
-            child = cls.get(name = name)
-            if not child in self.children: continue
+            child = cls.get(name=name)
+            if not child in self.children:
+                continue
             self.children.remove(child)
         self.save()
 
-    @appier.operation(name = "Fix Children", level = 2)
+    @appier.operation(name="Fix Children", level=2)
     def fix_children_s(self):
-        self.children = [child for child in self.children if child and hasattr(child, "tokens_a")]
+        self.children = [
+            child for child in self.children if child and hasattr(child, "tokens_a")
+        ]
         self.save()
 
-    @appier.view(name = "Accounts")
+    @appier.view(name="Accounts")
     def accounts_v(self, *args, **kwargs):
         from appier_extras.parts.admin.models import account
+
         cls = account.Account
         kwargs["sort"] = kwargs.get("sort", [("id", -1)])
-        kwargs.update(roles = {"$in" : [self.id]})
+        kwargs.update(roles={"$in": [self.id]})
         return appier.lazy_dict(
-            model = cls,
-            kwargs = kwargs,
-            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
-            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
+            model=cls,
+            kwargs=kwargs,
+            entities=appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page=appier.lazy(lambda: cls.paginate(*args, **kwargs)),
         )

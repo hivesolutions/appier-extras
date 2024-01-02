@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -39,35 +30,29 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-class Authenticable(appier.Observable):
 
+class Authenticable(appier.Observable):
     @classmethod
-    def _unset_account(cls, prefixes = None, safes = [], method = "delete"):
+    def _unset_account(cls, prefixes=None, safes=[], method="delete"):
         session = appier.get_session()
         _cls = session.get("cls", None)
-        if _cls: cls = appier.get_model(_cls)
-        cls._unset_session(prefixes = prefixes, safes = safes, method = method)
+        if _cls:
+            cls = appier.get_model(_cls)
+        cls._unset_session(prefixes=prefixes, safes=safes, method=method)
         Authenticable.trigger_g(
-            "unset_account",
-            prefixes = prefixes,
-            safes = safes,
-            method = method
+            "unset_account", prefixes=prefixes, safes=safes, method=method
         )
 
     @classmethod
-    def _unset_session(cls, prefixes = None, safes = [], method = "delete"):
+    def _unset_session(cls, prefixes=None, safes=[], method="delete"):
         pass
 
-    def _set_account(self, unset = True, safes = [], method = "set"):
+    def _set_account(self, unset=True, safes=[], method="set"):
         cls = self.__class__
-        self._set_session(unset = unset, safes = safes, method = method)
+        self._set_session(unset=unset, safes=safes, method=method)
         Authenticable.trigger_g(
-            "set_account",
-            self,
-            unset = unset,
-            safes = safes,
-            method = method
+            "set_account", self, unset=unset, safes=safes, method=method
         )
 
-    def _set_session(self, unset = True, safes = [], method = "set"):
+    def _set_session(self, unset=True, safes=[], method="set"):
         pass

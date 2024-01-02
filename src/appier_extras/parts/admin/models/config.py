@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,22 +32,17 @@ import appier
 
 from appier_extras.parts.admin.models import base
 
-class Config(base.Base):
 
+class Config(base.Base):
     _CONFIG = {}
     """ The reference to the last dictionary of
     configuration that has been loaded into memory
     this may be used to calculate the deltas, for
     proper removal (garbage collection) """
 
-    key = appier.field(
-        index = "all",
-        default = True
-    )
+    key = appier.field(index="all", default=True)
 
-    value = appier.field(
-        index = "all"
-    )
+    value = appier.field(index="all")
 
     @classmethod
     def setup(cls):
@@ -70,9 +56,8 @@ class Config(base.Base):
             appier.not_null("key"),
             appier.not_empty("key"),
             appier.not_duplicate("key", cls._name()),
-
             appier.not_null("value"),
-            appier.not_empty("value")
+            appier.not_empty("value"),
         ]
 
     @classmethod
@@ -94,7 +79,8 @@ class Config(base.Base):
         # key in the previous configuration, to try to determine
         # the ones that have been removed
         for key in cls._CONFIG:
-            if key in config_d: continue
+            if key in config_d:
+                continue
             appier.conf_r(key)
 
         # iterates over the complete set of key value pairs

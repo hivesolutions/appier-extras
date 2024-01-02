@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -56,6 +47,7 @@ RANDOM_RANGE = string.ascii_uppercase + string.digits
 going to be used in the generation of the random string
 value that is going to be used as basis for secret generation """
 
+
 class Base(appier.Model):
     """
     Top level abstract class from which all the appier admin
@@ -66,33 +58,30 @@ class Base(appier.Model):
     shown in the appier admin back-office.
     """
 
-    ENABLE_S = {
-        True : "enabled",
-        False : "disabled"
-    }
+    ENABLE_S = {True: "enabled", False: "disabled"}
 
     id = appier.field(
-        type = int,
-        index = "all",
-        increment = True,
-        safe = True,
-        description = "ID",
-        observations = """The base identifier of the entity to
-        be used as a unique value on the entity context"""
+        type=int,
+        index="all",
+        increment=True,
+        safe=True,
+        description="ID",
+        observations="""The base identifier of the entity to
+        be used as a unique value on the entity context""",
     )
     """ The global incremental identifier of the base model
     this should always be considered a unique way of addressing
     a certain model inhering from this base class """
 
     enabled = appier.field(
-        type = bool,
-        index = "all",
-        initial = True,
-        meta = "enum",
-        enum = ENABLE_S,
-        observations = """Simple flag that controls if the entity
+        type=bool,
+        index="all",
+        initial=True,
+        meta="enum",
+        enum=ENABLE_S,
+        observations="""Simple flag that controls if the entity
         is considered to be enabled, respecting this flag is not
-        mandatory and relies on specific usage context"""
+        mandatory and relies on specific usage context""",
     )
     """ Boolean field that defines if a certain entity is considered
     to be enabled or disabled, the meaning of disable should depend
@@ -100,51 +89,47 @@ class Base(appier.Model):
     concrete removal operation """
 
     description = appier.field(
-        meta = "text",
-        default = True,
-        observations = """Plain text description of the entity, proper
-        usage should be defined by the context"""
+        meta="text",
+        default=True,
+        observations="""Plain text description of the entity, proper
+        usage should be defined by the context""",
     )
     """ Global description value for which the meaning should be defined
     by the context of usage (eg: name, observations, etc.) """
 
     created = appier.field(
-        type = int,
-        index = "all",
-        safe = True,
-        immutable = True,
-        meta = "datetime",
-        observations = """Date when the entity was initially created, should
-        be immutable (not changeable)"""
+        type=int,
+        index="all",
+        safe=True,
+        immutable=True,
+        meta="datetime",
+        observations="""Date when the entity was initially created, should
+        be immutable (not changeable)""",
     )
     """ The original date and time of the entity creation, this should
     be an immutable timestamp and never changed """
 
     modified = appier.field(
-        type = int,
-        index = "all",
-        safe = True,
-        meta = "datetime",
-        observations = """Date when the entity was last modified"""
+        type=int,
+        index="all",
+        safe=True,
+        meta="datetime",
+        observations="""Date when the entity was last modified""",
     )
     """ The date and time of the latest save operation for the current
     entity, note that the create operation changes this value """
 
     meta = appier.field(
-        type = dict,
-        description = "Metadata",
-        observations = """Dictionary based information to be "attached"
-        to the entity, proper usage depends on context"""
+        type=dict,
+        description="Metadata",
+        observations="""Dictionary based information to be "attached"
+        to the entity, proper usage depends on context""",
     )
     """ Additional (unstructured) information to be stored together with
     the entity for unpredicted purposes, note that these values should not
     be used for search operation as they are not indexed """
 
-    secrets = appier.field(
-        type = dict,
-        safe = True,
-        private = True
-    )
+    secrets = appier.field(type=dict, safe=True, private=True)
     """ Secrets based information to be stored within the entity the values
     stored should follow a single level key/value approach and the value
     should respect the encryption standard `$<strategy>:<value_base64>`
@@ -152,24 +137,29 @@ class Base(appier.Model):
 
     def __str__(self):
         value = appier.Model.__str__(self)
-        if not value: value = str(self.id)
+        if not value:
+            value = str(self.id)
         return value
 
     def __unicode__(self):
         value = appier.Model.__unicode__(self)
-        if not value: value = appier.legacy.UNICODE(self.id)
+        if not value:
+            value = appier.legacy.UNICODE(self.id)
         return value
 
     def __cmp__(self, value):
-        if not hasattr(value, "id"): return -1
+        if not hasattr(value, "id"):
+            return -1
         return self.id.__cmp__(value.id)
 
     def __lt__(self, value):
-        if not hasattr(value, "id"): return False
+        if not hasattr(value, "id"):
+            return False
         return self.id.__lt__(value.id)
 
     def __eq__(self, value):
-        if not hasattr(value, "id"): return False
+        if not hasattr(value, "id"):
+            return False
         return self.id.__eq__(value.id)
 
     def __ne__(self, value):
@@ -177,19 +167,19 @@ class Base(appier.Model):
 
     @classmethod
     def get_e(cls, *args, **kwargs):
-        return cls.get(enabled = True, *args, **kwargs)
+        return cls.get(enabled=True, *args, **kwargs)
 
     @classmethod
     def find_e(cls, *args, **kwargs):
-        return cls.find(enabled = True, *args, **kwargs)
+        return cls.find(enabled=True, *args, **kwargs)
 
     @classmethod
     def count_e(cls, *args, **kwargs):
-        return cls.count(enabled = True, *args, **kwargs)
+        return cls.count(enabled=True, *args, **kwargs)
 
     @classmethod
     def paginate_e(cls, *args, **kwargs):
-        return cls.paginate(enabled = True, *args, **kwargs)
+        return cls.paginate(enabled=True, *args, **kwargs)
 
     @classmethod
     def get_v(cls, *args, **kwargs):
@@ -213,19 +203,19 @@ class Base(appier.Model):
 
     @classmethod
     def get_ve(cls, *args, **kwargs):
-        return cls.get_v(enabled = True, *args, **kwargs)
+        return cls.get_v(enabled=True, *args, **kwargs)
 
     @classmethod
     def find_ve(cls, *args, **kwargs):
-        return cls.find_v(enabled = True, *args, **kwargs)
+        return cls.find_v(enabled=True, *args, **kwargs)
 
     @classmethod
     def count_ve(cls, *args, **kwargs):
-        return cls.count_v(enabled = True, *args, **kwargs)
+        return cls.count_v(enabled=True, *args, **kwargs)
 
     @classmethod
     def paginate_ve(cls, *args, **kwargs):
-        return cls.paginate_v(enabled = True, *args, **kwargs)
+        return cls.paginate_v(enabled=True, *args, **kwargs)
 
     @classmethod
     def create_names(cls):
@@ -268,7 +258,7 @@ class Base(appier.Model):
         return False
 
     @classmethod
-    def secret_g(cls, hash = None):
+    def secret_g(cls, hash=None):
         hash = hash or hashlib.sha1
         token = "".join(random.choice(RANDOM_RANGE) for _index in range(32))
         token_bytes = appier.legacy.bytes(token)
@@ -278,17 +268,16 @@ class Base(appier.Model):
     @classmethod
     def build_index_g(cls, *args, **kwargs):
         models = cls.find(*args, **kwargs)
-        for model in models: model.build_index()
+        for model in models:
+            model.build_index()
 
     @classmethod
-    def restore_snapshot(cls, id, snapshot_id = None):
+    def restore_snapshot(cls, id, snapshot_id=None):
         from appier_extras.parts.admin.models import snapshot
-        kwargs = dict(
-            target_id = id,
-            target_cls = cls.__name__,
-            sort = [("id", -1)]
-        )
-        if snapshot_id: kwargs["id"] = snapshot_id
+
+        kwargs = dict(target_id=id, target_cls=cls.__name__, sort=[("id", -1)])
+        if snapshot_id:
+            kwargs["id"] = snapshot_id
         snapshot = snapshot.Snapshot.get(**kwargs)
         return snapshot.restore_s()
 
@@ -297,10 +286,10 @@ class Base(appier.Model):
         owner = owner or appier.get_app()
         sender = appier.conf("SENDER_EMAIL", "Appier <no-reply@appier.hive.pt>")
         base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
-        bulk = appier.conf("BULK_EMAIL", False, cast = bool)
-        unsubscribe = appier.conf("UNSUBSCRIBE_EMAIL", False, cast = bool)
-        logo = appier.conf("LOGO_EMAIL", False, cast = bool)
-        inline = appier.conf("INLINE_EMAIL", False, cast = bool)
+        bulk = appier.conf("BULK_EMAIL", False, cast=bool)
+        unsubscribe = appier.conf("UNSUBSCRIBE_EMAIL", False, cast=bool)
+        logo = appier.conf("LOGO_EMAIL", False, cast=bool)
+        inline = appier.conf("INLINE_EMAIL", False, cast=bool)
         sender = kwargs.pop("sender", sender)
         base_url = kwargs.pop("base_url", base_url)
         bulk = kwargs.pop("bulk", bulk)
@@ -309,28 +298,31 @@ class Base(appier.Model):
         inline = kwargs.pop("inline", inline)
         engine = kwargs.pop("engine", None)
         headers = kwargs.pop("headers", {})
-        settings = dict(
-            bulk = bulk,
-            unsubscribe = unsubscribe,
-            logo = logo
+        settings = dict(bulk=bulk, unsubscribe=unsubscribe, logo=logo)
+        if bulk:
+            headers["Auto-Submitted"] = "auto-generated"
+        if bulk:
+            headers["Precedence"] = "bulk"
+        if unsubscribe:
+            headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
+        html_handler = (
+            (lambda data: cls._inlinify(data, engine=engine))
+            if engine
+            else cls._inlinify
         )
-        if bulk: headers["Auto-Submitted"] = "auto-generated"
-        if bulk: headers["Precedence"] = "bulk"
-        if unsubscribe: headers["List-Unsubscribe"] = "<" + base_url + "/unsubscribe>"
-        html_handler = (lambda data: cls._inlinify(data, engine = engine)) if engine else cls._inlinify
         html_handler = html_handler if inline else None
         owner.email(
-            sender = sender,
-            base_url = base_url,
-            settings = settings,
-            headers = headers,
-            html_handler = html_handler,
+            sender=sender,
+            base_url=base_url,
+            settings=settings,
+            headers=headers,
+            html_handler=html_handler,
             *args,
             **kwargs
         )
 
     @classmethod
-    def apply_views(cls, object, views = None, owner = None):
+    def apply_views(cls, object, views=None, owner=None):
         """
         Applies the complete set of views (object, class or callables)
         to the current "query like" object so that it can be used to
@@ -365,7 +357,8 @@ class Base(appier.Model):
             # session if that's not the case returns immediately as there's
             # nothing left to be filtered, otherwise retrieves the views to
             # be used to filter the current object context
-            if not "views" in owner.session: return object
+            if not "views" in owner.session:
+                return object
             views = owner.session["views"]
 
         # creates a copy of the object so that it does not get modified
@@ -378,11 +371,12 @@ class Base(appier.Model):
         for view in views:
             # resolves the current view, obtaining the proper map
             # object, ready to be used in the update process
-            view = cls._resolve_view(view, resolve_name = "view_r")
+            view = cls._resolve_view(view, resolve_name="view_r")
 
             # in case there's no view (invalid value) then continues
             # the loop as no modification should be applied to object
-            if not view: continue
+            if not view:
+                continue
 
             # updates the (object) with the view map that has been
             # resolved, effectively changing its behaviour
@@ -393,7 +387,7 @@ class Base(appier.Model):
         return object
 
     @classmethod
-    def ensure_views(cls, object, ensure_set = True, views = None, owner = None):
+    def ensure_views(cls, object, ensure_set=True, views=None, owner=None):
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
@@ -405,7 +399,8 @@ class Base(appier.Model):
             # session if that's not the case returns immediately as there's
             # nothing left to be filtered, otherwise retrieves the views to
             # be used to filter the current object context
-            if not "views" in owner.session: return object
+            if not "views" in owner.session:
+                return object
             views = owner.session["views"]
 
         # iterates over the complete set of views defined under the current
@@ -414,11 +409,12 @@ class Base(appier.Model):
         for view in views:
             # resolves the current view, obtaining the proper map
             # object, ready to be used in the update process
-            view = cls._resolve_view(view, resolve_name = "view_l")
+            view = cls._resolve_view(view, resolve_name="view_l")
 
             # in case there's no view (invalid value) then continues
             # the loop as no validation needed for the object
-            if not view: continue
+            if not view:
+                continue
 
             # iterates over the complete set of views elements to
             # make sure the associated model attributes are defined
@@ -432,8 +428,8 @@ class Base(appier.Model):
 
                 appier.verify(
                     name in object,
-                    message = "Attribute '%s' not set in object" % name,
-                    exception = appier.SecurityError
+                    message="Attribute '%s' not set in object" % name,
+                    exception=appier.SecurityError,
                 )
 
                 # in case the defined value for the view attribute is not
@@ -444,8 +440,10 @@ class Base(appier.Model):
                 # computes the proper error message that is going to be sent
                 # as part of the security error to be raised
                 if appier.is_devel():
-                    message = "Attribute '%s' ('%s') not valid according to view ('%s')" %\
-                        (name, str(object[name]), str(values))
+                    message = (
+                        "Attribute '%s' ('%s') not valid according to view ('%s')"
+                        % (name, str(object[name]), str(values))
+                    )
 
                 # in case the production mode is enable the message is defined
                 # as a simpler one, avoiding confidential data leak
@@ -456,17 +454,17 @@ class Base(appier.Model):
                 # in case the attribute is not valid according to the view
                 appier.verify(
                     object[name] in values,
-                    message = message,
-                    exception = appier.SecurityError
+                    message=message,
+                    exception=appier.SecurityError,
                 )
 
     @classmethod
-    @appier.operation(name = "Empty All", level = 2, devel = True)
+    @appier.operation(name="Empty All", level=2, devel=True)
     def op_empty_s(cls):
         cls.delete_c()
 
     @classmethod
-    def _resolve_view(cls, view, resolve_name = "view_r", owner = None):
+    def _resolve_view(cls, view, resolve_name="view_r", owner=None):
         # tries to retrieve the reference to the owner of the current
         # context or uses the global one otherwise (fallback)
         owner = owner or appier.get_app()
@@ -477,21 +475,23 @@ class Base(appier.Model):
         # concrete map based view
         if appier.legacy.is_str(view):
             view_cls = owner.get_model(view)
-            view = getattr(view_cls, resolve_name) if\
-                hasattr(view_cls, resolve_name) else None
+            view = (
+                getattr(view_cls, resolve_name)
+                if hasattr(view_cls, resolve_name)
+                else None
+            )
 
         # in case the view value is a class then the view is
         # re-converted with the resolver method, to be called
         is_class = inspect.isclass(view)
         if is_class:
-            view = getattr(view, resolve_name) if\
-                hasattr(view, resolve_name) else None
+            view = getattr(view, resolve_name) if hasattr(view, resolve_name) else None
 
         # in case the view is a callable value then calls it
         # to retrieve the concrete view (should be a map)
         is_callable = hasattr(view, "__call__")
         if is_callable:
-            view = view(target = cls, owner = owner)
+            view = view(target=cls, owner=owner)
 
         # returns the "final" view value after the complete
         # resolution process has been finished
@@ -502,73 +502,79 @@ class Base(appier.Model):
         cls,
         file,
         callback,
-        callback_header = None,
-        mime_type = None,
-        strict = False,
-        named = False,
-        header = True,
-        delimiter = ",",
-        quotechar = "\"",
-        quoting = csv.QUOTE_MINIMAL,
-        encoding = "utf-8"
+        callback_header=None,
+        mime_type=None,
+        strict=False,
+        named=False,
+        header=True,
+        delimiter=",",
+        quotechar='"',
+        quoting=csv.QUOTE_MINIMAL,
+        encoding="utf-8",
     ):
         is_unicode = appier.legacy.PYTHON_3
         csv_reader = cls._csv_read(
             file,
-            mime_type = mime_type,
-            strict = strict,
-            named = named,
-            delimiter = delimiter,
-            quotechar = quotechar,
-            quoting = quoting,
-            encoding = encoding
+            mime_type=mime_type,
+            strict=strict,
+            named=named,
+            delimiter=delimiter,
+            quotechar=quotechar,
+            quoting=quoting,
+            encoding=encoding,
         )
         args, _varargs, kwargs = appier.legacy.getargspec(callback)[:3]
         has_header = True if "header" in args or kwargs else False
         has_map = True if "map" in args or kwargs else False
-        if header: header = next(csv_reader)
-        else: header = []
-        if not is_unicode: header = [value.decode(encoding) for value in header]
-        if callback_header: callback_header(header)
-        if named: tuple_t = collections.namedtuple("csv_tuple", header)
+        if header:
+            header = next(csv_reader)
+        else:
+            header = []
+        if not is_unicode:
+            header = [value.decode(encoding) for value in header]
+        if callback_header:
+            callback_header(header)
+        if named:
+            tuple_t = collections.namedtuple("csv_tuple", header)
         for line in csv_reader:
             kwargs = dict()
-            if not is_unicode: line = [value.decode(encoding) for value in line]
-            if named: line = tuple_t(*line)
-            if has_header: kwargs["header"] = header
-            if has_map: kwargs["map"] = dict(zip(header, line))
+            if not is_unicode:
+                line = [value.decode(encoding) for value in line]
+            if named:
+                line = tuple_t(*line)
+            if has_header:
+                kwargs["header"] = header
+            if has_map:
+                kwargs["map"] = dict(zip(header, line))
             callback(line, **kwargs)
 
     @classmethod
     def _csv_read(
         cls,
         file,
-        mime_type = None,
-        strict = False,
-        named = False,
-        delimiter = ",",
-        quotechar = "\"",
-        quoting = csv.QUOTE_MINIMAL,
-        encoding = "utf-8"
+        mime_type=None,
+        strict=False,
+        named=False,
+        delimiter=",",
+        quotechar='"',
+        quoting=csv.QUOTE_MINIMAL,
+        encoding="utf-8",
     ):
         is_unicode = appier.legacy.PYTHON_3
-        if appier.legacy.is_bytes(file): mime_type, data = mime_type, file
-        else: _file_name, mime_type, data = file
+        if appier.legacy.is_bytes(file):
+            mime_type, data = mime_type, file
+        else:
+            _file_name, mime_type, data = file
         is_csv = mime_type in ("text/csv", "application/vnd.ms-excel")
         if not is_csv and strict:
-            raise appier.OperationalError(
-                message = "Invalid MIME type '%s'" % mime_type
-            )
+            raise appier.OperationalError(message="Invalid MIME type '%s'" % mime_type)
         if is_unicode:
             data = data.decode(encoding)
             buffer = appier.legacy.StringIO(data)
         else:
             buffer = appier.legacy.BytesIO(data)
         csv_reader = csv.reader(
-            buffer,
-            delimiter = delimiter,
-            quotechar = quotechar,
-            quoting = quoting
+            buffer, delimiter=delimiter, quotechar=quotechar, quoting=quoting
         )
         return csv_reader
 
@@ -577,67 +583,60 @@ class Base(appier.Model):
         cls,
         file,
         callback,
-        callback_header = None,
-        mime_type = None,
-        strict = False,
-        encoding = "utf-8"
+        callback_header=None,
+        mime_type=None,
+        strict=False,
+        encoding="utf-8",
     ):
         json_data = cls._json_read(
-            file,
-            mime_type = mime_type,
-            strict = strict,
-            encoding = encoding
+            file, mime_type=mime_type, strict=strict, encoding=encoding
         )
         header = appier.legacy.keys(json_data[0]) if json_data else []
-        if callback_header: callback_header(header)
-        for item in json_data: callback(item)
+        if callback_header:
+            callback_header(header)
+        for item in json_data:
+            callback(item)
 
     @classmethod
-    def _json_read(
-        cls,
-        file,
-        mime_type = None,
-        strict = False,
-        encoding = "utf-8"
-    ):
-        if appier.legacy.is_bytes(file): mime_type, data = mime_type, file
-        else: _file_name, mime_type, data = file
+    def _json_read(cls, file, mime_type=None, strict=False, encoding="utf-8"):
+        if appier.legacy.is_bytes(file):
+            mime_type, data = mime_type, file
+        else:
+            _file_name, mime_type, data = file
         is_json = mime_type in ("text/json", "application/json")
         if not is_json and strict:
-            raise appier.OperationalError(
-                message = "Invalid MIME type '%s'" % mime_type
-            )
+            raise appier.OperationalError(message="Invalid MIME type '%s'" % mime_type)
         data = data.decode(encoding)
         json_data = json.loads(data)
         return json_data
 
     @classmethod
-    def _inlinify(cls, data, engine = None, *args, **kwargs):
+    def _inlinify(cls, data, engine=None, *args, **kwargs):
         engine = engine or appier.conf("INLINER_ENGINE", None)
-        if not engine: return data
+        if not engine:
+            return data
         method = getattr(cls, "_inlinify_" + engine)
         return method(data, *args, **kwargs)
 
     @classmethod
     def _inlinify_premailer(cls, data, *args, **kwargs):
         premailer = appier.import_pip("premailer")
-        keep_style_tags = appier.conf("PREMAILER_KEEP_TAGS", True, cast = bool)
-        strip_important = appier.conf("PREMAILER_STRIP_IMPORTANT", False, cast = bool)
-        cache_css = appier.conf("PREMAILER_CACHE_CSS", False, cast = bool)
-        validate_css = appier.conf("PREMAILER_VALIDATE_CSS", False, cast = bool)
+        keep_style_tags = appier.conf("PREMAILER_KEEP_TAGS", True, cast=bool)
+        strip_important = appier.conf("PREMAILER_STRIP_IMPORTANT", False, cast=bool)
+        cache_css = appier.conf("PREMAILER_CACHE_CSS", False, cast=bool)
+        validate_css = appier.conf("PREMAILER_VALIDATE_CSS", False, cast=bool)
         keep_style_tags = kwargs.get("keep_style_tags", keep_style_tags)
         strip_important = kwargs.get("strip_important", strip_important)
         logging_level = kwargs.get(
-            "logging_level",
-            logging.INFO if appier.is_devel() else logging.ERROR
+            "logging_level", logging.INFO if appier.is_devel() else logging.ERROR
         )
         inliner = premailer.Premailer(
             data,
-            keep_style_tags = keep_style_tags,
-            strip_important = strip_important,
-            cache_css_parsing = cache_css,
-            disable_validation = not validate_css,
-            cssutils_logging_level = logging_level
+            keep_style_tags=keep_style_tags,
+            strip_important=strip_important,
+            cache_css_parsing=cache_css,
+            disable_validation=not validate_css,
+            cssutils_logging_level=logging_level,
         )
         return inliner.transform()
 
@@ -646,8 +645,7 @@ class Base(appier.Model):
         toronado = appier.import_pip("toronado")
         encoding = kwargs.get("encoding", "utf-8")
         logging_level = kwargs.get(
-            "logging_level",
-            logging.INFO if appier.is_devel() else logging.ERROR
+            "logging_level", logging.INFO if appier.is_devel() else logging.ERROR
         )
         toronado.logger.setLevel(logging_level)
         result = toronado.from_string(data)
@@ -695,36 +693,32 @@ class Base(appier.Model):
     def save_v(self, *args, **kwargs):
         is_new = kwargs.get("is_new", None)
         before_callbacks = kwargs.get("before_callbacks", [])
-        if is_new == None: is_new = self.is_new()
+        if is_new == None:
+            is_new = self.is_new()
         ensure_callback = lambda instance, model: self.__class__.ensure_views(model)
         before_callbacks.append(ensure_callback)
         kwargs["before_callbacks"] = before_callbacks
         appier.Model.save(self, *args, **kwargs)
 
-    def previous(self, name = "id", raise_e = False, *args, **kwargs):
-        kwargs[name] = {"$lt" : getattr(self, name)}
+    def previous(self, name="id", raise_e=False, *args, **kwargs):
+        kwargs[name] = {"$lt": getattr(self, name)}
         kwargs["sort"] = ((name, -1),)
-        return self.get_v(
-            raise_e = raise_e,
-            **kwargs
-        )
+        return self.get_v(raise_e=raise_e, **kwargs)
 
-    def next(self, name = "id", raise_e = False, *args, **kwargs):
-        kwargs[name] = {"$gt" : getattr(self, name)}
+    def next(self, name="id", raise_e=False, *args, **kwargs):
+        kwargs[name] = {"$gt": getattr(self, name)}
         kwargs["sort"] = ((name, 1),)
-        return self.get_v(
-            raise_e = raise_e,
-            **kwargs
-        )
+        return self.get_v(raise_e=raise_e, **kwargs)
 
-    def build_index(self, use_class = True):
+    def build_index(self, use_class=True):
         from appier_extras.parts.admin.models import search
 
         # retrieves the reference to the class of the entity to be indexed
         # and verifies that the (model) class is enabled for indexing, in
         # case it's not returns the control flow immediately no indexing required
         cls = self.__class__
-        if not cls.is_indexed(): return
+        if not cls.is_indexed():
+            return
 
         # retrieves the complete set of attribute names that are going
         # to be used for characterization of the current entity, these
@@ -743,27 +737,29 @@ class Base(appier.Model):
         # retrieves both the title and the description representation
         # values for the current entity, as expected for creation
         title = self[title_name]
-        if description_name: description = self[description_name]
-        elif use_class: description = cls_name
-        else: description = None
+        if description_name:
+            description = self[description_name]
+        elif use_class:
+            description = cls_name
+        else:
+            description = None
 
         # verifies that the current instance contains both the identifier
         # and the title (requires representation) otherwise returns control
-        if not self._id: return
-        if not title: return
+        if not self._id:
+            return
+        if not title:
+            return
 
         # iterates over the complete set of names that are going to
         # be used in the indexing process and for each of them creates
         # new search index entry with the information of the entity
         for name in names:
             value = self[name]
-            if not value: continue
+            if not value:
+                continue
             search.Search.create_index(
-                value,
-                self._id,
-                cls,
-                title,
-                target_description = description
+                value, self._id, cls, title, target_description=description
             )
 
     def destroy_index(self):
@@ -779,35 +775,29 @@ class Base(appier.Model):
         # and verifies that the (model) class is enabled for snapshotting, in
         # case it's not returns the control flow immediately no snapshot required
         cls = self.__class__
-        if not cls.is_snapshot(): return
+        if not cls.is_snapshot():
+            return
 
         # reloads the current model with the proper settings to be able to store
         # any data present in the model including safe, private and immutable as
         # this model is going to be used as the basis of the snapshot
         self = self.reload(
-            eager_l = False,
-            rules = False,
-            build = False,
-            meta = False,
-            raise_e = False
+            eager_l=False, rules=False, build=False, meta=False, raise_e=False
         )
 
         # in case the instance was not found, possible under some circumstances where
         # the data is not currently stored in the data source (eg: snapshot restore)
         # the control flow is returned immediately (not possible to restore data)
-        if not self: return
+        if not self:
+            return
 
         # applies the filter to the model to be able to retrieve a sanitized map
         # based model to be used in the snapshot process
-        model = self._filter(
-            increment_a = False,
-            immutables_a = False,
-            normalize = True
-        )
+        model = self._filter(increment_a=False, immutables_a=False, normalize=True)
 
         # runs the snapshot creation process for the current instance, note that
         # the provided model data should always represent the complete state
-        snapshot.Snapshot.create_snapshot(self.id, cls, model_data = model)
+        snapshot.Snapshot.create_snapshot(self.id, cls, model_data=model)
 
     def enable_s(self):
         self.enabled = True
@@ -820,15 +810,17 @@ class Base(appier.Model):
     def touch_s(self):
         self.save()
 
-    def update_meta_s(self, meta = None, **kwargs):
+    def update_meta_s(self, meta=None, **kwargs):
         meta = kwargs if meta == None else meta
         appier.verify(isinstance(meta, dict))
-        if not self.meta: self.meta = meta
-        else: self.meta.update(meta)
+        if not self.meta:
+            self.meta = meta
+        else:
+            self.meta.update(meta)
         self.save()
 
     def decode_secret(self, key):
-        self = self.reload(rules = False)
+        self = self.reload(rules=False)
         value_e = self.secrets[key]
         return self._decode_value(value_e)
 
@@ -841,80 +833,75 @@ class Base(appier.Model):
         kwargs["own"] = kwargs.pop("own", self)
         return cls.send_email_g(owner, *args, **kwargs)
 
-    def secret(self, hash = None):
+    def secret(self, hash=None):
         cls = self.__class__
-        return cls.secret_g(hash = hash)
+        return cls.secret_g(hash=hash)
 
-    @appier.operation(name = "Enable")
+    @appier.operation(name="Enable")
     def op_enable_s(self):
-        self = self.reload(rules = False)
+        self = self.reload(rules=False)
         self.enable_s()
 
-    @appier.operation(name = "Disable")
+    @appier.operation(name="Disable")
     def op_disable_s(self):
-        self = self.reload(rules = False)
+        self = self.reload(rules=False)
         self.disable_s()
 
-    @appier.operation(name = "Touch", devel = True)
+    @appier.operation(name="Touch", devel=True)
     def op_touch_s(self):
-        self = self.reload(rules = False)
+        self = self.reload(rules=False)
         self.touch_s()
 
     @appier.operation(
-        name = "Datefix",
-        parameters = (("Force", "force", bool),),
-        devel = True
+        name="Datefix", parameters=(("Force", "force", bool),), devel=True
     )
-    def op_datefix_s(self, force = False):
-        self = self.reload(rules = False)
+    def op_datefix_s(self, force=False):
+        self = self.reload(rules=False)
         if force or (hasattr(self, "created") and not self.created == None):
             self.created = int(self.created)
         if force or (hasattr(self, "modified") and not self.modified == None):
             self.modified = int(self.modified)
-        self.save(immutables_a = False)
+        self.save(immutables_a=False)
 
     @appier.operation(
-        name = "Dateset",
-        parameters = (("Force", "force", bool),),
-        level = 2,
-        devel = True
+        name="Dateset", parameters=(("Force", "force", bool),), level=2, devel=True
     )
-    def op_dateset_s(self, force = False):
-        self = self.reload(rules = False)
+    def op_dateset_s(self, force=False):
+        self = self.reload(rules=False)
         if force or not hasattr(self, "created") or self.created == None:
             self.created = int(time.time())
         if force or not hasattr(self, "modified") or self.modified == None:
             self.modified = int(time.time())
-        self.save(immutables_a = False)
+        self.save(immutables_a=False)
 
     @appier.operation(
-        name = "Set Metadata",
-        description = """Sets the "extra" metadata information on the current
+        name="Set Metadata",
+        description="""Sets the "extra" metadata information on the current
         entity, such value should be compliant with the JSON specification""",
-        parameters = (("Metadata", "meta", "longmap"),)
+        parameters=(("Metadata", "meta", "longmap"),),
     )
     def set_metadata_s(self, meta):
         self.meta = meta
         self.save()
 
     @appier.operation(
-        name = "Add Secret",
-        description = """Adds a secret value to the current entity
+        name="Add Secret",
+        description="""Adds a secret value to the current entity
         using the provided strategy""",
-        parameters = (
+        parameters=(
             ("Key", "key", str),
             ("Value", "value", str),
-            ("Strategy", "strategy", str, "plain")
-        )
+            ("Strategy", "strategy", str, "plain"),
+        ),
     )
-    def add_secret_s(self, key, value, strategy = "plain"):
+    def add_secret_s(self, key, value, strategy="plain"):
         # reloads the current instance so that it can be used
         # for the updating of the secrets
-        self = self.reload(rules = False)
+        self = self.reload(rules=False)
 
         # encodes the provided value and creates the final
         # value to be used in the data storage
-        value_e = self._encode_value(value, strategy = strategy)
+        value_e = self._encode_value(value, strategy=strategy)
 
         # updates the structure of secrets in the instance with
         # the newly created value that
@@ -932,7 +919,7 @@ class Base(appier.Model):
     def modified_d(self):
         return datetime.datetime.utcfromtimestamp(self.modified)
 
-    def _encode_value(self, value, strategy = "plain"):
+    def _encode_value(self, value, strategy="plain"):
         method = getattr(self, "_encode_%s" % strategy, None)
         if not method:
             raise appier.NotImplementedError("Strategy not available '%s'" % strategy)

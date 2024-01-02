@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,12 +33,11 @@ import unittest
 import appier
 import appier_extras
 
-class SettingsTest(unittest.TestCase):
 
+class SettingsTest(unittest.TestCase):
     def setUp(self):
         self.app = appier.App(
-            parts = (appier_extras.admin.AdminPart,),
-            session_c = appier.MemorySession
+            parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
 
     def tearDown(self):
@@ -77,15 +67,15 @@ class SettingsTest(unittest.TestCase):
         self.assertEqual(settings.meta, {})
 
         settings = settings.reload()
-        settings.update_meta_s(dict(hello = "world"))
+        settings.update_meta_s(dict(hello="world"))
 
-        self.assertEqual(settings.meta, dict(hello = "world"))
+        self.assertEqual(settings.meta, dict(hello="world"))
 
         settings = settings.reload()
-        settings.update_meta_s(world = "hello")
+        settings.update_meta_s(world="hello")
 
-        self.assertEqual(settings.meta, dict(hello = "world", world = "hello"))
+        self.assertEqual(settings.meta, dict(hello="world", world="hello"))
 
         account = settings.reload()
 
-        self.assertEqual(account.meta, dict(hello = "world", world = "hello"))
+        self.assertEqual(account.meta, dict(hello="world", world="hello"))

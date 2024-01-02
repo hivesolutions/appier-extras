@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -44,6 +35,7 @@ import appier
 from appier_extras import base
 
 from . import handler
+
 
 class LogstashPart(appier.Part):
     """
@@ -61,28 +53,18 @@ class LogstashPart(appier.Part):
         self.log = kwargs.get("log", False)
         self.buffer_size = kwargs.get("buffer_size", 128)
         self.timeout = kwargs.get("timeout", 30)
-        self.log = appier.conf("LOGSTASH_LOG", self.log, cast = bool)
+        self.log = appier.conf("LOGSTASH_LOG", self.log, cast=bool)
         self.buffer_size = appier.conf(
-            "LOGSTASH_BUFFER_SIZE",
-            self.buffer_size,
-            cast = int
+            "LOGSTASH_BUFFER_SIZE", self.buffer_size, cast=int
         )
-        self.timeout = appier.conf(
-            "LOGSTASH_TIMEOUT",
-            self.timeout,
-            cast = int
-        )
+        self.timeout = appier.conf("LOGSTASH_TIMEOUT", self.timeout, cast=int)
 
     def version(self):
         return base.VERSION
 
     def info(self):
         info = appier.Part.info(self)
-        info.update(
-            log = self.log,
-            buffer_size = self.buffer_size,
-            timeout = self.timeout
-        )
+        info.update(log=self.log, buffer_size=self.buffer_size, timeout=self.timeout)
         return info
 
     def load(self):
@@ -91,27 +73,30 @@ class LogstashPart(appier.Part):
         self._api = None
         self.add_handler()
 
-    def add_handler(self, set_default = True):
-        if not self.log: return
+    def add_handler(self, set_default=True):
+        if not self.log:
+            return
         api = self._get_api()
         handler_logstash = handler.LogstashHandler(
-            owner = self,
-            api = api,
-            buffer_size = self.buffer_size,
-            timeout = self.timeout
+            owner=self, api=api, buffer_size=self.buffer_size, timeout=self.timeout
         )
         handler_logstash.setLevel(self.owner.level)
         handler_logstash.setFormatter(self.owner.formatter)
         self.owner.handlers.append(handler_logstash)
         self.logger.addHandler(handler_logstash)
-        if not set_default: return
+        if not set_default:
+            return
         logger = logging.getLogger()
         logger.addHandler(handler_logstash)
 
     def _get_api(self):
-        if self._api: return self._api
-        try: logstash = appier.import_pip("logstash", package = "logstash_api")
-        except Exception: logstash = None
-        if not logstash: return None
+        if self._api:
+            return self._api
+        try:
+            logstash = appier.import_pip("logstash", package="logstash_api")
+        except Exception:
+            logstash = None
+        if not logstash:
+            return None
         self._api = logstash.API()
         return self._api

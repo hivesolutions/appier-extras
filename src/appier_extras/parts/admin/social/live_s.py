@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -39,55 +30,57 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 
-class Live(object):
 
+class Live(object):
     def ensure_live(self):
-        appier.ensure_pip("live", package = "live_api")
+        appier.ensure_pip("live", package="live_api")
 
     def has_live(self):
-        try: import live
-        except Exception: live = None
-        if not live: return False
-        if not appier.conf("LIVE_ID"): return False
-        if not appier.conf("LIVE_SECRET"): return False
+        try:
+            import live
+        except Exception:
+            live = None
+        if not live:
+            return False
+        if not appier.conf("LIVE_ID"):
+            return False
+        if not appier.conf("LIVE_SECRET"):
+            return False
         return True
 
-    def ensure_live_account(self, create = True, safe = True):
+    def ensure_live_account(self, create=True, safe=True):
         api = self.get_live_api()
         user = api.self_user()
         email = user["emails"]["preferred"]
         live_id = user["id"]
         account = self.owner.admin_account.get(
-            live_id = live_id,
-            rules = False,
-            raise_e = False
+            live_id=live_id, rules=False, raise_e=False
         )
         account = account or self.owner.admin_account.from_session()
         account = account or self.owner.admin_account.get(
-            email = email,
-            rules = False,
-            raise_e = False
+            email=email, rules=False, raise_e=False
         )
 
         if safe and "live.access_token" in self.session:
             del self.session["live.access_token"]
 
         if not account:
-            if not create: raise appier.NotFoundError(
-                message = "No account found for Microsoft Live account"
-            )
+            if not create:
+                raise appier.NotFoundError(
+                    message="No account found for Microsoft Live account"
+                )
 
             account = self.owner.admin_account(
-                username = email,
-                email = email,
-                password = api.access_token,
-                password_confirm = api.access_token,
-                live_id = live_id,
-                live_token = api.access_token,
-                type = self.owner.admin_account.USER_TYPE
+                username=email,
+                email=email,
+                password=api.access_token,
+                password_confirm=api.access_token,
+                live_id=live_id,
+                live_token=api.access_token,
+                type=self.owner.admin_account.USER_TYPE,
             )
             account.save()
-            account = account.reload(rules = False)
+            account = account.reload(rules=False)
 
         if not account.live_id:
             account.live_id = live_id
@@ -109,22 +102,25 @@ class Live(object):
         account.live_token = None
         account.save()
 
-    def ensure_live_api(self, state = None, scope = None, refresh = False):
+    def ensure_live_api(self, state=None, scope=None, refresh=False):
         access_token = self.session.get("live.access_token", None)
-        if access_token and not refresh: return
+        if access_token and not refresh:
+            return
         api = self.get_live_api()
-        return api.oauth_authorize(state = state)
+        return api.oauth_authorize(state=state)
 
-    def get_live_api(self, scope = None):
+    def get_live_api(self, scope=None):
         import live
+
         kwargs = dict()
-        redirect_url = self.url_for("admin.oauth_live", absolute = True)
+        redirect_url = self.url_for("admin.oauth_live", absolute=True)
         access_token = self.session and self.session.get("live.access_token", None)
-        if scope: kwargs["scope"] = scope
+        if scope:
+            kwargs["scope"] = scope
         return live.API(
-            client_id = appier.conf("LIVE_ID"),
-            client_secret = appier.conf("LIVE_SECRET"),
-            redirect_url = redirect_url,
-            access_token = access_token,
+            client_id=appier.conf("LIVE_ID"),
+            client_secret=appier.conf("LIVE_SECRET"),
+            redirect_url=redirect_url,
+            access_token=access_token,
             **kwargs
         )

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,22 +33,18 @@ import datetime
 
 import appier
 
-class DiagBase(appier.Model):
 
+class DiagBase(appier.Model):
     id = appier.field(
-        type = int,
-        index = "all",
-        increment = True,
-        safe = True,
-        description = "ID",
+        type=int,
+        index="all",
+        increment=True,
+        safe=True,
+        description="ID",
     )
 
     timestamp = appier.field(
-        type = int,
-        index = "all",
-        safe = True,
-        immutable = True,
-        meta = "datetime"
+        type=int, index="all", safe=True, immutable=True, meta="datetime"
     )
 
     def pre_create(self):
@@ -67,5 +54,6 @@ class DiagBase(appier.Model):
 
     @property
     def timestamp_d(self):
-        if not self.timestamp: return self.timestamp
+        if not self.timestamp:
+            return self.timestamp
         return datetime.datetime.fromtimestamp(self.timestamp)

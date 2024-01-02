@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,25 +32,24 @@ import functools
 
 import appier
 
-def csfr_protect(scope = None):
 
+def csfr_protect(scope=None):
     def decorator(function):
-
         @functools.wraps(function)
         def interceptor(self, *args, **kwargs):
             token = self.field("csfr_token", None)
-            csfr_ensure(self, token, scope = scope)
+            csfr_ensure(self, token, scope=scope)
             return appier.call_safe(function, self, *args, **kwargs)
+
         return interceptor
 
     return decorator
 
-def csfr_ensure(self, token, scope = None):
+
+def csfr_ensure(self, token, scope=None):
     csfr_m = self.session.get("csfr", {})
     tokens, _tokens_l = csfr_m.get(scope, ({}, []))
     result = tokens.pop(token, None)
-    if result: return token
-    raise appier.AppierException(
-        message = "Invalid CSFR protect token",
-        code = 403
-    )
+    if result:
+        return token
+    raise appier.AppierException(message="Invalid CSFR protect token", code=403)

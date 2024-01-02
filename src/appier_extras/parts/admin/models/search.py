@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,22 +32,13 @@ import appier
 
 from appier_extras.parts.admin.models import base
 
+
 class Search(base.Base):
+    token = appier.field(index="all", default=True)
 
-    token = appier.field(
-        index = "all",
-        default = True
-    )
+    target_id = appier.field(index="hashed", description="Target ID")
 
-    target_id = appier.field(
-        index = "hashed",
-        description = "Target ID"
-    )
-
-    target_cls = appier.field(
-        index = "hashed",
-        description = "Target Class"
-    )
+    target_cls = appier.field(index="hashed", description="Target Class")
 
     target_title = appier.field()
 
@@ -67,14 +49,11 @@ class Search(base.Base):
         return super(Search, cls).validate() + [
             appier.not_null("token"),
             appier.not_empty("token"),
-
             appier.not_null("target_id"),
-
             appier.not_null("target_cls"),
             appier.not_empty("target_cls"),
-
             appier.not_null("target_title"),
-            appier.not_empty("target_title")
+            appier.not_empty("target_title"),
         ]
 
     @classmethod
@@ -91,38 +70,30 @@ class Search(base.Base):
 
     @classmethod
     def create_index(
-        cls,
-        token,
-        target_id,
-        target_cls,
-        target_title,
-        target_description = None
+        cls, token, target_id, target_cls, target_title, target_description=None
     ):
         token = cls._ensure_unicode(token)
         target_title = cls._ensure_unicode(target_title)
         target_description = cls._ensure_unicode(target_description)
         index = cls(
-            token = token,
-            target_id = target_id,
-            target_cls = target_cls.__name__,
-            target_title = target_title,
-            target_description = target_description
+            token=token,
+            target_id=target_id,
+            target_cls=target_cls.__name__,
+            target_title=target_title,
+            target_description=target_description,
         )
         index.save()
 
     @classmethod
     def find_indexes(cls, target_id, target_cls, *args, **kwargs):
         target_cls = target_cls.__name__
-        return cls.find(
-            target_id = target_id,
-            target_cls = target_cls,
-            *args, **kwargs
-        )
+        return cls.find(target_id=target_id, target_cls=target_cls, *args, **kwargs)
 
     @classmethod
     def delete_indexes(cls, target_id, target_cls, *args, **kwargs):
-        indexes = cls.find_indexes(target_id, target_cls, build = False)
-        for index in indexes: index.delete(*args, **kwargs)
+        indexes = cls.find_indexes(target_id, target_cls, build=False)
+        for index in indexes:
+            index.delete(*args, **kwargs)
 
     @classmethod
     def _plural(cls):
@@ -136,14 +107,14 @@ class Search(base.Base):
         target_id = model["target_id"]
         target = owner.get_model(target_cls)
         model["url"] = owner.url_for(
-            "admin.show_entity",
-            model = target._under(),
-            _id = target_id
+            "admin.show_entity", model=target._under(), _id=target_id
         )
         return model
 
     @classmethod
     def _ensure_unicode(self, value):
-        if value == None: return value
-        if appier.legacy.is_unicode(value): return value
+        if value == None:
+            return value
+        if appier.legacy.is_unicode(value):
+            return value
         return appier.legacy.UNICODE(value)

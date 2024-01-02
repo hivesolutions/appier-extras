@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,8 +32,8 @@ import unittest
 
 import appier_extras
 
-class MarkdownDebugTest(unittest.TestCase):
 
+class MarkdownDebugTest(unittest.TestCase):
     def test_basic(self):
         result = appier_extras.MarkdownDebug.process_str("hello")
         self.assertEqual(result, b"normal")
@@ -77,8 +68,7 @@ class MarkdownDebugTest(unittest.TestCase):
         self.assertEqual(result, b"image")
 
         result = appier_extras.MarkdownDebug.process_str(
-            "![Hello Image](image.jpg)",
-            options = dict(extended = True)
+            "![Hello Image](image.jpg)", options=dict(extended=True)
         )
         self.assertEqual(result, b"image(value=image.jpg)")
 
@@ -87,40 +77,46 @@ class MarkdownDebugTest(unittest.TestCase):
         self.assertEqual(result, b"link")
 
         result = appier_extras.MarkdownDebug.process_str(
-            "[hello](http://example.com)",
-            options = dict(extended = True)
+            "[hello](http://example.com)", options=dict(extended=True)
         )
         self.assertEqual(result, b"link(value=http://example.com)")
 
         result = appier_extras.MarkdownDebug.process_str(
             "[hello](http://example.com/page(with_parentheses))",
-            options = dict(extended = True)
+            options=dict(extended=True),
         )
-        if appier_extras.has_regex(): self.assertEqual(result, b"link(value=http://example.com/page(with_parentheses))")
-        else: self.assertEqual(result, b"link(value=http://example.com/page(with_parentheses),normal")
+        if appier_extras.has_regex():
+            self.assertEqual(
+                result, b"link(value=http://example.com/page(with_parentheses))"
+            )
+        else:
+            self.assertEqual(
+                result, b"link(value=http://example.com/page(with_parentheses),normal"
+            )
 
         result = appier_extras.MarkdownDebug.process_str(
-            "([hello](http://example.com/page))",
-            options = dict(extended = True)
+            "([hello](http://example.com/page))", options=dict(extended=True)
         )
         self.assertEqual(result, b"normal,link(value=http://example.com/page),normal")
 
         result = appier_extras.MarkdownDebug.process_str(
             "[hello[with_parentheses]](http://example.com/page)",
-            options = dict(extended = True)
+            options=dict(extended=True),
         )
-        if appier_extras.has_regex(): self.assertEqual(result, b"link(value=http://example.com/page)")
-        else: self.assertEqual(result, b"normal")
+        if appier_extras.has_regex():
+            self.assertEqual(result, b"link(value=http://example.com/page)")
+        else:
+            self.assertEqual(result, b"normal")
 
         result = appier_extras.MarkdownDebug.process_str(
             "([hellowith_parentheses]](http://example.com/page))",
-            options = dict(extended = True)
+            options=dict(extended=True),
         )
         self.assertEqual(result, b"normal")
 
         result = appier_extras.MarkdownDebug.process_str(
             "[![Hello Image](image.jpg)](http://example.com/page)",
-            options = dict(extended = True)
+            options=dict(extended=True),
         )
         self.assertEqual(result, b"link(value=http://example.com/page)")
 
@@ -134,8 +130,8 @@ class MarkdownDebugTest(unittest.TestCase):
         result = appier_extras.MarkdownDebug.process_str("    hello\n\tworld")
         self.assertEqual(result, b"code,normal,code")
 
-class MarkdownHTMLTest(unittest.TestCase):
 
+class MarkdownHTMLTest(unittest.TestCase):
     def test_basic(self):
         result = appier_extras.MarkdownHTML.process_str("hello")
         self.assertEqual(result, b"<p>hello</p>")
@@ -167,10 +163,12 @@ class MarkdownHTMLTest(unittest.TestCase):
 
     def test_code(self):
         result = appier_extras.MarkdownHTML.process_str("\thello")
-        self.assertEqual(result, b"<pre class=\"code language-undefined\">hello</pre>")
+        self.assertEqual(result, b'<pre class="code language-undefined">hello</pre>')
 
         result = appier_extras.MarkdownHTML.process_str("    hello")
-        self.assertEqual(result, b"<pre class=\"code language-undefined\">hello</pre>")
+        self.assertEqual(result, b'<pre class="code language-undefined">hello</pre>')
 
         result = appier_extras.MarkdownHTML.process_str("    hello\n\tworld")
-        self.assertEqual(result, b"<pre class=\"code language-undefined\">hello\nworld</pre>")
+        self.assertEqual(
+            result, b'<pre class="code language-undefined">hello\nworld</pre>'
+        )

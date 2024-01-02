@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,28 +32,28 @@ import unittest
 
 import appier_extras
 
-class FormatTest(unittest.TestCase):
 
+class FormatTest(unittest.TestCase):
     def test_safe_formatter(self):
         formatter = appier_extras.SafeFormatter()
 
-        result = formatter.format("{name}", name = "john")
+        result = formatter.format("{name}", name="john")
         self.assertEqual(result, "john")
 
-        result = formatter.format("{person[name]}", person = dict(name = "john"))
+        result = formatter.format("{person[name]}", person=dict(name="john"))
         self.assertEqual(result, "john")
 
-        result = formatter.format("{person[age]}", person = dict(name = "john"))
+        result = formatter.format("{person[age]}", person=dict(name="john"))
         self.assertEqual(result, "")
 
-        result = formatter.format("{person[age]}", person = dict(name = "john", age = 21))
+        result = formatter.format("{person[age]}", person=dict(name="john", age=21))
         self.assertEqual(result, "21")
 
     def test_safe_formatter_fallback(self):
-        formatter = appier_extras.SafeFormatter(fallback = "-")
+        formatter = appier_extras.SafeFormatter(fallback="-")
 
-        result = formatter.format("{name}", name = "john")
+        result = formatter.format("{name}", name="john")
         self.assertEqual(result, "john")
 
-        result = formatter.format("{person[age]}", person = dict(name = "john"))
+        result = formatter.format("{person[age]}", person=dict(name="john"))
         self.assertEqual(result, "-")

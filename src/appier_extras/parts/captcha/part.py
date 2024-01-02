@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -51,6 +42,7 @@ try:
 except ImportError:
     pass
 
+
 class CaptchaPart(appier.Part):
     """
     Modular part class that provides the required infra-structure
@@ -68,12 +60,12 @@ class CaptchaPart(appier.Part):
     def routes(self):
         return [
             (("GET",), "/captcha", self.image),
-            (("GET",), "/captcha/validate", self.validate)
+            (("GET",), "/captcha/validate", self.validate),
         ]
 
     def image(self):
         value = self.field("value")
-        value, data = self.generate_data(value = value)
+        value, data = self.generate_data(value=value)
         self.session["captcha"] = value
         self.content_type("image/jpeg")
         return data
@@ -82,21 +74,14 @@ class CaptchaPart(appier.Part):
         value = self.field("value")
         self.verify(value)
 
-    def generate(
-        self,
-        value = None,
-        width = 300,
-        height = 80,
-        letter_count = 5,
-        rotate = True
-    ):
-        value = value or self._generate_string(letter_count = letter_count)
+    def generate(self, value=None, width=300, height=80, letter_count=5, rotate=True):
+        value = value or self._generate_string(letter_count=letter_count)
         font = self._get_font()
         pattern = self._get_pattern()
 
         image = PIL.Image.new("RGBA", (width, height), (255, 255, 255, 255))
         self._fill_pattern(image, pattern)
-        self._draw_text(image, font, value, rotate = rotate)
+        self._draw_text(image, font, value, rotate=rotate)
 
         buffer = appier.legacy.BytesIO()
         image.save(buffer, "jpeg")
@@ -110,23 +95,22 @@ class CaptchaPart(appier.Part):
 
     def verify(self, value):
         captcha = self.session.get("captcha", None)
-        if captcha: del self.session["captcha"]
-        if not captcha: raise appier.SecurityError(
-            message = "No captcha available",
-            code = 401
-        )
-        if not value == captcha: raise appier.SecurityError(
-            message = "Invalid captcha value",
-            code = 401
-        )
+        if captcha:
+            del self.session["captcha"]
+        if not captcha:
+            raise appier.SecurityError(message="No captcha available", code=401)
+        if not value == captcha:
+            raise appier.SecurityError(message="Invalid captcha value", code=401)
 
-    def _draw_text(self, image, font, value, rotate = True):
+    def _draw_text(self, image, font, value, rotate=True):
         image_width, image_height = image.size
         text = PIL.Image.new("RGBA", (image_width, image_height), (255, 255, 255, 0))
         draw = PIL.ImageDraw.Draw(text)
 
-        if rotate: size = self._draw_text_rotate(text, font, value)
-        else: size = self._draw_text_simple(draw, font, value)
+        if rotate:
+            size = self._draw_text_rotate(text, font, value)
+        else:
+            size = self._draw_text_simple(draw, font, value)
 
         text_width, text_height = size
         initial_text_x = (image_width // 2) - (text_width // 2)
@@ -135,7 +119,7 @@ class CaptchaPart(appier.Part):
         image.paste(text, (initial_text_x, initial_text_y), text)
 
     def _draw_text_simple(self, draw, font, value):
-        draw.text((0, 0), value, font = font, fill = (220, 220, 220))
+        draw.text((0, 0), value, font=font, fill=(220, 220, 220))
         return font.getsize(value)
 
     def _draw_text_rotate(self, image, font, value):
@@ -146,14 +130,18 @@ class CaptchaPart(appier.Part):
 
         for letter in value:
             letter_width, letter_height = font.getsize(letter)
-            if has_offset: offset_width, offset_height = font.getoffset(letter)
-            else: offset_width, offset_height = (0, 0)
+            if has_offset:
+                offset_width, offset_height = font.getoffset(letter)
+            else:
+                offset_width, offset_height = (0, 0)
             letter_width += offset_width
             letter_height += offset_height
 
-            letter_image = PIL.Image.new("RGBA", (letter_width, letter_height), (255, 255, 255, 0))
+            letter_image = PIL.Image.new(
+                "RGBA", (letter_width, letter_height), (255, 255, 255, 0)
+            )
             letter_draw = PIL.ImageDraw.Draw(letter_image)
-            letter_draw.text((0, 0), letter, font = font, fill = (220, 220, 220))
+            letter_draw.text((0, 0), letter, font=font, fill=(220, 220, 220))
             rotation = random.randint(-45, 45)
 
             letter_image = letter_image.rotate(rotation, PIL.Image.BICUBIC, 1)
@@ -163,7 +151,8 @@ class CaptchaPart(appier.Part):
 
             current_letter_x += letter_image_width
 
-            if letter_image_height < maximum_letter_height: continue
+            if letter_image_height < maximum_letter_height:
+                continue
             maximum_letter_height = letter_image_height
 
         return (current_letter_x, maximum_letter_height)
@@ -183,7 +172,7 @@ class CaptchaPart(appier.Part):
 
             current_pattern_y += pattern_height
 
-    def _get_font(self, name = None, size = 36):
+    def _get_font(self, name=None, size=36):
         fonts_path = os.path.join(self.static_path, "fonts")
         name = name or self._random_path(fonts_path, (".ttf", ".otf"))
 
@@ -191,7 +180,7 @@ class CaptchaPart(appier.Part):
         font = PIL.ImageFont.truetype(font_path, size)
         return font
 
-    def _get_pattern(self, name = None):
+    def _get_pattern(self, name=None):
         patterns_path = os.path.join(self.static_path, "patterns")
         name = name or self._random_path(patterns_path, (".jpg", ".jpeg"))
 
@@ -199,7 +188,7 @@ class CaptchaPart(appier.Part):
         pattern = PIL.Image.open(pattern_path)
         return pattern
 
-    def _generate_string(self, letter_count = 5):
+    def _generate_string(self, letter_count=5):
         buffer = []
 
         for _index in range(letter_count):
@@ -209,7 +198,7 @@ class CaptchaPart(appier.Part):
         value = "".join(buffer)
         return value
 
-    def _random_path(self, path, extensions = []):
+    def _random_path(self, path, extensions=[]):
         paths = os.listdir(path)
         paths = [value for value in paths if os.path.splitext(value)[1] in extensions]
         paths_length = len(paths)

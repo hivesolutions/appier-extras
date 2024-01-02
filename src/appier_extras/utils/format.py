@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,14 +32,15 @@ import string
 
 import appier
 
-class SafeFormatter(string.Formatter):
 
-    def __init__(self, fallback = ""):
+class SafeFormatter(string.Formatter):
+    def __init__(self, fallback=""):
         self.fallback = fallback
 
     def get_field(self, field_name, args, kwargs):
         if appier.legacy.PYTHON_3:
             import _string
+
             first, rest = _string.formatter_field_name_split(field_name)
         else:
             first, rest = field_name._formatter_field_name_split()

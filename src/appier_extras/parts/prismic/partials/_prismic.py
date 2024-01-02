@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,6 +33,7 @@ import time
 import appier
 
 from appier_extras import utils
+
 
 class Prismic(object):
     """
@@ -68,9 +60,12 @@ class Prismic(object):
         # and that the sys type is not defined in the entry
         # value, if that's the case this is the termination
         # condition and then returns the current entry as the value
-        if not isinstance(entry, dict): return entry
-        if not "type" in entry: return entry
-        if not "value" in entry: return entry
+        if not isinstance(entry, dict):
+            return entry
+        if not "type" in entry:
+            return entry
+        if not "value" in entry:
+            return entry
 
         # retrieves both the type and the (possible) multiple
         # values for the current entry, then retrieves the first
@@ -102,33 +97,38 @@ class Prismic(object):
         if type == "Group":
             group = []
             for value in values:
-                value_d = dict([
-                    (key, cls._prismic_deref(value))
-                    for key, value in appier.legacy.iteritems(value)
-                ])
+                value_d = dict(
+                    [
+                        (key, cls._prismic_deref(value))
+                        for key, value in appier.legacy.iteritems(value)
+                    ]
+                )
                 group.append(value_d)
             return group
 
         return entry
 
     @classmethod
-    def _get_prismic_cache(cls, serialize = True, ref = None):
+    def _get_prismic_cache(cls, serialize=True, ref=None):
         ref = ref or Prismic
-        if ref._prismic_cache: return ref._prismic_cache
+        if ref._prismic_cache:
+            return ref._prismic_cache
         cache_engine = appier.conf("CACHE", "memory")
         cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
         cache_engine = appier.conf("PRISMIC_CACHE_ENGINE", cache_engine)
         cache_engine = cache_engine.capitalize() + "Cache"
         cache_engine = getattr(appier, cache_engine)
-        ref._prismic_cache = cache_engine.new(hash = True)
-        if serialize: ref._prismic_cache = appier.SerializedCache(cls._prismic_cache)
+        ref._prismic_cache = cache_engine.new(hash=True)
+        if serialize:
+            ref._prismic_cache = appier.SerializedCache(cls._prismic_cache)
         return ref._prismic_cache
 
     @classmethod
     def _filter_params(cls, kwargs):
         params = dict()
         for name in appier.legacy.keys(kwargs):
-            if name in ("lang",): continue
+            if name in ("lang",):
+                continue
             params[name] = kwargs.pop(name)
         return params
 
@@ -139,12 +139,12 @@ class Prismic(object):
     def prismic_value(
         self,
         key,
-        default = None,
-        cast = None,
-        locale = None,
-        timeout = 86400,
-        verify = False,
-        multiple = False,
+        default=None,
+        cast=None,
+        locale=None,
+        timeout=86400,
+        verify=False,
+        multiple=False,
         *args,
         **kwargs
     ):
@@ -159,7 +159,8 @@ class Prismic(object):
 
         # in case the cast value is set, tries to resolve it into the appropriate
         # cast operation using the default cast methods in the configuration module
-        if cast: cast = appier.config._cast_r(cast)
+        if cast:
+            cast = appier.config._cast_r(cast)
 
         # in case e the locale value is provided it must be normalized
         # into the format expected by prismic API
@@ -175,8 +176,11 @@ class Prismic(object):
         # in case there are named arguments provided, assumes that they must
         # be key value pairs for the filtering of the scope and appends the
         # extra filter string to the cache key
-        if kwargs: cache_key += ":" + ",".join("%s=%s" % (key, str(value)) for\
-            key, value in appier.legacy.iteritems(kwargs))
+        if kwargs:
+            cache_key += ":" + ",".join(
+                "%s=%s" % (key, str(value))
+                for key, value in appier.legacy.iteritems(kwargs)
+            )
 
         # tries to retrieve the reference to the prismic cache engine
         # (singleton instance) and verifies if the key exists in it, returning
@@ -184,58 +188,52 @@ class Prismic(object):
         prismic_cache = cls._get_prismic_cache()
         if cache_key in prismic_cache:
             value = prismic_cache[cache_key]
-            if cast and not value == None: value = cast(value)
+            if cast and not value == None:
+                value = cast(value)
             return value
 
         # determines if the provided key references a specific field/value on an
         # object or if it instead tries to retrieve the complete object specification
         # and then selects the appropriate retrieval method
         method = self._prismic_value if "." in key else self._prismic_object
-        if multiple: method = self._prismic_objects
+        if multiple:
+            method = self._prismic_objects
 
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
-        value = method(key, default = default, verify = verify, *args, **kwargs)
-        prismic_cache.set_item(cache_key, value, expires = time.time() + timeout)
+        value = method(key, default=default, verify=verify, *args, **kwargs)
+        prismic_cache.set_item(cache_key, value, expires=time.time() + timeout)
 
         # runs the casting operation if required and then returns the final
         # value to the caller method
-        if cast and not value == None: value = cast(value)
+        if cast and not value == None:
+            value = cast(value)
         return value
 
     def prismic_markdown(
         self,
         key,
-        limit = 10,
-        default = None,
-        verify = False,
-        encoding = "utf-8",
-        options = dict(
-            anchors = False,
-            blank = False
-        ),
+        limit=10,
+        default=None,
+        verify=False,
+        encoding="utf-8",
+        options=dict(anchors=False, blank=False),
         *args,
         **kwargs
     ):
         value = self.prismic_value(
-            key,
-            limit = limit,
-            default = default,
-            verify = verify,
-            *args,
-            **kwargs
+            key, limit=limit, default=default, verify=verify, *args, **kwargs
         )
-        if not value: return value
-        html_b = utils.MarkdownHTML.process_str(
-            value,
-            options = options
-        )
+        if not value:
+            return value
+        html_b = utils.MarkdownHTML.process_str(value, options=options)
         html_s = html_b.decode(encoding)
         return html_s
 
     @property
     def prismic_api(self):
         import prismic
+
         return prismic.API()
 
     def _prismic_object(self, *args, **kwargs):
@@ -245,13 +243,7 @@ class Prismic(object):
         return objects[0] if objects else default
 
     def _prismic_objects(
-        self,
-        key,
-        limit = 10,
-        default = [],
-        verify = False,
-        *args,
-        **kwargs
+        self, key, limit=10, default=[], verify=False, *args, **kwargs
     ):
         # retrieves the reference to the parent class value to be used
         # to access class level methods
@@ -261,8 +253,8 @@ class Prismic(object):
         # in case one of the pre-conditions is not met
         appier.verify(
             not "." in key,
-            message = "Malformed key '%s', must include both document type and key" % key,
-            code = 400
+            message="Malformed key '%s', must include both document type and key" % key,
+            code=400,
         )
 
         # filters the keyword arguments based arguments retrieving only the valid
@@ -277,15 +269,19 @@ class Prismic(object):
         # criteria and selects the first one, default to an empty dictionary
         # in case no items exist for such content type
         try:
-            query = ["[[at(document.type,\"%s\")]]" % document_type]
-            query.extend(["[[at(my.%s.%s,\"%s\")]]" % (document_type, key, value) for\
-                key, value in appier.legacy.iteritems(params)])
-            entries = self.prismic_api.search_documents(
-                q = query,
-                page_size = limit,
-                *args,
-                **kwargs
-            ) or []
+            query = ['[[at(document.type,"%s")]]' % document_type]
+            query.extend(
+                [
+                    '[[at(my.%s.%s,"%s")]]' % (document_type, key, value)
+                    for key, value in appier.legacy.iteritems(params)
+                ]
+            )
+            entries = (
+                self.prismic_api.search_documents(
+                    q=query, page_size=limit, *args, **kwargs
+                )
+                or []
+            )
         except Exception as exception:
             self.logger.warning("Problem while accessing prismic: %s" % exception)
             return default
@@ -322,15 +318,7 @@ class Prismic(object):
         # the complete set of dereferenced values
         return entries_m
 
-    def _prismic_value(
-        self,
-        key,
-        limit = 1,
-        default = None,
-        verify = False,
-        *args,
-        **kwargs
-    ):
+    def _prismic_value(self, key, limit=1, default=None, verify=False, *args, **kwargs):
         # retrieves the reference to the parent class value to be used
         # to access class level methods
         cls = self.__class__
@@ -339,8 +327,8 @@ class Prismic(object):
         # in case one of the pre-conditions is not met
         appier.verify(
             "." in key,
-            message = "Malformed key '%s', must include both document type and key" % key,
-            code = 400
+            message="Malformed key '%s', must include both document type and key" % key,
+            code=400,
         )
 
         # filters the keyword arguments based arguments retrieving only the valid
@@ -355,15 +343,19 @@ class Prismic(object):
         # criteria and selects the first one, default to an empty dictionary
         # in case no items exist for such content type
         try:
-            query = ["[[at(document.type,\"%s\")]]" % document_type]
-            query.extend(["[[at(my.%s.%s,\"%s\")]]" % (document_type, key, value) for\
-                key, value in appier.legacy.iteritems(params)])
-            entries = self.prismic_api.search_documents(
-                q = query,
-                page_size = limit,
-                *args,
-                **kwargs
-            ) or []
+            query = ['[[at(document.type,"%s")]]' % document_type]
+            query.extend(
+                [
+                    '[[at(my.%s.%s,"%s")]]' % (document_type, key, value)
+                    for key, value in appier.legacy.iteritems(params)
+                ]
+            )
+            entries = (
+                self.prismic_api.search_documents(
+                    q=query, page_size=limit, *args, **kwargs
+                )
+                or []
+            )
         except Exception as exception:
             self.logger.warning("Problem while accessing prismic: %s" % exception)
             return default
@@ -382,8 +374,8 @@ class Prismic(object):
         if verify:
             appier.verify(
                 field_id in field,
-                message = "'%s' not found" % field_id,
-                exception = appier.NotFoundError
+                message="'%s' not found" % field_id,
+                exception=appier.NotFoundError,
             )
 
         # retrieves the value of the field requested with the provided identifier

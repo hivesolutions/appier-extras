@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,6 +33,7 @@ import time
 import appier
 
 from appier_extras import utils
+
 
 class Contentful(object):
     """
@@ -68,8 +60,10 @@ class Contentful(object):
         # and that the sys type is not defined in the entry
         # value, if that's the case this is the termination
         # condition and then returns the current entry as the value
-        if not isinstance(entry, dict): return entry
-        if not "sys" in entry: return entry
+        if not isinstance(entry, dict):
+            return entry
+        if not "sys" in entry:
+            return entry
 
         # retrieves the sys value of the entry and uses it to
         # retrieve the "requested" link type value
@@ -90,7 +84,8 @@ class Contentful(object):
 
             # verifies if the current item is the one we're trying
             # to find if not we should skip the current iteration
-            if not _sys["id"] == sys["id"]: continue
+            if not _sys["id"] == sys["id"]:
+                continue
 
             # retrieves the complete set of fields from the item, so
             # that they may be dereferenced themselves
@@ -100,10 +95,12 @@ class Contentful(object):
             # if that's required by the current
             for key, value in appier.legacy.items(fields):
                 is_sequence = isinstance(value, (list, tuple))
-                if is_sequence: field_value = [
-                    cls._contentful_deref(entry, entries) for entry in value
-                ]
-                else: field_value = cls._contentful_deref(value, entries)
+                if is_sequence:
+                    field_value = [
+                        cls._contentful_deref(entry, entries) for entry in value
+                    ]
+                else:
+                    field_value = cls._contentful_deref(value, entries)
                 fields[key] = field_value
 
             return fields
@@ -111,25 +108,27 @@ class Contentful(object):
         return None
 
     @classmethod
-    def _get_contentful_cache(cls, serialize = True, ref = None):
+    def _get_contentful_cache(cls, serialize=True, ref=None):
         ref = ref or Contentful
-        if ref._contentful_cache: return ref._contentful_cache
+        if ref._contentful_cache:
+            return ref._contentful_cache
         cache_engine = appier.conf("CACHE", "memory")
         cache_engine = appier.conf("CMS_CACHE_ENGINE", cache_engine)
         cache_engine = appier.conf("CONTENTFUL_CACHE_ENGINE", cache_engine)
         cache_engine = cache_engine.capitalize() + "Cache"
         cache_engine = getattr(appier, cache_engine)
-        ref._contentful_cache = cache_engine.new(hash = True)
-        if serialize: ref._contentful_cache = appier.SerializedCache(cls._contentful_cache)
+        ref._contentful_cache = cache_engine.new(hash=True)
+        if serialize:
+            ref._contentful_cache = appier.SerializedCache(cls._contentful_cache)
         return ref._contentful_cache
 
     def contentful_image(
         self,
         url,
-        format = "jpg",
-        loading = "progressive",
-        width = None,
-        height = None,
+        format="jpg",
+        loading="progressive",
+        width=None,
+        height=None,
         *args,
         **kwargs
     ):
@@ -138,23 +137,29 @@ class Contentful(object):
         query = appier.legacy.parse_qs(query)
         query.update(**kwargs)
 
-        if format: query["fm"] = [format]
-        if loading: query["fl"] = [loading]
-        if height: query["h"] = [str(height)]
-        if width: query["w"] = [str(width)]
+        if format:
+            query["fm"] = [format]
+        if loading:
+            query["fl"] = [loading]
+        if height:
+            query["h"] = [str(height)]
+        if width:
+            query["w"] = [str(width)]
 
-        query = appier.legacy.urlencode(query, doseq = True)
-        image_url = appier.legacy.urlunparse((scheme, netloc, path, params, query, fragment))
+        query = appier.legacy.urlencode(query, doseq=True)
+        image_url = appier.legacy.urlunparse(
+            (scheme, netloc, path, params, query, fragment)
+        )
         return image_url
 
     def contentful_value(
         self,
         key,
-        default = None,
-        cast = None,
-        locale = None,
-        timeout = 86400,
-        verify = False,
+        default=None,
+        cast=None,
+        locale=None,
+        timeout=86400,
+        verify=False,
         *args,
         **kwargs
     ):
@@ -169,7 +174,8 @@ class Contentful(object):
 
         # in case the cast value is set, tries to resolve it into the appropriate
         # cast operation using the default cast methods in the configuration module
-        if cast: cast = appier.config._cast_r(cast)
+        if cast:
+            cast = appier.config._cast_r(cast)
 
         # in case e the locale value is provided it must be normalized
         # into the format expected by contentful api
@@ -185,8 +191,11 @@ class Contentful(object):
         # in case there are named arguments provided, assumes that they must
         # be key value pairs for the filtering of the scope and appends the
         # extra filter string to the cache key
-        if kwargs: cache_key += ":" + ",".join("%s=%s" % (key, str(value)) for\
-            key, value in appier.legacy.iteritems(kwargs))
+        if kwargs:
+            cache_key += ":" + ",".join(
+                "%s=%s" % (key, str(value))
+                for key, value in appier.legacy.iteritems(kwargs)
+            )
 
         # tries to retrieve the reference to the contentful cache engine
         # (singleton instance) and verifies if the key exists in it, returning
@@ -194,62 +203,51 @@ class Contentful(object):
         contentful_cache = cls._get_contentful_cache()
         if cache_key in contentful_cache:
             value = contentful_cache[cache_key]
-            if cast and not value == None: value = cast(value)
+            if cast and not value == None:
+                value = cast(value)
             return value
 
         # retrieve the value remotely and sets the value in the cache engine,
         # to avoid further retrievals later on
-        value = self._contentful_value(key, default = default, verify = verify, *args, **kwargs)
-        contentful_cache.set_item(cache_key, value, expires = time.time() + timeout)
+        value = self._contentful_value(
+            key, default=default, verify=verify, *args, **kwargs
+        )
+        contentful_cache.set_item(cache_key, value, expires=time.time() + timeout)
 
         # runs the casting operation if required and then returns the final
         # value to the caller method
-        if cast and not value == None: value = cast(value)
+        if cast and not value == None:
+            value = cast(value)
         return value
 
     def contentful_markdown(
         self,
         key,
-        include = 10,
-        default = None,
-        verify = False,
-        encoding = "utf-8",
-        options = dict(
-            anchors = False,
-            blank = False
-        ),
+        include=10,
+        default=None,
+        verify=False,
+        encoding="utf-8",
+        options=dict(anchors=False, blank=False),
         *args,
         **kwargs
     ):
         value = self.contentful_value(
-            key,
-            include = include,
-            default = default,
-            verify = verify,
-            *args,
-            **kwargs
+            key, include=include, default=default, verify=verify, *args, **kwargs
         )
-        if not value: return value
-        html_b = utils.MarkdownHTML.process_str(
-            value,
-            options = options
-        )
+        if not value:
+            return value
+        html_b = utils.MarkdownHTML.process_str(value, options=options)
         html_s = html_b.decode(encoding)
         return html_s
 
     @property
     def contentful_api(self):
         import contentful
+
         return contentful.API()
 
     def _contentful_value(
-        self,
-        key,
-        include = 10,
-        default = None,
-        verify = False,
-        *args,
-        **kwargs
+        self, key, include=10, default=None, verify=False, *args, **kwargs
     ):
         # retrieves the reference to the parent class value to be used
         # to access class level methods
@@ -259,8 +257,8 @@ class Contentful(object):
         # in case one of the pre-conditions is not met
         appier.verify(
             "." in key,
-            message = "Malformed key '%s', must include both content type and key" % key,
-            code = 400
+            message="Malformed key '%s', must include both content type and key" % key,
+            code=400,
         )
 
         # splits the provided key around the dot value (namespace oriented)
@@ -271,12 +269,12 @@ class Contentful(object):
         # criteria and selects the first one, default to an empty dictionary
         # in case no items exist for such content type
         try:
-            entries = self.contentful_api.list_entries(
-                content_type = content_type,
-                include = include,
-                *args,
-                **kwargs
-            ) or dict()
+            entries = (
+                self.contentful_api.list_entries(
+                    content_type=content_type, include=include, *args, **kwargs
+                )
+                or dict()
+            )
         except Exception as exception:
             self.logger.warning("Problem while accessing Contentful: %s" % exception)
             return default
@@ -295,8 +293,8 @@ class Contentful(object):
         if verify:
             appier.verify(
                 field_id in field,
-                message = "'%s' not found" % field_id,
-                exception = appier.NotFoundError
+                message="'%s' not found" % field_id,
+                exception=appier.NotFoundError,
             )
 
         # retrieves the value of the field requested with the provided identifier
@@ -306,15 +304,18 @@ class Contentful(object):
         # tries to determine if the value of the field is a link one (wither
         # a dictionary or a list) if that's not the case returns immediately
         is_link = isinstance(field_value, (dict, list, tuple))
-        if not is_link: return field_value
+        if not is_link:
+            return field_value
 
         # determines if the provided field value is a sequence or a dictionary
         # and converts the the value from the link accordingly
         is_sequence = isinstance(field_value, (list, tuple))
-        if is_sequence: field_value = [
-            cls._contentful_deref(entry, entries) for entry in field_value
-        ]
-        else: field_value = cls._contentful_deref(field_value, entries)
+        if is_sequence:
+            field_value = [
+                cls._contentful_deref(entry, entries) for entry in field_value
+            ]
+        else:
+            field_value = cls._contentful_deref(field_value, entries)
 
         # returns the final dereferenced value to the caller method
         # this can be both a plain value or a sequence

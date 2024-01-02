@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,29 +32,17 @@ import appier
 
 from appier_extras.parts.admin.models import base
 
+
 class Locale(base.Base):
+    locale = appier.field(index="all", default=True)
 
-    locale = appier.field(
-        index = "all",
-        default = True
-    )
-
-    context = appier.field(
-        index = "all"
-    )
+    context = appier.field(index="all")
 
     data_j = appier.field(
-        type = dict,
-        private = True,
-        meta = "longmap",
-        description = "JSON Data"
+        type=dict, private=True, meta="longmap", description="JSON Data"
     )
 
-    count_l = appier.field(
-        type = int,
-        initial = 0,
-        description = "Count"
-    )
+    count_l = appier.field(type=int, initial=0, description="Count")
 
     @classmethod
     def setup(cls):
@@ -77,9 +56,8 @@ class Locale(base.Base):
             appier.not_null("locale"),
             appier.not_empty("locale"),
             appier.is_regex("locale", "^[a-z]{2}(?:_[a-z]{2}(?:_[a-z]+)?)?$"),
-
             appier.not_null("data_j"),
-            appier.not_empty("data_j")
+            appier.not_empty("data_j"),
         ]
 
     @classmethod
@@ -87,35 +65,39 @@ class Locale(base.Base):
         return ["locale", "context", "description", "count_l"]
 
     @classmethod
-    def bundles_d(cls, locale = None):
-        locales = cls.find_e(rules = False)
-        return dict([((locale.locale, locale.context or None), locale.data_u) for locale in locales])
+    def bundles_d(cls, locale=None):
+        locales = cls.find_e(rules=False)
+        return dict(
+            [
+                ((locale.locale, locale.context or None), locale.data_u)
+                for locale in locales
+            ]
+        )
 
     @classmethod
     @appier.operation(
-        name = "Import Bundle",
-        parameters = (
+        name="Import Bundle",
+        parameters=(
             ("JSON File", "file", "file"),
             ("Locale", "locale", str),
-            ("Context", "context", str)
+            ("Context", "context", str),
         ),
-        factory = True
+        factory=True,
     )
-    def import_bundle_s(cls, file, locale, context = None, strict = False):
+    def import_bundle_s(cls, file, locale, context=None, strict=False):
         context = context or None
         data_j = cls._json_read(file)
-        conditions = cls._conditions(locale, context = context)
-        locale_e = cls.get(rules = False, raise_e = False, **{"$and" : conditions})
-        if locale_e: locale_e.data_j.update(data_j)
-        else: locale_e = cls(locale = locale, context = context, data_j = data_j)
+        conditions = cls._conditions(locale, context=context)
+        locale_e = cls.get(rules=False, raise_e=False, **{"$and": conditions})
+        if locale_e:
+            locale_e.data_j.update(data_j)
+        else:
+            locale_e = cls(locale=locale, context=context, data_j=data_j)
         locale_e.save()
         return locale_e
 
     @classmethod
-    @appier.operation(
-        name = "Import CSV",
-        parameters = (("CSV File", "file", "file"),)
-    )
+    @appier.operation(name="Import CSV", parameters=(("CSV File", "file", "file"),))
     def import_csv_s(cls, file):
         csv_reader = cls._csv_read(file)
         header = next(csv_reader)
@@ -125,41 +107,39 @@ class Locale(base.Base):
         for line in csv_reader:
             name, locales_v = line[0], line[1:]
             for locale_n, locale_v in zip(locales_n, locales_v):
-                if not locale_v: continue
+                if not locale_v:
+                    continue
                 locale_m = result.get(locale_n, {})
                 locale_m[name] = locale_v
                 result[locale_n] = locale_m
 
         for locale, data_j in appier.legacy.iteritems(result):
             conditions = cls._conditions(locale)
-            locale_e = cls.get(rules = False, raise_e = False, **{"$and" : conditions})
-            if locale_e: locale_e.data_j.update(data_j)
-            else: locale_e = cls(locale = locale, data_j = data_j)
+            locale_e = cls.get(rules=False, raise_e=False, **{"$and": conditions})
+            if locale_e:
+                locale_e.data_j.update(data_j)
+            else:
+                locale_e = cls(locale=locale, data_j=data_j)
             locale_e.save()
 
     @classmethod
-    @appier.link(name = "Export CSV", context = True)
-    def list_csv_url(cls, view = None, context = None, absolute = False):
+    @appier.link(name="Export CSV", context=True)
+    def list_csv_url(cls, view=None, context=None, absolute=False):
         return appier.get_app().url_for(
-            "admin.list_locales_csv",
-            view = view,
-            context = context,
-            absolute = absolute
+            "admin.list_locales_csv", view=view, context=context, absolute=absolute
         )
 
     @classmethod
-    @appier.view(
-        name = "Explorer",
-        parameters = (("Context", "context", str),)
-    )
+    @appier.view(name="Explorer", parameters=(("Context", "context", str),))
     def explorer_v(cls, context, *args, **kwargs):
         kwargs["sort"] = kwargs.get("sort", [("id", -1)])
-        if context: kwargs.update(context = context)
+        if context:
+            kwargs.update(context=context)
         return appier.lazy_dict(
-            model = cls,
-            kwargs = kwargs,
-            entities = appier.lazy(lambda: cls.find(*args, **kwargs)),
-            page = appier.lazy(lambda: cls.paginate(*args, **kwargs))
+            model=cls,
+            kwargs=kwargs,
+            entities=appier.lazy(lambda: cls.find(*args, **kwargs)),
+            page=appier.lazy(lambda: cls.paginate(*args, **kwargs)),
         )
 
     @classmethod
@@ -171,28 +151,31 @@ class Locale(base.Base):
         # iterates over the complete set of locale data pairs
         # in the bundles dictionary to set these bundles (locales)
         for (locale, context), data_j in appier.legacy.iteritems(bundles_d):
-            appier.get_app()._register_bundle(data_j, locale, context = context)
+            appier.get_app()._register_bundle(data_j, locale, context=context)
 
     @classmethod
-    def _escape(cls, data_j, target = ".", sequence = "::"):
+    def _escape(cls, data_j, target=".", sequence="::"):
         data_j = dict(data_j)
         for key, value in appier.legacy.items(data_j):
             _key = key.replace(target, sequence)
-            if _key == key: continue
+            if _key == key:
+                continue
             data_j[_key] = value
             del data_j[key]
         return data_j
 
     @classmethod
-    def _unescape(cls, data_j, target = ".", sequence = "::"):
-        return cls._escape(data_j, target = sequence, sequence = target)
+    def _unescape(cls, data_j, target=".", sequence="::"):
+        return cls._escape(data_j, target=sequence, sequence=target)
 
     @classmethod
-    def _conditions(cls, locale, context = None):
+    def _conditions(cls, locale, context=None):
         conditions = []
-        conditions.append(dict(locale = locale))
-        if context: conditions.append(dict(context = context))
-        else: conditions.append({"$or" : [dict(context = ""), dict(context = None)]})
+        conditions.append(dict(locale=locale))
+        if context:
+            conditions.append(dict(context=context))
+        else:
+            conditions.append({"$or": [dict(context=""), dict(context=None)]})
         return conditions
 
     def pre_create(self):
@@ -217,21 +200,16 @@ class Locale(base.Base):
         base.Base.post_delete(self)
         self.owner.trigger_bus("locale/reload")
 
-    @appier.operation(
-        name = "Set Context",
-        parameters = (("Context", "context", str),)
-    )
+    @appier.operation(name="Set Context", parameters=(("Context", "context", str),))
     def set_context_s(self, context):
-        locale = self.reload(rules = False)
+        locale = self.reload(rules=False)
         locale.context = context
         locale.save()
 
-    @appier.link(name = "Export Bundle")
-    def bundle_url(self, absolute = False):
+    @appier.link(name="Export Bundle")
+    def bundle_url(self, absolute=False):
         return appier.get_app().url_for(
-            "admin.bundle_locale_json",
-            id = self.id,
-            absolute = absolute
+            "admin.bundle_locale_json", id=self.id, absolute=absolute
         )
 
     @property

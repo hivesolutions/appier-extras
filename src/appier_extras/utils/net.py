@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -39,15 +30,11 @@ __license__ = "Apache License, Version 2.0"
 
 import math
 
-SIZE_UNITS_LIST = (
-    "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
-)
+SIZE_UNITS_LIST = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
 """ The size units list that contains the complete set of
 units indexed by the depth they represent """
 
-SIZE_UNITS_LIST_S = (
-    "B", "K", "M", "G", "T", "P", "E", "Z", "Y"
-)
+SIZE_UNITS_LIST_S = ("B", "K", "M", "G", "T", "P", "E", "Z", "Y")
 """ The simplified size units list that contains the complete set of
 units indexed by the depth they represent """
 
@@ -65,15 +52,16 @@ DEFAULT_PLACES = 3
 to be used for the string representation in the round
 based conversion of size units to be performed """
 
+
 def size_round_unit(
     size_value,
-    minimum = DEFAULT_MINIMUM,
-    places = DEFAULT_PLACES,
-    reduce = True,
-    space = False,
-    justify = False,
-    simplified = False,
-    depth = 0
+    minimum=DEFAULT_MINIMUM,
+    places=DEFAULT_PLACES,
+    reduce=True,
+    space=False,
+    justify=False,
+    simplified=False,
+    depth=0,
 ):
     """
     Rounds the size unit, returning a string representation
@@ -147,24 +135,30 @@ def size_round_unit(
         # in case the dot value is not present in the size value
         # string adds it to the end otherwise an issue may occur
         # while removing extra padding characters for reduce
-        if reduce and not "." in size_value_s: size_value_s += "."
+        if reduce and not "." in size_value_s:
+            size_value_s += "."
 
         # strips the value from zero appended to the right and
         # then strips the value also from a possible decimal
         # point value that may be included in it, this is only
         # performed in case the reduce flag is enabled
-        if reduce: size_value_s = size_value_s.rstrip("0")
-        if reduce: size_value_s = size_value_s.rstrip(".")
+        if reduce:
+            size_value_s = size_value_s.rstrip("0")
+        if reduce:
+            size_value_s = size_value_s.rstrip(".")
 
         # in case the justify flag is set runs the justification
         # process on the size value taking into account the maximum
         # size of the associated size string
-        if justify: size_value_s = size_value_s.rjust(size_s)
+        if justify:
+            size_value_s = size_value_s.rjust(size_s)
 
         # retrieves the size unit (string mode) for the current
         # depth according to the provided map
-        if simplified: size_unit = SIZE_UNITS_LIST_S[depth]
-        else: size_unit = SIZE_UNITS_LIST[depth]
+        if simplified:
+            size_unit = SIZE_UNITS_LIST_S[depth]
+        else:
+            size_unit = SIZE_UNITS_LIST[depth]
 
         # retrieves the appropriate separator based
         # on the value of the space flag
@@ -185,11 +179,11 @@ def size_round_unit(
         new_depth = depth + 1
         return size_round_unit(
             new_size_value,
-            minimum = minimum,
-            places = places,
-            reduce = reduce,
-            space = space,
-            justify = justify,
-            simplified = simplified,
-            depth = new_depth
+            minimum=minimum,
+            places=places,
+            reduce=reduce,
+            space=space,
+            justify=justify,
+            simplified=simplified,
+            depth=new_depth,
         )

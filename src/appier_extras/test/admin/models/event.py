@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,51 +32,26 @@ import unittest
 
 import appier_extras
 
-class EventTest(unittest.TestCase):
 
+class EventTest(unittest.TestCase):
     def test_format(self):
         result = appier_extras.admin.Event.format(
-            dict(
-                name = "{person[name]}",
-                person = dict(name = "john")
-            )
+            dict(name="{person[name]}", person=dict(name="john"))
         )
-        self.assertEqual(
-            result,
-            dict(
-                name = "john",
-                person = dict(name = "john")
-            )
+        self.assertEqual(result, dict(name="john", person=dict(name="john")))
+
+        result = appier_extras.admin.Event.format(
+            dict(name="{person[name]}", age="{person[age]}", person=dict(name="john"))
         )
+        self.assertEqual(result, dict(name="john", age="", person=dict(name="john")))
 
         result = appier_extras.admin.Event.format(
             dict(
-                name = "{person[name]}",
-                age = "{person[age]}",
-                person = dict(name = "john")
+                name="{person[name]}",
+                age="{person[age]}",
+                person=dict(name="john", age=21),
             )
         )
         self.assertEqual(
-            result,
-            dict(
-                name = "john",
-                age = "",
-                person = dict(name = "john")
-            )
-        )
-
-        result = appier_extras.admin.Event.format(
-            dict(
-                name = "{person[name]}",
-                age = "{person[age]}",
-                person = dict(name = "john", age = 21)
-            )
-        )
-        self.assertEqual(
-            result,
-            dict(
-                name = "john",
-                age = "21",
-                person = dict(name = "john", age = 21)
-            )
+            result, dict(name="john", age="21", person=dict(name="john", age=21))
         )

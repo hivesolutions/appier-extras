@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -44,12 +35,11 @@ import appier_extras
 
 from . import mock
 
-class SnapshotTest(unittest.TestCase):
 
+class SnapshotTest(unittest.TestCase):
     def setUp(self):
         self.app = appier.App(
-            parts = (appier_extras.admin.AdminPart,),
-            session_c = appier.MemorySession
+            parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
         self.app._register_models_m(mock, "Mocks")
 
@@ -66,7 +56,7 @@ class SnapshotTest(unittest.TestCase):
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "Name")
 
-        person = mock.AdminPerson.get(id = 1)
+        person = mock.AdminPerson.get(id=1)
 
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "Name")
@@ -91,7 +81,7 @@ class SnapshotTest(unittest.TestCase):
         self.assertEqual(person.name, "NameChanged")
         self.assertEqual(appier_extras.admin.Snapshot.count(), 3)
 
-        person = mock.AdminPerson.get(id = 1)
+        person = mock.AdminPerson.get(id=1)
 
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "NameChanged")
@@ -105,7 +95,7 @@ class SnapshotTest(unittest.TestCase):
 
         person.delete()
 
-        person = mock.AdminPerson.get(id = 1, raise_e = False)
+        person = mock.AdminPerson.get(id=1, raise_e=False)
 
         self.assertEqual(person, None)
 
@@ -114,7 +104,7 @@ class SnapshotTest(unittest.TestCase):
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "NameChangedAgain")
 
-        person = mock.AdminPerson.get(id = 1)
+        person = mock.AdminPerson.get(id=1)
 
         self.assertEqual(person.id, 1)
         self.assertEqual(person.name, "NameChangedAgain")
@@ -128,7 +118,7 @@ class SnapshotTest(unittest.TestCase):
         self.assertEqual(father.id, 2)
         self.assertEqual(father.name, "Father")
 
-        father = mock.AdminPerson.get(id = 2)
+        father = mock.AdminPerson.get(id=2)
 
         self.assertEqual(father.id, 2)
         self.assertEqual(father.name, "Father")

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -41,13 +32,13 @@ import appier
 
 from appier_extras import base
 
-class PreflightPart(appier.Part):
 
+class PreflightPart(appier.Part):
     def __init__(self, *args, **kwargs):
         appier.Part.__init__(self, *args, **kwargs)
         self.data = appier.conf("PREFLIGHT_DATA", "")
-        self.max_age = appier.conf("PREFLIGHT_MAX_AGE", 86400, cast = int)
-        self.data_b = appier.legacy.bytes(self.data, force = True)
+        self.max_age = appier.conf("PREFLIGHT_MAX_AGE", 86400, cast=int)
+        self.data_b = appier.legacy.bytes(self.data, force=True)
         self.max_age_s = str(self.max_age)
 
     def version(self):
@@ -64,9 +55,12 @@ class PreflightPart(appier.Part):
         self.owner.bind("before_request", self._handler)
 
     def _handler(self):
-        if not self.owner.request.method == "OPTIONS": return
-        if self.owner.request.handled: return
+        if not self.owner.request.method == "OPTIONS":
+            return
+        if self.owner.request.handled:
+            return
         allow_headers = self.request.get_header("Access-Control-Request-Headers", None)
-        if allow_headers: self.request.set_header("Access-Control-Allow-Headers", allow_headers)
+        if allow_headers:
+            self.request.set_header("Access-Control-Allow-Headers", allow_headers)
         self.request.set_header("Access-Control-Max-Age", self.max_age_s)
         self.owner.request.handle(self.data_b)

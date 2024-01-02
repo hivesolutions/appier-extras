@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,12 +33,11 @@ import unittest
 import appier
 import appier_extras
 
-class BaseTest(unittest.TestCase):
 
+class BaseTest(unittest.TestCase):
     def setUp(self):
         self.app = appier.App(
-            parts = (appier_extras.admin.AdminPart,),
-            session_c = appier.MemorySession
+            parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
 
     def tearDown(self):
@@ -57,38 +47,33 @@ class BaseTest(unittest.TestCase):
 
     def test_basic(self):
         base = appier_extras.admin.Base()
-        base.save(verify = False)
+        base.save(verify=False)
 
         self.assertNotEqual(base.created, None)
         self.assertNotEqual(base.modified, None)
 
     def test_ensure_view(self):
         result = appier_extras.admin.Base.ensure_views(
-            dict(name = "Joseph", age = 21),
-            views = [dict(name = "Joseph")]
+            dict(name="Joseph", age=21), views=[dict(name="Joseph")]
         )
         self.assertEqual(result, None)
 
         self.assertRaises(
             appier.SecurityError,
             lambda: appier_extras.admin.Base.ensure_views(
-                dict(name = "Anthony", age = 21),
-                views = [dict(name = "Joseph")]
-            )
+                dict(name="Anthony", age=21), views=[dict(name="Joseph")]
+            ),
         )
 
         self.assertRaises(
             appier.SecurityError,
             lambda: appier_extras.admin.Base.ensure_views(
-                dict(age = 21),
-                views = [dict(name = "Joseph")]
-            )
+                dict(age=21), views=[dict(name="Joseph")]
+            ),
         )
 
         result = appier_extras.admin.Base.ensure_views(
-            dict(age = 21),
-            views = [dict(name = "Joseph")],
-            ensure_set = False
+            dict(age=21), views=[dict(name="Joseph")], ensure_set=False
         )
         self.assertEqual(result, None)
 
@@ -96,16 +81,16 @@ class BaseTest(unittest.TestCase):
         settings = appier_extras.admin.Settings()
         settings.save()
 
-        settings.add_secret_s("hello", "world", strategy = "plain")
-        settings = settings.reload(rules = False)
+        settings.add_secret_s("hello", "world", strategy="plain")
+        settings = settings.reload(rules=False)
         self.assertNotEqual(settings.secrets, {})
 
         settings = settings.reload()
         result = settings.decode_secret("hello")
         self.assertEqual(result, "world")
 
-        settings.add_secret_s("hello", "world", strategy = "base64")
-        settings = settings.reload(rules = False)
+        settings.add_secret_s("hello", "world", strategy="base64")
+        settings = settings.reload(rules=False)
         self.assertNotEqual(settings.secrets, {})
 
         settings = settings.reload()

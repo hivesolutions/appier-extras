@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,12 +33,11 @@ import unittest
 import appier
 import appier_extras
 
-class AccountTest(unittest.TestCase):
 
+class AccountTest(unittest.TestCase):
     def setUp(self):
         self.app = appier.App(
-            parts = (appier_extras.admin.AdminPart,),
-            session_c = appier.MemorySession
+            parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
 
     def tearDown(self):
@@ -85,7 +75,7 @@ class AccountTest(unittest.TestCase):
 
         self.assertRaises(
             appier.OperationalError,
-            lambda: appier_extras.admin.Account.login("username", "password")
+            lambda: appier_extras.admin.Account.login("username", "password"),
         )
 
         account = appier_extras.admin.Account.login("username", "passwordchanged")
@@ -129,7 +119,7 @@ class AccountTest(unittest.TestCase):
 
         self.assertRaises(
             appier.OperationalError,
-            lambda: appier_extras.admin.Account.login("username", "PASSWORD")
+            lambda: appier_extras.admin.Account.login("username", "PASSWORD"),
         )
 
     def test_confirm(self):
@@ -143,12 +133,12 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(account.enabled, True)
         self.assertNotEqual(account.confirmation_token, None)
 
-        account = account.get(username = "username", rules = False)
+        account = account.get(username="username", rules=False)
         account.enabled = False
         account.save()
 
         appier_extras.admin.Account.confirm(account.confirmation_token)
-        account = account.reload(rules = False)
+        account = account.reload(rules=False)
 
         self.assertEqual(account.enabled, True)
         self.assertEqual(account.confirmation_token, None)
@@ -166,7 +156,7 @@ class AccountTest(unittest.TestCase):
         self.assertEqual(account.reset_token, None)
         self.assertNotEqual(account.confirmation_token, None)
 
-        account = account.get(username = "username", rules = False)
+        account = account.get(username="username", rules=False)
         account.enabled = False
         account.save()
 
@@ -175,19 +165,15 @@ class AccountTest(unittest.TestCase):
         self.assertNotEqual(account.confirmation_token, None)
 
         reset_token = account.recover_s()
-        account = account.reload(rules = False)
+        account = account.reload(rules=False)
 
         self.assertEqual(account.enabled, False)
         self.assertNotEqual(account.reset_token, None)
         self.assertEqual(account.reset_token, reset_token)
         self.assertNotEqual(account.confirmation_token, None)
 
-        appier_extras.admin.Account.reset(
-            reset_token,
-            "passwordnew",
-            "passwordnew"
-        )
-        account = account.reload(rules = False)
+        appier_extras.admin.Account.reset(reset_token, "passwordnew", "passwordnew")
+        account = account.reload(rules=False)
 
         self.assertEqual(account.enabled, True)
         self.assertEqual(account.reset_token, None)
@@ -198,14 +184,11 @@ class AccountTest(unittest.TestCase):
         account.save()
 
         reset_token = account.recover_s()
-        account = account.reload(rules = False)
+        account = account.reload(rules=False)
         appier_extras.admin.Account.reset(
-            reset_token,
-            "passwordnew",
-            "passwordnew",
-            confirm = False
+            reset_token, "passwordnew", "passwordnew", confirm=False
         )
-        account = account.reload(rules = False)
+        account = account.reload(rules=False)
 
         self.assertEqual(account.enabled, False)
         self.assertEqual(account.reset_token, None)
@@ -302,64 +285,43 @@ class AccountTest(unittest.TestCase):
         account_duplicate.password_confirm = "password2"
         account_duplicate.key = account.key
 
-        self.assertRaises(
-            appier.ValidationError,
-            lambda: account_duplicate.save()
-        )
+        self.assertRaises(appier.ValidationError, lambda: account_duplicate.save())
 
     def test__join_m(self):
         account = appier_extras.admin.Account()
 
         result = account._join_m(
-            {
-                "name" : "brands-origin",
-                "brand" : "nike",
-                "ctx" : {
-                    "brand" : "nike"
-                }
-            }, {
-                "name" : "brands-target",
-                "brand" : "adidas",
-                "ctx" : {
-                    "brand" : "adidas"
-                }
-            }
+            {"name": "brands-origin", "brand": "nike", "ctx": {"brand": "nike"}},
+            {"name": "brands-target", "brand": "adidas", "ctx": {"brand": "adidas"}},
         )
 
         self.assertEqual(
             result,
             {
-                "name" : ["brands-target", "brands-origin"],
-                "brand" : ["adidas", "nike"],
-                "ctx" : {
-                    "brand" : ["adidas", "nike"]
-                }
-            }
+                "name": ["brands-target", "brands-origin"],
+                "brand": ["adidas", "nike"],
+                "ctx": {"brand": ["adidas", "nike"]},
+            },
         )
 
         result = account._join_m(
             {
-                "name" : "brands-origin",
-                "brand" : "nike",
-                "ctx" : {
-                    "brand" : ["nike", "nifty"]
-                }
-            }, {
-                "name" : "brands-target",
-                "brand" : "adidas",
-                "ctx" : {
-                    "brand" : ["adidas", "amidas"]
-                }
-            }
+                "name": "brands-origin",
+                "brand": "nike",
+                "ctx": {"brand": ["nike", "nifty"]},
+            },
+            {
+                "name": "brands-target",
+                "brand": "adidas",
+                "ctx": {"brand": ["adidas", "amidas"]},
+            },
         )
 
         self.assertEqual(
             result,
             {
-                "name" : ["brands-target", "brands-origin"],
-                "brand" : ["adidas", "nike"],
-                "ctx" : {
-                    "brand" : ["adidas", "amidas", "nike", "nifty"]
-                }
-            }
+                "name": ["brands-target", "brands-origin"],
+                "brand": ["adidas", "nike"],
+                "ctx": {"brand": ["adidas", "amidas", "nike", "nifty"]},
+            },
         )

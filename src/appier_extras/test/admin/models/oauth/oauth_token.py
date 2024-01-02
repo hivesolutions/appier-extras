@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Hive Appier Framework
-# Copyright (c) 2008-2023 Hive Solutions Lda.
+# Copyright (c) 2008-2024 Hive Solutions Lda.
 #
 # This file is part of Hive Appier Framework.
 #
@@ -22,16 +22,7 @@
 __author__ = "João Magalhães <joamag@hive.pt>"
 """ The author(s) of the module """
 
-__version__ = "1.0.0"
-""" The version of the module """
-
-__revision__ = "$LastChangedRevision$"
-""" The revision number of the module """
-
-__date__ = "$LastChangedDate$"
-""" The last change date of the module """
-
-__copyright__ = "Copyright (c) 2008-2023 Hive Solutions Lda."
+__copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
@@ -42,12 +33,11 @@ import unittest
 import appier
 import appier_extras
 
-class OAuthTokenTest(unittest.TestCase):
 
+class OAuthTokenTest(unittest.TestCase):
     def setUp(self):
         self.app = appier.App(
-            parts = (appier_extras.admin.AdminPart,),
-            session_c = appier.MemorySession
+            parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
 
     def tearDown(self):
@@ -74,7 +64,9 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_client.name, "name")
         self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
 
-        oauth_token = oauth_client.build_token_s(username = "username", scope = ["admin", "user"])
+        oauth_token = oauth_client.build_token_s(
+            username="username", scope=["admin", "user"]
+        )
 
         self.assertNotEqual(oauth_token.id, None)
         self.assertNotEqual(oauth_token.access_token, None)
@@ -115,7 +107,9 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_client.name, "name")
         self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
 
-        oauth_token = oauth_client.build_token_s(username = "username", scope = ["admin", "user"])
+        oauth_token = oauth_client.build_token_s(
+            username="username", scope=["admin", "user"]
+        )
 
         self.assertNotEqual(oauth_token.id, None)
         self.assertNotEqual(oauth_token.access_token, None)
@@ -130,8 +124,8 @@ class OAuthTokenTest(unittest.TestCase):
             "http://localhost/oauth",
             ["admin", "user"],
             oauth_client,
-            account = account,
-            owner = self.app
+            account=account,
+            owner=self.app,
         )
 
         self.assertNotEqual(result, False)
@@ -167,7 +161,9 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertEqual(oauth_client.name, "name")
         self.assertEqual(oauth_client.redirect_uri, "http://localhost/oauth")
 
-        oauth_token = oauth_client.build_token_s(username = "username", scope = ["admin", "user"])
+        oauth_token = oauth_client.build_token_s(
+            username="username", scope=["admin", "user"]
+        )
 
         self.assertNotEqual(oauth_token.id, None)
         self.assertNotEqual(oauth_token.access_token, None)
@@ -182,7 +178,7 @@ class OAuthTokenTest(unittest.TestCase):
         account.change_username_s("username_changed")
 
         oauth_token_p = oauth_token
-        oauth_token = oauth_token.reload(rules = False)
+        oauth_token = oauth_token.reload(rules=False)
 
         self.assertNotEqual(oauth_token.id, None)
         self.assertNotEqual(oauth_token.access_token, None)
@@ -196,5 +192,9 @@ class OAuthTokenTest(unittest.TestCase):
         self.assertNotEqual(id(oauth_token), id(oauth_token_p))
         self.assertEqual(oauth_token.id, oauth_token_p.id)
         self.assertEqual(oauth_token.access_token, oauth_token_p.access_token)
-        self.assertEqual(oauth_token.authorization_code, oauth_token_p.authorization_code)
-        self.assertEqual(oauth_token.authorization_code_date, oauth_token_p.authorization_code_date)
+        self.assertEqual(
+            oauth_token.authorization_code, oauth_token_p.authorization_code
+        )
+        self.assertEqual(
+            oauth_token.authorization_code_date, oauth_token_p.authorization_code_date
+        )
