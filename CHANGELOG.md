@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Renamed repository to `appier-extras`
 * New year naming 2023
+* Changed codebase to make it compliant with Black code formatter
 
 ### Fixed
 
