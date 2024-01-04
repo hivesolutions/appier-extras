@@ -31,7 +31,9 @@ __license__ = "Apache License, Version 2.0"
 import appier
 
 
-def resize_image(data, etag=None, width=None, height=None, format=None, quality=None):
+def resize_image(
+    data, etag=None, width=None, height=None, format=None, quality=None, resample=None
+):
     def get_data():
         import PIL.Image
 
@@ -58,7 +60,13 @@ def resize_image(data, etag=None, width=None, height=None, format=None, quality=
             if not target_height:
                 target_height = int(image_height * ratio)
 
-            image.thumbnail((target_width, target_height), PIL.Image.ANTIALIAS)
+            if resample == None:
+                resample = (
+                    PIL.Image.ANTIALIAS  # type: ignore
+                    if hasattr(PIL.Image, "ANTIALIAS")
+                    else (PIL.Image.LANCZOS if hasattr(PIL.Image, "LANCZOS") else None)  # type: ignore
+                )
+            image.thumbnail((target_width, target_height), resample)
             image.save(output_stream, target_format, quality=quality)
 
             output_data = output_stream.getvalue()
