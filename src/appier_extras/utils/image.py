@@ -60,12 +60,16 @@ def resize_image(
             if not target_height:
                 target_height = int(image_height * ratio)
 
-            if resample == None:
-                resample = (
+            thumbnail_resample = (
+                (
                     PIL.Image.ANTIALIAS  # type: ignore
                     if hasattr(PIL.Image, "ANTIALIAS")
                     else (PIL.Image.LANCZOS if hasattr(PIL.Image, "LANCZOS") else None)  # type: ignore
                 )
+                if resample == None
+                else resample
+            )
+
             image.thumbnail((target_width, target_height), resample)
             image.save(output_stream, target_format, quality=quality)
 
