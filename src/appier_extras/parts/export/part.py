@@ -256,9 +256,11 @@ class ExportPart(appier.Part):
                 model._extra_methods.append(
                     (
                         instance_method.__name__,
-                        instance_method.__func__
-                        if hasattr(instance_method, "__func__")
-                        else instance_method,
+                        (
+                            instance_method.__func__
+                            if hasattr(instance_method, "__func__")
+                            else instance_method
+                        ),
                     )
                 )
 
