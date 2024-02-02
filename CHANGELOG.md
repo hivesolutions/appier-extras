@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.25.1] - 2024-02-02
+
+### Fixed
+
 * Issue with `image_resize()` method - [#42](https://github.com/hivesolutions/appier-extras/issues/42)
 
 ## [0.25.0] - 2024-01-04
