@@ -44,7 +44,7 @@ def resize_image(
 
         try:
             target_width = width
-            target_height = width
+            target_height = height
             target_format = format if format else image.format
 
             image_width, image_height = image.size
@@ -60,7 +60,7 @@ def resize_image(
             if not target_height:
                 target_height = int(image_height * ratio)
 
-            thumbnail_resample = (
+            _resample = (
                 (
                     PIL.Image.ANTIALIAS  # type: ignore
                     if hasattr(PIL.Image, "ANTIALIAS")
@@ -70,8 +70,11 @@ def resize_image(
                 else resample
             )
 
-            image.thumbnail((target_width, target_height), resample)
-            image.save(output_stream, target_format, quality=quality)
+            image.thumbnail((target_width, target_height), _resample)
+            if quality:
+                image.save(output_stream, target_format, quality=quality)
+            else:
+                image.save(output_stream, target_format)
 
             output_data = output_stream.getvalue()
         finally:
