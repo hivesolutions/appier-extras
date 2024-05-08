@@ -255,6 +255,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/new", self.new_account),
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/me", self.me_account),
+            (("GET",), "/admin/accounts/otp", self.otp_qrcode),
             (
                 ("GET",),
                 "/admin/accounts/export.json",
@@ -781,6 +782,11 @@ class AdminPart(
         account_c = self._get_cls(self.account_c)
         account = account_c.from_session(meta=True)
         return self.template("account/show.html.tpl", account=account)
+
+    @appier.ensure(context="admin")
+    def otp_qrcode(self):
+        account = self.account_c.from_session()
+        return account._send_otp_qrcode()
 
     @appier.ensure(token="admin.accounts", context="admin")
     def export_accounts_json(self):

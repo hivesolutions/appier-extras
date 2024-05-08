@@ -755,6 +755,22 @@ class Account(base.Base, authenticable.Authenticable):
             target[key] = value
         return target
 
+    def _send_otp_qrcode(self, box_size=10, border=4):
+        qrcode = appier.import_pip("qrcode")
+        code = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=box_size,
+            border=border,
+        )
+        code.add_data(self.otp_uri)
+        code.make(fit=True)
+        image = code.make_image(fill_color="black", back_color="white")
+        buffer = appier.legacy.BytesIO()
+        image.save(buffer, format="PNG")
+        image_data = buffer.getvalue()
+        return self.owner.send_file(image_data, content_type="image/png")
+
     @appier.operation(name="Touch Login")
     def touch_login_s(self):
         # retrieves the global reference to the account class so that
@@ -961,7 +977,7 @@ class Account(base.Base, authenticable.Authenticable):
     @property
     def otp_uri(self):
         self = self.reload(rules=False)
-        return "otpauth://totp/User:%s?secret=%s" % (self.username, self.otp_key)
+        return "otpauth://totp/User:%s?secret=%s" % (self.username, self.otp_secret)
 
     def _set_session(self, unset=True, safes=[], method="set"):
         cls = self.__class__
