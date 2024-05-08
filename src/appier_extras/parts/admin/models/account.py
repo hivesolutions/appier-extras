@@ -74,10 +74,6 @@ class Account(base.Base, authenticable.Authenticable):
         safe=True, private=True, meta="secret", description="OTP Secret"
     )
 
-    otp_token = appier.field(
-        safe=True, private=True, meta="secret", description="OTP Token"
-    )
-
     facebook_id = appier.field(index="hashed", safe=True, description="Facebook ID")
 
     github_login = appier.field(index="hashed", safe=True, description="GitHub Login")
@@ -786,10 +782,9 @@ class Account(base.Base, authenticable.Authenticable):
     def generate_otp_s(self, force=False):
         pyotp = appier.import_pip("pyotp")
         self = self.reload(rules=False)
-        if self.otp_enabled and self.otp_secret and self.otp_token and not force:
+        if self.otp_enabled and self.otp_secret and not force:
             return
         self.otp_secret = pyotp.random_base32()
-        self.otp_token = pyotp.TOTP(self.otp_secret).now()
         self.otp_enabled = True
         self.save()
 
