@@ -116,6 +116,8 @@ class AdminPart(
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
         self.owner.logout_redirect = "admin.login"
+        self.owner.otp_route = "admin.otp"
+        self.owner.otp_route_admin = "admin.otp"
         self.owner.admin_account = self.account_c
         self.owner.admin_role = self.role_c
         self.owner.admin_login_redirect = "admin.index"
@@ -190,6 +192,8 @@ class AdminPart(
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
+            (("GET",), "/admin/otp", self.otp),
+            (("POST",), "/admin/otp", self.otp_login),
             (("GET"), "/admin/confirm", self.confirm),
             (("GET"), "/admin/recover", self.recover),
             (("POST"), "/admin/recover", self.recover_do),
@@ -627,6 +631,13 @@ class AdminPart(
                 error=error.message,
             )
 
+        # in case the account requires any kind of OTP (One Time Password)
+        # validation then the user should be redirected to the OTP page
+        if hasattr(account, "otp_enabled") and account.otp_enabled:
+            return self.redirect(
+                self.url_for(self.owner.otp_route_admin, next=next, key=account.key)
+            )
+
         # updates the current session with the proper
         # values to correctly authenticate the user
         account._set_account()
@@ -648,6 +659,43 @@ class AdminPart(
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
         return self.redirect(next or self.url_for(self.owner.admin_logout_redirect))
+
+    def otp(self):
+        next = self.field("next")
+        error = self.field("error")
+        key = self.field("key")
+        return self.template("otp.html.tpl", next=next, error=error, key=key)
+
+    def otp_login(self):
+        # verifies if the current administration interface is
+        # available and if that's not the cases raises an error
+        if not self.owner.admin_available:
+            raise appier.SecurityError(message="Administration not available")
+
+        # retrieves the various fields that are going to be
+        # used for the validation of the user under the current
+        # OTP validation process
+        key = self.field("key")
+        otp = self.field("otp")
+        next = self.field("next")
+        try:
+            account = self.account_c.get(key=key)
+            account.verify_otp(otp)
+        except appier.AppierException as error:
+            return self.template(
+                "otp.html.tpl",
+                next=next,
+                error=error.message,
+                key=key,
+            )
+
+        # updates the current session with the proper
+        # values to correctly authenticate the user
+        account._set_account()
+
+        # redirects the current operation to the next URL or in
+        # alternative to the root index of the administration
+        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
 
     def recover(self):
         next = self.field("next")

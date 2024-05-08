@@ -68,6 +68,16 @@ class Account(base.Base, authenticable.Authenticable):
 
     confirmation_token = appier.field(safe=True, private=True, meta="secret")
 
+    otp_enabled = appier.field(type=bool, description="OTP Enabled")
+
+    otp_secret = appier.field(
+        safe=True, private=True, meta="secret", description="OTP Secret"
+    )
+
+    otp_token = appier.field(
+        safe=True, private=True, meta="secret", description="OTP Token"
+    )
+
     facebook_id = appier.field(index="hashed", safe=True, description="Facebook ID")
 
     github_login = appier.field(index="hashed", safe=True, description="GitHub Login")
@@ -80,7 +90,7 @@ class Account(base.Base, authenticable.Authenticable):
 
     facebook_token = appier.field(private=True, meta="secret")
 
-    github_token = appier.field(private=True, meta="secret")
+    github_token = appier.field(private=True, meta="secret", description="GitHub Token")
 
     google_token = appier.field(private=True, meta="secret")
 
@@ -675,6 +685,13 @@ class Account(base.Base, authenticable.Authenticable):
         cls = self.__class__
         return cls.generate(value)
 
+    def verify_otp(self, otp_token):
+        pyotp = appier.import_pip("pyotp")
+        self = self.reload(rules=False)
+        totp = pyotp.TOTP(self.otp_secret)
+        if not totp.verify(otp_token):
+            raise appier.OperationalError(message="Invalid OTP code", code=403)
+
     def _send_avatar(
         self, image="avatar.png", width=None, height=None, strict=False, cache=False
     ):
@@ -763,6 +780,17 @@ class Account(base.Base, authenticable.Authenticable):
         if self.key and not force:
             return
         self.key = self.secret()
+        self.save()
+
+    @appier.operation(name="Generate OTP", level=2)
+    def generate_otp_s(self, force=False):
+        pyotp = appier.import_pip("pyotp")
+        self = self.reload(rules=False)
+        if self.otp_enabled and self.otp_secret and self.otp_token and not force:
+            return
+        self.otp_secret = pyotp.random_base32()
+        self.otp_token = pyotp.TOTP(self.otp_secret).now()
+        self.otp_enabled = True
         self.save()
 
     @appier.operation(name="Mark Unconfirmed", level=2)
@@ -934,6 +962,11 @@ class Account(base.Base, authenticable.Authenticable):
     @property
     def roles_s(self):
         return [role for role in self.roles_l if role and hasattr(role, "tokens_a")]
+
+    @property
+    def otp_uri(self):
+        self = self.reload(rules=False)
+        return "otpauth://totp/User:%s?secret=%s" % (self.username, self.otp_key)
 
     def _set_session(self, unset=True, safes=[], method="set"):
         cls = self.__class__
