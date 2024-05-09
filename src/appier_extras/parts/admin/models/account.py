@@ -177,7 +177,7 @@ class Account(base.Base, authenticable.Authenticable):
         return super(Account, cls).extra_names() + ["password_confirm"]
 
     @classmethod
-    def login(cls, username, password, insensitive=True):
+    def login(cls, username, password, insensitive=True, touch=True):
         # in case the (case) insensitive option is enabled and the username
         # is defined the value is converted to lower case so that a proper
         # comparison may be used (not case sensitive)
@@ -213,11 +213,12 @@ class Account(base.Base, authenticable.Authenticable):
         # "touches" the current account meaning that the last login value will be
         # updated to reflect the current time and then returns the current logged
         # in account to the caller method so that it may used (valid account)
-        account.touch_login_s()
+        if touch:
+            account.touch_login_s()
         return account
 
     @classmethod
-    def login_key(cls, key):
+    def login_key(cls, key, touch=True):
         # verifies that secret key is provided, is considered valid for domain
         # and that it is correctly and properly defined (required for validation)
         if not key:
@@ -239,7 +240,8 @@ class Account(base.Base, authenticable.Authenticable):
         # "touches" the current account meaning that the last login value will be
         # updated to reflect the current time and then returns the current logged
         # in account to the caller method so that it may used (valid account)
-        account.touch_login_s()
+        if touch:
+            account.touch_login_s()
         return account
 
     @classmethod
