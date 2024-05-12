@@ -116,6 +116,8 @@ class AdminPart(
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
         self.owner.logout_redirect = "admin.login"
+        self.owner.two_factor_route = "admin.two_factor"
+        self.owner.two_factor_route_admin = "admin.two_factor"
         self.owner.otp_route = "admin.otp"
         self.owner.otp_route_admin = "admin.otp"
         self.owner.admin_account = self.account_c
@@ -192,6 +194,7 @@ class AdminPart(
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
+            (("GET",), "/admin/2fa", self.two_factor),
             (("GET",), "/admin/otp", self.otp),
             (("POST",), "/admin/otp", self.otp_login),
             (("GET"), "/admin/confirm", self.confirm),
@@ -273,6 +276,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
+            (("GET",), "/admin/accounts/<str:username>/otp", self.otp_qrcode_account),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models.json", self.list_models_json, None, True),
             (
@@ -632,11 +636,15 @@ class AdminPart(
                 error=error.message,
             )
 
-        # in case the account requires any kind of OTP (One Time Password)
-        # validation then the user should be redirected to the OTP page
-        if hasattr(account, "otp_enabled") and account.otp_enabled:
+        # in case the account requires any kind of 2FA (two-factor authentication)
+        # validation then the user should be redirected to the 2FA page and the
+        # proper security values should be set
+        if hasattr(account, "two_factor_enabled") and account.two_factor_enabled:
+            self.account_c._unset_2fa()
+            self.session["2fa.timeout"] = time.time() + 60
+            self.session["2fa.username"] = account.username
             return self.redirect(
-                self.url_for(self.owner.otp_route_admin, next=next, key=account.key)
+                self.url_for(self.owner.two_factor_route_admin, next=next)
             )
 
         # updates the current session with the proper
@@ -661,11 +669,28 @@ class AdminPart(
         # next value has been provided or not
         return self.redirect(next or self.url_for(self.owner.admin_logout_redirect))
 
+    def two_factor(self):
+        next = self.field("next")
+        error = self.field("error")
+
+        if not "2fa.method" in self.session:
+            username = self.session.get("2fa.username")
+            account = self.account_c.get(username=username)
+            self.session["2fa.method"] = account.two_factor_method
+
+        two_factor_method = self.session["2fa.method"]
+
+        if two_factor_method == "otp":
+            return self.redirect(
+                self.url_for(self.owner.otp_route_admin, next=next, error=error)
+            )
+
+        raise appier.SecurityError(message="No 2FA method defined", code=403)
+
     def otp(self):
         next = self.field("next")
         error = self.field("error")
-        key = self.field("key")
-        return self.template("otp.html.tpl", next=next, error=error, key=key)
+        return self.template("otp.html.tpl", next=next, error=error)
 
     def otp_login(self):
         # verifies if the current administration interface is
@@ -673,21 +698,33 @@ class AdminPart(
         if not self.owner.admin_available:
             raise appier.SecurityError(message="Administration not available")
 
+        # in case the maximum amount of time for 2FA validation
+        # has expired then raises an exception indicating the
+        # problem with the current validation process
+        if time.time() > self.session.get("2fa.timeout", 0):
+            raise appier.SecurityError(message="OTP timeout", code=403)
+
+        # validates that the request 2FA method is the expected one OTP
+        two_factor_method = self.session["2fa.method"]
+        if not two_factor_method == "otp":
+            raise appier.SecurityError(message="Invalid 2FA method", code=403)
+
+        # obtains the target username for 2FA login from the session,
+        # to be used in the OTP validation
+        username = self.session["2fa.username"]
+
         # retrieves the various fields that are going to be
         # used for the validation of the user under the current
         # OTP validation process
-        key = self.field("key")
         otp = self.field("otp")
         next = self.field("next")
         try:
-            account = self.account_c.get(key=key)
-            account.verify_otp(otp)
+            account = self.account_c.login_otp(username, otp)
         except appier.AppierException as error:
             return self.template(
                 "otp.html.tpl",
                 next=next,
                 error=error.message,
-                key=key,
             )
 
         # updates the current session with the proper
@@ -785,7 +822,8 @@ class AdminPart(
 
     @appier.ensure(context="admin")
     def otp_qrcode(self):
-        account = self.account_c.from_session()
+        account_c = self._get_cls(self.account_c)
+        account = account_c.from_session()
         return account._send_otp_qrcode()
 
     @appier.ensure(token="admin.accounts", context="admin")
@@ -831,6 +869,12 @@ class AdminPart(
         return account._send_avatar(
             width=width or size, height=height or size, strict=strict, cache=cache
         )
+
+    @appier.ensure(context="admin")
+    def otp_qrcode_account(self, username):
+        account_c = self._get_cls(self.account_c)
+        account = account_c.get(username=username)
+        return account._send_otp_qrcode()
 
     @appier.ensure(token="admin.options", context="admin")
     def options(self):

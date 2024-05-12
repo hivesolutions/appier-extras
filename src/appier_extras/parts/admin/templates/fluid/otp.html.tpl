@@ -14,7 +14,6 @@
         {% endif %}
         <form action="{{ url_for('admin.otp_login') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
-            <input type="hidden" name="key" value="{{ key }}" />
             <div class="input">
                 <input type="text" class="text-field full focus" name="otp" value="{{ otp }}"
                        placeholder="OTP code" />

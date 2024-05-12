@@ -232,7 +232,7 @@ class Account(base.Base, authenticable.Authenticable):
                 message="Secret key must be provided", code=400
             )
 
-        # tries to retrieve the account with the provided username, so that
+        # tries to retrieve the account with the provided key, so that
         # the other validation steps may be done as required by login operation
         account = cls.get(key=key, rules=False, build=False, raise_e=False)
         if not account:
@@ -242,6 +242,37 @@ class Account(base.Base, authenticable.Authenticable):
         # disabled accounts are not considered to be valid ones
         if not account.enabled:
             raise appier.OperationalError(message="Account is not enabled", code=403)
+
+        # "touches" the current account meaning that the last login value will be
+        # updated to reflect the current time and then returns the current logged
+        # in account to the caller method so that it may used (valid account)
+        if touch:
+            account.touch_login_s()
+        return account
+
+    @classmethod
+    def login_otp(cls, username, otp_token, touch=True):
+        # verifies that OTP token is provided, this value is mandatory to
+        # be able to properly validate OTP
+        if not otp_token:
+            raise appier.OperationalError(
+                message="OTP token must be provided", code=400
+            )
+
+        # tries to retrieve the account with the provided username, so that
+        # the other validation steps may be done as required by login operation
+        account = cls.get(username=username, rules=False, build=False, raise_e=False)
+        if not account:
+            raise appier.OperationalError(message="No valid account found", code=403)
+
+        # verifies that the retrieved account is currently enabled, because
+        # disabled accounts are not considered to be valid ones
+        if not account.enabled:
+            raise appier.OperationalError(message="Account is not enabled", code=403)
+
+        # verifies that the OTP token provided is valid for the current account
+        # and if that's not the case raises an exception indicating the problem
+        account.verify_otp(otp_token)
 
         # "touches" the current account meaning that the last login value will be
         # updated to reflect the current time and then returns the current logged
@@ -472,7 +503,7 @@ class Account(base.Base, authenticable.Authenticable):
         model["avatar_url"] = cls._get_avatar_url_g(username)
 
     @classmethod
-    def _unset_session(cls, prefixes=None, safes=[], method="delete"):
+    def _unset_session(cls, prefixes=None, safes=[], method="delete", two_factor=True):
         prefixes = prefixes or cls.PREFIXES
         session = appier.get_session()
         delete = getattr(session, method)
@@ -508,6 +539,19 @@ class Account(base.Base, authenticable.Authenticable):
             if not is_removable:
                 continue
             delete(key)
+        if two_factor:
+            cls._unset_2fa(method=method)
+
+    @classmethod
+    def _unset_2fa(cls, method="delete"):
+        session = appier.get_session()
+        delete = getattr(session, method)
+        if "2fa.timeout" in session:
+            delete("2fa.timeout")
+        if "2fa.username" in session:
+            delete("2fa.username")
+        if "2fa.method" in session:
+            delete("2fa.method")
 
     @classmethod
     def _get_avatar_url_g(cls, username, absolute=True, owner=None):
@@ -937,6 +981,17 @@ class Account(base.Base, authenticable.Authenticable):
             "admin.avatar_account", username=self.username, cls=model, absolute=absolute
         )
 
+    @appier.link(name="View OTP QR Code", devel=True)
+    def view_otp_qrcode_url(self, absolute=False):
+        cls = self.__class__
+        model = None if cls._is_master() else cls._name()
+        return self.owner.url_for(
+            "admin.otp_qrcode_account",
+            username=self.username,
+            cls=model,
+            absolute=absolute,
+        )
+
     @classmethod
     @appier.link(name="Export JSON", context=True)
     def export_url(cls, view=None, context=None, absolute=False):
@@ -975,11 +1030,21 @@ class Account(base.Base, authenticable.Authenticable):
         return [role for role in self.roles_l if role and hasattr(role, "tokens_a")]
 
     @property
+    def two_factor_enabled(self):
+        return bool(self.two_factor_method)
+
+    @property
+    def two_factor_method(self):
+        if self.otp_enabled:
+            return "otp"
+        return None
+
+    @property
     def otp_uri(self):
         self = self.reload(rules=False)
         return "otpauth://totp/User:%s?secret=%s" % (self.username, self.otp_secret)
 
-    def _set_session(self, unset=True, safes=[], method="set"):
+    def _set_session(self, unset=True, safes=[], method="set", two_factor=True):
         cls = self.__class__
         if unset:
             cls._unset_account(safes=safes)

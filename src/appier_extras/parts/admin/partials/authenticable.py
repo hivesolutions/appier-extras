@@ -48,7 +48,6 @@ class Authenticable(appier.Observable):
         pass
 
     def _set_account(self, unset=True, safes=[], method="set"):
-        cls = self.__class__
         self._set_session(unset=unset, safes=safes, method=method)
         Authenticable.trigger_g(
             "set_account", self, unset=unset, safes=safes, method=method
