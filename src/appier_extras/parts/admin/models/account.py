@@ -1063,3 +1063,13 @@ class Account(base.Base, authenticable.Authenticable):
         set("views", self.views_l())
         set("meta", self.meta)
         set("params", dict())
+
+    def _set_2fa(self, unset=True, method="set"):
+        cls = self.__class__
+        if unset:
+            cls._unset_2fa()
+        self.session.ensure()
+        set = getattr(self.session, method)
+        set("2fa.timeout", time.time() + 60)
+        set("2fa.username", self.username)
+        set("2fa.method", self.two_factor_method)

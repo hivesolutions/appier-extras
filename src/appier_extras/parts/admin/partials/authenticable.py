@@ -55,3 +55,7 @@ class Authenticable(appier.Observable):
 
     def _set_session(self, unset=True, safes=[], method="set"):
         pass
+
+    @property
+    def two_factor_enabled(self):
+        return False
