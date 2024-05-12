@@ -1042,7 +1042,11 @@ class Account(base.Base, authenticable.Authenticable):
     @property
     def otp_uri(self):
         self = self.reload(rules=False)
-        return "otpauth://totp/User:%s?secret=%s" % (self.username, self.otp_secret)
+        return "otpauth://totp/%s:%s?secret=%s" % (
+            self.owner.description,
+            self.username,
+            self.otp_secret,
+        )
 
     def _set_session(self, unset=True, safes=[], method="set", two_factor=True):
         cls = self.__class__
