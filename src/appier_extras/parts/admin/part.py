@@ -276,7 +276,11 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
-            (("GET",), "/admin/accounts/<str:username>/otp_qrcode", self.otp_qrcode_account),
+            (
+                ("GET",),
+                "/admin/accounts/<str:username>/otp_qrcode",
+                self.otp_qrcode_account,
+            ),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models.json", self.list_models_json, None, True),
             (
