@@ -799,7 +799,7 @@ class Account(base.Base, authenticable.Authenticable):
             target[key] = value
         return target
 
-    def _send_otp_qrcode(self, box_size=10, border=4):
+    def _send_otp_qrcode(self, box_size=10, border=0):
         qrcode = appier.import_pip("qrcode")
         code = qrcode.QRCode(
             version=1,
