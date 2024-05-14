@@ -423,3 +423,7 @@ body.mobile-s .pages > .page.other {
     line-height: 20px;
     margin: 0px auto 0px auto;
 }
+
+.fido2 {
+    display: none;
+}

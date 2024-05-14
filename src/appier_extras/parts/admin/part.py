@@ -197,6 +197,10 @@ class AdminPart(
             (("GET",), "/admin/2fa", self.two_factor),
             (("GET",), "/admin/otp", self.otp),
             (("POST",), "/admin/otp", self.otp_login),
+            (("GET",), "/admin/fido2", self.fido2),
+            (("POST",), "/admin/fido2", self.fido2_login),
+            (("GET",), "/admin/fido2/register", self.fido2_register),
+            (("POST",), "/admin/fido2/register", self.fido2_register_do),
             (("GET"), "/admin/confirm", self.confirm),
             (("GET"), "/admin/recover", self.recover),
             (("POST"), "/admin/recover", self.recover_do),
@@ -730,6 +734,78 @@ class AdminPart(
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+
+    def fido2(self):
+        next = self.field("next")
+        error = self.field("error")
+        return self.template("fido2.html.tpl", next=next, error=error)
+
+    def fido2_login(self):
+        username = self.session["2fa.username"]
+
+        fido2_server = appier.import_pip("fido2_server")
+
+        # @TODO: this must be moved to the account model
+        registration_data, state = fido2_server.register_begin(
+            dict(
+                id=username.encode("utf-8"),
+                name=username,
+                displayName=username,
+            ),
+            user_verification="discouraged",
+        )
+
+        self.session["2fa.username"] = username
+
+    def _get_fido2_server(self):
+        if hasattr(self, "_fido2_server") and self._fido2_server:
+            return self._fido2_server
+
+        _fido2 = appier.import_pip("fido2.webauthn")
+
+        import fido2.webauthn
+        import fido2.server
+
+        rp = fido2.webauthn.PublicKeyCredentialRpEntity(
+            name="Example RP", id="localhost"
+        )
+        self._fido2_server = fido2.server.Fido2Server(rp)
+
+        return self._fido2_server
+
+    def fido2_register(self):
+        next = self.field("next")
+        error = self.field("error")
+
+        account = self.account_c.from_session(meta=True)
+
+        # @TODO this must be moved
+        fido2_server = self._get_fido2_server()
+
+        registration_data, state = fido2_server.register_begin(
+            dict(
+                id=account.username.encode("utf-8"),
+                name=account.username,
+                displayName=account.username,
+            ),
+            user_verification="discouraged",
+        )
+        state_json = json.dumps(state)
+        registration_data_json = json.dumps(dict(registration_data), cls=CustomEncoder)
+        self.session["state"] = state_json
+
+        print(state_json)
+        print(registration_data_json)
+
+        return self.template(
+            "fido2_register.html.tpl",
+            next=next,
+            error=error,
+            registration_data=registration_data_json,
+        )
+
+    def fido2_register_do(self):
+        raise appier.NotImplementedError()
 
     def recover(self):
         next = self.field("next")
@@ -2644,3 +2720,13 @@ class AdminPart(
             return date_time.strftime(format)
         except TypeError:
             return None
+
+
+import base64
+
+
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return base64.b64encode(obj).decode("utf-8")
+        return json.JSONEncoder.default(self, obj)

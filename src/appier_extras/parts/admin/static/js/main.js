@@ -32,6 +32,11 @@
         // in the matched object and starts the proper message plugin in it
         var message = jQuery(".header-message", matchedObject);
         message.umessage();
+
+        // retrieves the reference to the FIDO2 element and registers it
+        // for the base FIDO2 plugin so that it's properly initialized
+        var fido2 = jQuery(".fido2", matchedObject);
+        fido2.ufido2();
     };
 })(jQuery);
 
@@ -61,6 +66,40 @@
         });
     };
 })(jQuery);
+
+(function(jQuery) {
+    jQuery.fn.ufido2 = function(options) {
+        // sets the jquery matched object
+        var matchedObject = this;
+        matchedObject.each(function(index, element) {
+            var _element = jQuery(element);
+            var form = _element.parents("form");
+
+            var contents = JSON.parse(_element.text());
+
+            //@TODO: need to soft-code this
+            debugger;
+            contents.publicKey.user.id = base64ToUint8Array(contents.publicKey.user.id);
+            contents.publicKey.challenge = base64ToUint8Array(contents.publicKey.challenge);
+
+            navigator.credentials.create(contents).then(function(credential) {
+                //@TODO tenho d emeter a credentail em algum sitio
+                debugger;
+                form.submit();
+            });
+        });
+    };
+})(jQuery);
+
+function base64ToUint8Array(base64) {
+    var binaryString = atob(base64);
+    var len = binaryString.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+}
 
 jQuery(document).ready(function() {
     var _body = jQuery("body");
