@@ -116,6 +116,10 @@ class AdminPart(
         self.owner.login_route_admin = "admin.login"
         self.owner.login_redirect = "admin.index"
         self.owner.logout_redirect = "admin.login"
+        self.owner.two_factor_route = "admin.two_factor"
+        self.owner.two_factor_route_admin = "admin.two_factor"
+        self.owner.otp_route = "admin.otp"
+        self.owner.otp_route_admin = "admin.otp"
         self.owner.admin_account = self.account_c
         self.owner.admin_role = self.role_c
         self.owner.admin_login_redirect = "admin.index"
@@ -190,6 +194,9 @@ class AdminPart(
             (("GET",), "/admin/signin", self.signin),
             (("POST",), "/admin/signin", self.login),
             (("GET", "POST"), "/admin/signout", self.logout),
+            (("GET",), "/admin/2fa", self.two_factor),
+            (("GET",), "/admin/otp", self.otp),
+            (("POST",), "/admin/otp", self.otp_login),
             (("GET"), "/admin/confirm", self.confirm),
             (("GET"), "/admin/recover", self.recover),
             (("POST"), "/admin/recover", self.recover_do),
@@ -251,6 +258,7 @@ class AdminPart(
             (("GET",), "/admin/accounts/new", self.new_account),
             (("POST",), "/admin/accounts", self.create_account),
             (("GET",), "/admin/accounts/me", self.me_account),
+            (("GET",), "/admin/accounts/otp_qrcode", self.otp_qrcode),
             (
                 ("GET",),
                 "/admin/accounts/export.json",
@@ -268,6 +276,11 @@ class AdminPart(
             (("GET",), "/admin/accounts/<str:username>", self.show_account),
             (("GET",), "/admin/accounts/<str:username>/mail", self.mail_account),
             (("GET",), "/admin/accounts/<str:username>/avatar", self.avatar_account),
+            (
+                ("GET",),
+                "/admin/accounts/<str:username>/otp_qrcode",
+                self.otp_qrcode_account,
+            ),
             (("GET",), "/admin/models", self.list_models),
             (("GET",), "/admin/models.json", self.list_models_json, None, True),
             (
@@ -439,7 +452,7 @@ class AdminPart(
             # tries to run the login with key operation validating
             # the key against a series of pre-requirements, in case
             # of failure the error is logged
-            account = self.account_c.login_key(key)
+            account = self.account_c.login_key(key, touch=False)
         except Exception as exception:
             self.logger.warning("Problem running key based login: %s" % exception)
             return
@@ -617,7 +630,7 @@ class AdminPart(
         next = self.field("next")
         socials = self.socials()
         try:
-            account = self.account_c.login(username, password)
+            account = self.account_c.login(username, password, touch=False)
         except appier.AppierException as error:
             return self.template(
                 "signin.html.tpl",
@@ -627,8 +640,18 @@ class AdminPart(
                 error=error.message,
             )
 
+        # in case the account requires any kind of 2FA (two-factor authentication)
+        # validation then the user should be redirected to the 2FA page and the
+        # additional security values should be set
+        if account.two_factor_enabled:
+            account._set_2fa()
+            return self.redirect(
+                self.url_for(self.owner.two_factor_route_admin, next=next)
+            )
+
         # updates the current session with the proper
         # values to correctly authenticate the user
+        account.touch_login_s()
         account._set_account()
 
         # redirects the current operation to the next URL or in
@@ -648,6 +671,65 @@ class AdminPart(
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
         return self.redirect(next or self.url_for(self.owner.admin_logout_redirect))
+
+    def two_factor(self):
+        next = self.field("next")
+        error = self.field("error")
+        two_factor_method = self.session["2fa.method"]
+        if two_factor_method == "otp":
+            return self.redirect(
+                self.url_for(self.owner.otp_route_admin, next=next, error=error)
+            )
+        raise appier.SecurityError(message="No 2FA method defined", code=403)
+
+    def otp(self):
+        next = self.field("next")
+        error = self.field("error")
+        return self.template("otp.html.tpl", next=next, error=error)
+
+    def otp_login(self):
+        # verifies if the current administration interface is
+        # available and if that's not the cases raises an error
+        if not self.owner.admin_available:
+            raise appier.SecurityError(message="Administration not available")
+
+        # in case the maximum amount of time for 2FA validation
+        # has expired then raises an exception indicating the
+        # problem with the current validation process
+        if time.time() > self.session.get("2fa.timeout", 0):
+            raise appier.SecurityError(message="OTP timeout", code=403)
+
+        # validates that the request 2FA method is the expected one OTP
+        two_factor_method = self.session["2fa.method"]
+        if not two_factor_method == "otp":
+            raise appier.SecurityError(message="Invalid 2FA method", code=403)
+
+        # obtains the target username for 2FA login from the session,
+        # to be used in the OTP validation
+        username = self.session["2fa.username"]
+
+        # retrieves the various fields that are going to be
+        # used for the validation of the user under the current
+        # OTP validation process
+        otp = self.field("otp")
+        next = self.field("next")
+        try:
+            account = self.account_c.login_otp(username, otp, touch=False)
+        except appier.AppierException as error:
+            return self.template(
+                "otp.html.tpl",
+                next=next,
+                error=error.message,
+            )
+
+        # updates the current session with the proper
+        # values to correctly authenticate the user
+        account.touch_login_s()
+        account._set_account()
+
+        # redirects the current operation to the next URL or in
+        # alternative to the root index of the administration
+        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
 
     def recover(self):
         next = self.field("next")
@@ -734,6 +816,12 @@ class AdminPart(
         account = account_c.from_session(meta=True)
         return self.template("account/show.html.tpl", account=account)
 
+    @appier.ensure(context="admin")
+    def otp_qrcode(self):
+        account_c = self._get_cls(self.account_c)
+        account = account_c.from_session()
+        return account._send_otp_qrcode()
+
     @appier.ensure(token="admin.accounts", context="admin")
     def export_accounts_json(self):
         account_c = self._get_cls(self.account_c)
@@ -777,6 +865,12 @@ class AdminPart(
         return account._send_avatar(
             width=width or size, height=height or size, strict=strict, cache=cache
         )
+
+    @appier.ensure(context="admin")
+    def otp_qrcode_account(self, username):
+        account_c = self._get_cls(self.account_c)
+        account = account_c.get(username=username)
+        return account._send_otp_qrcode()
 
     @appier.ensure(token="admin.options", context="admin")
     def options(self):
@@ -1866,7 +1960,11 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["fb.access_token"] = access_token
-            self.ensure_facebook_account(create=self.owner.admin_open)
+            result = self.ensure_facebook_account(
+                create=self.owner.admin_open, next=next
+            )
+            if result:
+                return self.redirect(result)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.facebook_token = access_token
@@ -1918,7 +2016,9 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["gh.access_token"] = access_token
-            self.ensure_github_account(create=self.owner.admin_open)
+            result = self.ensure_github_account(create=self.owner.admin_open, next=next)
+            if result:
+                return self.redirect(result)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.github_token = access_token
@@ -1981,7 +2081,9 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["gg.access_token"] = access_token
-            self.ensure_google_account(create=self.owner.admin_open)
+            result = self.ensure_google_account(create=self.owner.admin_open, next=next)
+            if result:
+                return self.redirect(result)
         elif context == "global":
             user = api.self_user()
             email = user["emails"][0]["value"]
@@ -2041,7 +2143,9 @@ class AdminPart(
         access_token = api.oauth_access(code)
         if context == "login":
             self.session["live.access_token"] = access_token
-            self.ensure_live_account(create=self.owner.admin_open)
+            result = self.ensure_live_account(create=self.owner.admin_open, next=next)
+            if result:
+                return self.redirect(result)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.live_token = access_token
@@ -2096,7 +2200,11 @@ class AdminPart(
             self.session["tw.oauth_token"] = oauth_token
             self.session["tw.oauth_token_secret"] = oauth_token_secret
             self.session["tw.oauth_temporary"] = False
-            self.ensure_twitter_account(create=self.owner.admin_open)
+            result = self.ensure_twitter_account(
+                create=self.owner.admin_open, next=next
+            )
+            if result:
+                return self.redirect(result)
         elif context == "global":
             settings = models.Settings.get_settings()
             settings.twitter_token = oauth_token
@@ -2140,10 +2248,16 @@ class AdminPart(
         # authentication/authorization process
         username = self.field("username", mandatory=True)
         password = self.field("password", mandatory=True)
-        account = self.account_c.login(username, password)
+        account = self.account_c.login(username, password, touch=False)
+
+        # in case 2FA is enabled then it's not possible to login
+        # using the standard login method
+        if account.two_factor_enabled:
+            raise appier.SecurityError(message="2FA is enabled for the user", code=403)
 
         # updates the current session with the proper
         # values to correctly authenticate the user
+        account.touch_login_s()
         account._set_account()
 
         # retrieves the session identifier (SID) for the currently

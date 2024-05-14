@@ -48,7 +48,7 @@ class Google(object):
             return False
         return True
 
-    def ensure_google_account(self, create=True, safe=True):
+    def ensure_google_account(self, create=True, safe=True, next=None):
         api = self.get_google_api()
         user = api.self_user()
         email = user["emails"][0]["value"]
@@ -91,10 +91,12 @@ class Google(object):
             account.google_token = api.access_token
             account.save()
 
+        if account.two_factor_enabled:
+            account._set_2fa()
+            return self.url_for(self.owner.two_factor_route_admin, next=next)
+
         account.touch_login_s()
         account._set_account()
-
-        return account
 
     def unset_google_account(self):
         account = self.owner.admin_account.from_session()

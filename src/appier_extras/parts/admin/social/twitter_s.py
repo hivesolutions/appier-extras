@@ -48,7 +48,7 @@ class Twitter(object):
             return False
         return True
 
-    def ensure_twitter_account(self, create=True, safe=True):
+    def ensure_twitter_account(self, create=True, safe=True, next=None):
         api = self.get_twitter_api()
         user = api.verify_account()
         email = "%s@twitter.com" % user["screen_name"]
@@ -95,10 +95,12 @@ class Twitter(object):
             account.twitter_token = api.oauth_token
             account.save()
 
+        if account.two_factor_enabled:
+            account._set_2fa()
+            return self.url_for(self.owner.two_factor_route_admin, next=next)
+
         account.touch_login_s()
         account._set_account()
-
-        return account
 
     def unset_twitter_account(self):
         account = self.owner.admin_account.from_session()

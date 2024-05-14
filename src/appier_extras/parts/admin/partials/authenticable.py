@@ -48,7 +48,6 @@ class Authenticable(appier.Observable):
         pass
 
     def _set_account(self, unset=True, safes=[], method="set"):
-        cls = self.__class__
         self._set_session(unset=unset, safes=safes, method=method)
         Authenticable.trigger_g(
             "set_account", self, unset=unset, safes=safes, method=method
@@ -56,3 +55,7 @@ class Authenticable(appier.Observable):
 
     def _set_session(self, unset=True, safes=[], method="set"):
         pass
+
+    @property
+    def two_factor_enabled(self):
+        return False
