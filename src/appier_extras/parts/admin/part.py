@@ -2250,6 +2250,11 @@ class AdminPart(
         password = self.field("password", mandatory=True)
         account = self.account_c.login(username, password, touch=False)
 
+        # in case 2FA is enabled then it's not possible to login
+        # using the standard login method
+        if account.two_factor_enabled:
+            raise appier.SecurityError(message="2FA is enabled for the user", code=403)
+
         # updates the current session with the proper
         # values to correctly authenticate the user
         account.touch_login_s()
