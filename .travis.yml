@@ -18,13 +18,14 @@ matrix:
     dist: xenial
 services: mongodb
 before_install:
-  - pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host --upgrade pip setuptools
+  - pip install --upgrade pip setuptools
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == pypy* ]]; then pip install "tinydb<4"; fi
   - pip install "pymongo<3.13"
   - pip install -r requirements.py2.txt
   - if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then pip install coveralls; fi
 env:
+  - PIP_TRUSTED_HOST=pypi.python.org pypi.org files.pythonhosted.org
   - ADAPTER=mongo
   - ADAPTER=tiny
 script: if [[ $TRAVIS_PYTHON_VERSION != pypy* ]]; then coverage run --source=appier_extras setup.py test; else python setup.py test; fi
