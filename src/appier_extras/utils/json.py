@@ -19,26 +19,37 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import format
-from . import image
-from . import json
-from . import markdown
-from . import net
+import json
+import base64
 
-from .format import SafeFormatter
-from .image import resize_image
-from .json import BytesEncoder, bytes_decoder
-from .markdown import (
-    MarkdownParser,
-    MarkdownGenerator,
-    MarkdownDebug,
-    MarkdownHTML,
-    has_regex,
-)
-from .net import size_round_unit
+import appier
+
+class BytesEncoder(json.JSONEncoder):
+    """
+    Custom JSON encoder that makes sure that bytes
+    are properly encoded as Base64 strings.
+    """
+
+    def default(self, obj):
+        if isinstance(obj, appier.legacy.BYTES):
+            return base64.b64encode(obj).decode("utf-8")
+        return json.JSONEncoder.default(self, obj)
+
+def bytes_decoder(map):
+    for key, value in map.items():
+        if isinstance(value, str):
+            try:
+                decoded_value = base64.b64decode(value)
+                map[key] = decoded_value
+            except (ValueError, TypeError):
+                pass
+    return map

@@ -766,6 +766,7 @@ class AdminPart(
         import fido2.webauthn
         import fido2.server
 
+        fido2.webauthn.webauthn_json_mapping.enabled = True
         rp = fido2.webauthn.PublicKeyCredentialRpEntity(
             name="Example RP", id="localhost"
         )
@@ -779,7 +780,7 @@ class AdminPart(
 
         account = self.account_c.from_session(meta=True)
 
-        # @TODO this must be moved
+        # @TODO this must be moved into the Account model
         fido2_server = self._get_fido2_server()
 
         registration_data, state = fido2_server.register_begin(
@@ -791,11 +792,11 @@ class AdminPart(
             user_verification="discouraged",
         )
         state_json = json.dumps(state)
-        registration_data_json = json.dumps(dict(registration_data), cls=CustomEncoder)
-        self.session["state"] = state_json
 
-        print(state_json)
-        print(registration_data_json)
+        registration_data_d = dict(registration_data)
+        registration_data_json = json.dumps(registration_data_d, cls=utils.BytesEncoder)
+
+        self.session["state"] = state_json
 
         return self.template(
             "fido2_register.html.tpl",
@@ -805,7 +806,30 @@ class AdminPart(
         )
 
     def fido2_register_do(self):
-        raise appier.NotImplementedError()
+        next = self.field("next")
+        credential = self.field("credential")
+        state_json = self.session["state"]
+        state = json.loads(state_json)
+
+        credential_data = json.loads(credential, object_hook=utils.bytes_decoder)
+
+        #@TODO: hack to handle decoding issues
+        credential_data["response"]["clientDataJSON"] = credential_data["response"]["clientDataJSON"].decode("utf-8")
+
+        # @TODO this must be moved into the Account model
+        fido2_server = self._get_fido2_server()
+        try:
+            auth_data = fido2_server.register_complete(state, credential_data)
+        except Exception as e:
+            print(e)
+            raise e
+
+        print(auth_data.credential_data)
+        print(auth_data.counter)
+
+        # redirects the current operation to the next URL or in
+        # alternative to the root index of the administration
+        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
 
     def recover(self):
         next = self.field("next")
@@ -2720,13 +2744,3 @@ class AdminPart(
             return date_time.strftime(format)
         except TypeError:
             return None
-
-
-import base64
-
-
-class CustomEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, bytes):
-            return base64.b64encode(obj).decode("utf-8")
-        return json.JSONEncoder.default(self, obj)

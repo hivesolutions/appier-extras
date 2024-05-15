@@ -69,7 +69,6 @@
 
 (function(jQuery) {
     jQuery.fn.ufido2 = function(options) {
-        // sets the jquery matched object
         var matchedObject = this;
         matchedObject.each(function(index, element) {
             var _element = jQuery(element);
@@ -77,21 +76,28 @@
 
             var contents = JSON.parse(_element.text());
 
-            //@TODO: need to soft-code this
-            debugger;
+            //@TODO: need to soft-code this making it more flexible
             contents.publicKey.user.id = base64ToUint8Array(contents.publicKey.user.id);
             contents.publicKey.challenge = base64ToUint8Array(contents.publicKey.challenge);
 
             navigator.credentials.create(contents).then(function(credential) {
-                //@TODO tenho d emeter a credentail em algum sitio
-                debugger;
+                var credentialInput = jQuery("input[type=\"hidden\"][name=\"credential\"]",
+                    form);
+                var serializedCredential = serializePublicKeyCredential(credential);
+                credentialInput.uxvalue(JSON.stringify(serializedCredential));
                 form.submit();
             });
         });
     };
 })(jQuery);
 
-function base64ToUint8Array(base64) {
+function base64ToUint8Array(base64, urlSafe = true) {
+    if (urlSafe) {
+        base64 = base64.replace(/-/g, "+").replace(/_/g, "/");
+        while (base64.length % 4 === false) {
+            base64 += "=";
+        }
+    }
     var binaryString = atob(base64);
     var len = binaryString.length;
     var bytes = new Uint8Array(len);
@@ -99,6 +105,37 @@ function base64ToUint8Array(base64) {
         bytes[i] = binaryString.charCodeAt(i);
     }
     return bytes;
+}
+
+function arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
+function serializePublicKeyCredential(publicKeyCredential) {
+    var serialized = {};
+
+    for (var key in publicKeyCredential) {
+        if (publicKeyCredential[key] === undefined) {
+            continue;
+        }
+
+        var value = publicKeyCredential[key];
+        if (value instanceof ArrayBuffer) {
+            serialized[key] = arrayBufferToBase64(value);
+        } else if (value instanceof Object && !Array.isArray(value)) {
+            serialized[key] = serializePublicKeyCredential(value);
+        } else {
+            serialized[key] = value;
+        }
+    }
+
+    return serialized;
 }
 
 jQuery(document).ready(function() {

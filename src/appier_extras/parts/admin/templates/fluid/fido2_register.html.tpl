@@ -12,8 +12,9 @@
         {% if error %}
             <div class="quote error">{{ error }}</div>
         {% endif %}
-        <form action="{{ url_for('admin.otp_login') }}" method="post" class="form">
+        <form action="{{ url_for('admin.fido2_register_do') }}" method="post" class="form">
             <input type="hidden" name="next" value="{{ next|default('', True) }}" />
+            <input type="hidden" name="credential" value="" />
             <div class="fido2">{{ registration_data }}</div>
         </form>
     </div>
