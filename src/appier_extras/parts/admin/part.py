@@ -813,7 +813,6 @@ class AdminPart(
 
         credential_data = json.loads(credential, object_hook=utils.bytes_decoder)
 
-
         # @TODO this must be moved into the Account model
         fido2_server = self._get_fido2_server()
         try:
