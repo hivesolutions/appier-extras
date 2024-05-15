@@ -6,7 +6,7 @@
         {% if owner.logo_url %}
             <img class="login-logo" src="{{ owner.logo_url }}" />
         {% else %}
-            <h1>OTP</h1>
+            <h1>Security Key</h1>
         {% endif %}
         <h3>Registering Security Key</h3>
         {% if error %}
