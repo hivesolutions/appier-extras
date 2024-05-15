@@ -27,13 +27,12 @@ __license__ = "Apache License, Version 2.0"
 
 from . import format
 from . import image
-from . import json
 from . import markdown
 from . import net
+from . import serialization
 
 from .format import SafeFormatter
 from .image import resize_image
-from .json import BytesEncoder, bytes_decoder
 from .markdown import (
     MarkdownParser,
     MarkdownGenerator,
@@ -42,3 +41,4 @@ from .markdown import (
     has_regex,
 )
 from .net import size_round_unit
+from .serialization import BytesEncoder, bytes_decoder
