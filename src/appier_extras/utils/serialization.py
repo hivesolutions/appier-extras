@@ -33,6 +33,7 @@ import base64
 
 import appier
 
+
 class BytesEncoder(json.JSONEncoder):
     """
     Custom JSON encoder that makes sure that bytes
@@ -43,6 +44,7 @@ class BytesEncoder(json.JSONEncoder):
         if isinstance(obj, appier.legacy.BYTES):
             return base64.b64encode(obj).decode("utf-8")
         return json.JSONEncoder.default(self, obj)
+
 
 def bytes_decoder(map):
     for key, value in map.items():

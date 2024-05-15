@@ -813,8 +813,6 @@ class AdminPart(
 
         credential_data = json.loads(credential, object_hook=utils.bytes_decoder)
 
-        #@TODO: hack to handle decoding issues
-        credential_data["response"]["clientDataJSON"] = credential_data["response"]["clientDataJSON"].decode("utf-8")
 
         # @TODO this must be moved into the Account model
         fido2_server = self._get_fido2_server()
