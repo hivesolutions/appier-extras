@@ -809,14 +809,16 @@ class AdminPart(
         next = self.field("next")
         credential = self.field("credential")
         state_json = self.session["state"]
-        state = json.loads(state_json)
-
+    
         credential_data = json.loads(credential)
+        state = json.loads(state_json)
 
         # @TODO this must be moved into the Account model
         fido2_server = self._get_fido2_server()
         auth_data = fido2_server.register_complete(state, credential_data)
 
+        # prints the information that should be save in the
+        # account for proper FIDO2 authentication
         print(auth_data.credential_data)
         print(auth_data.counter)
 
