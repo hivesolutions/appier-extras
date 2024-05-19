@@ -770,7 +770,7 @@ class AdminPart(
         rp = fido2.webauthn.PublicKeyCredentialRpEntity(
             name="Example RP", id="localhost"
         )
-        self._fido2_server = fido2.server.Fido2Server(rp)
+        self._fido2_server = fido2.server.Fido2Server(rp, verify_origin=lambda _: True)
 
         return self._fido2_server
 
@@ -811,15 +811,11 @@ class AdminPart(
         state_json = self.session["state"]
         state = json.loads(state_json)
 
-        credential_data = json.loads(credential, object_hook=utils.bytes_decoder)
+        credential_data = json.loads(credential)
 
         # @TODO this must be moved into the Account model
         fido2_server = self._get_fido2_server()
-        try:
-            auth_data = fido2_server.register_complete(state, credential_data)
-        except Exception as e:
-            print(e)
-            raise e
+        auth_data = fido2_server.register_complete(state, credential_data)
 
         print(auth_data.credential_data)
         print(auth_data.counter)
