@@ -106,6 +106,8 @@ class Account(base.Base, authenticable.Authenticable):
 
     roles = appier.field(type=appier.references("Role", name="id"))
 
+    credentials = appier.field(type=appier.references("Credential", name="id"))
+
     @classmethod
     def setup(cls):
         super(Account, cls).setup()
@@ -1007,6 +1009,16 @@ class Account(base.Base, authenticable.Authenticable):
             view=view,
             context=context,
             absolute=absolute,
+        )
+
+    @appier.view(name="Credentials")
+    def credentials_v(self, *args, **kwargs):
+        kwargs["sort"] = kwargs.get("sort", [("id", 1)])
+        return appier.lazy_dict(
+            model=self.credentials._target,
+            kwargs=kwargs,
+            entities=appier.lazy(lambda: self.credentials.find(*args, **kwargs)),
+            page=appier.lazy(lambda: self.credentials.paginate(*args, **kwargs)),
         )
 
     @property

@@ -31,6 +31,7 @@ __license__ = "Apache License, Version 2.0"
 import os
 import json
 import time
+import base64
 import datetime
 import tempfile
 
@@ -738,6 +739,10 @@ class AdminPart(
     def fido2(self):
         next = self.field("next")
         error = self.field("error")
+
+        # @TODO this must be moved into the Account model
+        fido2_server = self._get_fido2_server()
+
         return self.template("fido2.html.tpl", next=next, error=error)
 
     def fido2_login(self):
@@ -756,23 +761,6 @@ class AdminPart(
         )
 
         self.session["2fa.username"] = username
-
-    def _get_fido2_server(self):
-        if hasattr(self, "_fido2_server") and self._fido2_server:
-            return self._fido2_server
-
-        _fido2 = appier.import_pip("fido2.webauthn")
-
-        import fido2.webauthn
-        import fido2.server
-
-        fido2.webauthn.webauthn_json_mapping.enabled = True
-        rp = fido2.webauthn.PublicKeyCredentialRpEntity(
-            name="Example RP", id="localhost"
-        )
-        self._fido2_server = fido2.server.Fido2Server(rp, verify_origin=lambda _: True)
-
-        return self._fido2_server
 
     def fido2_register(self):
         next = self.field("next")
@@ -817,14 +805,37 @@ class AdminPart(
         fido2_server = self._get_fido2_server()
         auth_data = fido2_server.register_complete(state, credential_data)
 
+        # converts the credential data into a Base64 encoded string
+        # the strings is structured in the WebAuthn standard format
+        credential_data_b64 = base64.b64encode(auth_data.credential_data).decode(
+            "utf-8"
+        )
+
         # prints the information that should be save in the
         # account for proper FIDO2 authentication
-        print(auth_data.credential_data)
+        print(credential_data_b64)
         print(auth_data.counter)
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+
+    def _get_fido2_server(self):
+        if hasattr(self, "_fido2_server") and self._fido2_server:
+            return self._fido2_server
+
+        _fido2 = appier.import_pip("fido2.webauthn")
+
+        import fido2.webauthn
+        import fido2.server
+
+        fido2.webauthn.webauthn_json_mapping.enabled = True
+        rp = fido2.webauthn.PublicKeyCredentialRpEntity(
+            name="Example RP", id="localhost"
+        )
+        self._fido2_server = fido2.server.Fido2Server(rp, verify_origin=lambda _: True)
+
+        return self._fido2_server
 
     def recover(self):
         next = self.field("next")

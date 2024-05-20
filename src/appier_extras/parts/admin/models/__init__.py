@@ -29,6 +29,7 @@ from . import oauth
 from . import account
 from . import base
 from . import config
+from . import credential
 from . import event
 from . import locale
 from . import role
@@ -40,6 +41,7 @@ from .oauth import *
 from .account import Account
 from .base import Base
 from .config import Config
+from .credential import Credential
 from .event import Event
 from .locale import Locale
 from .role import Role
