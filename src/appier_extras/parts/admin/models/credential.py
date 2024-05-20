@@ -39,9 +39,9 @@ class Credential(base.Base):
         index=True, immutable=True, description="Credential ID"
     )
 
-    credential_data = appier.field()
+    credential_data = appier.field(immutable=True)
 
-    account = appier.field(type=appier.reference("Account", name="id"))
+    account = appier.field(type=appier.reference("Account", name="id"), immutable=True)
 
     @classmethod
     def validate(cls):
@@ -56,8 +56,8 @@ class Credential(base.Base):
     def list_names(cls):
         return ["credential_id", "description", "account"]
 
-    def post_save(self):
-        base.Base.post_save(self)
+    def post_create(self):
+        base.Base.post_create(self)
         account = self.account.reload()
         if not self in account.credentials:
             account.credentials.append(self)
