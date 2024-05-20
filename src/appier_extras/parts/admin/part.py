@@ -809,7 +809,7 @@ class AdminPart(
         next = self.field("next")
         credential = self.field("credential")
         state_json = self.session["state"]
-    
+
         credential_data = json.loads(credential)
         state = json.loads(state_json)
 
