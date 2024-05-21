@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-*
+* Support for FIDO2 and OTP for 2FA authentication - [#45](https://github.com/hivesolutions/appier-extras/issues/45)
 
 ### Changed
 
