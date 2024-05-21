@@ -36,6 +36,15 @@ from appier_extras.parts.admin.models import base
 
 
 class Credential(base.Base):
+    """
+    Model that represents a credential that is associated with
+    an account, this credential may be used for authentication
+    purposes and may be of different types (eg: FIDO2).
+
+    It is expected that the FIDO2 authentication is going to be
+    performed using WebAuthn and the credential is going to be
+    created using the `navigator.credentials.create` method.
+    """
 
     credential_id = appier.field(
         index=True, immutable=True, description="Credential ID"

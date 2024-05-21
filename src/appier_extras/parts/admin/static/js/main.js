@@ -120,6 +120,13 @@
     };
 })(jQuery);
 
+jQuery(document).ready(function() {
+    var _body = jQuery("body");
+    _body.bind("applied", function(event, base) {
+        base.uapply();
+    });
+});
+
 function base64ToUint8Array(base64, urlSafe = true) {
     if (urlSafe) {
         base64 = base64.replace(/-/g, "+").replace(/_/g, "/");
@@ -166,10 +173,3 @@ function serializePublicKeyCredential(publicKeyCredential) {
 
     return serialized;
 }
-
-jQuery(document).ready(function() {
-    var _body = jQuery("body");
-    _body.bind("applied", function(event, base) {
-        base.uapply();
-    });
-});
