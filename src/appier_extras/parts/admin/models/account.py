@@ -68,6 +68,8 @@ class Account(base.Base, authenticable.Authenticable):
 
     confirmation_token = appier.field(safe=True, private=True, meta="secret")
 
+    fido2_enabled = appier.field(type=bool, description="FIDO2 Enabled")
+
     otp_enabled = appier.field(type=bool, description="OTP Enabled")
 
     otp_secret = appier.field(
@@ -932,6 +934,32 @@ class Account(base.Base, authenticable.Authenticable):
             self.roles_l.remove(_role)
         self.save()
 
+    @appier.operation(
+        name="Add Credential",
+        parameters=(
+            ("Credential ID", "credential_id", str),
+            ("Credential Data", "credential_data", str),
+        ),
+    )
+    def add_credential_s(self, credential_id, credential_data):
+        from . import credential
+
+        _credential = credential.Credential(
+            credential_id=credential_id, credential_data=credential_data, account=self
+        )
+        _credential.save()
+        self.fido2_enabled = True
+        self.save()
+
+    @appier.operation(
+        name="Remove Credential", parameters=(("Credential ID", "credential_id", str),)
+    )
+    def remove_credential_s(self, credential_id):
+        from . import credential
+
+        _credential = credential.Credential.get(credential_id=credential_id)
+        _credential.delete()
+
     @appier.operation(name="Fix Roles", level=2)
     def fix_children_s(self):
         self.roles = [role for role in self.roles if role and hasattr(role, "tokens_a")]
@@ -1047,6 +1075,8 @@ class Account(base.Base, authenticable.Authenticable):
 
     @property
     def two_factor_method(self):
+        if self.fido2_enabled:
+            return "fido2"
         if self.otp_enabled:
             return "otp"
         return None
@@ -1059,6 +1089,12 @@ class Account(base.Base, authenticable.Authenticable):
             self.username,
             self.otp_secret,
         )
+
+    @property
+    def credentials_data(self):
+        from . import credential
+
+        return credential.Credential.credentials_data_account(self)
 
     def _set_session(self, unset=True, safes=[], method="set", two_factor=True):
         cls = self.__class__

@@ -28,6 +28,8 @@ __copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import base64
+
 import appier
 
 from appier_extras.parts.admin.models import base
@@ -63,6 +65,22 @@ class Credential(base.Base):
             account.credentials.append(self)
             account.save()
 
+    def post_delete(self):
+        base.Base.post_create(self)
+        account = self.account.reload()
+        account.save()
+
     @classmethod
     def get_by_credential_id(cls, credential_id, *args, **kwargs):
         return cls.get(credential_id=credential_id, eager=("account",), *args, **kwargs)
+
+    @classmethod
+    def find_by_account(cls, account, *args, **kwargs):
+        return cls.find(account=account.id, *args, **kwargs)
+
+    @classmethod
+    def credentials_data_account(cls, account, *args, **kwargs):
+        credentials = cls.find_by_account(account=account, *args, **kwargs)
+        return [
+            base64.b64decode(credential.credential_data) for credential in credentials
+        ]

@@ -33,10 +33,15 @@
         var message = jQuery(".header-message", matchedObject);
         message.umessage();
 
-        // retrieves the reference to the FIDO2 element and registers it
-        // for the base FIDO2 plugin so that it's properly initialized
-        var fido2 = jQuery(".fido2", matchedObject);
-        fido2.ufido2();
+        // retrieves the reference to the FIDO2 Auth element and registers it
+        // for the base FIDO2 Auth plugin so that it's properly initialized
+        var fido2 = jQuery(".fido2-auth", matchedObject);
+        fido2.ufido2auth();
+
+        // retrieves the reference to the FIDO2 Register element and registers it
+        // for the base FIDO2 Register plugin so that it's properly initialized
+        var fido2 = jQuery(".fido2-register", matchedObject);
+        fido2.ufido2register();
     };
 })(jQuery);
 
@@ -68,19 +73,43 @@
 })(jQuery);
 
 (function(jQuery) {
-    jQuery.fn.ufido2 = function(options) {
+    jQuery.fn.ufido2auth = function(options) {
         var matchedObject = this;
         matchedObject.each(function(index, element) {
             var _element = jQuery(element);
             var form = _element.parents("form");
 
-            var contents = JSON.parse(_element.text());
+            var authData = JSON.parse(_element.text());
 
-            //@TODO: need to soft-code this making it more flexible
-            contents.publicKey.user.id = base64ToUint8Array(contents.publicKey.user.id);
-            contents.publicKey.challenge = base64ToUint8Array(contents.publicKey.challenge);
+            authData.publicKey.challenge = base64ToUint8Array(authData.publicKey.challenge);
+            authData.publicKey.allowCredentials.forEach(function(credential) {
+                credential.id = base64ToUint8Array(credential.id);
+            });
 
-            navigator.credentials.create(contents).then(function(credential) {
+            navigator.credentials.get(authData).then(function(response) {
+                var responseInput = jQuery("input[type=\"hidden\"][name=\"response\"]",
+                    form);
+                var serializedResponse = serializePublicKeyCredential(response);
+                responseInput.uxvalue(JSON.stringify(serializedResponse));
+                form.submit();
+            });
+        });
+    };
+})(jQuery);
+
+(function(jQuery) {
+    jQuery.fn.ufido2register = function(options) {
+        var matchedObject = this;
+        matchedObject.each(function(index, element) {
+            var _element = jQuery(element);
+            var form = _element.parents("form");
+
+            var registrationData = JSON.parse(_element.text());
+
+            registrationData.publicKey.user.id = base64ToUint8Array(registrationData.publicKey.user.id);
+            registrationData.publicKey.challenge = base64ToUint8Array(registrationData.publicKey.challenge);
+
+            navigator.credentials.create(registrationData).then(function(credential) {
                 var credentialInput = jQuery("input[type=\"hidden\"][name=\"credential\"]",
                     form);
                 var serializedCredential = serializePublicKeyCredential(credential);
