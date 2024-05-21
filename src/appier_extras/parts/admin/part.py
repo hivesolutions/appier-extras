@@ -746,31 +746,12 @@ class AdminPart(
         next = self.field("next")
         error = self.field("error")
 
-        # @TODO: think if this belongs here
         username = self.session["2fa.username"]
-        account = self.account_c.get(username=username)
-
-        if not account.enabled:
-            raise appier.OperationalError(message="Account is not enabled", code=403)
-
-        import fido2.webauthn
-
-        credentials_data = [
-            fido2.webauthn.AttestedCredentialData(credential_data)
-            for credential_data in account.credentials_data
-        ]
-
-        # @TODO this must be moved into the Account model
-        fido2_server = self._get_fido2_server()
-        auth_data, state = fido2_server.authenticate_begin(credentials_data)
-        state_json = json.dumps(state)
-        self.session["state"] = state_json
-
-        auth_data_d = dict(auth_data)
-        auth_data_json = json.dumps(auth_data_d, cls=utils.BytesEncoder)
+        state, auth_data = self.account_c.login_begin_fido2(username)
+        self.session["state"] = state
 
         return self.template(
-            "fido2.html.tpl", next=next, error=error, auth_data=auth_data_json
+            "fido2.html.tpl", next=next, error=error, auth_data=auth_data
         )
 
     def fido2_login(self):
@@ -782,22 +763,10 @@ class AdminPart(
         state = json.loads(state_json)
 
         username = self.session["2fa.username"]
-        account = self.account_c.get(username=username)
 
-        if not account.enabled:
-            raise appier.OperationalError(message="Account is not enabled", code=403)
-
-        import fido2.webauthn
-
-        credentials_data = [
-            fido2.webauthn.AttestedCredentialData(credential_data)
-            for credential_data in account.credentials_data
-        ]
-
-        # @TODO this must be moved into the Account model
-        fido2_server = self._get_fido2_server()
-
-        fido2_server.authenticate_complete(state, credentials_data, response_data)
+        account = self.account_c.login_fido2(
+            username, state, response_data, touch=False
+        )
 
         # updates the current session with the proper
         # values to correctly authenticate the user
@@ -812,30 +781,14 @@ class AdminPart(
         next = self.field("next")
         error = self.field("error")
 
-        account = self.account_c.from_session(meta=True)
-
-        # @TODO this must be moved into the Account model
-        fido2_server = self._get_fido2_server()
-
-        registration_data, state = fido2_server.register_begin(
-            dict(
-                id=account.username.encode("utf-8"),
-                name=account.username,
-                displayName=account.username,
-            ),
-            user_verification="discouraged",
-        )
-        state_json = json.dumps(state)
-        self.session["state"] = state_json
-
-        registration_data_d = dict(registration_data)
-        registration_data_json = json.dumps(registration_data_d, cls=utils.BytesEncoder)
+        account = self.account_c.from_session()
+        registration_data = account.register_begin_fido2()
 
         return self.template(
             "fido2_register.html.tpl",
             next=next,
             error=error,
-            registration_data=registration_data_json,
+            registration_data=registration_data,
         )
 
     def fido2_register_do(self):
@@ -846,44 +799,12 @@ class AdminPart(
         credential_data = json.loads(credential)
         state = json.loads(state_json)
 
-        # @TODO this must be moved into the Account model
-        fido2_server = self._get_fido2_server()
-        auth_data = fido2_server.register_complete(state, credential_data)
-
-        # converts the credential data into a Base64 encoded string
-        # the strings is structured in the WebAuthn standard format
-        credential_id_b64 = base64.b64encode(
-            auth_data.credential_data.credential_id
-        ).decode("utf-8")
-        credential_data_b64 = base64.b64encode(auth_data.credential_data).decode(
-            "utf-8"
-        )
-
-        # adds the new credential to the account effectively enabling
-        # FIDO2 based authentication for the account
-        account = self.account_c.from_session(meta=True)
-        account.add_credential_s(credential_id_b64, credential_data_b64)
+        account = self.account_c.from_session()
+        account.register_fido2(state, credential_data)
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
-
-    def _get_fido2_server(self):
-        if hasattr(self, "_fido2_server") and self._fido2_server:
-            return self._fido2_server
-
-        _fido2 = appier.import_pip("fido2.webauthn")
-
-        import fido2.webauthn
-        import fido2.server
-
-        fido2.webauthn.webauthn_json_mapping.enabled = True
-        rp = fido2.webauthn.PublicKeyCredentialRpEntity(
-            name="Example RP", id="localhost"
-        )
-        self._fido2_server = fido2.server.Fido2Server(rp, verify_origin=lambda _: True)
-
-        return self._fido2_server
 
     def recover(self):
         next = self.field("next")

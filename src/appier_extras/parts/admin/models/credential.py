@@ -60,14 +60,20 @@ class Credential(base.Base):
 
     def post_create(self):
         base.Base.post_create(self)
+
         account = self.account.reload()
-        if not self in account.credentials:
-            account.credentials.append(self)
-            account.save()
+        account.credentials.append(self)
+        account.fido2_enabled = True
+        account.save()
 
     def post_delete(self):
         base.Base.post_create(self)
+
         account = self.account.reload()
+        if self in account.credentials:
+            account.credentials.remove(self)
+        if len(account.credentials) == 0:
+            account.fido2_enabled = False
         account.save()
 
     @classmethod
