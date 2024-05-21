@@ -820,7 +820,7 @@ class Account(base.Base, authenticable.Authenticable):
 
         registration_data, state = fido2_server.register_begin(
             dict(
-                id=self.username.encode("utf-8"),
+                id=appier.legacy.bytes(self.username, encoding="utf-8"),
                 name=self.username,
                 displayName=self.username,
             ),
@@ -845,11 +845,11 @@ class Account(base.Base, authenticable.Authenticable):
 
         # converts the credential data into a Base64 encoded string
         # the strings is structured in the WebAuthn standard format
-        credential_id_b64 = base64.b64encode(
-            auth_data.credential_data.credential_id
-        ).decode("utf-8")
-        credential_data_b64 = base64.b64encode(auth_data.credential_data).decode(
-            "utf-8"
+        credential_id_b64 = appier.legacy.str(
+            base64.b64encode(auth_data.credential_data.credential_id)
+        )
+        credential_data_b64 = appier.legacy.str(
+            base64.b64encode(auth_data.credential_data)
         )
 
         # adds the new credential to the account effectively enabling
