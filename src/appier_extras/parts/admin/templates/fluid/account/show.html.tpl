@@ -5,6 +5,9 @@
 {% block buttons %}
     {{ super() }}
     <ul class="drop-down drop-down-left" data-name="Operations">
+        <li>
+            <a href="{{ url_for('admin.fido2_register', next = location_f) }}">Register FIDO2</a>
+        </li>
         {% if own.has_facebook() %}
             <li>
                 {% if account.facebook_id %}
@@ -81,6 +84,14 @@
                 <div class="item">
                     <dt>Type</dt>
                     <dd><span class="tag">{{ appier.underscore_to_readable(account.type_meta, capitalize = True) }}</span></dd>
+                </div>
+                <div class="item">
+                    <dt>OTP Enabled</dt>
+                    <dd><span class="tag {% if account.otp_enabled %}green{% else %}red{% endif %}">{{ account.otp_enabled }}</span></dd>
+                </div>
+                <div class="item">
+                    <dt>FIDO2 Enabled</dt>
+                    <dd><span class="tag {% if account.fido2_enabled %}green{% else %}red{% endif %}">{{ account.fido2_enabled }}</span></dd>
                 </div>
                 <div class="separator"></div>
                 {% if own.has_facebook() %}

@@ -28,7 +28,9 @@ __copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import json
 import time
+import base64
 import hashlib
 import binascii
 
@@ -68,6 +70,8 @@ class Account(base.Base, authenticable.Authenticable):
 
     confirmation_token = appier.field(safe=True, private=True, meta="secret")
 
+    fido2_enabled = appier.field(type=bool, description="FIDO2 Enabled")
+
     otp_enabled = appier.field(type=bool, description="OTP Enabled")
 
     otp_secret = appier.field(
@@ -105,6 +109,8 @@ class Account(base.Base, authenticable.Authenticable):
     )
 
     roles = appier.field(type=appier.references("Role", name="id"))
+
+    credentials = appier.field(type=appier.references("Credential", name="id"))
 
     @classmethod
     def setup(cls):
@@ -273,6 +279,66 @@ class Account(base.Base, authenticable.Authenticable):
         # verifies that the OTP token provided is valid for the current account
         # and if that's not the case raises an exception indicating the problem
         account.verify_otp(otp_token)
+
+        # "touches" the current account meaning that the last login value will be
+        # updated to reflect the current time and then returns the current logged
+        # in account to the caller method so that it may used (valid account)
+        if touch:
+            account.touch_login_s()
+        return account
+
+    @classmethod
+    def login_begin_fido2(cls, username):
+        #  tries to retrieve the account with the provided username, so that
+        # the other validation steps may be done as required by login operation
+        account = cls.get(username=username, rules=False, build=False, raise_e=False)
+        if not account:
+            raise appier.OperationalError(message="No valid account found", code=403)
+
+        # verifies that the retrieved account is currently enabled, because
+        # disabled accounts are not considered to be valid ones
+        if not account.enabled:
+            raise appier.OperationalError(message="Account is not enabled", code=403)
+
+        fido2_server = cls._get_fido2_server()
+        auth_data, state = fido2_server.authenticate_begin(account.credentials_data_n)
+        state_json = json.dumps(state)
+
+        auth_data_d = dict(auth_data)
+        auth_data_json = json.dumps(auth_data_d, cls=utils.BytesEncoder)
+
+        return state_json, auth_data_json
+
+    @classmethod
+    def login_fido2(cls, username, state, response_data, touch=True):
+        if not state:
+            raise appier.OperationalError(
+                message="FIDO2 state must be provided", code=400
+            )
+
+        if not response_data:
+            raise appier.OperationalError(
+                message="FIDO2 response data must be provided", code=400
+            )
+
+        # tries to retrieve the account with the provided username, so that
+        # the other validation steps may be done as required by login operation
+        account = cls.get(username=username, rules=False, build=False, raise_e=False)
+        if not account:
+            raise appier.OperationalError(message="No valid account found", code=403)
+
+        # verifies that the retrieved account is currently enabled, because
+        # disabled accounts are not considered to be valid ones
+        if not account.enabled:
+            raise appier.OperationalError(message="Account is not enabled", code=403)
+
+        # obtains the FIDO2 server and runs the authentication complete operation
+        # using the current session state and the credential data, if the
+        # authentication fails an exception is raised
+        fido2_server = cls._get_fido2_server()
+        fido2_server.authenticate_complete(
+            state, account.credentials_data_n, response_data
+        )
 
         # "touches" the current account meaning that the last login value will be
         # updated to reflect the current time and then returns the current logged
@@ -569,6 +635,22 @@ class Account(base.Base, authenticable.Authenticable):
         admin_part = owner.admin_part
         return cls == admin_part.account_c
 
+    @classmethod
+    def _get_fido2_server(cls):
+        if hasattr(cls, "_fido2_server") and cls._fido2_server:
+            return cls._fido2_server
+
+        _fido2 = appier.import_pip("fido2")
+
+        import fido2.webauthn
+        import fido2.server
+
+        fido2.webauthn.webauthn_json_mapping.enabled = True
+        rp = fido2.webauthn.PublicKeyCredentialRpEntity(name="Appier", id="localhost")
+        cls._fido2_server = fido2.server.Fido2Server(rp, verify_origin=lambda _: True)
+
+        return cls._fido2_server
+
     def pre_validate(self):
         base.Base.pre_validate(self)
         if hasattr(self, "username") and self.username:
@@ -731,6 +813,48 @@ class Account(base.Base, authenticable.Authenticable):
         totp = pyotp.TOTP(self.otp_secret)
         if not totp.verify(otp_token):
             raise appier.OperationalError(message="Invalid OTP code", code=403)
+
+    def register_begin_fido2(self):
+        cls = self.__class__
+        fido2_server = cls._get_fido2_server()
+
+        registration_data, state = fido2_server.register_begin(
+            dict(
+                id=appier.legacy.bytes(self.username, encoding="utf-8"),
+                name=self.username,
+                displayName=self.username,
+            ),
+            user_verification="discouraged",
+        )
+        state_json = json.dumps(state)
+        self.session["state"] = state_json
+
+        registration_data_d = dict(registration_data)
+        registration_data_json = json.dumps(registration_data_d, cls=utils.BytesEncoder)
+
+        return registration_data_json
+
+    def register_fido2(self, state, credential_data):
+        cls = self.__class__
+
+        # obtains the FIDO2 server and runs the registration complete operation
+        # using the current session state and the credential data, if the
+        # registration fails an exception is raised
+        fido2_server = cls._get_fido2_server()
+        auth_data = fido2_server.register_complete(state, credential_data)
+
+        # converts the credential data into a Base64 encoded string
+        # the strings is structured in the WebAuthn standard format
+        credential_id_b64 = appier.legacy.str(
+            base64.b64encode(auth_data.credential_data.credential_id)
+        )
+        credential_data_b64 = appier.legacy.str(
+            base64.b64encode(auth_data.credential_data)
+        )
+
+        # adds the new credential to the account effectively enabling
+        # FIDO2 based authentication for the account
+        self.add_credential_s(credential_id_b64, credential_data_b64)
 
     def _send_avatar(
         self, image="avatar.png", width=None, height=None, strict=False, cache=False
@@ -930,6 +1054,30 @@ class Account(base.Base, authenticable.Authenticable):
             self.roles_l.remove(_role)
         self.save()
 
+    @appier.operation(
+        name="Add Credential",
+        parameters=(
+            ("Credential ID", "credential_id", str),
+            ("Credential Data", "credential_data", str),
+        ),
+    )
+    def add_credential_s(self, credential_id, credential_data):
+        from . import credential
+
+        _credential = credential.Credential(
+            credential_id=credential_id, credential_data=credential_data, account=self
+        )
+        _credential.save()
+
+    @appier.operation(
+        name="Remove Credential", parameters=(("Credential ID", "credential_id", str),)
+    )
+    def remove_credential_s(self, credential_id):
+        from . import credential
+
+        _credential = credential.Credential.get(credential_id=credential_id)
+        _credential.delete()
+
     @appier.operation(name="Fix Roles", level=2)
     def fix_children_s(self):
         self.roles = [role for role in self.roles if role and hasattr(role, "tokens_a")]
@@ -1009,6 +1157,16 @@ class Account(base.Base, authenticable.Authenticable):
             absolute=absolute,
         )
 
+    @appier.view(name="Credentials")
+    def credentials_v(self, *args, **kwargs):
+        kwargs["sort"] = kwargs.get("sort", [("id", 1)])
+        return appier.lazy_dict(
+            model=self.credentials._target,
+            kwargs=kwargs,
+            entities=appier.lazy(lambda: self.credentials.find(*args, **kwargs)),
+            page=appier.lazy(lambda: self.credentials.paginate(*args, **kwargs)),
+        )
+
     @property
     def confirmed(self):
         return self.enabled
@@ -1035,6 +1193,8 @@ class Account(base.Base, authenticable.Authenticable):
 
     @property
     def two_factor_method(self):
+        if self.fido2_enabled:
+            return "fido2"
         if self.otp_enabled:
             return "otp"
         return None
@@ -1047,6 +1207,22 @@ class Account(base.Base, authenticable.Authenticable):
             self.username,
             self.otp_secret,
         )
+
+    @property
+    def credentials_data(self):
+        from . import credential
+
+        return credential.Credential.credentials_data_account(self)
+
+    @property
+    def credentials_data_n(self):
+        _fido2 = appier.import_pip("fido2")
+        import fido2.webauthn
+
+        return [
+            fido2.webauthn.AttestedCredentialData(credential_data)
+            for credential_data in self.credentials_data
+        ]
 
     def _set_session(self, unset=True, safes=[], method="set", two_factor=True):
         cls = self.__class__

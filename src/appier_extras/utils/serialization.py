@@ -19,32 +19,39 @@
 # You should have received a copy of the Apache License along with
 # Hive Appier Framework. If not, see <http://www.apache.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-from . import oauth
-from . import account
-from . import base
-from . import config
-from . import credential
-from . import event
-from . import locale
-from . import role
-from . import search
-from . import settings
-from . import snapshot
+import json
+import base64
 
-from .oauth import *
-from .account import Account
-from .base import Base
-from .config import Config
-from .credential import Credential
-from .event import Event
-from .locale import Locale
-from .role import Role
-from .search import Search
-from .settings import Settings
-from .snapshot import Snapshot
+import appier
+
+
+class BytesEncoder(json.JSONEncoder):
+    """
+    Custom JSON encoder that makes sure that bytes
+    are properly encoded as Base64 strings.
+    """
+
+    def default(self, obj):
+        if isinstance(obj, appier.legacy.BYTES):
+            return base64.b64encode(obj).decode("utf-8")
+        return json.JSONEncoder.default(self, obj)
+
+
+def bytes_decoder(map):
+    for key, value in map.items():
+        if isinstance(value, str):
+            try:
+                decoded_value = base64.b64decode(value)
+                map[key] = decoded_value
+            except (ValueError, TypeError):
+                pass
+    return map

@@ -31,6 +31,7 @@ __license__ = "Apache License, Version 2.0"
 import os
 import json
 import time
+import base64
 import datetime
 import tempfile
 
@@ -120,6 +121,8 @@ class AdminPart(
         self.owner.two_factor_route_admin = "admin.two_factor"
         self.owner.otp_route = "admin.otp"
         self.owner.otp_route_admin = "admin.otp"
+        self.owner.fido2_route = "admin.fido2"
+        self.owner.fido2_route_admin = "admin.fido2"
         self.owner.admin_account = self.account_c
         self.owner.admin_role = self.role_c
         self.owner.admin_login_redirect = "admin.index"
@@ -197,6 +200,10 @@ class AdminPart(
             (("GET",), "/admin/2fa", self.two_factor),
             (("GET",), "/admin/otp", self.otp),
             (("POST",), "/admin/otp", self.otp_login),
+            (("GET",), "/admin/fido2", self.fido2),
+            (("POST",), "/admin/fido2", self.fido2_login),
+            (("GET",), "/admin/fido2/register", self.fido2_register),
+            (("POST",), "/admin/fido2/register", self.fido2_register_do),
             (("GET"), "/admin/confirm", self.confirm),
             (("GET"), "/admin/recover", self.recover),
             (("POST"), "/admin/recover", self.recover_do),
@@ -676,6 +683,10 @@ class AdminPart(
         next = self.field("next")
         error = self.field("error")
         two_factor_method = self.session["2fa.method"]
+        if two_factor_method == "fido2":
+            return self.redirect(
+                self.url_for(self.owner.fido2_route_admin, next=next, error=error)
+            )
         if two_factor_method == "otp":
             return self.redirect(
                 self.url_for(self.owner.otp_route_admin, next=next, error=error)
@@ -726,6 +737,70 @@ class AdminPart(
         # values to correctly authenticate the user
         account.touch_login_s()
         account._set_account()
+
+        # redirects the current operation to the next URL or in
+        # alternative to the root index of the administration
+        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+
+    def fido2(self):
+        next = self.field("next")
+        error = self.field("error")
+
+        username = self.session["2fa.username"]
+        state, auth_data = self.account_c.login_begin_fido2(username)
+        self.session["state"] = state
+
+        return self.template(
+            "fido2.html.tpl", next=next, error=error, auth_data=auth_data
+        )
+
+    def fido2_login(self):
+        next = self.field("next")
+        response = self.field("response")
+        state_json = self.session["state"]
+
+        response_data = json.loads(response)
+        state = json.loads(state_json)
+
+        username = self.session["2fa.username"]
+
+        account = self.account_c.login_fido2(
+            username, state, response_data, touch=False
+        )
+
+        # updates the current session with the proper
+        # values to correctly authenticate the user
+        account.touch_login_s()
+        account._set_account()
+
+        # redirects the current operation to the next URL or in
+        # alternative to the root index of the administration
+        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+
+    def fido2_register(self):
+        next = self.field("next")
+        error = self.field("error")
+
+        account = self.account_c.from_session()
+        registration_data = account.register_begin_fido2()
+
+        return self.template(
+            "fido2_register.html.tpl",
+            next=next,
+            error=error,
+            registration_data=registration_data,
+        )
+
+    def fido2_register_do(self):
+        next = self.field("next")
+        credential = self.field("credential")
+        state_json = self.session["state"]
+
+        credential_data = json.loads(credential)
+        state = json.loads(state_json)
+
+        account = self.account_c.from_session()
+        account.register_fido2(state, credential_data)
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
