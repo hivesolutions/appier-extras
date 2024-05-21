@@ -348,7 +348,6 @@ class Account(base.Base, authenticable.Authenticable):
         return account
 
     @classmethod
-    @classmethod
     def confirm(cls, confirmation_token, send_email=False):
         # validates the current account and token for confirmation and
         # if that's valid runs the confirm operation and returns the account
