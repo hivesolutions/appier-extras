@@ -424,6 +424,10 @@ body.mobile-s .pages > .page.other {
     margin: 0px auto 0px auto;
 }
 
+.otp-qrcode {
+    max-width: 200px;
+}
+
 .fido2-register {
     display: none;
 }

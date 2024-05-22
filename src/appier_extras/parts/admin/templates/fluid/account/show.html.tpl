@@ -6,6 +6,9 @@
     {{ super() }}
     <ul class="drop-down drop-down-left" data-name="Operations">
         <li>
+            <a href="{{ url_for('admin.otp_register', next = location_f) }}">Register OTP</a>
+        </li>
+        <li>
             <a href="{{ url_for('admin.fido2_register', next = location_f) }}">Register FIDO2</a>
         </li>
         {% if own.has_facebook() %}

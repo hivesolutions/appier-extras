@@ -200,6 +200,7 @@ class AdminPart(
             (("GET",), "/admin/2fa", self.two_factor),
             (("GET",), "/admin/otp", self.otp),
             (("POST",), "/admin/otp", self.otp_login),
+            (("GET",), "/admin/otp/register", self.otp_register),
             (("GET",), "/admin/fido2", self.fido2),
             (("POST",), "/admin/fido2", self.fido2_login),
             (("GET",), "/admin/fido2/register", self.fido2_register),
@@ -741,6 +742,14 @@ class AdminPart(
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
         return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+
+    def otp_register(self):
+        next = self.field("next")
+
+        account = self.account_c.from_session()
+        account.generate_otp_s()
+
+        return self.template("otp_register.html.tpl", next=next)
 
     def fido2(self):
         next = self.field("next")
