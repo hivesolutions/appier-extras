@@ -1,14 +1,14 @@
 {% extends "admin/admin.simple.html.tpl" %}
-{% block title %}OTP{% endblock %}
+{% block title %}OTP Login{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         {% if owner.logo_url %}
             <img class="login-logo" src="{{ owner.logo_url }}" />
         {% else %}
-            <h1>OTP</h1>
+            <h1>OTP Login</h1>
         {% endif %}
-        <h3>Find you OTP code in the Auth App</h3>
+        <h3>Find you <strong>OTP code</strong> in the <strong>Auth App</strong></h3>
         {% if error %}
             <div class="quote error">{{ error }}</div>
         {% endif %}

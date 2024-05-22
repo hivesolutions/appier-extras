@@ -1,14 +1,14 @@
 {% extends "admin/admin.simple.html.tpl" %}
-{% block title %}FIDO2{% endblock %}
+{% block title %}FIDO2 Login{% endblock %}
 {% block body_style %}{{ super() }} {% if background %}background:url({{ background }});{% endif %}{% endblock %}
 {% block content %}
     <div class="login-panel {% if error %}login-panel-message{% endif %}">
         {% if owner.logo_url %}
             <img class="login-logo" src="{{ owner.logo_url }}" />
         {% else %}
-            <h1>Security Key</h1>
+            <h1>Passkey Login</h1>
         {% endif %}
-        <h3>Logging in using Security Key</h3>
+        <h3>Logging in using Passkey</h3>
         {% if error %}
             <div class="quote error">{{ error }}</div>
         {% endif %}

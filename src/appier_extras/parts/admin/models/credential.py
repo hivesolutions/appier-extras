@@ -44,6 +44,10 @@ class Credential(base.Base):
     It is expected that the FIDO2 authentication is going to be
     performed using WebAuthn and the credential is going to be
     created using the `navigator.credentials.create` method.
+
+    Sometimes these credentials are also referred to as "Passkeys".
+
+    :see: https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API
     """
 
     credential_id = appier.field(
