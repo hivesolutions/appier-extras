@@ -11,6 +11,7 @@
     {% set sessions_c = request.session_c.count() %}
     {% set peers_c = own._peers|length %}
     {% set counters_c = own._counters().count() %}
+    {% set cron_jobs_c = own._cron_jobs()|length %}
     <div class="show-panel">
         <div class="panel-header">
             <img class="image square no-border" src="{{ own.logo_square_url or url_for('admin', filename = 'images/logo_96.png') }}" />
@@ -100,6 +101,12 @@
                     <dt>Counters</dt>
                     <dd>
                         <a href="{{ url_for('admin.list_counters') }}">{{ counters_c }} {% if counters_c == 1 %}counter{% else %}counters{% endif %}</a>
+                    </dd>
+                </div>
+                <div class="item">
+                    <dt>Cron Jobs</dt>
+                    <dd>
+                        <a href="{{ url_for('admin.list_cron_jobs') }}">{{ cron_jobs_c }} {% if cron_jobs_c == 1 %}job{% else %}jobs{% endif %}</a>
                     </dd>
                 </div>
                 <div class="item">

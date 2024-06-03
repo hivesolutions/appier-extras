@@ -248,6 +248,7 @@ class AdminPart(
             (("GET",), "/admin/sessions/<str:sid>/delete", self.delete_session),
             (("GET",), "/admin/peers", self.list_peers),
             (("GET",), "/admin/counters", self.list_counters),
+            (("GET",), "/admin/cron_jobs", self.list_cron_jobs),
             (("GET",), "/admin/events.csv", self.list_events_csv),
             (("GET",), "/admin/locale.csv", self.list_locales_csv),
             (
@@ -1466,6 +1467,13 @@ class AdminPart(
         counters = collection.find()
         return self.template("counters.html.tpl", section="status", counters=counters)
 
+    @appier.ensure(token="admin.status", context="admin")
+    def list_cron_jobs(self):
+        cron_jobs = self._cron_jobs()
+        return self.template(
+            "cron_jobs.html.tpl", section="status", cron_jobs=cron_jobs
+        )
+
     @appier.ensure(token="admin", context="admin")
     def list_events_csv(self):
         object = appier.get_object(alias=True, find=True, limit=0)
@@ -2442,6 +2450,13 @@ class AdminPart(
         adapter = self.get_adapter()
         collection = adapter.collection("counters")
         return collection
+
+    def _cron_jobs(self):
+        if not hasattr(self.owner, "_cron"):
+            return []
+        if not self.owner._cron:
+            return []
+        return [task[1] for task in self.owner._cron._tasks]
 
     def _appier_extras_loader(self, module):
         versions = []
