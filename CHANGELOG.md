@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Cron Jobs (Tasks) listing support
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.26.1] - 2024-06-03
+
+### Added
+
+* Cron Jobs (Tasks) listing support
 
 ## [0.26.0] - 2024-05-22
 
