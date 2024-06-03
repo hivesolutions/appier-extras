@@ -2458,6 +2458,13 @@ class AdminPart(
             return []
         return [task[1] for task in self.owner._cron._tasks]
 
+    def _cron_jobs_count(self):
+        if not hasattr(self.owner, "_cron"):
+            return 0
+        if not self.owner._cron:
+            return 0
+        return len(self.owner._cron._tasks)
+
     def _appier_extras_loader(self, module):
         versions = []
         if hasattr(module, "VERSION"):
