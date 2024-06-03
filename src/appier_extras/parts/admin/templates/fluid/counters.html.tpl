@@ -1,6 +1,6 @@
 {% extends "admin/admin.fluid.html.tpl" %}
 {% block title %}Counters{% endblock %}
-{% block name %}Counter{% endblock %}
+{% block name %}Counters{% endblock %}
 {% block style %}no-padding{% endblock %}
 {% block content %}
     <table class="filter no-fixed" data-no_input="1">
