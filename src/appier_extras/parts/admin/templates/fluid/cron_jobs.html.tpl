@@ -7,6 +7,7 @@
         <thead>
             <tr class="table-row table-header">
                 <th class="text-left">Identifier</th>
+                <th class="text-left">Description</th>
                 <th class="text-left">Cron</th>
                 <th class="text-left">Next Run</th>
             </tr>
@@ -17,6 +18,7 @@
                     <td class="text-left">
                         <strong>{{ cron_job.id }}</strong>
                     </td>
+                    <td class="text-left">{{ cron_job.description|default("-", True) }}</td>
                     <td class="text-left">{{ cron_job.cron }}</td>
                     <td class="text-left">{{ cron_job.next_run() }}</td>
                 </tr>
