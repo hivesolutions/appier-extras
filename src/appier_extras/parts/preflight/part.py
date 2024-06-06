@@ -52,7 +52,7 @@ class PreflightPart(appier.Part):
     def unload(self):
         appier.Part.unload(self)
 
-        self.owner.bind("before_request", self._handler)
+        self.owner.unbind("before_request", self._handler)
 
     def _handler(self):
         if not self.owner.request.method == "OPTIONS":
