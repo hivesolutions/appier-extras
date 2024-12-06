@@ -186,7 +186,9 @@ class Event(base.Base):
         retries = arguments.get("retries", 3)
         logger = appier.get_logger()
         logger.debug("Running HTTP notification for '%s' ..." % url)
-        return cls._retry(lambda: appier.post(url, timeout=timeout, data_j=arguments), count=retries)
+        return cls._retry(
+            lambda: appier.post(url, data_j=arguments, timeout=timeout), count=retries
+        )
 
     def notify_mailme(self, arguments={}):
         cls = self.__class__
