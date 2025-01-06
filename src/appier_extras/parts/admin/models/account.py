@@ -935,7 +935,7 @@ class Account(base.Base, authenticable.Authenticable):
         code.make(fit=True)
         image = code.make_image(fill_color="black", back_color="white")
         if hasattr(image, "new_image"):
-            image = image.new_image()
+            image = image.copy()
         buffer = appier.legacy.BytesIO()
         image.save(buffer, format="PNG")
         image_data = buffer.getvalue()
