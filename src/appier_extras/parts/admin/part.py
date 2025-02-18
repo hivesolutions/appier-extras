@@ -665,7 +665,9 @@ class AdminPart(
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def logout(self):
         # tries to retrieve the next field as it's going to be used for
@@ -679,7 +681,9 @@ class AdminPart(
 
         # runs the proper redirect operation, taking into account if the
         # next value has been provided or not
-        return self.redirect(next or self.url_for(self.owner.admin_logout_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_logout_redirect), relative=True
+        )
 
     def two_factor(self):
         next = self.field("next")
@@ -742,7 +746,9 @@ class AdminPart(
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def otp_register(self):
         next = self.field("next")
@@ -785,7 +791,9 @@ class AdminPart(
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def fido2_register(self):
         next = self.field("next")
@@ -814,7 +822,9 @@ class AdminPart(
 
         # redirects the current operation to the next URL or in
         # alternative to the root index of the administration
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def recover(self):
         next = self.field("next")
@@ -855,7 +865,9 @@ class AdminPart(
                 error=error.message,
             )
 
-        return self.redirect(next or self.url_for(self.login_route_admin))
+        return self.redirect(
+            next or self.url_for(self.login_route_admin), relative=True
+        )
 
     def confirm(self):
         next = self.field("next")
@@ -864,7 +876,9 @@ class AdminPart(
         )
         send_email = self.field("send_email", True, cast=bool)
         self.account_c.confirm(confirmation_token, send_email=send_email)
-        return self.redirect(next or self.url_for(self.login_route_admin))
+        return self.redirect(
+            next or self.url_for(self.login_route_admin), relative=True
+        )
 
     def new_account(self):
         if not self.owner.admin_available:
@@ -2018,7 +2032,9 @@ class AdminPart(
         url = self.ensure_facebook_api(state=state, scope=scope, refresh=secure)
         if url:
             return self.redirect(url)
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def unlink_facebook(self):
         next = self.field("next")
@@ -2034,7 +2050,9 @@ class AdminPart(
     def unset_facebook(self):
         next = self.field("next")
         self.unset_facebook_account()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def oauth_facebook(self):
         if not self.owner.admin_available:
@@ -2061,7 +2079,9 @@ class AdminPart(
             settings = models.Settings.get_settings()
             settings.facebook_token = access_token
             settings.save()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def github(self):
         next = self.field("next", "")
@@ -2074,7 +2094,9 @@ class AdminPart(
         url = self.ensure_github_api(state=state, scope=scope, refresh=secure)
         if url:
             return self.redirect(url)
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def unlink_github(self):
         next = self.field("next")
@@ -2085,12 +2107,14 @@ class AdminPart(
             settings = models.Settings.get_settings()
             settings.github_token = None
             settings.save()
-        return self.redirect(next or self.url_for("admin.social"))
+        return self.redirect(next or self.url_for("admin.social"), relative=True)
 
     def unset_github(self):
         next = self.field("next")
         self.unset_twitter_account()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def oauth_github(self):
         if not self.owner.admin_available:
@@ -2115,7 +2139,9 @@ class AdminPart(
             settings = models.Settings.get_settings()
             settings.github_token = access_token
             settings.save()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def google(self):
         next = self.field("next", "")
@@ -2136,7 +2162,9 @@ class AdminPart(
         )
         if url:
             return self.redirect(url)
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def unlink_google(self):
         next = self.field("next")
@@ -2150,12 +2178,14 @@ class AdminPart(
             settings.google_email = None
             settings.google_scope = None
             settings.save()
-        return self.redirect(next or self.url_for("admin.social"))
+        return self.redirect(next or self.url_for("admin.social"), relative=True)
 
     def unset_google(self):
         next = self.field("next")
         self.unset_google_account()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def oauth_google(self):
         if not self.owner.admin_available:
@@ -2188,7 +2218,9 @@ class AdminPart(
             settings.google_email = email
             settings.google_scope = scope
             settings.save()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def live(self):
         next = self.field("next", "")
@@ -2201,7 +2233,9 @@ class AdminPart(
         url = self.ensure_live_api(state=state, scope=scope, refresh=secure)
         if url:
             return self.redirect(url)
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def unlink_live(self):
         next = self.field("next")
@@ -2212,12 +2246,14 @@ class AdminPart(
             settings = models.Settings.get_settings()
             settings.live_token = None
             settings.save()
-        return self.redirect(next or self.url_for("admin.social"))
+        return self.redirect(next or self.url_for("admin.social"), relative=True)
 
     def unset_live(self):
         next = self.field("next")
         self.unset_live_account()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def oauth_live(self):
         if not self.owner.admin_available:
@@ -2242,7 +2278,9 @@ class AdminPart(
             settings = models.Settings.get_settings()
             settings.live_token = access_token
             settings.save()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def twitter(self):
         next = self.field("next", "")
@@ -2254,7 +2292,9 @@ class AdminPart(
         url = self.ensure_twitter_api(state=state, refresh=secure)
         if url:
             return self.redirect(url)
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def unlink_twitter(self):
         next = self.field("next")
@@ -2268,12 +2308,14 @@ class AdminPart(
             settings.twitter_token = None
             settings.twitter_token_secret = None
             settings.save()
-        return self.redirect(next or self.url_for("admin.social"))
+        return self.redirect(next or self.url_for("admin.social"), relative=True)
 
     def unset_twitter(self):
         next = self.field("next")
         self.unset_twitter_account()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     def oauth_twitter(self):
         if not self.owner.admin_available:
@@ -2302,7 +2344,9 @@ class AdminPart(
             settings.twitter_token = oauth_token
             settings.twitter_token_secret = oauth_token_secret
             settings.save()
-        return self.redirect(next or self.url_for(self.owner.admin_login_redirect))
+        return self.redirect(
+            next or self.url_for(self.owner.admin_login_redirect), relative=True
+        )
 
     @appier.ensure(token="admin", context="admin")
     def show_log(self):

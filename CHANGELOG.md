@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-*
+* Relative URL fix when using a `next` param
 
 ## [0.26.1] - 2024-06-03
 
