@@ -645,8 +645,15 @@ class Account(base.Base, authenticable.Authenticable):
         import fido2.webauthn
         import fido2.server
 
+        owner = owner or appier.get_app()
+
+        base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
+        base_domain = appier.legacy.urlparse(base_url).netloc.split(":")[0]
+
         fido2.webauthn.webauthn_json_mapping.enabled = True
-        rp = fido2.webauthn.PublicKeyCredentialRpEntity(name="Appier", id="localhost")
+        rp = fido2.webauthn.PublicKeyCredentialRpEntity(
+            name=owner.description, id=base_domain
+        )
         cls._fido2_server = fido2.server.Fido2Server(rp, verify_origin=lambda _: True)
 
         return cls._fido2_server
