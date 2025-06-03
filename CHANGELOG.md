@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.26.3] - 2025-06-03
+
+### Fixed
+
 * The `owner` parameter
 
 ## [0.26.2] - 2025-06-03
