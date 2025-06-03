@@ -648,7 +648,7 @@ class Account(base.Base, authenticable.Authenticable):
         owner = owner or appier.get_app()
 
         base_url = owner.base_url()
-        base_domain = appier.legacy.urlparse(base_url).netloc.split(":")[0]
+        base_domain = appier.legacy.urlparse(base_url).netloc.split(":", 1)[0]
 
         fido2.webauthn.webauthn_json_mapping.enabled = True
         rp = fido2.webauthn.PublicKeyCredentialRpEntity(
