@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+*
+
+## [0.26.2] - 2025-06-03
+
+### Fixed
+
 * Relative URL fix when using a `next` param
 * Dynamic FIDO Name and ID generation
 
