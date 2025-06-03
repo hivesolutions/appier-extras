@@ -636,7 +636,7 @@ class Account(base.Base, authenticable.Authenticable):
         return cls == admin_part.account_c
 
     @classmethod
-    def _get_fido2_server(cls):
+    def _get_fido2_server(cls, owner=None):
         if hasattr(cls, "_fido2_server") and cls._fido2_server:
             return cls._fido2_server
 
@@ -907,7 +907,7 @@ class Account(base.Base, authenticable.Authenticable):
         file_t = (image, mime, data)
         self.avatar = appier.File(file_t)
 
-    def _get_avatar_url(self, absolute=True, owner=None):
+    def _get_avatar_url(self, absolute=True):
         cls = self.__class__
         return cls._get_avatar_url_g(self.username, absolute=absolute, owner=self.owner)
 
