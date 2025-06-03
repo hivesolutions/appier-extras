@@ -647,7 +647,7 @@ class Account(base.Base, authenticable.Authenticable):
 
         owner = owner or appier.get_app()
 
-        base_url = appier.conf("BASE_URL", "http://appier.hive.pt")
+        base_url = owner.base_url()
         base_domain = appier.legacy.urlparse(base_url).netloc.split(":")[0]
 
         fido2.webauthn.webauthn_json_mapping.enabled = True
