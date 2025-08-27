@@ -821,6 +821,12 @@ class Account(base.Base, authenticable.Authenticable):
         if not totp.verify(otp_token):
             raise appier.OperationalError(message="Invalid OTP code", code=403)
 
+    def generate_otp_token(self):
+        pyotp = appier.import_pip("pyotp")
+        self = self.reload(rules=False)
+        totp = pyotp.TOTP(self.otp_secret)
+        return totp.now()
+
     def register_begin_fido2(self):
         cls = self.__class__
         fido2_server = cls._get_fido2_server()
