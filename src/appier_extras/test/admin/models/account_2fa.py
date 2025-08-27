@@ -30,9 +30,8 @@ __license__ = "Apache License, Version 2.0"
 
 import appier
 import unittest
-import appier_extras
 
-pyotp = appier.import_pip("pyotp")
+import appier_extras
 
 
 class AccountTwoFactorTest(unittest.TestCase):
