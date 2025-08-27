@@ -54,14 +54,14 @@ class SerializationTest(unittest.TestCase):
             self.assertEqual(loaded["data"], "hello world")
 
     def test_bytes_decoder(self):
+        if not appier.legacy.PYTHON_3:
+            self.skipTest("Python 3 is required")
+
         bytes_value = b"foo bar"
         encoded_value = base64.b64encode(bytes_value).decode("utf-8")
 
         data = dict(data=encoded_value)
         result = appier_extras.bytes_decoder(data)
 
-        if appier.legacy.PYTHON_3:
-            self.assertIs(result, data)
-            self.assertEqual(result["data"], bytes_value)
-        else:
-            self.assertEqual(result["data"], bytes_value)
+        self.assertIs(result, data)
+        self.assertEqual(result["data"], bytes_value)
