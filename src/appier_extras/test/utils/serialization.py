@@ -32,6 +32,8 @@ import json
 import base64
 import unittest
 
+import appier
+
 import appier_extras
 
 
@@ -39,15 +41,17 @@ class SerializationTest(unittest.TestCase):
     def test_bytes_encoder(self):
         bytes_value = b"hello world"
 
-        data_json = json.dumps(
-            dict(data=bytes_value), cls=appier_extras.BytesEncoder
-        )
+        data_json = json.dumps(dict(data=bytes_value), cls=appier_extras.BytesEncoder)
 
         encoded_expect = base64.b64encode(bytes_value).decode("utf-8")
-        self.assertIn(encoded_expect, data_json)
-
         loaded = json.loads(data_json)
-        self.assertEqual(loaded["data"], encoded_expect)
+
+        if appier.legacy.PYTHON_3:
+            self.assertIn(encoded_expect, data_json)
+            self.assertEqual(loaded["data"], encoded_expect)
+        else:
+            self.assertIn("hello world", data_json)
+            self.assertEqual(loaded["data"], "hello world")
 
     def test_bytes_decoder(self):
         bytes_value = b"foo bar"
@@ -56,5 +60,8 @@ class SerializationTest(unittest.TestCase):
         data = dict(data=encoded_value)
         result = appier_extras.bytes_decoder(data)
 
-        self.assertIs(result, data)
-        self.assertEqual(result["data"], bytes_value)
+        if appier.legacy.PYTHON_3:
+            self.assertIs(result, data)
+            self.assertEqual(result["data"], bytes_value)
+        else:
+            self.assertEqual(result["data"], bytes_value)
