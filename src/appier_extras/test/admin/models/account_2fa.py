@@ -36,6 +36,8 @@ import appier_extras
 
 class AccountTwoFactorTest(unittest.TestCase):
     def setUp(self):
+        if not appier.legacy.PYTHON_3:
+            self.skipTest("Python 3 is required")
         self.app = appier.App(
             parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
