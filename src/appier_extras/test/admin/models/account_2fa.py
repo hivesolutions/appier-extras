@@ -44,10 +44,13 @@ class AccountTwoFactorTest(unittest.TestCase):
         )
 
         class _StubFido2Server(object):
+            _authenticated = False
+
             def authenticate_begin(self, credentials):
                 return {}, "fido2-state"
 
             def authenticate_complete(self, state, credentials, response_data):
+                self._authenticated = True
                 return None
 
         appier_extras.admin.Account._fido2_server = _StubFido2Server()
@@ -105,14 +108,21 @@ class AccountTwoFactorTest(unittest.TestCase):
         account = account.reload(rules=False)
 
         self.assertEqual(account.fido2_enabled, True)
+        self.assertEqual(
+            appier_extras.admin.Account._fido2_server._authenticated, False
+        )
 
         state_json, _ = appier_extras.admin.Account.login_begin_fido2("username")
         self.assertEqual(json.loads(state_json), "fido2-state")
+        self.assertEqual(
+            appier_extras.admin.Account._fido2_server._authenticated, False
+        )
 
         account_logged = appier_extras.admin.Account.login_fido2(
             "username", state_json, dict(id="credential-id")
         )
         self.assertEqual(account_logged.id, account.id)
+        self.assertEqual(appier_extras.admin.Account._fido2_server._authenticated, True)
 
     def test_fido2_invalid_state(self):
         account = self._create_account()
