@@ -42,38 +42,13 @@ class AccountTwoFactorTest(unittest.TestCase):
         self.app = appier.App(
             parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
-
-        class _StubFido2Server(object):
-            _authenticated = False
-
-            def authenticate_begin(self, credentials):
-                return {}, "fido2-state"
-
-            def authenticate_complete(self, state, credentials, response_data):
-                self._authenticated = True
-                return None
-
-        appier_extras.admin.Account._fido2_server = _StubFido2Server()
-
-        # patches the `credentials_data_n` property to avoid complex attestation parsing
-        # allowing test operations to work as expected
-        self._orig_credentials_data_n = appier_extras.admin.Account.credentials_data_n
-        appier_extras.admin.Account.credentials_data_n = property(lambda self: [])
+        self._patch_fido2_server()
 
     def tearDown(self):
         self.app.unload()
         adapter = appier.get_adapter()
         adapter.drop_db()
-
-        if hasattr(appier_extras.admin.Account, "_fido2_server"):
-            delattr(appier_extras.admin.Account, "_fido2_server")
-
-        # restores the original `credentials_data_n` property
-        # allowing future operations to work as expected
-        if hasattr(self, "_orig_credentials_data_n"):
-            appier_extras.admin.Account.credentials_data_n = (
-                self._orig_credentials_data_n
-            )
+        self._unpatch_fido2_server()
 
     def test_otp_generate_and_login(self):
         account = self._create_account()
@@ -147,3 +122,38 @@ class AccountTwoFactorTest(unittest.TestCase):
         account.password_confirm = "password"
         account.save()
         return account
+
+    def _patch_fido2_server(self):
+        # creates a stub for the FIDO2 server
+        # allowing test operations to work as expected
+        class _StubFido2Server(object):
+            _authenticated = False
+
+            def authenticate_begin(self, credentials):
+                return {}, "fido2-state"
+
+            def authenticate_complete(self, state, credentials, response_data):
+                self._authenticated = True
+                return None
+
+        # sets the stub for the FIDO2 server allowing test operations
+        # to work as expected
+        appier_extras.admin.Account._fido2_server = _StubFido2Server()
+
+        # patches the `credentials_data_n` property to avoid complex attestation parsing
+        # allowing test operations to work as expected
+        self._orig_credentials_data_n = appier_extras.admin.Account.credentials_data_n
+        appier_extras.admin.Account.credentials_data_n = property(lambda self: [])
+
+    def _unpatch_fido2_server(self):
+        # restores the original `_fido2_server` property
+        # allowing future operations to work as expected
+        if hasattr(appier_extras.admin.Account, "_fido2_server"):
+            delattr(appier_extras.admin.Account, "_fido2_server")
+
+        # restores the original `credentials_data_n` property
+        # allowing future operations to work as expected
+        if hasattr(self, "_orig_credentials_data_n"):
+            appier_extras.admin.Account.credentials_data_n = (
+                self._orig_credentials_data_n
+            )
