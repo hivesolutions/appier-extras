@@ -93,7 +93,7 @@ class AccountTwoFactorTest(unittest.TestCase):
 
     def test_otp_two_factor_method_property(self):
         account = self._create_account()
-        self.assertIsNone(account.two_factor_method)
+        self.assertEqual(account.two_factor_method, None)
 
         account.generate_otp_s()
         account = account.reload()
@@ -109,9 +109,8 @@ class AccountTwoFactorTest(unittest.TestCase):
         state_json, _ = appier_extras.admin.Account.login_begin_fido2("username")
         self.assertEqual(json.loads(state_json), "fido2-state")
 
-        dummy_response = dict(id="credential-id")
         account_logged = appier_extras.admin.Account.login_fido2(
-            "username", state_json, dummy_response
+            "username", state_json, dict(id="credential-id")
         )
         self.assertEqual(account_logged.id, account.id)
 
@@ -124,7 +123,7 @@ class AccountTwoFactorTest(unittest.TestCase):
 
     def test_fido2_two_factor_method_property(self):
         account = self._create_account()
-        self.assertIsNone(account.two_factor_method)
+        self.assertEqual(account.two_factor_method, None)
 
         account.add_credential_s("credential-id", "credential-data")
         account = account.reload()
