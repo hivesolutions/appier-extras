@@ -28,6 +28,7 @@ __copyright__ = "Copyright (c) 2008-2024 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
+import json
 import appier
 import unittest
 
@@ -42,10 +43,34 @@ class AccountTwoFactorTest(unittest.TestCase):
             parts=(appier_extras.admin.AdminPart,), session_c=appier.MemorySession
         )
 
+        class _StubFido2Server(object):
+            def authenticate_begin(self, credentials):
+                return {}, "fido2-state"
+
+            def authenticate_complete(self, state, credentials, response_data):
+                return None
+
+        appier_extras.admin.Account._fido2_server = _StubFido2Server()
+
+        # patches the `credentials_data_n` property to avoid complex attestation parsing
+        # allowing test operations to work as expected
+        self._orig_credentials_data_n = appier_extras.admin.Account.credentials_data_n
+        appier_extras.admin.Account.credentials_data_n = property(lambda self: [])
+
     def tearDown(self):
         self.app.unload()
         adapter = appier.get_adapter()
         adapter.drop_db()
+
+        if hasattr(appier_extras.admin.Account, "_fido2_server"):
+            delattr(appier_extras.admin.Account, "_fido2_server")
+
+        # restores the original `credentials_data_n` property
+        # allowing future operations to work as expected
+        if hasattr(self, "_orig_credentials_data_n"):
+            appier_extras.admin.Account.credentials_data_n = (
+                self._orig_credentials_data_n
+            )
 
     def test_otp_generate_and_login(self):
         account = self._create_account()
@@ -73,6 +98,37 @@ class AccountTwoFactorTest(unittest.TestCase):
         account.generate_otp_s()
         account = account.reload()
         self.assertEqual(account.two_factor_method, "otp")
+
+    def test_fido2_register_and_login(self):
+        account = self._create_account()
+        account.add_credential_s("credential-id", "credential-data")
+        account = account.reload(rules=False)
+
+        self.assertEqual(account.fido2_enabled, True)
+
+        state_json, _ = appier_extras.admin.Account.login_begin_fido2("username")
+        self.assertEqual(json.loads(state_json), "fido2-state")
+
+        dummy_response = dict(id="credential-id")
+        account_logged = appier_extras.admin.Account.login_fido2(
+            "username", state_json, dummy_response
+        )
+        self.assertEqual(account_logged.id, account.id)
+
+    def test_fido2_invalid_state(self):
+        account = self._create_account()
+        account.add_credential_s("credential-id", "credential-data")
+
+        with self.assertRaises(appier.OperationalError):
+            appier_extras.admin.Account.login_fido2("username", None, {})
+
+    def test_fido2_two_factor_method_property(self):
+        account = self._create_account()
+        self.assertIsNone(account.two_factor_method)
+
+        account.add_credential_s("credential-id", "credential-data")
+        account = account.reload()
+        self.assertEqual(account.two_factor_method, "fido2")
 
     def _create_account(self):
         account = appier_extras.admin.Account()
