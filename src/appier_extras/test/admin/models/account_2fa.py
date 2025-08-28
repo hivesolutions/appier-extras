@@ -48,7 +48,7 @@ class AccountTwoFactorTest(unittest.TestCase):
         self.app.unload()
         adapter = appier.get_adapter()
         adapter.drop_db()
-        self._unpatch_fido2_server()
+        self._rollback_fido2_server()
 
     def test_otp_generate_and_login(self):
         account = self._create_account()
@@ -145,7 +145,7 @@ class AccountTwoFactorTest(unittest.TestCase):
         self._orig_credentials_data_n = appier_extras.admin.Account.credentials_data_n
         appier_extras.admin.Account.credentials_data_n = property(lambda self: [])
 
-    def _unpatch_fido2_server(self):
+    def _rollback_fido2_server(self):
         # restores the original `_fido2_server` property
         # allowing future operations to work as expected
         if hasattr(appier_extras.admin.Account, "_fido2_server"):
