@@ -33,7 +33,7 @@ import setuptools
 
 setuptools.setup(
     name="appier-extras",
-    version="0.26.3",
+    version="0.26.4",
     author="Hive Solutions Lda.",
     author_email="development@hive.pt",
     description="Appier Framework Extra Elements",
