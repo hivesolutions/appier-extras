@@ -708,7 +708,11 @@ class Base(appier.Model):
             dialect.delimiter,
             dialect.quoting,
             dialect.quotechar,
-            sniffer.has_header(contents),
+            (
+                sniffer.has_header(contents)
+                if appier.legacy.PYTHON_3
+                else sniffer.has_header(data)
+            ),
         )
 
     def pre_save(self):
