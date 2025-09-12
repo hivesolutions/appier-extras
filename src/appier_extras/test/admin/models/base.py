@@ -110,7 +110,7 @@ class BaseTest(unittest.TestCase):
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
-            "name,age\n爱丽丝,30\nBob,25\n".encode("utf-8"),
+            u"name,age\n爱丽丝,30\nBob,25\n".encode("utf-8"),
             lambda line, **kwargs: lines.append(tuple(line)),
             callback_header=lambda header: headers.append(tuple(header)),
             mime_type="text/csv",
@@ -121,7 +121,7 @@ class BaseTest(unittest.TestCase):
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
-            "name,age\nJoão,30\nBob,25\n".encode("cp1252"),
+            u"name,age\nJoão,30\nBob,25\n".encode("cp1252"),
             lambda line, **kwargs: lines.append(tuple(line)),
             callback_header=lambda header: headers.append(tuple(header)),
             mime_type="text/csv",
@@ -132,7 +132,7 @@ class BaseTest(unittest.TestCase):
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
-            "name,age\nJoão,30\nBob,25\n".encode("cp1252"),
+            u"name,age\nJoão,30\nBob,25\n".encode("cp1252"),
             lambda line, **kwargs: lines.append(tuple(line)),
             callback_header=lambda header: headers.append(tuple(header)),
             mime_type="text/csv",
@@ -143,7 +143,7 @@ class BaseTest(unittest.TestCase):
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
-            "name;age\nJoão;30\nBob;25\n".encode("cp1252"),
+            u"name;age\nJoão;30\nBob;25\n".encode("cp1252"),
             lambda line, **kwargs: lines.append(tuple(line)),
             callback_header=lambda header: headers.append(tuple(header)),
             mime_type="text/csv",
