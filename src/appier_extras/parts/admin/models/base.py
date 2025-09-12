@@ -513,31 +513,9 @@ class Base(appier.Model):
         encoding="utf-8",
     ):
         is_unicode = appier.legacy.PYTHON_3
-        guess_header = header in ("auto", "guess", None)
-        guess_delimiter = delimiter in ("auto", "guess", None)
-        guess_quotechar = quotechar in ("auto", "guess", None)
-        guess_quoting = quoting in ("auto", "guess", None)
-        guess_encoding = encoding in ("auto", "guess", None)
-        if guess_encoding:
-            encoding = cls._guess_encoding(file)
-        if (
-            guess_header
-            or guess_delimiter
-            or guess_quotechar
-            or guess_quoting
-            or guess_encoding
-        ):
-            guessed_delimiter, guessed_quoting, guessed_quotechar, guessed_header = (
-                cls._guess_csv(file, encoding=encoding)
-            )
-        if guess_header:
-            header = guessed_header
-        if guess_delimiter:
-            delimiter = guessed_delimiter
-        if guess_quotechar:
-            quotechar = guessed_quotechar
-        if guess_quoting:
-            quoting = guessed_quoting
+        header, delimiter, quotechar, quoting, encoding = cls._guess_params_csv(
+            file, header, delimiter, quotechar, quoting, encoding
+        )
         csv_reader = cls._csv_read(
             file,
             mime_type=mime_type,
@@ -584,6 +562,9 @@ class Base(appier.Model):
         encoding="utf-8",
     ):
         is_unicode = appier.legacy.PYTHON_3
+        _header, delimiter, quotechar, quoting, encoding = cls._guess_params_csv(
+            file, True, delimiter, quotechar, quoting, encoding
+        )
         if appier.legacy.is_bytes(file):
             mime_type, data = mime_type, file
         else:
@@ -611,6 +592,8 @@ class Base(appier.Model):
         strict=False,
         encoding="utf-8",
     ):
+        if encoding in ("auto", "guess", None):
+            encoding = cls._guess_encoding(file)
         json_data = cls._json_read(
             file, mime_type=mime_type, strict=strict, encoding=encoding
         )
@@ -622,6 +605,8 @@ class Base(appier.Model):
 
     @classmethod
     def _json_read(cls, file, mime_type=None, strict=False, encoding="utf-8"):
+        if encoding in ("auto", "guess", None):
+            encoding = cls._guess_encoding(file)
         if appier.legacy.is_bytes(file):
             mime_type, data = mime_type, file
         else:
@@ -714,6 +699,43 @@ class Base(appier.Model):
                 else sniffer.has_header(data)
             ),
         )
+
+    @classmethod
+    def _guess_params_csv(
+        cls,
+        file,
+        header=True,
+        delimiter=",",
+        quotechar='"',
+        quoting=csv.QUOTE_MINIMAL,
+        encoding="utf-8",
+    ):
+        guess_header = header in ("auto", "guess", None)
+        guess_delimiter = delimiter in ("auto", "guess", None)
+        guess_quotechar = quotechar in ("auto", "guess", None)
+        guess_quoting = quoting in ("auto", "guess", None)
+        guess_encoding = encoding in ("auto", "guess", None)
+        if guess_encoding:
+            encoding = cls._guess_encoding(file)
+        if (
+            guess_header
+            or guess_delimiter
+            or guess_quotechar
+            or guess_quoting
+            or guess_encoding
+        ):
+            guessed_delimiter, guessed_quoting, guessed_quotechar, guessed_header = (
+                cls._guess_csv(file, encoding=encoding)
+            )
+        if guess_header:
+            header = guessed_header
+        if guess_delimiter:
+            delimiter = guessed_delimiter
+        if guess_quotechar:
+            quotechar = guessed_quotechar
+        if guess_quoting:
+            quoting = guessed_quoting
+        return header, delimiter, quotechar, quoting, encoding
 
     def pre_save(self):
         appier.Model.pre_save(self)
