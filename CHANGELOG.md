@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Support for automated decoding of CSV files
+*
 
 ### Changed
 
@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 *
+
+## [0.26.5] - 2025-09-12
+
+### Added
+
+* Support for automated decoding of CSV files
 
 ## [0.26.4] - 2025-09-12
 
