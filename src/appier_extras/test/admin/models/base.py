@@ -171,10 +171,30 @@ class BaseTest(unittest.TestCase):
             lambda line, **kwargs: lines.append(tuple(line)),
             callback_header=lambda header: headers.append(tuple(header)),
             mime_type="text/csv",
+            header="auto",
             delimiter="auto",
             encoding="auto",
         )
         self.assertEqual(headers, [(appier.legacy.u("name"), appier.legacy.u("age"))])
+        self.assertEqual(
+            lines,
+            [
+                (appier.legacy.u("João"), appier.legacy.u("30")),
+                (appier.legacy.u("Bob"), appier.legacy.u("25")),
+            ],
+        )
+
+        lines, headers = [], []
+        appier_extras.admin.Base._csv_import(
+            appier.legacy.u("João;30\nBob;25\n").encode("cp1252"),
+            lambda line, **kwargs: lines.append(tuple(line)),
+            callback_header=lambda header: headers.append(tuple(header)),
+            mime_type="text/csv",
+            header="auto",
+            delimiter="auto",
+            encoding="auto",
+        )
+        self.assertEqual(headers, [()])
         self.assertEqual(
             lines,
             [

@@ -513,10 +513,31 @@ class Base(appier.Model):
         encoding="utf-8",
     ):
         is_unicode = appier.legacy.PYTHON_3
-        if encoding in ("auto", "guess", None):
+        guess_header = header in ("auto", "guess", None)
+        guess_delimiter = delimiter in ("auto", "guess", None)
+        guess_quotechar = quotechar in ("auto", "guess", None)
+        guess_quoting = quoting in ("auto", "guess", None)
+        guess_encoding = encoding in ("auto", "guess", None)
+        if guess_encoding:
             encoding = cls._guess_encoding(file)
-        if delimiter in ("auto", "guess", None):
-            delimiter = cls._guess_csv_delimiter(file, encoding=encoding)
+        if (
+            guess_header
+            or guess_delimiter
+            or guess_quotechar
+            or guess_quoting
+            or guess_encoding
+        ):
+            guessed_delimiter, guessed_quoting, guessed_quotechar, guessed_header = (
+                cls._guess_csv(file, encoding=encoding)
+            )
+        if guess_header:
+            header = guessed_header
+        if guess_delimiter:
+            delimiter = guessed_delimiter
+        if guess_quotechar:
+            quotechar = guessed_quotechar
+        if guess_quoting:
+            quoting = guessed_quoting
         csv_reader = cls._csv_read(
             file,
             mime_type=mime_type,
@@ -672,7 +693,7 @@ class Base(appier.Model):
         return "utf-8"
 
     @classmethod
-    def _guess_csv_delimiter(cls, file, encoding="utf-8"):
+    def _guess_csv(cls, file, encoding="utf-8"):
         if appier.legacy.is_bytes(file):
             data = file
         else:
@@ -680,8 +701,15 @@ class Base(appier.Model):
 
         contents = data.decode(encoding)
 
-        dialect = csv.Sniffer().sniff(contents)
-        return dialect.delimiter
+        sniffer = csv.Sniffer()
+        dialect = sniffer.sniff(contents)
+
+        return (
+            dialect.delimiter,
+            dialect.quoting,
+            dialect.quotechar,
+            sniffer.has_header(contents),
+        )
 
     def pre_save(self):
         appier.Model.pre_save(self)
