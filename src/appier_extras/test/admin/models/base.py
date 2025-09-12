@@ -105,8 +105,14 @@ class BaseTest(unittest.TestCase):
             callback_header=lambda header: headers.append(tuple(header)),
             mime_type="text/csv",
         )
-        self.assertEqual(headers, [("name", "age")])
-        self.assertEqual(lines, [("Alice", "30"), ("Bob", "25")])
+        self.assertEqual(headers, [(appier.legacy.u("name"), appier.legacy.u("age"))])
+        self.assertEqual(
+            lines,
+            [
+                (appier.legacy.u("Alice"), appier.legacy.u("30")),
+                (appier.legacy.u("Bob"), appier.legacy.u("25")),
+            ],
+        )
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
@@ -116,8 +122,14 @@ class BaseTest(unittest.TestCase):
             mime_type="text/csv",
             encoding="utf-8",
         )
-        self.assertEqual(headers, [("name", "age")])
-        self.assertEqual(lines, [("爱丽丝", "30"), ("Bob", "25")])
+        self.assertEqual(headers, [(appier.legacy.u("name"), appier.legacy.u("age"))])
+        self.assertEqual(
+            lines,
+            [
+                (appier.legacy.u("爱丽丝"), appier.legacy.u("30")),
+                (appier.legacy.u("Bob"), appier.legacy.u("25")),
+            ],
+        )
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
@@ -127,8 +139,14 @@ class BaseTest(unittest.TestCase):
             mime_type="text/csv",
             encoding="cp1252",
         )
-        self.assertEqual(headers, [("name", "age")])
-        self.assertEqual(lines, [("João", "30"), ("Bob", "25")])
+        self.assertEqual(headers, [(appier.legacy.u("name"), appier.legacy.u("age"))])
+        self.assertEqual(
+            lines,
+            [
+                (appier.legacy.u("João"), appier.legacy.u("30")),
+                (appier.legacy.u("Bob"), appier.legacy.u("25")),
+            ],
+        )
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
@@ -138,8 +156,14 @@ class BaseTest(unittest.TestCase):
             mime_type="text/csv",
             encoding="auto",
         )
-        self.assertEqual(headers, [("name", "age")])
-        self.assertEqual(lines, [("João", "30"), ("Bob", "25")])
+        self.assertEqual(headers, [(appier.legacy.u("name"), appier.legacy.u("age"))])
+        self.assertEqual(
+            lines,
+            [
+                (appier.legacy.u("João"), appier.legacy.u("30")),
+                (appier.legacy.u("Bob"), appier.legacy.u("25")),
+            ],
+        )
 
         lines, headers = [], []
         appier_extras.admin.Base._csv_import(
@@ -150,5 +174,11 @@ class BaseTest(unittest.TestCase):
             delimiter="auto",
             encoding="auto",
         )
-        self.assertEqual(headers, [("name", "age")])
-        self.assertEqual(lines, [("João", "30"), ("Bob", "25")])
+        self.assertEqual(headers, [(appier.legacy.u("name"), appier.legacy.u("age"))])
+        self.assertEqual(
+            lines,
+            [
+                (appier.legacy.u("João"), appier.legacy.u("30")),
+                (appier.legacy.u("Bob"), appier.legacy.u("25")),
+            ],
+        )
