@@ -183,9 +183,7 @@ class ExportPart(appier.Part):
     @appier.ensure(token="admin", context="admin")
     def entity_json(self, model, _id):
         model_c = self.owner.get_model(model)
-        entity = model_c.get(
-            map=True, rules=False, _id=self.get_adapter().object_id(_id)
-        )
+        entity = model_c.get(map=True, rules=False, _id=model_c._object_id(_id))
         return entity
 
     @appier.ensure(token="admin", context="admin")

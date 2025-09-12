@@ -111,9 +111,8 @@ class Snapshot(base.Base):
         cls = self.__class__
         if not "_id" in self.model_data:
             return self.model_data
-        adapter = cls._adapter()
         model_data = dict(self.model_data)
-        model_data["_id"] = adapter.object_id(model_data["_id"])
+        model_data["_id"] = cls._object_id(model_data["_id"])
         return model_data
 
     @property

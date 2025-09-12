@@ -271,6 +271,32 @@
 {%- endmacro %}
 
 {% macro paging(current, count, caller = None, size = 5) -%}
+    {% if count == None %}
+        {{ paging_continuous(current, count, caller, size) }}
+    {% else %}
+        {{ paging_discrete(current, count, caller, size) }}
+    {% endif %}
+{%- endmacro %}
+
+{% macro paging_continuous(current, count, caller = None, size = 5) -%}
+    <div class="pages">
+        {% if caller %}
+            {% set previous = caller(page = current - 1) %}
+            {% set next = caller(page = current + 1) %}
+        {% else %}
+            {% set previous = "#" %}
+            {% set next = "#" %}
+        {% endif %}
+        {% if current == 1 %}
+            <span class="page disabled">&#8592;</span>
+        {% else %}
+            <a href="{{ previous }}" class="page">&#8592;</a>
+        {% endif %}
+        <a href="{{ next }}" class="page">&#8594;</a>
+    </div>
+{%- endmacro %}
+
+{% macro paging_discrete(current, count, caller = None, size = 5) -%}
     <div class="pages">
         {% if caller %}
             {% set previous = caller(page = current - 1) %}
@@ -351,7 +377,7 @@
             {% endcall %}
         </table>
     </div>
-    {% if page.count > 1 %}
+    {% if page.count == None or page.count > 1 %}
         {{ paging(page.index, page.count, caller = page.query) }}
     {% endif %}
 {%- endmacro %}

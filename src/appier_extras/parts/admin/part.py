@@ -1691,9 +1691,11 @@ class AdminPart(
         ids = self.field("ids", "")
         ids = ids.split(",")
 
-        ids = [self.get_adapter().object_id(_id) for _id in ids if _id]
-        is_global = self.field("is_global", False, cast=bool)
+        # converts the complete set of IDs into the native
+        # ones, ready to be used in queries
         model = self.get_model(model)
+        ids = [model._object_id(_id) for _id in ids if _id]
+        is_global = self.field("is_global", False, cast=bool)
 
         # creates the set of named arguments dictionary to be used
         # for the selection of the target entities
@@ -1751,13 +1753,16 @@ class AdminPart(
         view = self.field("view", None)
         ids = self.field("ids", "")
         ids = ids.split(",")
-        ids = [self.get_adapter().object_id(_id) for _id in ids if _id]
         is_global = self.field("is_global", False, cast=bool)
 
         # retrieves the model information (class) for the provided
         # name and then also the operation definition (metadata)
         model = self.get_model(model)
         definition = model.operation(operation)
+
+        # converts the sequence of identifiers to native values,
+        # this will avoid type issues downstream
+        ids = [model._object_id(_id) for _id in ids if _id]
 
         # uses the definition of the operation to retrieve its descriptive
         # name to be used in the message to be sent to the end-user
@@ -1852,7 +1857,7 @@ class AdminPart(
         model.assert_is_concrete_g()
 
         if _id:
-            entity = model.get_v(_id=self.get_adapter().object_id(_id))
+            entity = model.get_v(_id=model._object_id(_id))
         else:
             entity = model
 
@@ -1928,9 +1933,7 @@ class AdminPart(
     def show_entity(self, model, _id):
         appier.ensure_login(self, token="admin.models." + model)
         model = self.get_model(model, raise_e=True)
-        entity = model.get_v(
-            rules=False, meta=True, _id=self.get_adapter().object_id(_id)
-        )
+        entity = model.get_v(rules=False, meta=True, _id=model._object_id(_id))
         previous_url, next_url = self._entity_urls(entity)
         return self.template(
             "entities/show.html.tpl",
@@ -1953,7 +1956,7 @@ class AdminPart(
             rules=rules,
             meta=meta,
             map=True,
-            _id=self.get_adapter().object_id(_id),
+            _id=model._object_id(_id),
         )
         return entity
 
@@ -1961,9 +1964,7 @@ class AdminPart(
     def edit_entity(self, model, _id):
         appier.ensure_login(self, token="admin.models." + model)
         model = self.get_model(model, raise_e=True)
-        entity = model.get_v(
-            rules=False, meta=True, _id=self.get_adapter().object_id(_id)
-        )
+        entity = model.get_v(rules=False, meta=True, _id=model._object_id(_id))
         return self.template(
             "entities/edit.html.tpl",
             section="models",
@@ -1976,9 +1977,7 @@ class AdminPart(
     def update_entity(self, model, _id):
         appier.ensure_login(self, token="admin.models." + model)
         model = self.get_model(model, raise_e=True)
-        entity = model.get_v(
-            rules=False, meta=True, _id=self.get_adapter().object_id(_id)
-        )
+        entity = model.get_v(rules=False, meta=True, _id=model._object_id(_id))
         entity.apply(safe_a=False)
         try:
             entity.save_v()
@@ -1998,9 +1997,7 @@ class AdminPart(
     @appier.ensure(token="admin", context="admin")
     def update_entity_json(self, model, _id):
         model = self.get_model(model, raise_e=True)
-        entity = model.get_v(
-            rules=False, meta=True, _id=self.get_adapter().object_id(_id)
-        )
+        entity = model.get_v(rules=False, meta=True, _id=model._object_id(_id))
         entity.apply()
         entity.save()
         entity = entity.map()
@@ -2010,7 +2007,7 @@ class AdminPart(
     def delete_entity(self, model, _id):
         appier.ensure_login(self, token="admin.models." + model)
         model = self.get_model(model, raise_e=True)
-        entity = model.get_v(_id=self.get_adapter().object_id(_id))
+        entity = model.get_v(_id=model._object_id(_id))
         entity.delete()
         return self.redirect(self.url_for("admin.show_model", model=model._under()))
 
@@ -2018,7 +2015,7 @@ class AdminPart(
     def delete_entity_json(self, model, _id):
         appier.ensure_login(self, token="admin.models." + model)
         model = self.get_model(model, raise_e=True)
-        entity = model.get_v(_id=self.get_adapter().object_id(_id))
+        entity = model.get_v(_id=model._object_id(_id))
         entity.delete()
 
     def facebook(self):
@@ -2745,7 +2742,7 @@ class AdminPart(
         model.assert_is_concrete_g()
 
         if is_instance:
-            model = model.get(_id=self.get_adapter().object_id(id))
+            model = model.get(_id=model._object_id(id))
 
         start_param = view.find("(")
         end_param = view.find(")")
