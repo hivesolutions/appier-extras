@@ -96,3 +96,59 @@ class BaseTest(unittest.TestCase):
         settings = settings.reload()
         result = settings.decode_secret("hello")
         self.assertEqual(result, "world")
+
+    def test__csv_import(self):
+        lines, headers = [], []
+        appier_extras.admin.Base._csv_import(
+            b"name,age\nAlice,30\nBob,25\n",
+            lambda line, **kwargs: lines.append(tuple(line)),
+            callback_header=lambda header: headers.append(tuple(header)),
+            mime_type="text/csv",
+        )
+        self.assertEqual(headers, [("name", "age")])
+        self.assertEqual(lines, [("Alice", "30"), ("Bob", "25")])
+
+        lines, headers = [], []
+        appier_extras.admin.Base._csv_import(
+            "name,age\n爱丽丝,30\nBob,25\n".encode("utf-8"),
+            lambda line, **kwargs: lines.append(tuple(line)),
+            callback_header=lambda header: headers.append(tuple(header)),
+            mime_type="text/csv",
+            encoding="utf-8",
+        )
+        self.assertEqual(headers, [("name", "age")])
+        self.assertEqual(lines, [("爱丽丝", "30"), ("Bob", "25")])
+
+        lines, headers = [], []
+        appier_extras.admin.Base._csv_import(
+            "name,age\nJoão,30\nBob,25\n".encode("cp1252"),
+            lambda line, **kwargs: lines.append(tuple(line)),
+            callback_header=lambda header: headers.append(tuple(header)),
+            mime_type="text/csv",
+            encoding="cp1252",
+        )
+        self.assertEqual(headers, [("name", "age")])
+        self.assertEqual(lines, [("João", "30"), ("Bob", "25")])
+
+        lines, headers = [], []
+        appier_extras.admin.Base._csv_import(
+            "name,age\nJoão,30\nBob,25\n".encode("cp1252"),
+            lambda line, **kwargs: lines.append(tuple(line)),
+            callback_header=lambda header: headers.append(tuple(header)),
+            mime_type="text/csv",
+            encoding="auto",
+        )
+        self.assertEqual(headers, [("name", "age")])
+        self.assertEqual(lines, [("João", "30"), ("Bob", "25")])
+
+        lines, headers = [], []
+        appier_extras.admin.Base._csv_import(
+            "name;age\nJoão;30\nBob;25\n".encode("cp1252"),
+            lambda line, **kwargs: lines.append(tuple(line)),
+            callback_header=lambda header: headers.append(tuple(header)),
+            mime_type="text/csv",
+            delimiter="auto",
+            encoding="auto",
+        )
+        self.assertEqual(headers, [("name", "age")])
+        self.assertEqual(lines, [("João", "30"), ("Bob", "25")])

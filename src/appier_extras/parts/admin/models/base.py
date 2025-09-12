@@ -513,6 +513,10 @@ class Base(appier.Model):
         encoding="utf-8",
     ):
         is_unicode = appier.legacy.PYTHON_3
+        if encoding in ("auto", "guess", None):
+            encoding = cls._guess_encoding(file)
+        if delimiter in ("auto", "guess", None):
+            delimiter = cls._guess_csv_delimiter(file, encoding=encoding)
         csv_reader = cls._csv_read(
             file,
             mime_type=mime_type,
@@ -650,6 +654,34 @@ class Base(appier.Model):
         if appier.legacy.is_bytes(result):
             result = result.decode(encoding)
         return result
+
+    @classmethod
+    def _guess_encoding(cls, file):
+        if appier.legacy.is_bytes(file):
+            data = file
+        else:
+            _file_name, _mime_type, data = file
+
+        for encoding in ("utf-8", "cp1252", "gbk", "gb2312", "big5", "utf-16"):
+            try:
+                data.decode(encoding)
+                return encoding
+            except UnicodeDecodeError:
+                continue
+
+        return "utf-8"
+
+    @classmethod
+    def _guess_csv_delimiter(cls, file, encoding="utf-8"):
+        if appier.legacy.is_bytes(file):
+            data = file
+        else:
+            _file_name, _mime_type, data = file
+
+        contents = data.decode(encoding)
+
+        dialect = csv.Sniffer().sniff(contents)
+        return dialect.delimiter
 
     def pre_save(self):
         appier.Model.pre_save(self)
