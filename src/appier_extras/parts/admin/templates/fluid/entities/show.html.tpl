@@ -92,6 +92,7 @@
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
                         {% set placeholder = parameter[4] if parameter|length > 4 else "" %}
+                        {% set default = default(entity) if default and default|callable else default %}
                         <label>{{ label }}</label>
                         {{ tag_input_b("parameters", value = default, placeholder = placeholder, type = data_type) }}
                     {% endfor %}
@@ -121,6 +122,7 @@
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
                         {% set placeholder = parameter[4] if parameter|length > 4 else "" %}
+                        {% set default = default(entity) if default and default|callable else default %}
                         <label>{{ label }}</label>
                         {{ tag_input_b("parameters", value = default, placeholder = placeholder, type = data_type) }}
                     {% endfor %}
@@ -145,6 +147,7 @@
                         {% set label, name, data_type = parameter[:3] %}
                         {% set default = parameter[3] if parameter|length > 3 else "" %}
                         {% set placeholder = parameter[4] if parameter|length > 4 else "" %}
+                        {% set default = default(entity) if default and default|callable else default %}
                         <label>{{ label }}</label>
                         {{ tag_input_b("parameters", value = default, placeholder = placeholder, type = data_type) }}
                     {% endfor %}
