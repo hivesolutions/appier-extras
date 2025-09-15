@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
+## [0.26.6] - 2025-09-15
+
+### Added
+
+* Improved default handling
+
 ## [0.26.5] - 2025-09-12
 
 ### Added
