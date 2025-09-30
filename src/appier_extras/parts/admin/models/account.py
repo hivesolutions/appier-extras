@@ -495,6 +495,8 @@ class Account(base.Base, authenticable.Authenticable):
     @classmethod
     @appier.operation(
         name="Import JSON",
+        description="""Import a JSON file containing account
+        information on multiple accounts into the data source""",
         parameters=(
             ("JSON File", "file", "file"),
             ("Empty source", "empty", bool, False),
@@ -534,6 +536,10 @@ class Account(base.Base, authenticable.Authenticable):
     @classmethod
     @appier.operation(
         name="Import CSV",
+        description="""Import a CSV file containing account
+        information on multiple accounts into the data source,
+        the CSV file must contain the following columns:
+        username, password, email, type""",
         parameters=(
             ("CSV File", "file", "file"),
             ("Empty source", "empty", bool, False),
