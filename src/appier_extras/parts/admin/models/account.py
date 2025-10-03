@@ -478,15 +478,18 @@ class Account(base.Base, authenticable.Authenticable):
             ("Email", "email", str),
             ("Password", "password", str, ""),
             ("Send Email", "send_email", bool, False),
+            ("Is Admin", "is_admin", bool, False),
         ),
         factory=True,
     )
-    def create_s(cls, username, email, password="", send_email=False):
+    def create_s(cls, username, email, password="", send_email=False, is_admin=False):
         if not password:
             password = appier.gen_token(limit=16)
         account = cls(
             username=username, email=email, password=password, password_confirm=password
         )
+        if is_admin:
+            account.type = cls.ADMIN_TYPE
         account.save()
         if send_email:
             account.email_new(password=password)
@@ -1022,7 +1025,7 @@ class Account(base.Base, authenticable.Authenticable):
     @appier.operation(
         name="Email New",
         description="""Sends an email to the account's email address
-        with a new password""",
+        with the information about the new account (password not included)""",
         level=2,
     )
     def email_new(self, password=None):
@@ -1176,6 +1179,20 @@ class Account(base.Base, authenticable.Authenticable):
     def change_email_s(self, email):
         self.email = email
         self.save(immutables_a=False)
+
+    @appier.operation(
+        name="Change Password",
+        parameters=(("Password", "password", str),),
+        description="""Changes the password of the account, careful
+        should be taken when using this operation as it does not
+        perform any kind of validation on the provided password""",
+        level=2,
+    )
+    def change_password_s(self, password):
+        self = self.reload(rules=False)
+        self.password = password
+        self.password_confirm = password
+        self.save()
 
     @appier.link(name="View Avatar", devel=True)
     def view_avatar_url(self, absolute=False):
