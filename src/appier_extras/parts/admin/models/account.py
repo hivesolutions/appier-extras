@@ -960,7 +960,11 @@ class Account(base.Base, authenticable.Authenticable):
         image_data = buffer.getvalue()
         return self.owner.send_file(image_data, content_type="image/png")
 
-    @appier.operation(name="Touch Login")
+    @appier.operation(
+        name="Touch Login",
+        description="""Touches the last login of the account,
+        updating it's date to the current one""",
+    )
     def touch_login_s(self):
         # retrieves the global reference to the account class so that
         # it can be used for the triggering of global operations
@@ -975,7 +979,12 @@ class Account(base.Base, authenticable.Authenticable):
         # touched about a new login operation (allows proper notification)
         cls.trigger_g("touch_login", self)
 
-    @appier.operation(name="Generate Key", level=2)
+    @appier.operation(
+        name="Generate Key",
+        description="""Generates a new key for the account,
+        if the account already has a key it will be replaced""",
+        level=2,
+    )
     def generate_key_s(self, force=False):
         self = self.reload(rules=False)
         if self.key and not force:
@@ -983,7 +992,13 @@ class Account(base.Base, authenticable.Authenticable):
         self.key = self.secret()
         self.save()
 
-    @appier.operation(name="Generate OTP", level=2)
+    @appier.operation(
+        name="Generate OTP",
+        description="""Generates a new OTP (One-Time Password)
+        for the account, if the account already has an OTP it
+        will be replaced""",
+        level=2,
+    )
     def generate_otp_s(self, force=False):
         pyotp = appier.import_pip("pyotp")
         self = self.reload(rules=False)
@@ -993,13 +1008,23 @@ class Account(base.Base, authenticable.Authenticable):
         self.otp_enabled = True
         self.save()
 
-    @appier.operation(name="Mark Unconfirmed", level=2)
+    @appier.operation(
+        name="Mark Unconfirmed",
+        description="""Marks the account as unconfirmed,
+        setting the confirmation token to a new random value""",
+        level=2,
+    )
     def mark_unconfirmed_s(self):
         self.enabled = False
         self.confirmation_token = self.secret()
         self.save()
 
-    @appier.operation(name="Email New", level=2)
+    @appier.operation(
+        name="Email New",
+        description="""Sends an email to the account's email address
+        with a new password""",
+        level=2,
+    )
     def email_new(self, password=None):
         account = self.reload(rules=False, meta=True)
         base.Base.send_email_g(
@@ -1012,7 +1037,12 @@ class Account(base.Base, authenticable.Authenticable):
             account_password=password,
         )
 
-    @appier.operation(name="Email Confirm", level=2)
+    @appier.operation(
+        name="Email Confirm",
+        description="""Sends an email to the account's email address
+        with a confirmation link""",
+        level=2,
+    )
     def email_confirm(self):
         account = self.reload(rules=False, meta=True)
         base.Base.send_email_g(
@@ -1024,7 +1054,12 @@ class Account(base.Base, authenticable.Authenticable):
             account=account,
         )
 
-    @appier.operation(name="Email Recover", level=2)
+    @appier.operation(
+        name="Email Recover",
+        description="""Sends an email to the account's email address
+        with a recovery link""",
+        level=2,
+    )
     def email_recover(self):
         account = self.reload(rules=False, meta=True)
         base.Base.send_email_g(
