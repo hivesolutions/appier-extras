@@ -41,8 +41,7 @@ Appier Extras is currently licensed under the [Apache License, Version 2.0](http
 
 ## Build Automation
 
-[![Build Status](https://app.travis-ci.com/hivesolutions/appier-extras.svg?branch=master)](https://travis-ci.com/github/hivesolutions/appier-extras)
-[![Build Status GitHub](https://github.com/hivesolutions/appier-extras/workflows/Main%20Workflow/badge.svg)](https://github.com/hivesolutions/appier-extras/actions)
+[![Build Status](https://github.com/hivesolutions/appier-extras/workflows/Main%20Workflow/badge.svg)](https://github.com/hivesolutions/appier-extras/actions)
 [![Coverage Status](https://coveralls.io/repos/hivesolutions/appier-extras/badge.svg?branch=master)](https://coveralls.io/r/hivesolutions/appier-extras?branch=master)
 [![PyPi Status](https://img.shields.io/pypi/v/appier-extras.svg)](https://pypi.python.org/pypi/appier-extras)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/)
