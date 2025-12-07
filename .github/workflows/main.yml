@@ -39,7 +39,7 @@ jobs:
           pip install pytest
           ADAPTER=tiny pytest
       - run: ADAPTER=tiny python setup.py test
-        if: ${{ !contains(fromJson('["3.9", "3.10", "3.11", "3.12","latest"]'), matrix.python-version) }}
+        if: ${{ !contains(fromJson('["3.9", "3.10", "3.11", "3.12", "latest"]'), matrix.python-version) }}
   build-pypy:
     name: Build PyPy
     timeout-minutes: 10
@@ -65,4 +65,4 @@ jobs:
           pip install pytest
           ADAPTER=tiny pytest
       - run: ADAPTER=tiny pypy setup.py test
-        if: ${{ !contains(fromJson('["3.9", "3.10", "3.11", "3.12","latest"]'), matrix.python-version) }}
+        if: ${{ !contains(fromJson('["3.9", "3.10", "3.11", "3.12", "latest"]'), matrix.python-version) }}
