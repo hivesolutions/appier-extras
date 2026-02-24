@@ -27,8 +27,8 @@ jobs:
           black . --check
         if: matrix.python-version == '3.12'
       - run: ADAPTER=tiny python setup.py test
-      - run: pip install twine wheel
-      - run: python setup.py sdist bdist_wheel
+      - run: pip install twine build
+      - run: python -m build
       - run: python -m twine upload -u ${PYPI_USERNAME} -p ${PYPI_PASSWORD} dist/*
         env:
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
