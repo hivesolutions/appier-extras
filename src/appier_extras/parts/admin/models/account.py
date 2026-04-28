@@ -64,11 +64,13 @@ class Account(base.Base, authenticable.Authenticable):
 
     password = appier.field(private=True, meta="secret")
 
-    key = appier.field(safe=True, private=True, meta="secret")
+    key = appier.field(index="all", safe=True, private=True, meta="secret")
 
-    reset_token = appier.field(safe=True, private=True, meta="secret")
+    reset_token = appier.field(index="all", safe=True, private=True, meta="secret")
 
-    confirmation_token = appier.field(safe=True, private=True, meta="secret")
+    confirmation_token = appier.field(
+        index="all", safe=True, private=True, meta="secret"
+    )
 
     fido2_enabled = appier.field(type=bool, description="FIDO2 Enabled")
 
