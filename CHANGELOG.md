@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *
 
+## [0.26.7] - 2026-04-28
+
+### Changed
+
+* Index (`index="all"`) added to `key`, `reset_token`, and `confirmation_token` fields of the `Account` model
+
 ## [0.26.6] - 2025-09-15
 
 ### Added
