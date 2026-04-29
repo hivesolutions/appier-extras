@@ -13,11 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Parametrized link forms in entity, model, and view show templates now submit with `target="_blank"` and `class="no-async"`, opening the response in a new tab consistently with the parameter-less link buttons
+*
 
 ### Fixed
 
 *
+
+## [0.26.8] - 2026-04-29
+
+### Changed
+
+* Parametrized link forms in entity, model, and view show templates now submit with `target="_blank"` and `class="no-async"`, opening the response in a new tab consistently with the parameter-less link buttons
 
 ## [0.26.7] - 2026-04-28
 
