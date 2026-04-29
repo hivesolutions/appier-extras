@@ -113,8 +113,8 @@
             {% endif %}
             <div id="window-{{ link.method }}" class="window window-link">
                 <h1>{{ link.name }}</h1>
-                <form class="form" method="post" enctype="multipart/form-data"
-                      action="{{ form_url }}">
+                <form class="form no-async" method="post" enctype="multipart/form-data"
+                      action="{{ form_url }}" target="_blank">
                     {% if link.description %}
                         <div class="description">{{ link.description|sentence|markdown }}</div>
                     {% endif %}

@@ -58,8 +58,9 @@
         {% if link.parameters %}
             <div id="window-{{ link.method }}" class="window window-link">
                 <h1>{{ link.name }}</h1>
-                <form class="form {% if not link.instance and link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
-                      action="{{ url_for('admin.link_model', model = target._under(), link = link.method, is_global = '' if link.instance else '1') }}">
+                <form class="form no-async {% if not link.instance and link.context %}context{% endif %}" method="post" enctype="multipart/form-data"
+                      action="{{ url_for('admin.link_model', model = target._under(), link = link.method, is_global = '' if link.instance else '1') }}"
+                      target="_blank">
                     {% if link.description %}
                         <div class="description">{{ link.description|sentence|markdown }}</div>
                     {% endif %}
